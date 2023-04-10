@@ -2,23 +2,27 @@ import { View, Text, SafeAreaView, TouchableOpacity } from 'react-native'
 import React from 'react'
 import styled from 'styled-components'
 import { FONTS, COLORS } from '../constants/theme'
+import HistoryCard from '../components/HistoryCard'
+import { Box, Center, Container, FlatList, Flex, NativeBaseProvider } from 'native-base'
 
 export default function Home({navigation}) {
   return (
-    <HomeContainer>
-      <Title>Home</Title>
-      <TouchableOpacity onPress={()=>{navigation.navigate("Second")}}>
-        <Title>Button</Title>
-      </TouchableOpacity>
-    </HomeContainer>
+    <NativeBaseProvider>
+
+      <Flex flex={1} >
+        <Center>
+
+          <HistoryCard></HistoryCard>
+          <HistoryCard></HistoryCard>
+          <HistoryCard></HistoryCard>
+          <HistoryCard></HistoryCard>
+        </Center>
+      </Flex>
+    </NativeBaseProvider>
   )
 }
 
 const HomeContainer = styled.SafeAreaView`
-    flex: 1;
-    align-items: center;
-    justify-content: center;
-    background-color: black;
 `
 
 const Title = styled.Text`
