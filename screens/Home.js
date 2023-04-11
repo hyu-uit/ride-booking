@@ -1,22 +1,16 @@
-import { View, Text, SafeAreaView, TouchableOpacity } from 'react-native'
 import React from 'react'
 import styled from 'styled-components'
 import { FONTS, COLORS } from '../constants/theme'
-import HistoryCard from '../components/HistoryCard'
-import { Box, Center, Container, FlatList, Flex, NativeBaseProvider } from 'native-base'
+import { Flex, NativeBaseProvider } from 'native-base'
+import LocationCardPayment from '../components/LocationCard/LocationCard.Payment'
+import LocationCardFinder from '../components/LocationCard/LocationCard.Finder'
 
 export default function Home({navigation}) {
   return (
     <NativeBaseProvider>
 
-      <Flex flex={1} >
-        <Center>
-
-          <HistoryCard></HistoryCard>
-          <HistoryCard></HistoryCard>
-          <HistoryCard></HistoryCard>
-          <HistoryCard></HistoryCard>
-        </Center>
+      <Flex flex={1}>
+        <LocationCardFinder />
       </Flex>
     </NativeBaseProvider>
   )

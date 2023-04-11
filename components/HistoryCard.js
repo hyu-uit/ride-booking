@@ -1,21 +1,13 @@
-import { Avatar, Box, Container, HStack, Text, Button, VStack, View, Image, Flex } from 'native-base'
+import { Avatar, HStack, Text, Button, VStack, View, Image, Flex } from 'native-base'
 import React from 'react'
 import DefaultAvt from '../assets/image6.png'
 import CarImg from '../assets/image8.png'
 import { SIZES } from '../constants/theme'
 
-function padding(a, b, c, d) {
-  return {
-    marginTop: a,
-    marginRight: b ? b : a,
-    marginBottom: c ? c : a,
-    marginLeft: d ? d : (b ? b : a)
-  }
-}
 
 const HistoryCard = () => {
   return (
-    <View bgColor={'#101744'} w={'90%'} h={130} borderRadius={20} shadow={3} marginBottom={10}> 
+    <View bgColor={'#101744'} w={'95%'} h={130} borderRadius={20} shadow={3} marginBottom={10}> 
       <HStack w={'full'}>
         <Avatar source={DefaultAvt} margin={'10px 0 0 10px'} />
         <VStack margin={'10px 0 0 10px'}>
