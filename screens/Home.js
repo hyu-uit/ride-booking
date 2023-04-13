@@ -2,15 +2,14 @@ import React from 'react'
 import styled from 'styled-components'
 import { FONTS, COLORS } from '../constants/theme'
 import { Flex, NativeBaseProvider } from 'native-base'
-import LocationCardPayment from '../components/LocationCard/LocationCard.Payment'
-import LocationCardFinder from '../components/LocationCard/LocationCard.Finder'
+import RatingPopup from '../components/RatingPopup'
 
 export default function Home({navigation}) {
   return (
     <NativeBaseProvider>
 
       <Flex flex={1}>
-        <LocationCardFinder />
+        <RatingPopup />
       </Flex>
     </NativeBaseProvider>
   )
