@@ -16,13 +16,14 @@ const CUSTOMFONT_SEMI_BOLD = "MerriweatherSans-SemiBold";
 const CUSTOMFONT_SEMI_BOLD_ITALIC = "MerriweatherSans-SemiBoldItalic";
 
 export const COLORS = {
-  primary: "#194AF9",
-  secondary: "#3E3F43",
-  tertiary: "#133AC5",
-  fourthary: "#0E5EF5",
+  primary: "#3D5AF8",
+  secondary: "#3D5BF8",
+  tertiary: "#101744",
+  fourthary: "#125CAE",
+  fifthary: "#8CC3FF",
   white: "#ffffff",
   black: "#000000",
-  background: "#26272D",
+  background: "#0B0F2F",
   lightWhite: "#F8F8F8",
   grey: "#808080",
   lightGrey: "#D3D3D3",

@@ -14,18 +14,25 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.thevihuynh.carbooking"
+      "bundleIdentifier": "com.thevihuynh.carbooking",
+      "infoPlist": {
+        "NSPhotoLibraryUsageDescription": "To select photos from your library"
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "permissions": [
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE",
+        "CAMERA",
+        "MEDIA_LIBRARY"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -43,6 +50,7 @@
       "eas": {
         "projectId": "8671c500-e4a3-4c9d-bb2c-545f179927a1"
       }
-    }
+    },
+    "permissions": ["camera"]
   }
 }
