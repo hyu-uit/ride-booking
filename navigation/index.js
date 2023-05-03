@@ -6,6 +6,8 @@ import SignUpScreen from "../screens/Login/SignUpScreen";
 import VerifyingScreen from "../screens/Login/VerifyingScreen";
 import UploadIDScreen from "../screens/Login/UploadIDScreen";
 import UploadFaceScreen from "../screens/Login/UploadFaceScreen";
+import ActivityScreen from "../screens/Customer/Activity/ActivityScreen";
+import ActivityDetailScreen from "../screens/Customer/Activity/ActivityDetailScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -13,7 +15,7 @@ export default function Navigation() {
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        <Stack.Screen
+        {/* <Stack.Screen
           name="LoginHome"
           component={LoginScreen}
           options={{ headerShown: false }}
@@ -41,6 +43,16 @@ export default function Navigation() {
         <Stack.Screen
           name="UploadFace"
           component={UploadFaceScreen}
+          options={{ headerShown: false }}
+        /> */}
+        {/* <Stack.Screen
+          name="Activity"
+          component={ActivityScreen}
+          options={{ headerShown: false }}
+        /> */}
+        <Stack.Screen
+          name="Activity Detail"
+          component={ActivityDetailScreen}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>

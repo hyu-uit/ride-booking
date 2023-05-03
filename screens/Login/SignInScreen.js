@@ -6,7 +6,7 @@ import {
   Text,
   VStack,
 } from "native-base";
-import React from "react";
+import React, { useState } from "react";
 import ButtonBack from "../../components/Global/ButtonBack/ButtonBack";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { COLORS, FONTS } from "../../constants";
@@ -14,6 +14,8 @@ import { TouchableWithoutFeedback } from "react-native";
 import { Keyboard } from "react-native";
 
 const SignInScreen = ({ navigation }) => {
+  const [role, setRole] = useState(0);
+
   return (
     <NativeBaseProvider>
       <TouchableWithoutFeedback
@@ -41,8 +43,11 @@ const SignInScreen = ({ navigation }) => {
                 w={"27%"}
                 h={"40px"}
                 borderRadius={10}
-                bgColor={COLORS.fourthary}
+                bgColor={role === 0 ? COLORS.fourthary : "transparent"}
                 borderColor={COLORS.fifthary}
+                onPress={() => {
+                  setRole(0);
+                }}
               >
                 <Text color={COLORS.white} style={{ ...FONTS.h5 }}>
                   Customer
@@ -54,6 +59,10 @@ const SignInScreen = ({ navigation }) => {
                 h={"40px"}
                 borderRadius={10}
                 borderColor={COLORS.fifthary}
+                bgColor={role === 1 ? COLORS.fourthary : "transparent"}
+                onPress={() => {
+                  setRole(1);
+                }}
                 ml={4}
               >
                 <Text color={COLORS.white} style={{ ...FONTS.h5 }}>
@@ -66,6 +75,10 @@ const SignInScreen = ({ navigation }) => {
                 h={"40px"}
                 borderRadius={10}
                 borderColor={COLORS.fifthary}
+                bgColor={role === 2 ? COLORS.fourthary : "transparent"}
+                onPress={() => {
+                  setRole(2);
+                }}
                 ml={4}
               >
                 <Text color={COLORS.white} style={{ ...FONTS.h5 }}>
