@@ -1,4 +1,5 @@
-const back_arrow = require('../assets/icons');
+const arrow_right = require("../assets/icons/arrowRight.png");
+
 export default {
-    back_arrow
+  arrow_right,
 };

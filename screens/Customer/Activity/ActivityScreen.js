@@ -1,0 +1,143 @@
+import { View, Text } from "react-native";
+import React from "react";
+import { Button, HStack, Image, NativeBaseProvider, VStack } from "native-base";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { SIZES, COLORS, FONTS } from "../../../constants/theme";
+import { TabView, TabBar, SceneMap } from "react-native-tab-view";
+import { useState } from "react";
+import { useCallback } from "react";
+
+const ActivityScreen = ({ navigation }) => {
+  const [service, setService] = useState(0);
+
+  const FirstRoute = () => <VStack paddingX={"10px"} mt={"17px"}></VStack>;
+
+  const SecondRoute = () => <VStack paddingX={"10px"} mt={"17px"}></VStack>;
+
+  const ThirdRoute = () => <VStack paddingX={"10px"} mt={"17px"}></VStack>;
+
+  const renderScene = SceneMap({
+    first: FirstRoute,
+    second: SecondRoute,
+    third: ThirdRoute,
+  });
+
+  const [index, setIndex] = React.useState(0);
+  const [routes] = React.useState([
+    { key: "first", title: "Booking" },
+    { key: "second", title: "Booked" },
+    { key: "third", title: "Canceled" },
+  ]);
+
+  return (
+    <NativeBaseProvider>
+      <VStack h={"100%"} paddingY={"20px"} bgColor={COLORS.background}>
+        <SafeAreaView>
+          <HStack justifyContent={"center"} space={"10px"}>
+            <Button
+              w={"45%"}
+              h={"70px"}
+              borderRadius={20}
+              bgColor={service === 0 ? COLORS.primary : COLORS.tertiary}
+              onPress={() => {
+                setService(0);
+              }}
+            >
+              {/* <Image
+                src={require("../../../assets/images/Activity/ic_bike.png`")}
+              /> */}
+              <HStack justifyContent={"center"} alignItems={"center"}>
+                {service === 0 ? (
+                  <>
+                    <Image
+                      source={require("../../../assets/images/Activity/ic_bike_white.png")}
+                      alt="Icon bike"
+                      // Other props here
+                    />
+                  </>
+                ) : (
+                  <>
+                    <Image
+                      source={require("../../../assets/images/Activity/ic_bike_blue.png")}
+                      alt="Icon bike"
+                      // Other props here
+                    />
+                  </>
+                )}
+
+                <Text
+                  style={{
+                    ...FONTS.h2,
+                    color: service === 0 ? COLORS.white : COLORS.fourthary,
+                  }}
+                >
+                  Bike
+                </Text>
+              </HStack>
+            </Button>
+            <Button
+              w={"45%"}
+              h={"70px"}
+              borderRadius={20}
+              bgColor={service === 1 ? COLORS.primary : COLORS.tertiary}
+              onPress={() => {
+                setService(1);
+              }}
+            >
+              {/* <Image
+                src={require("../../../assets/images/Activity/ic_bike.png`")}
+              /> */}
+              <HStack justifyContent={"center"} alignItems={"center"}>
+                {service === 1 ? (
+                  <>
+                    <Image
+                      source={require("../../../assets/images/Activity/ic_send_white.png")}
+                      alt="Icon send"
+                      // Other props here
+                    />
+                  </>
+                ) : (
+                  <>
+                    <Image
+                      source={require("../../../assets/images/Activity/ic_send_blue.png")}
+                      alt="Icon send"
+                      // Other props here
+                    />
+                  </>
+                )}
+                <Text
+                  style={{
+                    ...FONTS.h2,
+                    color: service === 1 ? COLORS.white : COLORS.fourthary,
+                  }}
+                >
+                  Send
+                </Text>
+              </HStack>
+            </Button>
+          </HStack>
+
+          <VStack h={"100%"} mt={"17px"}>
+            <TabView
+              navigationState={{ index, routes }}
+              renderScene={renderScene}
+              onIndexChange={setIndex}
+              initialLayout={{ width: SIZES.width }}
+              renderTabBar={(props) => (
+                <TabBar
+                  {...props}
+                  style={{ backgroundColor: COLORS.tertiary }}
+                  inactiveColor={COLORS.fourthary}
+                  indicatorStyle={{ backgroundColor: COLORS.fourthary }}
+                  labelStyle={{ ...FONTS.h5 }}
+                />
+              )}
+            />
+          </VStack>
+        </SafeAreaView>
+      </VStack>
+    </NativeBaseProvider>
+  );
+};
+
+export default ActivityScreen;
