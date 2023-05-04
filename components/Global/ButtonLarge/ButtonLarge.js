@@ -1,9 +1,6 @@
-import { View, Text, TouchableOpacity } from "react-native";
 import React from "react";
 import styled from "styled-components";
-import { FONTS, COLORS, icons, SIZES } from "../../../constants";
-import { AntDesign } from "@expo/vector-icons";
-import { useFonts } from "expo-font";
+import { FONTS, COLORS, SIZES } from "../../../constants";
 
 export default function ButtonLarge(props) {
   return (

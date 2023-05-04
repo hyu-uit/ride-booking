@@ -1,7 +1,6 @@
-import { View, Text, TouchableOpacity } from "react-native";
 import React from "react";
 import styled from "styled-components";
-import { FONTS, COLORS, SIZES } from "../../../constants";
+import { COLORS } from "../../../constants";
 import { FontAwesome5 } from "@expo/vector-icons";
 
 export default function ButtonBack({ navigation }) {

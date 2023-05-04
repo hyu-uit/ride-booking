@@ -2,18 +2,15 @@ import { Button, Text } from "native-base";
 import React, { useState } from "react";
 
 const SelectedButton = ({ text, isSelected = false }) => {
-  const [first, setFirst] = useState(false);
   return (
     <Button
-      h={"40px"}
+      h={"auto"}
       borderRadius={"10px"}
-      bgColor={first ? "#D9D9D9" : "transparent"}
-      padding={2}
+      bgColor={isSelected ? "#D9D9D9" : "transparent"}
       marginBottom={2}
-      variant={first ? "solid" : "outline"}
-      onTouchEnd={() => setFirst((prev) => !prev)}
+      variant={isSelected ? "solid" : "outline"}
     >
-      <Text color={first ? "black" : "white"}>{text}</Text>
+      <Text color={isSelected ? "black" : "white"}>{text}</Text>
     </Button>
   );
 };

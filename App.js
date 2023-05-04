@@ -1,3 +1,4 @@
+import { NativeBaseProvider } from "native-base";
 import Navigation from "./navigation";
 import { useFonts } from "expo-font";
 
@@ -16,5 +17,9 @@ export default function App() {
     "MerriweatherSans-SemiBold": require("./assets/fonts/MerriweatherSans-SemiBold.ttf"),
     "MerriweatherSans-SemiBoldItalic": require("./assets/fonts/MerriweatherSans-SemiBoldItalic.ttf"),
   });
-  return <Navigation></Navigation>;
+  return (
+    <NativeBaseProvider>
+      <Navigation></Navigation>
+    </NativeBaseProvider>
+  );
 }

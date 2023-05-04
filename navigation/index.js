@@ -8,6 +8,7 @@ import UploadIDScreen from "../screens/Login/UploadIDScreen";
 import UploadFaceScreen from "../screens/Login/UploadFaceScreen";
 import ActivityScreen from "../screens/Customer/Activity/ActivityScreen";
 import ActivityDetailScreen from "../screens/Customer/Activity/ActivityDetailScreen";
+import BookingScreen from "../screens/BookingScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -50,9 +51,14 @@ export default function Navigation() {
           component={ActivityScreen}
           options={{ headerShown: false }}
         /> */}
-        <Stack.Screen
+        {/* <Stack.Screen
           name="Activity Detail"
           component={ActivityDetailScreen}
+          options={{ headerShown: false }}
+        /> */}
+        <Stack.Screen
+          name="Booking"
+          component={BookingScreen}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>
