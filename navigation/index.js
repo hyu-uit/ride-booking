@@ -45,16 +45,16 @@ export default function Navigation() {
           component={UploadFaceScreen}
           options={{ headerShown: false }}
         /> */}
-        <Stack.Screen
+        {/* <Stack.Screen
           name="Activity"
           component={ActivityScreen}
           options={{ headerShown: false }}
-        />
-        {/* <Stack.Screen
+        /> */}
+        <Stack.Screen
           name="Activity Detail"
           component={ActivityDetailScreen}
           options={{ headerShown: false }}
-        /> */}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
