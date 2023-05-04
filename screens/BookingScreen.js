@@ -1,7 +1,7 @@
-import React, { useReducer } from "react";
+import React, { useReducer, useState } from "react";
 import styled from "styled-components";
 import { FONTS, COLORS, SIZES } from "../constants/theme";
-import { Button, Center, HStack, Image, Text } from "native-base";
+import { Button, Center, HStack, Image, Text, View } from "native-base";
 import { SafeAreaView } from "react-native-safe-area-context";
 import FlagIcon from "../assets/icons/icons8-flag-filled-48.png";
 import ButtonBack from "../components/Global/ButtonBack/ButtonBack";
@@ -13,6 +13,8 @@ import LocationCardPayment from "../components/LocationCard/LocationCard.Payment
 import LocationCardCost from "../components/LocationCard/LocationCard.Cost";
 import LocationCardNote from "../components/LocationCard/LocationCard.Note";
 import LocationCardFinder from "../components/LocationCard/LocationCard.Finder";
+import DateTimePicker from "@react-native-community/datetimepicker";
+import { convertToFullDateTime } from "../helper/moment";
 
 const initialState = {
   step: 1,
@@ -192,6 +194,7 @@ export default function BookingScreen({ navigation }) {
         return null;
     }
   };
+  //const [date, setDate] = useState(new Date(Date.now()));
 
   return (
     <BookingContainer bgColor={COLORS.background}>

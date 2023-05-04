@@ -15,9 +15,46 @@ import LocationIcon from "../../assets/icons/icons8-location-48.png";
 import ArrowDownIcon from "../../assets/icons/icons8-down-arrow-48.png";
 import ClockIcon from "../../assets/clock_96px.png";
 import BackIcon from "../../assets/back_icon.png";
-import { SIZES } from "../../constants/theme";
+import { COLORS, SIZES } from "../../constants/theme";
+import { useState } from "react";
+import { TouchableOpacity } from "react-native";
+import {
+  convertToDate,
+  convertToFullDateTime,
+  convertToTime,
+} from "../../helper/moment";
+import DateTimePicker from "@react-native-community/datetimepicker";
 
 const LocationCardTime = ({ onClickContinue }) => {
+  const [isNowSelected, setIsNowSelected] = useState(false);
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [showTimePicker, setShowTimePicker] = useState(false);
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedTime, setSelectedTime] = useState(new Date());
+  const [finalDate, setFinalDate] = useState(null);
+
+  const handleDateChange = (_event, date) => {
+    setShowDatePicker(false);
+    setSelectedDate(date);
+    setShowTimePicker(true);
+  };
+
+  const handleTimeChange = (_event, date) => {
+    setShowTimePicker(false);
+    setSelectedTime(date);
+
+    const formattedDate = convertToDate(selectedDate);
+    console.log(selectedTime);
+    const formattedTime = date.toLocaleTimeString("en-US", {
+      timeStyle: "short",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+    const finalDateTime = `${formattedTime} ${formattedDate}`;
+
+    setFinalDate(finalDateTime);
+  };
+
   return (
     <View
       bgColor={"#0B0F2F"}
@@ -86,37 +123,44 @@ const LocationCardTime = ({ onClickContinue }) => {
           <Text fontSize={SIZES.h6} color={"white"}>
             Schedule Time
           </Text>
-          <Center
-            w={"35px"}
-            h={"25px"}
-            bgColor={"#101744"}
+
+          <Button
+            bgColor={isNowSelected ? COLORS.fourthary : COLORS.tertiary}
             borderRadius={50}
             marginLeft={"auto"}
+            onPress={() => setIsNowSelected(true)}
           >
             <Text fontSize={SIZES.base} color={"white"}>
               Now
             </Text>
-          </Center>
-          <HStack
-            h={"25px"}
-            bgColor={"#125cae"}
-            color={"#125CAE"}
-            borderRadius={50}
-            alignContent={"center"}
-            padding={1}
+          </Button>
+          <TouchableOpacity
+            onPress={() => {
+              setShowDatePicker(true);
+              setIsNowSelected(false);
+            }}
           >
-            <Image
-              w={"15px"}
-              h={"15px"}
-              source={ClockIcon}
-              alignSelf={"center"}
-              alt=""
-              marginRight={1}
-            />
-            <Text fontSize={SIZES.base} color={"white"} alignSelf={"center"}>
-              15:00 22-03-2023
-            </Text>
-          </HStack>
+            <HStack
+              h={"35px"}
+              bgColor={isNowSelected ? COLORS.tertiary : COLORS.fourthary}
+              color={"#125CAE"}
+              borderRadius={50}
+              alignContent={"center"}
+              padding={1}
+              space={1}
+            >
+              <Image
+                w={"20px"}
+                h={"20px"}
+                source={ClockIcon}
+                alignSelf={"center"}
+                alt=""
+              />
+              <Text fontSize={SIZES.base} color={"white"} alignSelf={"center"}>
+                {isNowSelected && finalDate ? null : finalDate}
+              </Text>
+            </HStack>
+          </TouchableOpacity>
         </HStack>
         <HStack>
           <Button
@@ -141,6 +185,23 @@ const LocationCardTime = ({ onClickContinue }) => {
           </Button>
         </HStack>
       </VStack>
+      {showDatePicker && (
+        <DateTimePicker
+          value={selectedDate}
+          mode="date"
+          is24Hour={true}
+          onChange={handleDateChange}
+        />
+      )}
+
+      {showTimePicker && (
+        <DateTimePicker
+          value={selectedTime}
+          mode="time"
+          is24Hour={true}
+          onChange={handleTimeChange}
+        />
+      )}
     </View>
   );
 };
