@@ -26,7 +26,7 @@
     "native-base": "^3.4.28",
     "react": "18.1.0",
     "react-dom": "18.1.0",
-    "react-native": "0.70.5",
+    "react-native": "0.70.8",
     "react-native-gif": "^1.0.3",
     "react-native-google-places-autocomplete": "^2.5.1",
     "react-native-image-picker": "^5.3.1",
