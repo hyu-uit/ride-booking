@@ -37,10 +37,11 @@ export const SIZES = {
   //global sizes
   base: 8,
   font: 14,
-  radius: 20 + "px",
-  padding: 10 + "px",
-  small: 24 + "px",
-  big: 32 + "px",
+  radius: 20,
+  radius50: (width * 0.5 * 50) / 100,
+  padding: 10,
+  small: 24,
+  big: 32,
 
   //font sizes
   large: 40,
@@ -67,82 +68,82 @@ export const FONTS = {
   large: {
     fontFamily: CUSTOMFONT_EXTRA_BOLD,
     fontSize: SIZES.large,
-    lineHeight: "40px",
+    lineHeight: 40,
   },
   small: {
     fontFamily: CUSTOMFONT_EXTRA_BOLD,
     fontSize: SIZES.small,
-    lineHeight: "22px",
+    lineHeight: 22,
   },
 
   //headings
   h1: {
     fontFamily: CUSTOMFONT_EXTRA_BOLD,
     fontWeight: "bold",
-    fontSize: SIZES.h1 + "px",
-    lineHeight: "36px",
+    fontSize: SIZES.h1,
+    lineHeight: 36,
   },
   h2: {
     fontFamily: CUSTOMFONT_EXTRA_BOLD,
-    fontSize: SIZES.h2 + "px",
+    fontSize: SIZES.h2,
     fontWeight: "bold",
-    lineHeight: "30px",
+    lineHeight: 30,
   },
   h3: {
     fontFamily: CUSTOMFONT_EXTRA_BOLD,
-    fontSize: SIZES.h3 + "px",
+    fontSize: SIZES.h3,
     fontWeight: "bold",
-    lineHeight: "22px",
+    lineHeight: 22,
   },
   h4: {
     fontFamily: CUSTOMFONT_EXTRA_BOLD,
-    fontSize: SIZES.h4 + "px",
+    fontSize: SIZES.h4,
     fontWeight: "bold",
-    lineHeight: "22px",
+    lineHeight: 22,
   },
   h5: {
     fontFamily: CUSTOMFONT_EXTRA_BOLD,
-    fontSize: SIZES.h5 + "px",
+    fontSize: SIZES.h5,
     fontWeight: "bold",
-    lineHeight: "22px",
+    lineHeight: 22,
   },
   h6: {
     fontFamily: CUSTOMFONT_EXTRA_BOLD,
-    fontSize: SIZES.h6 + "px",
+    fontSize: SIZES.h6,
     fontWeight: "bold",
-    lineHeight: "22px",
+    lineHeight: 22,
   },
 
   //body
   body1: {
     fontFamily: CUSTOMFONT_REGULAR,
-    fontSize: SIZES.body1 + "px",
-    lineHeight: "36px",
+    fontSize: SIZES.body1,
+    lineHeight: 36,
   },
   body2: {
     fontFamily: CUSTOMFONT_REGULAR,
-    fontSize: SIZES.body2 + "px",
-    lineHeight: "30px",
+    fontSize: SIZES.body2,
+    lineHeight: 30,
   },
   body3: {
     fontFamily: CUSTOMFONT_REGULAR,
-    fontSize: SIZES.body3 + "px",
-    lineHeight: "22px",
+    fontSize: SIZES.body3,
+    lineHeight: 22,
   },
   body4: {
     fontFamily: CUSTOMFONT_REGULAR,
-    fontSize: SIZES.body4 + "px",
-    lineHeight: "22px",
+    fontSize: SIZES.body4,
+    lineHeight: 22,
   },
   body5: {
     fontFamily: CUSTOMFONT_REGULAR,
-    fontSize: SIZES.body5 + "px",
-    lineHeight: "22px",
+    fontSize: SIZES.body5,
+    lineHeight: 22,
   },
   body6: {
     fontFamily: CUSTOMFONT_REGULAR,
-    fontSize: SIZES.body6 + "px",
-    lineHeight: "22px",
+    fontSize: SIZES.body6,
+    lineHeight: 22,
   },
 };
 

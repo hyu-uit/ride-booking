@@ -84,7 +84,7 @@ const ActivityDetailScreen = () => {
                       style={{
                         width: 35,
                         height: 35,
-                        borderRadius: "50%",
+                        borderRadius: SIZES.radius50,
                         backgroundColor: COLORS.black,
                         justifyContent: "center",
                         alignItems: "center",
@@ -107,7 +107,7 @@ const ActivityDetailScreen = () => {
                       style={{
                         width: 35,
                         height: 35,
-                        borderRadius: "50%",
+                        borderRadius: SIZES.radius50,
                         backgroundColor: COLORS.fourthary,
                         justifyContent: "center",
                         alignItems: "center",
@@ -138,7 +138,7 @@ const ActivityDetailScreen = () => {
                     source={require("../../../assets/images/Activity/ic_bike_white.png")}
                     alt="Avatar"
                     style={{
-                      borderRadius: "50%",
+                      borderRadius: SIZES.radius50,
                       width: 60,
                       height: 60,
                       backgroundColor: COLORS.white,
@@ -158,7 +158,7 @@ const ActivityDetailScreen = () => {
                     <Text
                       style={{
                         ...FONTS.body6,
-                        fontSize: "12px",
+                        fontSize: 12,
                         color: COLORS.fifthary,
                       }}
                     >
@@ -167,7 +167,7 @@ const ActivityDetailScreen = () => {
                     <Text
                       style={{
                         ...FONTS.body6,
-                        fontSize: "12px",
+                        fontSize: 12,
                         color: COLORS.fifthary,
                       }}
                     >
@@ -178,7 +178,7 @@ const ActivityDetailScreen = () => {
                     <Text
                       style={{
                         ...FONTS.h6,
-                        fontSize: "12px",
+                        fontSize: 12,
                         color: COLORS.white,
                       }}
                     >
@@ -187,7 +187,7 @@ const ActivityDetailScreen = () => {
                     <Text
                       style={{
                         ...FONTS.h6,
-                        fontSize: "12px",
+                        fontSize: 12,
                         color: COLORS.white,
                       }}
                     >
@@ -199,7 +199,7 @@ const ActivityDetailScreen = () => {
                       <Text
                         style={{
                           ...FONTS.h6,
-                          fontSize: "12px",
+                          fontSize: 12,
                           color: COLORS.white,
                           marginRight: 5,
                         }}
