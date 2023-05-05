@@ -25,8 +25,8 @@ import {
 } from "../../helper/moment";
 import DateTimePicker from "@react-native-community/datetimepicker";
 
-const LocationCardTime = ({ onClickContinue }) => {
-  const [isNowSelected, setIsNowSelected] = useState(false);
+const LocationCardTime = ({ onClickContinue, onPressBack }) => {
+  const [isNowSelected, setIsNowSelected] = useState(true);
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -44,12 +44,7 @@ const LocationCardTime = ({ onClickContinue }) => {
     setSelectedTime(date);
 
     const formattedDate = convertToDate(selectedDate);
-    console.log(selectedTime);
-    const formattedTime = date.toLocaleTimeString("en-US", {
-      timeStyle: "short",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
+    const formattedTime = convertToTime(date);
     const finalDateTime = `${formattedTime} ${formattedDate}`;
 
     setFinalDate(finalDateTime);
@@ -169,6 +164,7 @@ const LocationCardTime = ({ onClickContinue }) => {
             borderWidth={"2px"}
             w={"75px"}
             h={"75px"}
+            onPress={onPressBack}
           >
             <Image source={BackIcon} alt="" />
           </Button>

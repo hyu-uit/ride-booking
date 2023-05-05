@@ -11,7 +11,7 @@ import React from "react";
 import BackIcon from "../../assets/back_icon.png";
 import { SIZES } from "../../constants/theme";
 
-const LocationCardNote = ({ onClickContinue }) => {
+const LocationCardNote = ({ onClickContinue, onPressBack }) => {
   return (
     <View
       bgColor={"#0B0F2F"}
@@ -42,6 +42,7 @@ const LocationCardNote = ({ onClickContinue }) => {
             borderWidth={"2px"}
             w={"75px"}
             h={"75px"}
+            onPress={onPressBack}
           >
             <Image source={BackIcon} alt="" />
           </Button>

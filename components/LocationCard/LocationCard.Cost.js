@@ -18,7 +18,7 @@ import MapIcon from "../../assets/map_marker_96px.png";
 import BackIcon from "../../assets/back_icon.png";
 import { COLORS, SIZES } from "../../constants/theme";
 
-const LocationCardCost = ({ onClickContinue }) => {
+const LocationCardCost = ({ onClickContinue, onPressBack }) => {
   return (
     <View
       bgColor={COLORS.background}
@@ -124,6 +124,7 @@ const LocationCardCost = ({ onClickContinue }) => {
             borderWidth={"2px"}
             w={"75px"}
             h={"75px"}
+            onPress={onPressBack}
           >
             <Image source={BackIcon} alt="" />
           </Button>

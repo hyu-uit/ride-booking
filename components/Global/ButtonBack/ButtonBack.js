@@ -2,16 +2,17 @@ import React from "react";
 import styled from "styled-components";
 import { COLORS } from "../../../constants";
 import { FontAwesome5 } from "@expo/vector-icons";
+import { TouchableOpacity } from "react-native";
 
-export default function ButtonBack({ navigation }) {
+export default function ButtonBack({ onPress }) {
   return (
-    <Container>
+    <Container onPress={onPress}>
       <FontAwesome5 name="angle-left" size={24} color={COLORS.primary} />
     </Container>
   );
 }
 
-const Container = styled.TouchableOpacity`
+const Container = styled(TouchableOpacity)`
   width: 42px;
   height: 42px;
   background-color: transparent;

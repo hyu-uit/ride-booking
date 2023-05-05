@@ -15,7 +15,7 @@ import VisaIcon from "../../assets/visa_96px.png";
 import MomoIcon from "../../assets/momo_icon.png";
 import { SIZES } from "../../constants/theme";
 
-const LocationCardPayment = ({ onClickContinue }) => {
+const LocationCardPayment = ({ onClickContinue, onPressBack }) => {
   return (
     <View
       bgColor={"#0B0F2F"}
@@ -82,6 +82,7 @@ const LocationCardPayment = ({ onClickContinue }) => {
             borderWidth={"2px"}
             w={"75px"}
             h={"75px"}
+            onPress={onPressBack}
           >
             <Image source={BackIcon} alt="" />
           </Button>

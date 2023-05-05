@@ -29,6 +29,8 @@ const stateReducer = (state, action) => {
   switch (action.type) {
     case "SET_STEP":
       return { ...state, step: action.payload };
+    case "BACK_STEP":
+      return { ...state, step: state.step - 1 };
     case "SET_LOCATION":
       return { ...state, location: action.payload };
     case "SET_BOOKING_DETAILS":
@@ -70,6 +72,10 @@ export default function BookingScreen({ navigation }) {
   const handleStep7Submit = () => {
     // Do any necessary form validation or error checking here
     dispatch({ type: "SET_STEP", payload: 1 });
+  };
+
+  const handleBackStep = () => {
+    dispatch({ type: "BACK_STEP" });
   };
 
   const renderStepContent = () => {
@@ -146,7 +152,10 @@ export default function BookingScreen({ navigation }) {
               style={{ flex: 1, borderRadius: 10, marginTop: 10 }}
               provider="google"
             ></MapView>
-            <LocationCardTime onClickContinue={handleStep3Submit} />
+            <LocationCardTime
+              onClickContinue={handleStep3Submit}
+              onPressBack={handleBackStep}
+            />
           </>
         );
       case 4:
@@ -156,7 +165,10 @@ export default function BookingScreen({ navigation }) {
               style={{ flex: 1, borderRadius: 10, marginTop: 10 }}
               provider="google"
             ></MapView>
-            <LocationCardCost onClickContinue={handleStep4Submit} />
+            <LocationCardCost
+              onClickContinue={handleStep4Submit}
+              onPressBack={handleBackStep}
+            />
           </>
         );
       case 5:
@@ -166,7 +178,10 @@ export default function BookingScreen({ navigation }) {
               style={{ flex: 1, borderRadius: 10, marginTop: 10 }}
               provider="google"
             ></MapView>
-            <LocationCardNote onClickContinue={handleStep5Submit} />
+            <LocationCardNote
+              onClickContinue={handleStep5Submit}
+              onPressBack={handleBackStep}
+            />
           </>
         );
       case 6:
@@ -176,7 +191,10 @@ export default function BookingScreen({ navigation }) {
               style={{ flex: 1, borderRadius: 10, marginTop: 10 }}
               provider="google"
             ></MapView>
-            <LocationCardPayment onClickContinue={handleStep6Submit} />
+            <LocationCardPayment
+              onClickContinue={handleStep6Submit}
+              onPressBack={handleBackStep}
+            />
           </>
         );
       case 7:
@@ -198,7 +216,9 @@ export default function BookingScreen({ navigation }) {
 
   return (
     <BookingContainer bgColor={COLORS.background}>
-      {state.step === 1 || state.step === 2 ? <ButtonBack /> : null}
+      {state.step === 1 || state.step === 2 ? (
+        <ButtonBack onPress={handleBackStep} />
+      ) : null}
       {renderStepContent()}
     </BookingContainer>
   );
