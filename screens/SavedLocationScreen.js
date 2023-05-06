@@ -6,14 +6,11 @@ import {
 } from "native-base";
 import { TouchableOpacity } from "react-native";
 import { SIZES, COLORS, FONTS } from "../constants/theme";
-import pricePromotionIcon from '../assets/price-promotion.png'
-import arrowWhite from '../assets/arrow-white.png'
-import PromotionCard from "../components/PromotionCard";
-import SavedLocationCard from "../components/SavedLocationCard";
+import RequestCard from "../components/Driver/RequestCard";
 
 const SavedLocationScreen = ({ onClickDetail }) => {
   return (
-    <SavedLocationCard></SavedLocationCard>
+    <RequestCard></RequestCard>
   );
 };
 export default SavedLocationScreen; 
