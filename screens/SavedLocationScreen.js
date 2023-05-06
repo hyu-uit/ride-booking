@@ -19,4 +19,4 @@ const SavedLocationScreen = ({ onClickCancel }) => {
   );
 };
 
-export default SavedLocationScreen;
+export default SavedLocationScreen; 
