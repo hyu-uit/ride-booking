@@ -137,7 +137,6 @@ const UploadFaceScreen = ({ navigation }) => {
             </Button>
             <Button
               w={"100%"}
-              h={"77px"}
               borderRadius={20}
               bgColor={COLORS.primary}
               mt={10}

@@ -124,7 +124,6 @@ const SignUpScreen = ({ navigation }) => {
               </HStack>
               <Button
                 w={"100%"}
-                h={"77px"}
                 borderRadius={20}
                 bgColor={COLORS.primary}
                 onPress={() => {

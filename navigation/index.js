@@ -18,7 +18,7 @@ export default function Navigation() {
     <NativeBaseProvider>
       <NavigationContainer>
         <Stack.Navigator>
-          {/* <Stack.Screen
+          <Stack.Screen
             name="LoginHome"
             component={LoginScreen}
             options={{ headerShown: false }}
@@ -47,7 +47,7 @@ export default function Navigation() {
             name="UploadFace"
             component={UploadFaceScreen}
             options={{ headerShown: false }}
-          /> */}
+          />
           {/* <Stack.Screen
             name="Activity"
             component={ActivityScreen}
@@ -58,11 +58,11 @@ export default function Navigation() {
             component={ActivityDetailScreen}
             options={{ headerShown: false }}
           /> */}
-          <Stack.Screen
+          {/* <Stack.Screen
             name="Booking"
             component={BookingScreen}
             options={{ headerShown: false }}
-          />
+          /> */}
         </Stack.Navigator>
       </NavigationContainer>
     </NativeBaseProvider>

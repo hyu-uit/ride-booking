@@ -273,7 +273,6 @@ const ActivityDetailScreen = () => {
                 mb={20}
                 mt={10}
                 w={"100%"}
-                h={"76px"}
                 borderRadius={20}
                 bgColor={COLORS.primary}
                 onPress={() => {}}

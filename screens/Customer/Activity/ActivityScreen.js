@@ -8,11 +8,24 @@ import { useState } from "react";
 import { useCallback } from "react";
 import IC_Bike_White from "../../../assets/images/Activity/ic_bike_white.png";
 import IC_Bike_Blue from "../../../assets/images/Activity/ic_bike_blue.png";
+import HistoryCard from "../../../components/HistoryCard";
 
 const ActivityScreen = ({ navigation }) => {
   const [service, setService] = useState(0);
 
-  const FirstRoute = () => <VStack paddingX={"10px"} mt={"17px"}></VStack>;
+  const FirstRoute = () => (
+    <VStack
+      paddingX={"10px"}
+      mt={"17px"}
+      justifyContent={"center"}
+      alignItems={"center"}
+    >
+      <HistoryCard />
+      <HistoryCard />
+      <HistoryCard />
+      <HistoryCard />
+    </VStack>
+  );
 
   const SecondRoute = () => <VStack paddingX={"10px"} mt={"17px"}></VStack>;
 
