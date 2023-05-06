@@ -13,7 +13,6 @@ import { COLORS, FONTS } from "../../constants/theme";
 
 const RequestCard = ({ onClickAccept, onClickReject }) => {
     return (
-        <View marginTop={80}>
             <View h={140} style={{ backgroundColor: COLORS.tertiary, justifyContent: 'center', padding: 20, borderRadius: 20 }}>
                 <VStack space={1} style={{ marginVertical: 10 }} >
                     <HStack alignItems={"center"} >
@@ -86,15 +85,9 @@ const RequestCard = ({ onClickAccept, onClickReject }) => {
                                 </View>
                             </HStack>
                         </Flex>
-                        
                     </HStack>
-
-
-
                 </VStack>
             </View>
-        </View>
-
     );
 };
 const styles = StyleSheet.create({
