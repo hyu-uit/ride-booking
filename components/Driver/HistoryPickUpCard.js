@@ -13,7 +13,7 @@ import { TouchableOpacity, StyleSheet } from "react-native";
 import { COLORS, FONTS } from "../../constants/theme";
 import locationLineIcon from "../../assets/location-line-full.png"
 
-const HistoryPickUpCard = ({ onClickAccept, onClickReject }) => {
+const HistoryPickUpCard = ({ }) => {
     return (
         <View
             bgColor={COLORS.tertiary}

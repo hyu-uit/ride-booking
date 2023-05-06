@@ -13,7 +13,7 @@ import { TouchableOpacity, StyleSheet } from "react-native";
 import { COLORS, FONTS } from "../../constants/theme";
 import locationLineIcon from "../../assets/location-line-full.png"
 
-const HistoryCancelCard = ({ onClickAccept, onClickReject }) => {
+const HistoryCancelCard = ({ }) => {
     return (
         <View
             bgColor={COLORS.tertiary}
