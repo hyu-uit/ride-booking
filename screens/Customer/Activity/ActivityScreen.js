@@ -6,6 +6,8 @@ import { SIZES, COLORS, FONTS } from "../../../constants/theme";
 import { TabView, TabBar, SceneMap } from "react-native-tab-view";
 import { useState } from "react";
 import { useCallback } from "react";
+import IC_Bike_White from "../../../assets/images/Activity/ic_bike_white.png";
+import IC_Bike_Blue from "../../../assets/images/Activity/ic_bike_blue.png";
 
 const ActivityScreen = ({ navigation }) => {
   const [service, setService] = useState(0);
@@ -50,7 +52,7 @@ const ActivityScreen = ({ navigation }) => {
                 {service === 0 ? (
                   <>
                     <Image
-                      source={require("../../../assets/images/Activity/ic_bike_white.png")}
+                      source={IC_Bike_White}
                       alt="Icon bike"
                       // Other props here
                     />
@@ -58,7 +60,7 @@ const ActivityScreen = ({ navigation }) => {
                 ) : (
                   <>
                     <Image
-                      source={require("../../../assets/images/Activity/ic_bike_blue.png")}
+                      source={IC_Bike_Blue}
                       alt="Icon bike"
                       // Other props here
                     />

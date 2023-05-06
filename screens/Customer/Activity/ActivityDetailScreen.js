@@ -11,7 +11,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { SIZES, COLORS, FONTS } from "../../../constants/theme";
 import ButtonBack from "../../../components/Global/ButtonBack/ButtonBack";
-import MapView from "react-native-maps";
+import MapView, { Marker } from "react-native-maps";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { Ionicons } from "@expo/vector-icons";
 
@@ -36,12 +36,15 @@ const ActivityDetailScreen = () => {
               <MapView
                 provider="google"
                 style={{ width: "100%", height: 200, borderRadius: 20 }}
-              ></MapView>
+              >
+                <Marker
+                  coordinate={{ latitude: 9.90761, longitude: 105.31181 }}
+                ></Marker>
+              </MapView>
 
               <View
                 style={{
                   width: "100%",
-                  height: 173,
                   backgroundColor: COLORS.tertiary,
                   borderRadius: 20,
                   marginTop: 20,
@@ -100,7 +103,7 @@ const ActivityDetailScreen = () => {
                       style={{
                         borderLeftWidth: 1,
                         borderLeftColor: COLORS.fourthary,
-                        height: "60%",
+                        height: "50%",
                       }}
                     ></View>
                     <View
@@ -125,7 +128,6 @@ const ActivityDetailScreen = () => {
 
               <VStack
                 mt={"20px"}
-                h={"157px"}
                 bgColor={COLORS.tertiary}
                 borderRadius={20}
                 padding={"10px"}
@@ -214,7 +216,6 @@ const ActivityDetailScreen = () => {
 
               <VStack
                 mt={"20px"}
-                h={"120px"}
                 bgColor={COLORS.tertiary}
                 borderRadius={20}
                 padding={"10px"}
