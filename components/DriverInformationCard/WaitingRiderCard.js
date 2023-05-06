@@ -6,7 +6,8 @@ import {
   VStack,
   View,
   Divider,
-  Center
+  Center,
+  Avatar
 } from "native-base";
 import { TouchableOpacity } from "react-native";
 import { SIZES, COLORS, FONTS } from "../../constants/theme";
@@ -33,7 +34,7 @@ const WaitingRiderCard = ({ onClickCall, onClickCancel }) => {
         <HStack style={{ marginTop: 24, alignItems: 'center' }}>
           <Text style={{
             color: COLORS.white,
-            fontSize: SIZES.h3,
+            ...FONTS.h3,
             fontWeight: 'bold',
             flex: 1,
           }}>Rider is on the way
@@ -46,6 +47,7 @@ const WaitingRiderCard = ({ onClickCall, onClickCancel }) => {
           </Image>
         </HStack>
         <HStack space={1}>
+          {/* <Avatar source={avatarIcon} ></Avatar> */}
           <Center style={{
             width: 45,
             height: 45,
@@ -67,14 +69,14 @@ const WaitingRiderCard = ({ onClickCall, onClickCancel }) => {
           }}>
             <Text style={{
               color: COLORS.white,
-              fontSize: SIZES.h5,
+              ...FONTS.h5,
               fontWeight: 'bold',
               flex: 1
             }}>SnowFlower
             </Text>
             <Text style={{
               color: COLORS.fourthary,
-              fontSize: SIZES.body6,
+              ...FONTS.body6,
               fontWeight: 'bold',
               flex: 1
             }}>University of Information Technology
@@ -88,25 +90,25 @@ const WaitingRiderCard = ({ onClickCall, onClickCancel }) => {
             <VStack space={1}>
               <Text style={{
                 color: COLORS.grey,
-                fontSize: SIZES.body6,
+                ...FONTS.body6,
               }}>Bike type
               </Text>
               <Text style={{
                 color: COLORS.grey,
-                fontSize: SIZES.body6,
+                ...FONTS.body6,
               }}>Bike number
               </Text>
             </VStack>
             <VStack space={1}>
               <Text style={{
                 color: COLORS.fourthary,
-                fontSize: SIZES.body6,
+                ...FONTS.body6,
                 fontWeight: 'bold'
               }}>59X3 - 91176
               </Text>
               <Text style={{
                 color: COLORS.fourthary,
-                fontSize: SIZES.body6,
+                ...FONTS.body6,
                 fontWeight: 'bold'
               }}>SH Mode
               </Text>
@@ -125,7 +127,7 @@ const WaitingRiderCard = ({ onClickCall, onClickCancel }) => {
             </Image>
             <Text style={{
               color: COLORS.white,
-              fontSize: SIZES.h4,
+              ...FONTS.h4,
               fontWeight: 'bold',
             }}>2km
             </Text>
@@ -138,7 +140,7 @@ const WaitingRiderCard = ({ onClickCall, onClickCancel }) => {
             </Image>
             <Text style={{
               color: COLORS.white,
-              fontSize: SIZES.h4,
+              ...FONTS.h4,
               fontWeight: 'bold',
             }}>5 mins
             </Text>
@@ -152,13 +154,13 @@ const WaitingRiderCard = ({ onClickCall, onClickCancel }) => {
           <Text style={{
             paddingTop: 3,
             color: COLORS.white,
-            fontSize: SIZES.h2,
+            ...FONTS.h2,
             fontWeight: 'bold',
           }}>20.000đ
           </Text>
           <Text style={{
             color: COLORS.grey,
-            fontSize: SIZES.h5,
+            ...FONTS.h5,
             fontWeight: 'bold',
             textDecorationLine: 'line-through'
           }}>30,000đ
@@ -196,7 +198,7 @@ const WaitingRiderCard = ({ onClickCall, onClickCancel }) => {
             }}>
             <Text style={{
               color: COLORS.white,
-              fontSize: SIZES.h2,
+              ...FONTS.h2,
               paddingTop: 5,
               fontWeight: 'bold',
             }}>Cancel</Text>

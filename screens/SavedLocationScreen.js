@@ -1,22 +1,19 @@
 import React from "react";
 import {
-  HStack,
   Image,
   Text,
-  VStack,
   View,
-  Divider,
-  Center,
-  Flex
 } from "native-base";
 import { TouchableOpacity } from "react-native";
 import { SIZES, COLORS, FONTS } from "../constants/theme";
-import FinishedTripCard from "../components/DriverInformationCard/FinishedTripCard";
+import pricePromotionIcon from '../assets/price-promotion.png'
+import arrowWhite from '../assets/arrow-white.png'
+import PromotionCard from "../components/PromotionCard";
+import SavedLocationCard from "../components/SavedLocationCard";
 
-const SavedLocationScreen = ({ onClickCancel }) => {
+const SavedLocationScreen = ({ onClickDetail }) => {
   return (
-    <FinishedTripCard></FinishedTripCard>
+    <SavedLocationCard></SavedLocationCard>
   );
 };
-
 export default SavedLocationScreen; 
