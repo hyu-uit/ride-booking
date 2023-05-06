@@ -16,7 +16,7 @@ import LocationIcon from "../../assets/icons/icons8-location-48.png";
 import ArrowDownIcon from "../../assets/icons/icons8-down-arrow-48.png";
 import { SIZES } from "../../constants/theme";
 
-const LocationCardFinder = ({ onClickContinue }) => {
+const LocationCardFinder = ({ onPressCancel }) => {
   return (
     <View
       bgColor={"#0B0F2F"}
@@ -93,7 +93,7 @@ const LocationCardFinder = ({ onClickContinue }) => {
             bgColor={"#3D5AF8"}
             w={"100%"}
             borderRadius={"20px"}
-            onTouchEnd={onClickContinue}
+            onTouchEnd={onPressCancel}
           >
             <Text color={"white"} bold fontSize={SIZES.small}>
               Cancel

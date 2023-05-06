@@ -1,7 +1,17 @@
 import React, { useReducer, useState } from "react";
 import styled from "styled-components";
 import { FONTS, COLORS, SIZES } from "../constants/theme";
-import { Button, Center, HStack, Image, Text, View } from "native-base";
+import {
+  Button,
+  Center,
+  HStack,
+  Image,
+  Text,
+  VStack,
+  Modal,
+  Flex,
+  Divider,
+} from "native-base";
 import { SafeAreaView } from "react-native-safe-area-context";
 import FlagIcon from "../assets/icons/icons8-flag-filled-48.png";
 import ButtonBack from "../components/Global/ButtonBack/ButtonBack";
@@ -14,7 +24,10 @@ import LocationCardCost from "../components/LocationCard/LocationCard.Cost";
 import LocationCardNote from "../components/LocationCard/LocationCard.Note";
 import LocationCardFinder from "../components/LocationCard/LocationCard.Finder";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { convertToFullDateTime } from "../helper/moment";
+import LineImg from "../assets/Line4.png";
+import LocationIcon from "../assets/icons/icons8-location-48.png";
+import ArrowDownIcon from "../assets/icons/icons8-down-arrow-48.png";
+import { Keyboard, TouchableWithoutFeedback } from "react-native";
 
 const initialState = {
   step: 1,
@@ -23,6 +36,7 @@ const initialState = {
   price: "",
   note: "",
   paymentMethod: "",
+  isModalCancelShow: false,
 };
 
 const stateReducer = (state, action) => {
@@ -31,6 +45,8 @@ const stateReducer = (state, action) => {
       return { ...state, step: action.payload };
     case "BACK_STEP":
       return { ...state, step: state.step - 1 };
+    case "SET_SHOW_MODAL_CANCEL":
+      return { ...state, isModalCancelShow: action.payload };
     case "SET_LOCATION":
       return { ...state, location: action.payload };
     case "SET_BOOKING_DETAILS":
@@ -69,9 +85,9 @@ export default function BookingScreen({ navigation }) {
     dispatch({ type: "SET_STEP", payload: 7 });
   };
 
-  const handleStep7Submit = () => {
+  const handleCancel = () => {
     // Do any necessary form validation or error checking here
-    dispatch({ type: "SET_STEP", payload: 1 });
+    dispatch({ type: "SET_SHOW_MODAL_CANCEL", payload: true });
   };
 
   const handleBackStep = () => {
@@ -83,37 +99,46 @@ export default function BookingScreen({ navigation }) {
       case 1:
         return (
           <>
-            <LocationCardWithChange />
-            <HStack space={2} marginTop={3} marginLeft={3} marginRight={3}>
-              <Image
-                width={"25px"}
-                height={"25px"}
-                source={FlagIcon}
-                alt="flag-icon"
-              />
-              <Text bold fontSize={SIZES.h5} color={"white"}>
-                Saved location
-              </Text>
-            </HStack>
-            <HStack space={2} marginTop={2} marginLeft={3} marginRight={3}>
-              <SelectedButton text={"Home"} />
-              <SelectedButton text={"School"} />
-              <SelectedButton text={"Hotel"} />
-            </HStack>
-            <Center w={"100%"} marginTop={"auto"} marginBottom={3}>
-              <Button
-                w={"90%"}
-                borderRadius={10}
-                bgColor={COLORS.primary}
-                onTouchEnd={(value) =>
-                  dispatch({ type: "SET_STEP", payload: 2 })
-                }
-              >
-                <Text fontSize={SIZES.h5} bold color={"white"}>
-                  Choose from map
-                </Text>
-              </Button>
-            </Center>
+            <TouchableWithoutFeedback
+              onPress={() => {
+                Keyboard.dismiss();
+              }}
+              style={{ display: "flex" }}
+            >
+              <VStack flex={1}>
+                <LocationCardWithChange />
+                <HStack space={2} marginTop={3} marginLeft={3} marginRight={3}>
+                  <Image
+                    width={"25px"}
+                    height={"25px"}
+                    source={FlagIcon}
+                    alt="flag-icon"
+                  />
+                  <Text bold fontSize={SIZES.h5} color={"white"}>
+                    Saved location
+                  </Text>
+                </HStack>
+                <HStack space={2} marginTop={2} marginLeft={3} marginRight={3}>
+                  <SelectedButton text={"Home"} />
+                  <SelectedButton text={"School"} />
+                  <SelectedButton text={"Hotel"} />
+                </HStack>
+                <Center w={"100%"} marginTop={"auto"} marginBottom={3}>
+                  <Button
+                    w={"90%"}
+                    borderRadius={10}
+                    bgColor={COLORS.primary}
+                    onTouchEnd={(value) =>
+                      dispatch({ type: "SET_STEP", payload: 2 })
+                    }
+                  >
+                    <Text fontSize={SIZES.h5} bold color={"white"}>
+                      Choose from map
+                    </Text>
+                  </Button>
+                </Center>
+              </VStack>
+            </TouchableWithoutFeedback>
           </>
         );
       case 2:
@@ -204,7 +229,7 @@ export default function BookingScreen({ navigation }) {
               style={{ flex: 1, borderRadius: 10, marginTop: 10 }}
               provider="google"
             ></MapView>
-            <LocationCardFinder onClickContinue={handleStep7Submit} />
+            <LocationCardFinder onPressCancel={handleCancel} />
           </>
         );
 
@@ -220,6 +245,132 @@ export default function BookingScreen({ navigation }) {
         <ButtonBack onPress={handleBackStep} />
       ) : null}
       {renderStepContent()}
+      {/* <Modal
+        isOpen={state.isModalCancelShow}
+        onClose={() =>
+          dispatch({ type: "SET_SHOW_MODAL_CANCEL", payload: false })
+        }
+      >
+        <Modal.Content bgColor={COLORS.tertiary} w={"90%"}>
+          <Modal.Header bgColor={COLORS.tertiary}>
+            <Text fontSize={SIZES.h3} textAlign={"center"} color={"white"} bold>
+              Cancel booking
+            </Text>
+          </Modal.Header>
+          <Modal.Body>
+            <Text fontSize={SIZES.body3} textAlign={"center"} color={"white"}>
+              Are you sure that you want to cancel this booking?
+            </Text>
+          </Modal.Body>
+          <Modal.Footer
+            bgColor={COLORS.tertiary}
+            justifyContent={"space-around"}
+          >
+            <Button
+              bgColor={COLORS.fourthary}
+              onPress={() => {
+                dispatch({ type: "SET_SHOW_MODAL_CANCEL", payload: false });
+              }}
+              w={100}
+              borderRadius={20}
+            >
+              <Text fontSize={SIZES.body3} textAlign={"center"} color={"white"}>
+                Yes
+              </Text>
+            </Button>
+            <Button
+              bgColor={COLORS.lightGrey}
+              onPress={() => {
+                dispatch({ type: "SET_SHOW_MODAL_CANCEL", payload: false });
+              }}
+              w={100}
+              borderRadius={20}
+            >
+              <Text fontSize={SIZES.body3} textAlign={"center"} color={"black"}>
+                No
+              </Text>
+            </Button>
+          </Modal.Footer>
+        </Modal.Content>
+      </Modal> */}
+      <Modal
+        isOpen={state.isModalCancelShow}
+        onClose={() =>
+          dispatch({ type: "SET_SHOW_MODAL_CANCEL", payload: false })
+        }
+      >
+        <Modal.Content bgColor={COLORS.tertiary} w={"90%"}>
+          <Modal.Header bgColor={COLORS.tertiary}>
+            <Text fontSize={SIZES.h3} textAlign={"center"} color={"white"} bold>
+              Information
+            </Text>
+          </Modal.Header>
+          <Modal.Body>
+            <VStack>
+              <Text
+                fontSize={SIZES.h4}
+                textAlign={"center"}
+                color={"white"}
+                bold
+              >
+                Nguyen Tri Duck
+              </Text>
+              <Text
+                fontSize={SIZES.h4}
+                textAlign={"center"}
+                color={"white"}
+                bold
+              >
+                0123456789
+              </Text>
+              <HStack w={"100%"}>
+                <VStack space={2}>
+                  <VStack space={1}>
+                    <Text bold fontSize={SIZES.h6} color={"#8CC3FF"}>
+                      Pick-up
+                    </Text>
+                    <Text bold fontSize={SIZES.h6} color={"white"}>
+                      Long An
+                    </Text>
+                  </VStack>
+                  <Divider />
+                  <VStack space={1}>
+                    <Text bold fontSize={SIZES.h6} color={"#8CC3FF"}>
+                      Destination
+                    </Text>
+                    <Text bold fontSize={SIZES.h6} color={"white"}>
+                      University of Information Technology
+                    </Text>
+                  </VStack>
+                </VStack>
+                <Center marginLeft={"auto"}>
+                  <Center
+                    borderRadius={50}
+                    width={"25px"}
+                    height={"25px"}
+                    bgColor={"black"}
+                    marginBottom={2}
+                  >
+                    <Image
+                      width={"20px"}
+                      height={"20px"}
+                      source={ArrowDownIcon}
+                      alt=""
+                    />
+                  </Center>
+                  <Image source={LineImg} alt="" marginBottom={2} />
+                  <Image
+                    width={"20px"}
+                    height={"20px"}
+                    source={LocationIcon}
+                    alt=""
+                  />
+                </Center>
+              </HStack>
+            </VStack>
+          </Modal.Body>
+        </Modal.Content>
+      </Modal>
     </BookingContainer>
   );
 }
