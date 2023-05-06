@@ -71,5 +71,4 @@ const SavedLocationCard = ({ onClickDelete }) => {
             </View>
     );
 };
-
 export default SavedLocationCard; 
