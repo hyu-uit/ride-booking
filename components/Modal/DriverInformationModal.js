@@ -14,9 +14,14 @@ import LocationIcon from "../../assets/icons/icons8-location-48.png";
 import ArrowDownIcon from "../../assets/icons/icons8-down-arrow-48.png";
 import QRCode from "react-native-qrcode-svg";
 
-const DriverInformationModal = ({ isShow, onClose, onYes }) => {
+const DriverInformationModal = ({ isShow, onClose }) => {
   return (
-    <Modal isOpen={isShow} onClose={onClose}>
+    <Modal
+      isOpen={isShow}
+      onClose={onClose}
+      closeOnOverlayClick={true}
+      backdropVisible={true}
+    >
       <Modal.Content bgColor={COLORS.tertiary} w={"90%"}>
         <Modal.Header bgColor={COLORS.tertiary}>
           <Text fontSize={SIZES.h3} textAlign={"center"} color={"white"} bold>

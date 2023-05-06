@@ -232,7 +232,9 @@ export default function BookingScreen({ navigation }) {
               style={{ flex: 1, borderRadius: 10, marginTop: 10 }}
               provider="google"
             ></MapView>
-            <LocationCardFinder onPressCancel={handleClickCancel} />
+            <LocationCardFinder
+              onPressCancel={() => navigation.navigate("BookingDriver")}
+            />
           </>
         );
 

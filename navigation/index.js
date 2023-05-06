@@ -61,22 +61,21 @@ export default function Navigation() {
             component={ActivityDetailScreen}
             options={{ headerShown: false }}
           /> */}
-
-          {/* <Stack.Screen
+          <Stack.Screen
             name="Booking"
             component={BookingScreen}
             options={{ headerShown: false }}
-          /> */}
-          {/* <Stack.Screen
-            name="BookingRating"
-            component={BookingRatingScreen}
-            options={{ headerShown: false }}
-          /> */}
-          {/* <Stack.Screen
+          />
+          <Stack.Screen
             name="BookingDriver"
             component={BookingDriverScreen}
             options={{ headerShown: false }}
-          /> */}
+          />
+          <Stack.Screen
+            name="BookingRating"
+            component={BookingRatingScreen}
+            options={{ headerShown: false }}
+          />
           <Stack.Screen
             name="SavedLocation"
             component={SavedLocationScreen}
