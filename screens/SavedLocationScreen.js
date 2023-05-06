@@ -6,11 +6,11 @@ import {
 } from "native-base";
 import { TouchableOpacity } from "react-native";
 import { SIZES, COLORS, FONTS } from "../constants/theme";
-import RequestCard from "../components/Driver/RequestCard";
+import PopUpRequestCard from "../components/Driver/PopUpRequestCard";
 
 const SavedLocationScreen = ({ onClickDetail }) => {
   return (
-    <RequestCard></RequestCard>
+    <PopUpRequestCard></PopUpRequestCard>
   );
 };
 export default SavedLocationScreen; 
