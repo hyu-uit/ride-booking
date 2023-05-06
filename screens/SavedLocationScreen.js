@@ -6,11 +6,13 @@ import {
 } from "native-base";
 import { TouchableOpacity } from "react-native";
 import { SIZES, COLORS, FONTS } from "../constants/theme";
-import PopUpRequestCard from "../components/Driver/PopUpRequestCard";
+import PromotionCard from "../components/PromotionCard"
+import HistoryPickUpCard from "../components/Driver/HistoryPickUpCard";
+import HistoryCancelCard from "../components/Driver/HistoryCancelCard";
 
 const SavedLocationScreen = ({ onClickDetail }) => {
   return (
-    <PopUpRequestCard></PopUpRequestCard>
+    <HistoryCancelCard></HistoryCancelCard>
   );
 };
 export default SavedLocationScreen; 
