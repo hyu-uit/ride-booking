@@ -8,8 +8,10 @@ import UploadIDScreen from "../screens/Login/UploadIDScreen";
 import UploadFaceScreen from "../screens/Login/UploadFaceScreen";
 import ActivityScreen from "../screens/Customer/Activity/ActivityScreen";
 import ActivityDetailScreen from "../screens/Customer/Activity/ActivityDetailScreen";
-import BookingScreen from "../screens/BookingScreen";
 import { NativeBaseProvider } from "native-base";
+import BookingScreen from "../screens/Booking/BookingScreen";
+import BookingRatingScreen from "../screens/Booking/BookingRatingScreen";
+import BookingDriverScreen from "../screens/Booking/BookingDriverScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -58,9 +60,19 @@ export default function Navigation() {
             component={ActivityDetailScreen}
             options={{ headerShown: false }}
           /> */}
-          <Stack.Screen
+          {/* <Stack.Screen
             name="Booking"
             component={BookingScreen}
+            options={{ headerShown: false }}
+          /> */}
+          {/* <Stack.Screen
+            name="BookingRating"
+            component={BookingRatingScreen}
+            options={{ headerShown: false }}
+          /> */}
+          <Stack.Screen
+            name="BookingDriver"
+            component={BookingDriverScreen}
             options={{ headerShown: false }}
           />
         </Stack.Navigator>
