@@ -59,7 +59,7 @@ const HistoryCard = () => {
             Destination
           </Text>
           <Text bold fontSize={10} color={"white"}>
-            DH CNTT
+            UIT
           </Text>
         </VStack>
         <VStack>

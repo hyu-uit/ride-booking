@@ -18,6 +18,8 @@ import PaymentScreen from "../screens/Customer/Payment/PaymentScreen";
 import ScheduledScreen from "../screens/Customer/Scheduled/ScheduledScreen";
 import StudentOfficeScreen from "../screens/StudentOffice/StudentOfficeScreen";
 import StudentOfficeDetailScreen from "../screens/StudentOffice/StudentOfficeDetailScreen";
+import RiderHomeScreen from "../screens/Rider/Home/RiderHomeScreen";
+import TripDetailScreen from "../screens/Rider/Trip/TripDetailScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -116,9 +118,19 @@ export default function Navigation() {
             component={StudentOfficeScreen}
             options={{ headerShown: false }}
           /> */}
-          <Stack.Screen
+          {/* <Stack.Screen
             name="StudentOfficeDetail"
             component={StudentOfficeDetailScreen}
+            options={{ headerShown: false }}
+          /> */}
+          <Stack.Screen
+            name="RiderHome"
+            component={RiderHomeScreen}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="TripDetail"
+            component={TripDetailScreen}
             options={{ headerShown: false }}
           />
         </Stack.Navigator>
