@@ -27,9 +27,28 @@ const ActivityScreen = ({ navigation }) => {
     </VStack>
   );
 
-  const SecondRoute = () => <VStack paddingX={"10px"} mt={"17px"}></VStack>;
+  const SecondRoute = () => (
+    <VStack
+      paddingX={"10px"}
+      mt={"17px"}
+      justifyContent={"center"}
+      alignItems={"center"}
+    >
+      <HistoryCard />
+      <HistoryCard />
+    </VStack>
+  );
 
-  const ThirdRoute = () => <VStack paddingX={"10px"} mt={"17px"}></VStack>;
+  const ThirdRoute = () => (
+    <VStack
+      paddingX={"10px"}
+      mt={"17px"}
+      justifyContent={"center"}
+      alignItems={"center"}
+    >
+      <HistoryCard />
+    </VStack>
+  );
 
   const renderScene = SceneMap({
     first: FirstRoute,
