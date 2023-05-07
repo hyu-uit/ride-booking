@@ -1,6 +1,13 @@
 import { View, Text } from "react-native";
 import React from "react";
-import { Button, HStack, Image, NativeBaseProvider, VStack } from "native-base";
+import {
+  Button,
+  HStack,
+  Image,
+  NativeBaseProvider,
+  ScrollView,
+  VStack,
+} from "native-base";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { SIZES, COLORS, FONTS } from "../../../constants/theme";
 import { TabView, TabBar, SceneMap } from "react-native-tab-view";
@@ -14,40 +21,31 @@ const ActivityScreen = ({ navigation }) => {
   const [service, setService] = useState(0);
 
   const FirstRoute = () => (
-    <VStack
-      paddingX={"10px"}
-      mt={"17px"}
-      justifyContent={"center"}
-      alignItems={"center"}
-    >
-      <HistoryCard />
-      <HistoryCard />
-      <HistoryCard />
-      <HistoryCard />
-    </VStack>
+    <ScrollView>
+      <VStack mt={"17px"} justifyContent={"center"} alignItems={"center"}>
+        <HistoryCard />
+        <HistoryCard />
+        <HistoryCard />
+        <HistoryCard />
+      </VStack>
+    </ScrollView>
   );
 
   const SecondRoute = () => (
-    <VStack
-      paddingX={"10px"}
-      mt={"17px"}
-      justifyContent={"center"}
-      alignItems={"center"}
-    >
-      <HistoryCard />
-      <HistoryCard />
-    </VStack>
+    <ScrollView>
+      <VStack mt={"17px"} justifyContent={"center"} alignItems={"center"}>
+        <HistoryCard />
+        <HistoryCard />
+      </VStack>
+    </ScrollView>
   );
 
   const ThirdRoute = () => (
-    <VStack
-      paddingX={"10px"}
-      mt={"17px"}
-      justifyContent={"center"}
-      alignItems={"center"}
-    >
-      <HistoryCard />
-    </VStack>
+    <ScrollView>
+      <VStack mt={"17px"} justifyContent={"center"} alignItems={"center"}>
+        <HistoryCard />
+      </VStack>
+    </ScrollView>
   );
 
   const renderScene = SceneMap({
