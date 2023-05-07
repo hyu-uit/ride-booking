@@ -36,6 +36,7 @@ const WaitingRiderCard = ({ onPressInfo, onPressCancel }) => {
             style={{
               color: COLORS.white,
               ...FONTS.h3,
+              ...FONTS.h3,
               fontWeight: "bold",
               flex: 1,
             }}
@@ -55,6 +56,7 @@ const WaitingRiderCard = ({ onPressInfo, onPressCancel }) => {
           </TouchableOpacity>
         </HStack>
         <HStack space={1}>
+          {/* <Avatar source={avatarIcon} ></Avatar> */}
           {/* <Avatar source={avatarIcon} ></Avatar> */}
           <Center
             style={{
@@ -100,6 +102,7 @@ const WaitingRiderCard = ({ onPressInfo, onPressCancel }) => {
               style={{
                 color: COLORS.white,
                 ...FONTS.h5,
+                ...FONTS.h5,
                 fontWeight: "bold",
                 flex: 1,
               }}
@@ -109,6 +112,7 @@ const WaitingRiderCard = ({ onPressInfo, onPressCancel }) => {
             <Text
               style={{
                 color: COLORS.fourthary,
+                ...FONTS.body6,
                 ...FONTS.body6,
                 fontWeight: "bold",
                 flex: 1,
@@ -127,6 +131,7 @@ const WaitingRiderCard = ({ onPressInfo, onPressCancel }) => {
                 style={{
                   color: COLORS.grey,
                   ...FONTS.body6,
+                  ...FONTS.body6,
                 }}
               >
                 Bike type
@@ -134,6 +139,7 @@ const WaitingRiderCard = ({ onPressInfo, onPressCancel }) => {
               <Text
                 style={{
                   color: COLORS.grey,
+                  ...FONTS.body6,
                   ...FONTS.body6,
                 }}
               >
@@ -145,6 +151,7 @@ const WaitingRiderCard = ({ onPressInfo, onPressCancel }) => {
                 style={{
                   color: COLORS.fourthary,
                   ...FONTS.body6,
+                  ...FONTS.body6,
                   fontWeight: "bold",
                 }}
               >
@@ -153,6 +160,7 @@ const WaitingRiderCard = ({ onPressInfo, onPressCancel }) => {
               <Text
                 style={{
                   color: COLORS.fourthary,
+                  ...FONTS.body6,
                   ...FONTS.body6,
                   fontWeight: "bold",
                 }}
@@ -182,6 +190,7 @@ const WaitingRiderCard = ({ onPressInfo, onPressCancel }) => {
               style={{
                 color: COLORS.white,
                 ...FONTS.h4,
+                ...FONTS.h4,
                 fontWeight: "bold",
               }}
             >
@@ -200,6 +209,7 @@ const WaitingRiderCard = ({ onPressInfo, onPressCancel }) => {
             <Text
               style={{
                 color: COLORS.white,
+                ...FONTS.h4,
                 ...FONTS.h4,
                 fontWeight: "bold",
               }}
@@ -220,6 +230,7 @@ const WaitingRiderCard = ({ onPressInfo, onPressCancel }) => {
               paddingTop: 3,
               color: COLORS.white,
               ...FONTS.h2,
+              ...FONTS.h2,
               fontWeight: "bold",
             }}
           >
@@ -228,6 +239,7 @@ const WaitingRiderCard = ({ onPressInfo, onPressCancel }) => {
           <Text
             style={{
               color: COLORS.grey,
+              ...FONTS.h5,
               ...FONTS.h5,
               fontWeight: "bold",
               textDecorationLine: "line-through",
@@ -283,6 +295,7 @@ const WaitingRiderCard = ({ onPressInfo, onPressCancel }) => {
             <Text
               style={{
                 color: COLORS.white,
+                ...FONTS.h2,
                 ...FONTS.h2,
                 paddingTop: 5,
                 fontWeight: "bold",
