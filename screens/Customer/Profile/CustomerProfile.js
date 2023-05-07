@@ -20,13 +20,11 @@ import { Ionicons } from "@expo/vector-icons";
 
 const CustomerProfile = () => {
   return (
-    <VStack h={"100%"} paddingY={"20px"} bgColor={COLORS.background}>
+    <VStack h={"100%"} paddingTop={"20px"} bgColor={COLORS.background}>
       <SafeAreaView>
         <VStack paddingX={"10px"} h={"100%"}>
-          <HStack justifyContent={"center"} mb={"20px"}>
-            <View style={{ position: "absolute", left: 0 }}>
-              <ButtonBack></ButtonBack>
-            </View>
+          <HStack justifyContent={"center"}>
+            <View style={{ position: "absolute", left: 0 }}></View>
             <Text style={{ ...FONTS.h2, color: COLORS.white }}>Profile</Text>
           </HStack>
 

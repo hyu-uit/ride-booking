@@ -5,7 +5,7 @@ import { SIZES, COLORS, FONTS } from "../constants/theme";
 import pricePromotionIcon from "../assets/price-promotion.png";
 import arrowWhite from "../assets/arrow-white.png";
 
-const PromotionCard = ({ onClickDetail }) => {
+const PromotionCard = ({ navigate }) => {
   return (
     <View
       style={{
@@ -113,9 +113,7 @@ const PromotionCard = ({ onClickDetail }) => {
               }}
             >
               <TouchableOpacity
-                onPress={() => {
-                  onClickDetail;
-                }}
+                onPress={navigate}
                 style={{
                   marginTop: 6,
                   borderColor: COLORS.fourthary,

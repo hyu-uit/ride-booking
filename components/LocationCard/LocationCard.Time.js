@@ -107,7 +107,7 @@ const LocationCardTime = ({ onClickContinue, onPressBack }) => {
           </Center>
         </HStack>
         <Divider bgColor={"#125CAE"} />
-        <HStack space={2}>
+        <HStack space={2} justifyContent={"center"} alignItems={"center"}>
           <Box
             w={"10px"}
             h={"10px"}

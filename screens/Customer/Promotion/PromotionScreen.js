@@ -14,7 +14,7 @@ import IC_Bike_White from "../../../assets/images/Activity/ic_bike_white.png";
 import IC_Bike_Blue from "../../../assets/images/Activity/ic_bike_blue.png";
 import PromotionCard from "../../../components/PromotionCard";
 
-const PromotionScreen = () => {
+const PromotionScreen = ({ navigation }) => {
   const [service, setService] = useState(0);
   return (
     <VStack h={"100%"} paddingY={"20px"} bgColor={COLORS.background}>
@@ -104,12 +104,36 @@ const PromotionScreen = () => {
         </HStack>
         <ScrollView mt={10} h={"100%"}>
           <VStack>
-            <PromotionCard />
-            <PromotionCard />
-            <PromotionCard />
-            <PromotionCard />
-            <PromotionCard />
-            <PromotionCard />
+            <PromotionCard
+              navigate={() => {
+                navigation.navigate("PromotionDetail");
+              }}
+            />
+            <PromotionCard
+              navigate={() => {
+                navigation.navigate("PromotionDetail");
+              }}
+            />
+            <PromotionCard
+              navigate={() => {
+                navigation.navigate("PromotionDetail");
+              }}
+            />
+            <PromotionCard
+              navigate={() => {
+                navigation.navigate("PromotionDetail");
+              }}
+            />
+            <PromotionCard
+              navigate={() => {
+                navigation.navigate("PromotionDetail");
+              }}
+            />
+            <PromotionCard
+              navigate={() => {
+                navigation.navigate("PromotionDetail");
+              }}
+            />
           </VStack>
         </ScrollView>
       </SafeAreaView>

@@ -48,7 +48,7 @@ const PromotionDetailScreen = () => {
             onPress={() => {}}
           >
             <Text style={{ ...FONTS.h2 }} color={COLORS.white}>
-              Continue
+              Book now
             </Text>
           </Button>
         </VStack>

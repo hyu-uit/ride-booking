@@ -11,16 +11,19 @@ import {
 import React from "react";
 import DefaultAvt from "../assets/image6.png";
 import CarImg from "../assets/image8.png";
-import { COLORS, FONTS, SIZES } from "../constants/theme";
+import { COLORS, SIZES } from "../constants/theme";
+import { TouchableOpacity } from "react-native";
 
-const HistoryCard = () => {
+const HistoryCard = ({ onPress }) => {
   return (
     <View
       bgColor={"#101744"}
-      w={"95%"}
+      w={"100%"}
+      h={130}
       borderRadius={20}
       shadow={3}
       marginBottom={5}
+      onTouchEnd={onPress}
     >
       <HStack w={"full"}>
         <Avatar source={DefaultAvt} margin={"10px 0 0 10px"} />
@@ -37,12 +40,9 @@ const HistoryCard = () => {
           height={45}
           borderBottomLeftRadius={20}
           borderTopRightRadius={20}
-          backgroundColor={COLORS.white}
-          color={COLORS.primary}
+          bgColor={COLORS.white}
         >
-          <Text style={{ ...FONTS.body5 }} color={COLORS.primary}>
-            Book again
-          </Text>
+          <Text color={COLORS.fourthary}>Book again</Text>
         </Button>
       </HStack>
       <HStack space={6} marginLeft={"10px"} marginBottom={"10px"}>
@@ -59,7 +59,7 @@ const HistoryCard = () => {
             Destination
           </Text>
           <Text bold fontSize={10} color={"white"}>
-            UIT
+            DH CNTT
           </Text>
         </VStack>
         <VStack>
@@ -70,6 +70,7 @@ const HistoryCard = () => {
             14:20, 07/03/2023
           </Text>
         </VStack>
+        <Image source={CarImg} alt="car" marginLeft={"auto"} />
       </HStack>
     </View>
   );

@@ -1,85 +1,183 @@
-import { View, Text, SafeAreaView, TouchableOpacity } from "react-native";
-import React, { useState, useRef, useEffect } from "react";
+import React from "react";
 import styled from "styled-components";
-import { FONTS, COLORS, SIZES, icons } from "../constants";
-import ButtonLarge from "../components/Global/ButtonLarge/ButtonLarge";
-import ButtonBack from "../components/Global/ButtonBack/ButtonBack";
-import { useFonts } from "expo-font";
-import ButtonCircle from "../components/Global/ButtonCircle/ButtonCircle";
-import MapView, { PROVIDER_GOOGLE, Marker } from "react-native-maps";
-import * as Location from "expo-location";
-import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
-import MapViewDirections from "react-native-maps-directions";
-import { FontAwesome } from "@expo/vector-icons";
-
-// import MapboxGL from "@rnmapbox/maps";
-
-// MapboxGL.setAccessToken(
-//   "pk.eyJ1IjoiZHVjbmd1eWVudHJpIiwiYSI6ImNsZjNjaW9uczByMnIzcms3M2lhbzFjMzAifQ.io0Fje8EpyiyHXRr5xLBbg"
-// );
-
-// MapboxGL.setAccessToken(
-//   "pk.eyJ1IjoiZHVjbmd1eWVudHJpIiwiYSI6ImNsZjNjaW9uczByMnIzcms3M2lhbzFjMzAifQ.io0Fje8EpyiyHXRr5xLBbg"
-// );
+import { FONTS, COLORS, SIZES } from "../constants";
+import {
+  Avatar,
+  Button,
+  Center,
+  HStack,
+  Icon,
+  Image,
+  Input,
+  ScrollView,
+  Text,
+  VStack,
+} from "native-base";
+import DefaultAvt from "../assets/image6.png";
+import { SafeAreaView } from "react-native-safe-area-context";
+import MenuIcon from "../assets/icons/icons8-menu-48.png";
+import { TouchableOpacity } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import SelectedButton from "../components/Button/SelectedButton";
+import HistoryCard from "../components/HistoryCard";
+import BikeImg from "../assets/images/motorcycle_1.png";
+import DeliveryImg from "../assets/images/delivery_1.png";
+import { TouchableWithoutFeedback } from "react-native";
+import { Keyboard } from "react-native";
 
 export default function Home({ navigation }) {
-  const _map = useRef(1);
-  const API_KEY = "AIzaSyCdVOmKHCAC6pBedDk_XGL975A5xJFkuTw";
-  const origin = { latitude: 37.3318456, longitude: -122.0296002 };
-  const destination = { latitude: 37.771707, longitude: -122.4053769 };
   return (
-    <HomeContainer>
-      <HomeScreen>
-        {/* <Mapbox.MapView styled={{ flex: 1 }} /> */}
-        {/* <MapboxGL.MapView /> */}
-        <MapView style={{ flex: 1 }} provider="google">
-          <Marker
-            coordinate={{ latitude: 9.90761, longitude: 105.31181 }}
-          ></Marker>
-          <Marker
-            title="Kiến Tường"
-            coordinate={{ latitude: 10.77746, longitude: 105.93401 }}
-          ></Marker>
-          <Marker
-            title="Cần Thơ"
-            coordinate={{ latitude: 10.045162, longitude: 105.746857 }}
-          ></Marker>
-          {/* <MapViewDirections
-            origin={{ latitude: 9.90761, longitude: 105.31181 }}
-            destination={{ latitude: 10.77653, longitude: 106.700981 }}
-            apikey={API_KEY}
-          /> */}
-        </MapView>
-      </HomeScreen>
-    </HomeContainer>
+    <TouchableWithoutFeedback
+      onPress={() => {
+        Keyboard.dismiss();
+      }}
+    >
+      <HomeContainer>
+        <HStack w={"full"} alignContent={"center"}>
+          <Avatar source={DefaultAvt} margin={"10px 0 0 10px"} />
+          <VStack margin={"10px 0 0 10px"}>
+            <Text fontSize={10} color={COLORS.grey}>
+              Welcome back
+            </Text>
+            <Text fontSize={SIZES.h4} color={COLORS.white} bold>
+              Nguyen Tri Duc
+            </Text>
+          </VStack>
+          <MenuButton
+            onPress={() => {
+              navigation.navigate("Menu");
+            }}
+          >
+            <Center h={"100%"}>
+              <Image w={"25px"} h={"25px"} source={MenuIcon} alt="menu icon" />
+            </Center>
+          </MenuButton>
+        </HStack>
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <Input
+            mb={10}
+            borderRadius={10}
+            h={"50px"}
+            placeholder="Enter your destination"
+            width="100%"
+            variant={"filled"}
+            bgColor={COLORS.tertiary}
+            borderWidth={0}
+            fontSize={SIZES.body3}
+            color={COLORS.white}
+            marginTop={8}
+            InputLeftElement={
+              <Icon
+                ml="2"
+                size="4"
+                color={COLORS.white}
+                as={<Ionicons name="ios-search" />}
+              />
+            }
+          />
+          {/* <HStack
+            marginTop={5}
+            marginBottom={5}
+            space={3}
+            alignSelf={"flex-start"}
+          >
+            <SelectedButton text={"Home"} />
+            <SelectedButton text={"School"} />
+            <SelectedButton text={"Hotel"} />
+          </HStack> */}
+          <HStack w={"100%"} justifyContent={"space-evenly"} marginBottom={5}>
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate("Booking");
+              }}
+            >
+              <VStack
+                borderColor={"white"}
+                borderWidth={1}
+                borderRadius={SIZES.radius10}
+              >
+                <Center
+                  w={"150px"}
+                  h={"120px"}
+                  bgColor={COLORS.fourthary}
+                  borderTopRadius={SIZES.radius10}
+                >
+                  <Image source={BikeImg} />
+                </Center>
+                <Center h={50}>
+                  <Text fontSize={SIZES.h4} bold color={"white"}>
+                    BIKE
+                  </Text>
+                </Center>
+              </VStack>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate("Booking");
+              }}
+            >
+              <VStack
+                borderColor={"white"}
+                borderWidth={1}
+                borderRadius={SIZES.radius10}
+              >
+                <Center
+                  w={"150px"}
+                  h={"120px"}
+                  bgColor={COLORS.white}
+                  borderTopRadius={SIZES.radius10}
+                >
+                  <Image source={DeliveryImg} />
+                </Center>
+                <Center h={50}>
+                  <Text fontSize={SIZES.h4} bold color={"white"}>
+                    DELIVERY
+                  </Text>
+                </Center>
+              </VStack>
+            </TouchableOpacity>
+          </HStack>
+          <Text
+            fontSize={SIZES.h4}
+            bold
+            color={"white"}
+            alignSelf={"flex-start"}
+            marginBottom={3}
+          >
+            Last booking
+          </Text>
+          <VStack w={"100%"}>
+            <HistoryCard
+              onPress={() => {
+                navigation.navigate("ActivityDetail");
+              }}
+            />
+            <HistoryCard />
+            <HistoryCard />
+            <HistoryCard />
+            <HistoryCard />
+            <HistoryCard />
+          </VStack>
+        </ScrollView>
+      </HomeContainer>
+    </TouchableWithoutFeedback>
   );
 }
 
-const HomeContainer = styled.SafeAreaView`
+const MenuButton = styled(TouchableOpacity)`
+  width: 45px;
+  height: 45px;
+  border-radius: 30px;
+  border-color: ${(props) => COLORS.tertiary};
+  border-width: 2px;
+  margin-left: auto;
+  align-self: center;
+`;
+
+const HomeContainer = styled(SafeAreaView)`
   flex: 1;
-  align-items: center;
-  justify-content: center;
   background-color: ${(props) => COLORS.background};
-`;
-
-const HomeScreen = styled.View`
-  width: 100%;
-  height: 100%;
-  padding-top: 30px;
-  /* justify-content: center; */
-  /* align-items: center; */
-  padding-left: ${(props) => SIZES.padding};
-  padding-right: ${(props) => SIZES.padding};
-  margin-bottom: 50px;
-`;
-
-const Bottom = styled.View`
-  width: 100%;
-  height: 10%;
+  padding: 10px 10px 0 10px;
   align-items: center;
-  justify-content: center;
-  flex: 1;
-  position: absolute;
-  bottom: 0;
-  margin-left: ${(props) => SIZES.padding};
+  overflow: scroll;
 `;

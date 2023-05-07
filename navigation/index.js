@@ -1,147 +1,50 @@
 import { NavigationContainer } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import LoginScreen from "../screens/Login/LoginScreen";
-import SignInScreen from "../screens/Login/SignInScreen";
-import SignUpScreen from "../screens/Login/SignUpScreen";
-import VerifyingScreen from "../screens/Login/VerifyingScreen";
-import UploadIDScreen from "../screens/Login/UploadIDScreen";
-import UploadFaceScreen from "../screens/Login/UploadFaceScreen";
-import ActivityScreen from "../screens/Customer/Activity/ActivityScreen";
-import ActivityDetailScreen from "../screens/Customer/Activity/ActivityDetailScreen";
-import BookingScreen from "../screens/BookingScreen";
-import SavedLocationScreen from "../screens/Customer/SavedLocation/SavedLocationScreen";
-import PromotionScreen from "../screens/Customer/Promotion/PromotionScreen";
-import PromotionDetailScreen from "../screens/Customer/Promotion/PromotionDetailScreen";
-import AddLocationScreen from "../screens/Customer/SavedLocation/AddLocationScreen";
-import ConfirmLocationScreen from "../screens/Customer/SavedLocation/ConfirmLocationScreen";
-import PaymentScreen from "../screens/Customer/Payment/PaymentScreen";
-import ScheduledScreen from "../screens/Customer/Scheduled/ScheduledScreen";
-import StudentOfficeScreen from "../screens/StudentOffice/StudentOfficeScreen";
-import StudentOfficeDetailScreen from "../screens/StudentOffice/StudentOfficeDetailScreen";
-import RiderHomeScreen from "../screens/Rider/Home/RiderHomeScreen";
-import TripDetailScreen from "../screens/Rider/Trip/TripDetailScreen";
-import MenuScreen from "../screens/Customer/Menu/MenuScreen";
 import { NativeBaseProvider } from "native-base";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { Ionicons } from "@expo/vector-icons";
+import { COLORS } from "../constants";
+import { HomeStackScreen } from "./HomeNavigator";
+import { ActivityStackScreen } from "./ActivityNavigator";
 import CustomerProfile from "../screens/Customer/Profile/CustomerProfile";
+import { Platform } from "react-native";
+import { PromotionStackScreen } from "./PromotionNavigator";
 
-const Stack = createNativeStackNavigator();
+const Tab = createBottomTabNavigator();
 
 export default function Navigation() {
+  const operator = Platform.OS === "ios" ? 90 : 60;
   return (
     <NativeBaseProvider>
       <NavigationContainer>
-        <Stack.Navigator>
-          {/* <Stack.Screen
-            name="LoginHome"
-            component={LoginScreen}
-            options={{ headerShown: false }}
-          /> */}
-          {/* <Stack.Screen
-            name="SignIn"
-            component={SignInScreen}
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen
-            name="SignUp"
-            component={SignUpScreen}
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen
-            name="Verify"
-            component={VerifyingScreen}
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen
-            name="UploadID"
-            component={UploadIDScreen}
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen
-            name="UploadFace"
-            component={UploadFaceScreen}
-            options={{ headerShown: false }}
-          /> */}
-          {/* <Stack.Screen
-            name="Activity"
-            component={ActivityScreen}
-            options={{ headerShown: false }}
-          /> */}
-          {/* <Stack.Screen
-            name="Activity Detail"
-            component={ActivityDetailScreen}
-            options={{ headerShown: false }}
-          /> */}
-          {/* <Stack.Screen
-            name="Booking"
-            component={BookingScreen}
-            options={{ headerShown: false }}
-          /> */}
-          {/* <Stack.Screen
-            name="SavedLocation"
-            component={SavedLocationScreen}
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen
-            name="AddLocation"
-            component={AddLocationScreen}
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen
-            name="ConfirmLocation"
-            component={ConfirmLocationScreen}
-            options={{ headerShown: false }}
-          /> */}
-          {/* <Stack.Screen
-            name="Promotion"
-            component={PromotionScreen}
-            options={{ headerShown: false }}
-          /> */}
-          {/* <Stack.Screen
-            name="PromotionDetail"
-            component={PromotionDetailScreen}
-            options={{ headerShown: false }}
-          /> */}
-          {/* <Stack.Screen
-            name="Menu"
-            component={MenuScreen}
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen
-            name="Payment"
-            component={PaymentScreen}
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen
-            name="Scheduled"
-            component={ScheduledScreen}
-            options={{ headerShown: false }}
-          /> */}
-          {/* <Stack.Screen
-            name="StudentOffice"
-            component={StudentOfficeScreen}
-            options={{ headerShown: false }}
-          /> */}
-          {/* <Stack.Screen
-            name="StudentOfficeDetail"
-            component={StudentOfficeDetailScreen}
-            options={{ headerShown: false }}
-          /> */}
-          {/* <Stack.Screen
-            name="RiderHome"
-            component={RiderHomeScreen}
-            options={{ headerShown: false }}
-            />
-            <Stack.Screen
-            name="TripDetail"
-            component={TripDetailScreen}
-            options={{ headerShown: false }}
-          /> */}
-          <Stack.Screen
-            name="CustomerProfile"
-            component={CustomerProfile}
-            options={{ headerShown: false }}
-          />
-        </Stack.Navigator>
+        <Tab.Navigator
+          screenOptions={({ route }) => ({
+            tabBarActiveTintColor: COLORS.fifthary,
+            tabBarInactiveTintColor: COLORS.lightGrey,
+            tabBarStyle: { backgroundColor: COLORS.tertiary, height: operator },
+            headerShown: false,
+            tabBarShowLabel: false,
+            tabBarIcon: ({ color, size }) => {
+              let iconName;
+
+              if (route.name === "Home") {
+                iconName = "home";
+              } else if (route.name === "Activity") {
+                iconName = "list";
+              } else if (route.name === "Promotion") {
+                iconName = "megaphone";
+              } else if (route.name === "Profile") {
+                iconName = "person";
+              }
+
+              return <Ionicons name={iconName} size={size} color={color} />;
+            },
+          })}
+        >
+          <Tab.Screen name="Home" component={HomeStackScreen} />
+          <Tab.Screen name="Activity" component={ActivityStackScreen} />
+          <Tab.Screen name="Promotion" component={PromotionStackScreen} />
+          <Tab.Screen name="Profile" component={CustomerProfile} />
+        </Tab.Navigator>
       </NavigationContainer>
     </NativeBaseProvider>
   );

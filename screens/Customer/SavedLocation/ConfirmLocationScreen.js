@@ -6,7 +6,7 @@ import ButtonBack from "../../../components/Global/ButtonBack/ButtonBack";
 import { Keyboard } from "react-native";
 import { TouchableWithoutFeedback } from "react-native";
 
-const ConfirmLocationScreen = () => {
+const ConfirmLocationScreen = ({ navigation }) => {
   return (
     <VStack h={"100%"} paddingY={"20px"} bgColor={COLORS.background}>
       <SafeAreaView>
@@ -48,7 +48,9 @@ const ConfirmLocationScreen = () => {
               w={"100%"}
               borderRadius={20}
               bgColor={COLORS.primary}
-              onPress={() => {}}
+              onPress={() => {
+                navigation.goBack();
+              }}
             >
               <Text style={{ ...FONTS.h2, color: COLORS.white }}>Confirm</Text>
             </Button>
