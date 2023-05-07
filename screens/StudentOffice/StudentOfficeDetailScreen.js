@@ -14,6 +14,7 @@ import { COLORS, FONTS, SIZES } from "../../constants/theme";
 import { SafeAreaView } from "react-native-safe-area-context";
 import ButtonBack from "../../components/Global/ButtonBack/ButtonBack";
 import { PixelRatio } from "react-native";
+import RejectModal from "../../components/Modal/RejectModal";
 
 const StudentOfficeDetailScreen = () => {
   const width = 224;
@@ -50,6 +51,12 @@ const StudentOfficeDetailScreen = () => {
                 alignSelf={"center"}
               ></View>
 
+              <Text style={{ ...FONTS.h4, color: COLORS.fifthary }} mt={10}>
+                Role
+              </Text>
+              <Text style={{ ...FONTS.h3, color: COLORS.white }} mt={2}>
+                Driver
+              </Text>
               <Text style={{ ...FONTS.h4, color: COLORS.fifthary }} mt={10}>
                 Full name
               </Text>
