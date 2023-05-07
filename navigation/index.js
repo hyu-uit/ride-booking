@@ -14,6 +14,7 @@ import OnBoardingScreen from "../screens/OnBoardingScreen"
 
 import { NativeBaseProvider } from "native-base";
 import RiderProfileScreen from "../screens/Rider/RiderProfileScreen";
+import IncomeScreen from "../screens/Rider/IncomeScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -77,9 +78,15 @@ export default function Navigation() {
             component={SavedLocationScreen}
             options={{ headerShown: false }}
           /> */}
-       <Stack.Screen
+       {/* <Stack.Screen
             name="ProfileRider"
             component={RiderProfileScreen}
+            options={{ headerShown: false }}
+          />
+        </Stack.Navigator> */}
+        <Stack.Screen
+            name="Income"
+            component={IncomeScreen}
             options={{ headerShown: false }}
           />
         </Stack.Navigator>
