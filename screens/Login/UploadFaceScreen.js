@@ -88,67 +88,60 @@ const UploadFaceScreen = ({ navigation }) => {
   };
 
   return (
-    <NativeBaseProvider>
-      <TouchableWithoutFeedback
-        onPress={() => {
-          Keyboard.dismiss();
-        }}
+    <TouchableWithoutFeedback
+      onPress={() => {
+        Keyboard.dismiss();
+      }}
+    >
+      <VStack
+        paddingX={"10px"}
+        bgColor={COLORS.background}
+        w={"100%"}
+        h={"100%"}
+        onLayout={handleLayout}
       >
-        <VStack
-          paddingX={"10px"}
-          bgColor={COLORS.background}
-          w={"100%"}
-          h={"100%"}
-          onLayout={handleLayout}
-        >
-          <SafeAreaView style={{ width: "100%", height: "100%" }}>
-            <ButtonBack></ButtonBack>
-            <Button
-              mt={5}
-              w={"100%"}
-              h={height}
-              borderColor={COLORS.fifthary}
-              borderWidth={2}
-              backgroundColor={"transparent"}
-              borderStyle={"dashed"}
-              onPress={onPopup}
-            >
-              {image !== null ? (
-                <>
-                  <Image
-                    source={{ uri: image }}
-                    w={width}
-                    h={"100%"}
-                    alt="ID front"
-                    // resizeMode="cover"
-                    bg={COLORS.white}
-                  ></Image>
-                </>
-              ) : (
-                <>
-                  <VStack justifyContent={"center"} alignItems={"center"}>
-                    <Icon name="upload" size={50} color={COLORS.white} />
-                    <Text style={{ ...FONTS.h4 }} color={COLORS.white} mt={5}>
-                      Upload your Portrait
-                    </Text>
-                  </VStack>
-                </>
-              )}
-            </Button>
-            <Button
-              w={"100%"}
-              borderRadius={20}
-              bgColor={COLORS.primary}
-              mt={10}
-            >
-              <Text style={{ ...FONTS.h2 }} color={COLORS.white}>
-                Continue
-              </Text>
-            </Button>
-          </SafeAreaView>
-        </VStack>
-      </TouchableWithoutFeedback>
-    </NativeBaseProvider>
+        <SafeAreaView style={{ width: "100%", height: "100%" }}>
+          <ButtonBack></ButtonBack>
+          <Button
+            mt={5}
+            w={"100%"}
+            h={height}
+            borderColor={COLORS.fifthary}
+            borderWidth={2}
+            backgroundColor={"transparent"}
+            borderStyle={"dashed"}
+            onPress={onPopup}
+          >
+            {image !== null ? (
+              <>
+                <Image
+                  source={{ uri: image }}
+                  w={width}
+                  h={"100%"}
+                  alt="ID front"
+                  // resizeMode="cover"
+                  bg={COLORS.white}
+                ></Image>
+              </>
+            ) : (
+              <>
+                <VStack justifyContent={"center"} alignItems={"center"}>
+                  <Icon name="upload" size={50} color={COLORS.white} />
+                  <Text style={{ ...FONTS.h4 }} color={COLORS.white} mt={5}>
+                    Upload your Portrait
+                  </Text>
+                </VStack>
+              </>
+            )}
+          </Button>
+          <Button w={"100%"} borderRadius={20} bgColor={COLORS.primary} mt={10}>
+            <Text style={{ ...FONTS.h2 }} color={COLORS.white}>
+              Continue
+            </Text>
+          </Button>
+        </SafeAreaView>
+      </VStack>
+    </TouchableWithoutFeedback>
   );
 };
 

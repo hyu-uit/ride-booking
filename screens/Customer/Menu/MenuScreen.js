@@ -32,7 +32,7 @@ const MenuScreen = ({ navigation }) => {
             <Button
               bgColor={"transparent"}
               w={"100%"}
-              justifyContent={"start"}
+              justifyContent={"flex-start"}
               onPress={() => {
                 navigation.navigate("Scheduled");
               }}
@@ -48,7 +48,7 @@ const MenuScreen = ({ navigation }) => {
             <Button
               bgColor={"transparent"}
               w={"100%"}
-              justifyContent={"start"}
+              justifyContent={"flex-start"}
               onPress={() => {
                 navigation.navigate("Payment");
               }}
@@ -64,7 +64,7 @@ const MenuScreen = ({ navigation }) => {
             <Button
               bgColor={"transparent"}
               w={"100%"}
-              justifyContent={"start"}
+              justifyContent={"flex-start"}
               onPress={() => {
                 navigation.navigate("SavedLocation");
               }}
@@ -77,7 +77,11 @@ const MenuScreen = ({ navigation }) => {
               </HStack>
             </Button>
             <Divider mt={3} bg={COLORS.tertiary} />
-            <Button bgColor={"transparent"} w={"100%"} justifyContent={"start"}>
+            <Button
+              bgColor={"transparent"}
+              w={"100%"}
+              justifyContent={"flex-start"}
+            >
               <HStack>
                 <Icon name="language" size={20} color={COLORS.fifthary} />
                 <Text style={{ ...FONTS.h3, color: COLORS.white }} ml={5}>
