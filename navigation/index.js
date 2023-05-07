@@ -10,6 +10,8 @@ import ActivityScreen from "../screens/Customer/Activity/ActivityScreen";
 import ActivityDetailScreen from "../screens/Customer/Activity/ActivityDetailScreen";
 import BookingScreen from "../screens/BookingScreen";
 import SavedLocationScreen from "../screens/SavedLocationScreen"
+import OnBoardingScreen from "../screens/OnBoardingScreen"
+
 import { NativeBaseProvider } from "native-base";
 
 const Stack = createNativeStackNavigator();
@@ -19,11 +21,16 @@ export default function Navigation() {
     <NativeBaseProvider>
       <NavigationContainer>
         <Stack.Navigator>
-          {/* <Stack.Screen
+        <Stack.Screen
+          name="OnBoarding"
+          component={OnBoardingScreen}
+          options={{ headerShown: false }}
+        />
+          <Stack.Screen
             name="LoginHome"
             component={LoginScreen}
             options={{ headerShown: false }}
-          /> */}
+          />
           {/* <Stack.Screen
             name="SignIn"
             component={SignInScreen}
@@ -64,11 +71,12 @@ export default function Navigation() {
             component={BookingScreen}
             options={{ headerShown: false }}
           /> */}
-          <Stack.Screen
+          {/* <Stack.Screen
             name="SavedLocation"
             component={SavedLocationScreen}
             options={{ headerShown: false }}
-          />
+          /> */}
+       
         </Stack.Navigator>
       </NavigationContainer>
     </NativeBaseProvider>
