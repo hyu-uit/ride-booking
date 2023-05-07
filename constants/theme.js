@@ -38,6 +38,7 @@ export const SIZES = {
   base: 8,
   font: 14,
   radius: 20,
+  radius10: 10,
   radius50: (width * 0.5 * 50) / 100,
   padding: 10,
   small: 24,
