@@ -13,11 +13,11 @@ import { TouchableOpacity } from "react-native";
 import { SIZES, COLORS, FONTS } from "../../constants/theme";
 import ClockIcon from "../../assets/clock-icon.png";
 import MapIcon from "../../assets/map_marker_96px.png";
-import barCodeIcon from '../../assets/barcode.png'
-import avatarIcon from '../../assets/avatar.png'
-import callIcon from '../../assets/call-icon.png'
+import barCodeIcon from "../../assets/barcode.png";
+import avatarIcon from "../../assets/avatar.png";
+import callIcon from "../../assets/call-icon.png";
 
-const WaitingRiderCard = ({ onClickCall, onClickCancel }) => {
+const WaitingRiderCard = ({ onPressInfo, onPressCancel }) => {
   return (
     <View
       bgColor={COLORS.background}
@@ -39,12 +39,17 @@ const WaitingRiderCard = ({ onClickCall, onClickCancel }) => {
             flex: 1,
           }}>Rider is on the way
           </Text>
-          <Image source={barCodeIcon} alt="barcode" style={{
-            width: 34,
-            height: 34,
-            resizeMode: 'contain',
-          }}>
-          </Image>
+          <TouchableOpacity onPress={onPressInfo}>
+            <Image
+              source={barCodeIcon}
+              alt="barcode"
+              style={{
+                width: 34,
+                height: 34,
+                resizeMode: "contain",
+              }}
+            ></Image>
+          </TouchableOpacity>
         </HStack>
         <HStack space={1}>
           {/* <Avatar source={avatarIcon} ></Avatar> */}
@@ -61,7 +66,21 @@ const WaitingRiderCard = ({ onClickCall, onClickCancel }) => {
               width: 45,
               height: 45,
               borderRadius: 45 / 2,
-            }}></Image>
+              backgroundColor: COLORS.primary,
+              justifyContent: "center",
+              alignItems: "center",
+              resizeMode: "contain",
+            }}
+          >
+            <Image
+              alt="avatar"
+              source={avatarIcon}
+              style={{
+                width: 45,
+                height: 45,
+                borderRadius: 45 / 2,
+              }}
+            ></Image>
           </Center>
           <VStack style={{
             marginLeft: 12,
@@ -116,7 +135,10 @@ const WaitingRiderCard = ({ onClickCall, onClickCancel }) => {
           </HStack>
         </VStack>
       </HStack>
-      <Divider bgColor={COLORS.fourthary} style={{ height: 2, marginVertical: 20 }}></Divider>
+      <Divider
+        bgColor={COLORS.fourthary}
+        style={{ height: 2, marginVertical: 20 }}
+      ></Divider>
       <HStack>
         <VStack space={4}>
           <HStack space={3}>
@@ -167,27 +189,40 @@ const WaitingRiderCard = ({ onClickCall, onClickCancel }) => {
           </Text>
         </VStack>
       </HStack>
-      <HStack style={{
-        marginBottom: 10,
-        marginTop: 20,
-      }}>
-        <TouchableOpacity onPress={() => { onClickCall }}
+      <HStack
+        style={{
+          marginBottom: 10,
+          marginTop: 20,
+        }}
+      >
+        <TouchableOpacity
           style={{
             height: 59,
             width: 59,
             borderRadius: 20,
             backgroundColor: COLORS.tertiary,
-            justifyContent: 'center',
-            alignItems: 'center',
-          }} >
-          <Image alt="call icon" source={callIcon} style={{
-            width: 25,
-            height: 25,
-          }}>
-          </Image>
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <Image
+            alt="call icon"
+            source={callIcon}
+            style={{
+              width: 25,
+              height: 25,
+            }}
+          ></Image>
         </TouchableOpacity>
-        <HStack style={{ flex: 1, justifyContent: 'flex-end', alignItems: 'flex-end' }} >
-          <TouchableOpacity onPress={() => { onClickCancel }}
+        <HStack
+          style={{
+            flex: 1,
+            justifyContent: "flex-end",
+            alignItems: "flex-end",
+          }}
+        >
+          <TouchableOpacity
+            onPress={onPressCancel}
             style={{
               height: 59,
               width: 267,
