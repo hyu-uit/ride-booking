@@ -7,7 +7,7 @@ import SavedLocationCard from "../../../components/SavedLocationCard";
 import plusIcon from "../../../assets/plus-fifth-color.png";
 import ButtonBack from "../../../components/Global/ButtonBack/ButtonBack";
 
-const SavedLocationScreen = ({ onClickCard, onClickAdd }) => {
+const SavedLocationScreen = ({ onClickCard, onClickAdd, navigation }) => {
   return (
     <View
       style={{
@@ -61,7 +61,7 @@ const SavedLocationScreen = ({ onClickCard, onClickAdd }) => {
           <TouchableOpacity onPress={() => onClickAdd}>
             <Image alt="plus icon" source={plusIcon}></Image>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => onClickAdd}>
+          <TouchableOpacity onPress={() => navigation.navigate("AddLocation")}>
             <Text color={COLORS.fifthary} bold style={{ ...FONTS.h4 }}>
               Add location
             </Text>

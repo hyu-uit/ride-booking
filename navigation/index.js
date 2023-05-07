@@ -10,8 +10,8 @@ import ActivityScreen from "../screens/Customer/Activity/ActivityScreen";
 import ActivityDetailScreen from "../screens/Customer/Activity/ActivityDetailScreen";
 import BookingScreen from "../screens/BookingScreen";
 import SavedLocationScreen from "../screens/Customer/SavedLocation/SavedLocationScreen";
-import { Menu, NativeBaseProvider } from "native-base";
 import PromotionScreen from "../screens/Customer/Promotion/PromotionScreen";
+import PromotionDetailScreen from "../screens/Customer/Promotion/PromotionDetailScreen";
 import AddLocationScreen from "../screens/Customer/SavedLocation/AddLocationScreen";
 import ConfirmLocationScreen from "../screens/Customer/SavedLocation/ConfirmLocationScreen";
 import PaymentScreen from "../screens/Customer/Payment/PaymentScreen";
@@ -20,6 +20,9 @@ import StudentOfficeScreen from "../screens/StudentOffice/StudentOfficeScreen";
 import StudentOfficeDetailScreen from "../screens/StudentOffice/StudentOfficeDetailScreen";
 import RiderHomeScreen from "../screens/Rider/Home/RiderHomeScreen";
 import TripDetailScreen from "../screens/Rider/Trip/TripDetailScreen";
+import MenuScreen from "../screens/Customer/Menu/MenuScreen";
+import { NativeBaseProvider } from "native-base";
+import CustomerProfile from "../screens/Customer/Profile/CustomerProfile";
 
 const Stack = createNativeStackNavigator();
 
@@ -62,8 +65,8 @@ export default function Navigation() {
             name="Activity"
             component={ActivityScreen}
             options={{ headerShown: false }}
-          />
-          <Stack.Screen
+          /> */}
+          {/* <Stack.Screen
             name="Activity Detail"
             component={ActivityDetailScreen}
             options={{ headerShown: false }}
@@ -76,6 +79,16 @@ export default function Navigation() {
           {/* <Stack.Screen
             name="SavedLocation"
             component={SavedLocationScreen}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="AddLocation"
+            component={AddLocationScreen}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="ConfirmLocation"
+            component={ConfirmLocationScreen}
             options={{ headerShown: false }}
           /> */}
           {/* <Stack.Screen
@@ -90,25 +103,15 @@ export default function Navigation() {
           /> */}
           {/* <Stack.Screen
             name="Menu"
-            component={Menu}
-            options={{ headerShown: false }}
-          /> */}
-          {/* <Stack.Screen
-            name="AddLocation"
-            component={AddLocationScreen}
+            component={MenuScreen}
             options={{ headerShown: false }}
           />
           <Stack.Screen
-            name="ConfirmLocation"
-            component={ConfirmLocationScreen}
-            options={{ headerShown: false }}
-          /> */}
-          {/* <Stack.Screen
             name="Payment"
             component={PaymentScreen}
             options={{ headerShown: false }}
-          /> */}
-          {/* <Stack.Screen
+          />
+          <Stack.Screen
             name="Scheduled"
             component={ScheduledScreen}
             options={{ headerShown: false }}
@@ -123,14 +126,19 @@ export default function Navigation() {
             component={StudentOfficeDetailScreen}
             options={{ headerShown: false }}
           /> */}
-          <Stack.Screen
+          {/* <Stack.Screen
             name="RiderHome"
             component={RiderHomeScreen}
             options={{ headerShown: false }}
-          />
-          <Stack.Screen
+            />
+            <Stack.Screen
             name="TripDetail"
             component={TripDetailScreen}
+            options={{ headerShown: false }}
+          /> */}
+          <Stack.Screen
+            name="CustomerProfile"
+            component={CustomerProfile}
             options={{ headerShown: false }}
           />
         </Stack.Navigator>

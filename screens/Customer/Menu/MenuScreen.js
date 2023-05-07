@@ -17,7 +17,7 @@ import ButtonBack from "../../../components/Global/ButtonBack/ButtonBack";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { Ionicons } from "@expo/vector-icons";
 
-const MenuScreen = () => {
+const MenuScreen = ({ navigation }) => {
   return (
     <VStack h={"100%"} paddingY={"20px"} bgColor={COLORS.background}>
       <SafeAreaView>
@@ -29,7 +29,14 @@ const MenuScreen = () => {
             <Text style={{ ...FONTS.h2, color: COLORS.white }}>Menu</Text>
           </HStack>
           <VStack paddingX={"10px"} mt={10}>
-            <Button bgColor={"transparent"} w={"100%"} justifyContent={"start"}>
+            <Button
+              bgColor={"transparent"}
+              w={"100%"}
+              justifyContent={"start"}
+              onPress={() => {
+                navigation.navigate("Scheduled");
+              }}
+            >
               <HStack>
                 <Icon name="calendar" size={20} color={COLORS.fifthary} />
                 <Text style={{ ...FONTS.h3, color: COLORS.white }} ml={5}>
@@ -38,7 +45,14 @@ const MenuScreen = () => {
               </HStack>
             </Button>
             <Divider mt={3} bg={COLORS.tertiary} />
-            <Button bgColor={"transparent"} w={"100%"} justifyContent={"start"}>
+            <Button
+              bgColor={"transparent"}
+              w={"100%"}
+              justifyContent={"start"}
+              onPress={() => {
+                navigation.navigate("Payment");
+              }}
+            >
               <HStack>
                 <Icon name="credit-card" size={20} color={COLORS.fifthary} />
                 <Text style={{ ...FONTS.h3, color: COLORS.white }} ml={5}>
@@ -47,7 +61,14 @@ const MenuScreen = () => {
               </HStack>
             </Button>
             <Divider mt={3} bg={COLORS.tertiary} />
-            <Button bgColor={"transparent"} w={"100%"} justifyContent={"start"}>
+            <Button
+              bgColor={"transparent"}
+              w={"100%"}
+              justifyContent={"start"}
+              onPress={() => {
+                navigation.navigate("SavedLocation");
+              }}
+            >
               <HStack>
                 <Ionicons name="location" size={20} color={COLORS.fifthary} />
                 <Text style={{ ...FONTS.h3, color: COLORS.white }} ml={5}>

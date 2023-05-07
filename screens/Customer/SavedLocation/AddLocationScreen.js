@@ -23,7 +23,7 @@ const AddLocationScreen = ({ navigation }) => {
               <Text style={{ ...FONTS.h2, color: COLORS.white }} ml={4}>
                 Menu
               </Text>
-              <Button
+              {/* <Button
                 bgColor={"transparent"}
                 style={{
                   position: "absolute",
@@ -39,7 +39,7 @@ const AddLocationScreen = ({ navigation }) => {
                 >
                   Choose on map
                 </Text>
-              </Button>
+              </Button> */}
             </HStack>
 
             <Input
@@ -48,7 +48,7 @@ const AddLocationScreen = ({ navigation }) => {
               borderRadius={20}
               borderColor={COLORS.secondary}
               mb={3}
-              placeholder="Enter your phone number"
+              placeholder="Search location"
               style={{ ...FONTS.body3 }}
               color={COLORS.white}
             />

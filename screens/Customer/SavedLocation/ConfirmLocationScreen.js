@@ -31,7 +31,7 @@ const ConfirmLocationScreen = () => {
               borderColor={COLORS.secondary}
               mt={2}
               mb={3}
-              placeholder="Enter your phone number"
+              placeholder="Enter your location's name"
               style={{ ...FONTS.body3 }}
               color={COLORS.white}
             />
