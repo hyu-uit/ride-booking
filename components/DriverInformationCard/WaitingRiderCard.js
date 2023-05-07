@@ -7,7 +7,7 @@ import {
   View,
   Divider,
   Center,
-  Avatar
+  Avatar,
 } from "native-base";
 import { TouchableOpacity } from "react-native";
 import { SIZES, COLORS, FONTS } from "../../constants/theme";
@@ -31,13 +31,16 @@ const WaitingRiderCard = ({ onPressInfo, onPressCancel }) => {
       paddingRight={26}
     >
       <VStack space={5}>
-        <HStack style={{ marginTop: 24, alignItems: 'center' }}>
-          <Text style={{
-            color: COLORS.white,
-            ...FONTS.h3,
-            fontWeight: 'bold',
-            flex: 1,
-          }}>Rider is on the way
+        <HStack style={{ marginTop: 24, alignItems: "center" }}>
+          <Text
+            style={{
+              color: COLORS.white,
+              ...FONTS.h3,
+              fontWeight: "bold",
+              flex: 1,
+            }}
+          >
+            Rider is on the way
           </Text>
           <TouchableOpacity onPress={onPressInfo}>
             <Image
@@ -53,16 +56,8 @@ const WaitingRiderCard = ({ onPressInfo, onPressCancel }) => {
         </HStack>
         <HStack space={1}>
           {/* <Avatar source={avatarIcon} ></Avatar> */}
-          <Center style={{
-            width: 45,
-            height: 45,
-            borderRadius: 45 / 2,
-            backgroundColor: COLORS.primary,
-            justifyContent: 'center',
-            alignItems: 'center',
-            resizeMode: 'contain'
-          }}>
-            <Image alt="avatar" source={avatarIcon} style={{
+          <Center
+            style={{
               width: 45,
               height: 45,
               borderRadius: 45 / 2,
@@ -79,26 +74,38 @@ const WaitingRiderCard = ({ onPressInfo, onPressCancel }) => {
                 width: 45,
                 height: 45,
                 borderRadius: 45 / 2,
+                backgroundColor: COLORS.primary,
+                justifyContent: "center",
+                alignItems: "center",
+                resizeMode: "contain",
               }}
-            ></Image>
+            />
           </Center>
-          <VStack style={{
-            marginLeft: 12,
-            justifyContent: 'center'
-          }}>
-            <Text style={{
-              color: COLORS.white,
-              ...FONTS.h5,
-              fontWeight: 'bold',
-              flex: 1
-            }}>SnowFlower
+          <VStack
+            style={{
+              marginLeft: 12,
+              justifyContent: "center",
+            }}
+          >
+            <Text
+              style={{
+                color: COLORS.white,
+                ...FONTS.h5,
+                fontWeight: "bold",
+                flex: 1,
+              }}
+            >
+              SnowFlower
             </Text>
-            <Text style={{
-              color: COLORS.fourthary,
-              ...FONTS.body6,
-              fontWeight: 'bold',
-              flex: 1
-            }}>University of Information Technology
+            <Text
+              style={{
+                color: COLORS.fourthary,
+                ...FONTS.body6,
+                fontWeight: "bold",
+                flex: 1,
+              }}
+            >
+              University of Information Technology
             </Text>
           </VStack>
         </HStack>
@@ -107,29 +114,41 @@ const WaitingRiderCard = ({ onPressInfo, onPressCancel }) => {
         <VStack space={8}>
           <HStack space={8}>
             <VStack space={1}>
-              <Text style={{
-                color: COLORS.grey,
-                ...FONTS.body6,
-              }}>Bike type
+              <Text
+                style={{
+                  color: COLORS.grey,
+                  ...FONTS.body6,
+                }}
+              >
+                Bike type
               </Text>
-              <Text style={{
-                color: COLORS.grey,
-                ...FONTS.body6,
-              }}>Bike number
+              <Text
+                style={{
+                  color: COLORS.grey,
+                  ...FONTS.body6,
+                }}
+              >
+                Bike number
               </Text>
             </VStack>
             <VStack space={1}>
-              <Text style={{
-                color: COLORS.fourthary,
-                ...FONTS.body6,
-                fontWeight: 'bold'
-              }}>59X3 - 91176
+              <Text
+                style={{
+                  color: COLORS.fourthary,
+                  ...FONTS.body6,
+                  fontWeight: "bold",
+                }}
+              >
+                59X3 - 91176
               </Text>
-              <Text style={{
-                color: COLORS.fourthary,
-                ...FONTS.body6,
-                fontWeight: 'bold'
-              }}>SH Mode
+              <Text
+                style={{
+                  color: COLORS.fourthary,
+                  ...FONTS.body6,
+                  fontWeight: "bold",
+                }}
+              >
+                SH Mode
               </Text>
             </VStack>
           </HStack>
@@ -142,50 +161,70 @@ const WaitingRiderCard = ({ onPressInfo, onPressCancel }) => {
       <HStack>
         <VStack space={4}>
           <HStack space={3}>
-            <Image source={MapIcon} alt="map icon" style={{
-              width: 25,
-              height: 25,
-            }}>
-            </Image>
-            <Text style={{
-              color: COLORS.white,
-              ...FONTS.h4,
-              fontWeight: 'bold',
-            }}>2km
+            <Image
+              source={MapIcon}
+              alt="map icon"
+              style={{
+                width: 25,
+                height: 25,
+              }}
+            ></Image>
+            <Text
+              style={{
+                color: COLORS.white,
+                ...FONTS.h4,
+                fontWeight: "bold",
+              }}
+            >
+              2km
             </Text>
           </HStack>
           <HStack space={3}>
-            <Image alt="clock icon" source={ClockIcon} style={{
-              width: 25,
-              height: 25,
-            }}>
-            </Image>
-            <Text style={{
-              color: COLORS.white,
-              ...FONTS.h4,
-              fontWeight: 'bold',
-            }}>5 mins
+            <Image
+              alt="clock icon"
+              source={ClockIcon}
+              style={{
+                width: 25,
+                height: 25,
+              }}
+            ></Image>
+            <Text
+              style={{
+                color: COLORS.white,
+                ...FONTS.h4,
+                fontWeight: "bold",
+              }}
+            >
+              5 mins
             </Text>
           </HStack>
         </VStack>
-        <VStack style={{
-          alignItems: 'flex-end',
-          flex: 1,
-          justifyContent: 'center'
-        }}>
-          <Text style={{
-            paddingTop: 3,
-            color: COLORS.white,
-            ...FONTS.h2,
-            fontWeight: 'bold',
-          }}>20.000đ
+        <VStack
+          style={{
+            alignItems: "flex-end",
+            flex: 1,
+            justifyContent: "center",
+          }}
+        >
+          <Text
+            style={{
+              paddingTop: 3,
+              color: COLORS.white,
+              ...FONTS.h2,
+              fontWeight: "bold",
+            }}
+          >
+            20.000đ
           </Text>
-          <Text style={{
-            color: COLORS.grey,
-            ...FONTS.h5,
-            fontWeight: 'bold',
-            textDecorationLine: 'line-through'
-          }}>30,000đ
+          <Text
+            style={{
+              color: COLORS.grey,
+              ...FONTS.h5,
+              fontWeight: "bold",
+              textDecorationLine: "line-through",
+            }}
+          >
+            30,000đ
           </Text>
         </VStack>
       </HStack>
@@ -227,16 +266,21 @@ const WaitingRiderCard = ({ onPressInfo, onPressCancel }) => {
               height: 59,
               width: 267,
               borderRadius: 20,
-              backgroundColor: 'rgba(25, 74, 249, 0.3)',
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}>
-            <Text style={{
-              color: COLORS.white,
-              ...FONTS.h2,
-              paddingTop: 5,
-              fontWeight: 'bold',
-            }}>Cancel</Text>
+              backgroundColor: "rgba(25, 74, 249, 0.3)",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Text
+              style={{
+                color: COLORS.white,
+                ...FONTS.h2,
+                paddingTop: 5,
+                fontWeight: "bold",
+              }}
+            >
+              Cancel
+            </Text>
           </TouchableOpacity>
         </HStack>
       </HStack>
