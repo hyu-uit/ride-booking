@@ -9,6 +9,7 @@ import UploadFaceScreen from "../screens/Login/UploadFaceScreen";
 import ActivityScreen from "../screens/Customer/Activity/ActivityScreen";
 import ActivityDetailScreen from "../screens/Customer/Activity/ActivityDetailScreen";
 import BookingScreen from "../screens/BookingScreen";
+import SavedLocationScreen from "../screens/SavedLocationScreen";
 import { NativeBaseProvider } from "native-base";
 
 const Stack = createNativeStackNavigator();
@@ -22,8 +23,8 @@ export default function Navigation() {
             name="LoginHome"
             component={LoginScreen}
             options={{ headerShown: false }}
-          />
-          <Stack.Screen
+          /> */}
+          {/* <Stack.Screen
             name="SignIn"
             component={SignInScreen}
             options={{ headerShown: false }}
@@ -48,7 +49,7 @@ export default function Navigation() {
             component={UploadFaceScreen}
             options={{ headerShown: false }}
           /> */}
-          <Stack.Screen
+          {/* <Stack.Screen
             name="Activity"
             component={ActivityScreen}
             options={{ headerShown: false }}
@@ -57,12 +58,17 @@ export default function Navigation() {
             name="Activity Detail"
             component={ActivityDetailScreen}
             options={{ headerShown: false }}
-          />
+          /> */}
           {/* <Stack.Screen
             name="Booking"
             component={BookingScreen}
             options={{ headerShown: false }}
           /> */}
+          <Stack.Screen
+            name="SavedLocation"
+            component={SavedLocationScreen}
+            options={{ headerShown: false }}
+          />
         </Stack.Navigator>
       </NavigationContainer>
     </NativeBaseProvider>
