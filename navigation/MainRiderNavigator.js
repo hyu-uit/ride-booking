@@ -6,13 +6,17 @@ import { HomeStackScreen } from "./HomeNavigator";
 import { ActivityStackScreen } from "./ActivityNavigator";
 import { PromotionStackScreen } from "./PromotionNavigator";
 import CustomerProfile from "../screens/Customer/Profile/CustomerProfile";
+import RiderHomeScreen from "../screens/Rider/Home/RiderHomeScreen";
+import RiderProfileScreen from "../screens/Rider/RiderProfileScreen";
+import IncomeScreen from "../screens/Rider/IncomeScreen";
+import ScheduledScreen from "../screens/Customer/Scheduled/ScheduledScreen";
 
-const MainTab = createBottomTabNavigator();
+const MainRiderTab = createBottomTabNavigator();
 
-const MainNavigator = ({ navigation }) => {
+const MainRiderNavigator = ({ navigation }) => {
   const operator = Platform.OS === "ios" ? 90 : 60;
   return (
-    <MainTab.Navigator
+    <MainRiderTab.Navigator
       screenOptions={({ route }) => ({
         tabBarActiveTintColor: COLORS.fifthary,
         tabBarInactiveTintColor: COLORS.lightGrey,
@@ -22,13 +26,13 @@ const MainNavigator = ({ navigation }) => {
         tabBarIcon: ({ color, size }) => {
           let iconName;
 
-          if (route.name === "HomeStack") {
+          if (route.name === "HomeRider") {
             iconName = "home";
-          } else if (route.name === "ActivityStack") {
+          } else if (route.name === "Scheduled") {
             iconName = "list";
-          } else if (route.name === "PromotionStack") {
-            iconName = "megaphone";
-          } else if (route.name === "Profile") {
+          } else if (route.name === "Income") {
+            iconName = "card-outline";
+          } else if (route.name === "RiderProfile") {
             iconName = "person";
           }
 
@@ -36,12 +40,12 @@ const MainNavigator = ({ navigation }) => {
         },
       })}
     >
-      <MainTab.Screen name="HomeStack" component={HomeStackScreen} />
-      <MainTab.Screen name="ActivityStack" component={ActivityStackScreen} />
-      <MainTab.Screen name="PromotionStack" component={PromotionStackScreen} />
-      <MainTab.Screen name="Profile" component={CustomerProfile} />
-    </MainTab.Navigator>
+      <MainRiderTab.Screen name="HomeRider" component={RiderHomeScreen} />
+      <MainRiderTab.Screen name="Scheduled" component={ScheduledScreen} />
+      <MainRiderTab.Screen name="Income" component={IncomeScreen} />
+      <MainRiderTab.Screen name="RiderProfile" component={RiderProfileScreen} />
+    </MainRiderTab.Navigator>
   );
 };
 
-export default MainNavigator;
+export default MainRiderNavigator;

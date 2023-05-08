@@ -70,7 +70,7 @@ const HistoryCard = ({ onPress }) => {
             14:20, 07/03/2023
           </Text>
         </VStack>
-        <Image source={CarImg} alt="car" marginLeft={"auto"} />
+        {/* <Image source={CarImg} alt="car" marginLeft={"auto"} /> */}
       </HStack>
     </View>
   );

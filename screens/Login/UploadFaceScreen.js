@@ -134,7 +134,17 @@ const UploadFaceScreen = ({ navigation }) => {
               </>
             )}
           </Button>
-          <Button w={"100%"} borderRadius={20} bgColor={COLORS.primary} mt={10}>
+          <Button
+            w={"100%"}
+            borderRadius={20}
+            bgColor={COLORS.primary}
+            mt={10}
+            onPress={() => {
+              navigation.navigate("MainRiderNavigator", {
+                screen: "HomeRider",
+              });
+            }}
+          >
             <Text style={{ ...FONTS.h2 }} color={COLORS.white}>
               Continue
             </Text>

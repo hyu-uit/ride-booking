@@ -5,6 +5,7 @@ import { Platform } from "react-native";
 import { AuthenticationStackScreen } from "./AuthenticationNavigator";
 import MainNavigator from "./MainNavigator";
 import OnBoardingScreen from "../screens/OnBoardingScreen";
+import MainRiderNavigator from "./MainRiderNavigator";
 
 const Stack = createNativeStackNavigator();
 
@@ -19,6 +20,10 @@ export default function Navigation() {
             component={AuthenticationStackScreen}
           />
           <Stack.Screen name="MainNavigator" component={MainNavigator} />
+          <Stack.Screen
+            name="MainRiderNavigator"
+            component={MainRiderNavigator}
+          />
         </Stack.Navigator>
       </NavigationContainer>
     </NativeBaseProvider>

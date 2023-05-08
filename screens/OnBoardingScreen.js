@@ -16,6 +16,7 @@ import arrowNext from "../assets/images/OnBoarding/arrowNext.png";
 
 import { Dimensions } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { Ionicons } from "@expo/vector-icons";
 
 const { width, height } = Dimensions.get("window");
 
@@ -39,6 +40,7 @@ const slides = [
     subtitle: "Please enable push notifications\nfrom uber when promoted",
   },
 ];
+
 const Slide = ({ item }) => {
   return (
     <View
@@ -101,7 +103,12 @@ const OnBoardingScreen = ({ navigation }) => {
                 onPress={goToPreviousSlide}
                 style={styles.buttonArrow}
               >
-                <Image alt="arrow" source={arrow}></Image>
+                {/* <Image alt="arrow" source={arrow}></Image> */}
+                <Ionicons
+                  name={"arrow-back-outline"}
+                  size={30}
+                  color={COLORS.fifthary}
+                />
               </TouchableOpacity>
               <View width={5}></View>
               <TouchableOpacity
@@ -132,14 +139,24 @@ const OnBoardingScreen = ({ navigation }) => {
                 onPress={goToPreviousSlide}
                 style={styles.buttonArrow}
               >
-                <Image alt="arrow" source={arrow}></Image>
+                {/* <Image alt="arrow" source={arrow}></Image> */}
+                <Ionicons
+                  name={"arrow-back-outline"}
+                  size={30}
+                  color={COLORS.fifthary}
+                />
               </TouchableOpacity>
               <View width={5}></View>
               <TouchableOpacity
                 onPress={goToNextSlide}
                 style={styles.buttonArrow}
               >
-                <Image alt="arrow" source={arrowNext}></Image>
+                {/* <Image alt="arrow" source={arrowNext}></Image> */}
+                <Ionicons
+                  name={"arrow-forward-outline"}
+                  size={30}
+                  color={COLORS.fifthary}
+                />
               </TouchableOpacity>
             </View>
           ) : (
@@ -151,7 +168,12 @@ const OnBoardingScreen = ({ navigation }) => {
                 onPress={goToNextSlide}
                 style={styles.buttonArrow}
               >
-                <Image alt="arrow" source={arrowNext}></Image>
+                <Ionicons
+                  name={"arrow-forward-outline"}
+                  size={30}
+                  color={COLORS.fifthary}
+                />
+                {/* <Image alt="arrow" source={arrowNext}></Image> */}
               </TouchableOpacity>
             </View>
           ) : (
@@ -168,18 +190,18 @@ const OnBoardingScreen = ({ navigation }) => {
         flex: 1,
       }}
     >
-      <ScrollView pagingEnabled>
-        <FlatList
-          height={height}
-          ref={ref}
-          onMomentumScrollEnd={updateCurrentSlideIndex}
-          pagingEnabled
-          data={slides}
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          renderItem={({ item }) => <Slide item={item}></Slide>}
-        ></FlatList>
-      </ScrollView>
+      {/* <ScrollView pagingEnabled> */}
+      <FlatList
+        height={height}
+        ref={ref}
+        onMomentumScrollEnd={updateCurrentSlideIndex}
+        pagingEnabled
+        data={slides}
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        renderItem={({ item }) => <Slide item={item}></Slide>}
+      ></FlatList>
+      {/* </ScrollView> */}
       <Footer></Footer>
     </SafeAreaView>
   );

@@ -18,7 +18,7 @@ import ButtonBack from "../../../components/Global/ButtonBack/ButtonBack";
 import DefaultAvt from "../../../assets/image6.png";
 import { Ionicons } from "@expo/vector-icons";
 
-const CustomerProfile = () => {
+const CustomerProfile = ({ navigation }) => {
   return (
     <VStack h={"100%"} paddingTop={"20px"} bgColor={COLORS.background}>
       <SafeAreaView>
@@ -86,7 +86,9 @@ const CustomerProfile = () => {
               borderRadius={20}
               bgColor={COLORS.primary}
               onPress={() => {
-                navigation.navigate("Verify");
+                navigation.navigate("AuthenticationStack", {
+                  screen: "Login",
+                });
               }}
             >
               <Text style={{ ...FONTS.h2 }} color={COLORS.white}>

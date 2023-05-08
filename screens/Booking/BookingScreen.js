@@ -133,7 +133,8 @@ export default function BookingScreen({ navigation }) {
                     borderRadius={10}
                     bgColor={COLORS.primary}
                     onTouchEnd={(value) =>
-                      dispatch({ type: "SET_STEP", payload: 2 })
+                      // dispatch({ type: "SET_STEP", payload: 2 })
+                      console.log(navigation.getParent())
                     }
                   >
                     <Text fontSize={SIZES.h5} bold color={"white"}>
