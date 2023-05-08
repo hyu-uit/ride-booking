@@ -18,12 +18,25 @@ import { COLORS, FONTS, SIZES } from "../../../constants/theme";
 import QRImage from "../../../assets/images/Rider/qrImg.png";
 import { TabView, TabBar, SceneMap } from "react-native-tab-view";
 import HistoryCard from "../../../components/HistoryCard";
+import * as ImagePicker from "expo-image-picker";
 
 const RiderHomeScreen = () => {
   const [service, setService] = useState(0);
 
+  const openCamera = async () => {
+    let permissionResult = await ImagePicker.requestCameraPermissionsAsync();
+    if (permissionResult.granted === false) {
+      alert("Permission to access camera is required!");
+      return;
+    }
+    let result = await ImagePicker.launchCameraAsync();
+    if (!result.canceled) {
+      setImage(result.assets[0].uri);
+    }
+  };
+
   const FirstRoute = () => (
-    <ScrollView>
+    <ScrollView showsVerticalScrollIndicator={false}>
       <VStack mt={"17px"} justifyContent={"center"} alignItems={"center"}>
         <HistoryCard />
         <HistoryCard />
@@ -34,7 +47,7 @@ const RiderHomeScreen = () => {
   );
 
   const SecondRoute = () => (
-    <ScrollView>
+    <ScrollView showsVerticalScrollIndicator={false}>
       <VStack mt={"17px"} justifyContent={"center"} alignItems={"center"}>
         <HistoryCard />
         <HistoryCard />
@@ -65,7 +78,7 @@ const RiderHomeScreen = () => {
 
   return (
     <NativeBaseProvider>
-      <VStack h={"100%"} paddingY={"20px"} bgColor={COLORS.background}>
+      <VStack h={"100%"} paddingTop={"20px"} bgColor={COLORS.background}>
         <SafeAreaView>
           <VStack h={"100%"}>
             <VStack paddingX={"10px"}>
@@ -80,7 +93,12 @@ const RiderHomeScreen = () => {
                   </Text>
                 </VStack>
                 <HStack position={"absolute"} right={0} alignItems={"center"}>
-                  <Button variant={"unstyled"}>
+                  <Button
+                    variant={"unstyled"}
+                    onPress={() => {
+                      openCamera();
+                    }}
+                  >
                     <Image
                       source={QRImage}
                       alt="qr"

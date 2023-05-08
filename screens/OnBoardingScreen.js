@@ -31,13 +31,15 @@ const slides = [
     id: "2",
     image: require("../assets/images/OnBoarding/image-2.png"),
     title: "VNU - HCM\nSTUDENTS",
-    subtitle: "Please enable push notifications\nfrom uber when promoted",
+    subtitle:
+      "This app is used for Student of VNU-HCM only\nThey can be a rider to share their bike\nor earn some more money",
   },
   {
     id: "3",
     image: require("../assets/images/OnBoarding/image-3.png"),
     title: "SAFETY",
-    subtitle: "Please enable push notifications\nfrom uber when promoted",
+    subtitle:
+      "All of riders and customer are accepted\nby Student Office for each school\n",
   },
 ];
 
@@ -55,6 +57,7 @@ const Slide = ({ item }) => {
           resizeMode: "contain",
           height: "80%",
           width,
+          marginBottom: 10,
         }}
       ></Image>
       <Text style={styles.title}>{item.title}</Text>
@@ -107,7 +110,7 @@ const OnBoardingScreen = ({ navigation }) => {
                 <Ionicons
                   name={"arrow-back-outline"}
                   size={30}
-                  color={COLORS.fifthary}
+                  color={COLORS.white}
                 />
               </TouchableOpacity>
               <View width={5}></View>
@@ -143,7 +146,7 @@ const OnBoardingScreen = ({ navigation }) => {
                 <Ionicons
                   name={"arrow-back-outline"}
                   size={30}
-                  color={COLORS.fifthary}
+                  color={COLORS.white}
                 />
               </TouchableOpacity>
               <View width={5}></View>
@@ -155,7 +158,7 @@ const OnBoardingScreen = ({ navigation }) => {
                 <Ionicons
                   name={"arrow-forward-outline"}
                   size={30}
-                  color={COLORS.fifthary}
+                  color={COLORS.white}
                 />
               </TouchableOpacity>
             </View>
@@ -171,7 +174,7 @@ const OnBoardingScreen = ({ navigation }) => {
                 <Ionicons
                   name={"arrow-forward-outline"}
                   size={30}
-                  color={COLORS.fifthary}
+                  color={COLORS.white}
                 />
                 {/* <Image alt="arrow" source={arrowNext}></Image> */}
               </TouchableOpacity>

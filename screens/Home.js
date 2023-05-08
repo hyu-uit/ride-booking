@@ -24,6 +24,7 @@ import BikeImg from "../assets/images/motorcycle_1.png";
 import DeliveryImg from "../assets/images/delivery_1.png";
 import { TouchableWithoutFeedback } from "react-native";
 import { Keyboard } from "react-native";
+import LottieView from "lottie-react-native";
 
 export default function Home({ navigation }) {
   return (
@@ -102,7 +103,7 @@ export default function Home({ navigation }) {
                   bgColor={COLORS.fourthary}
                   borderTopRadius={SIZES.radius10}
                 >
-                  <Image source={BikeImg} />
+                  <Image source={BikeImg} alt="bike" />
                 </Center>
                 <Center h={50}>
                   <Text fontSize={SIZES.h4} bold color={"white"}>
@@ -127,7 +128,7 @@ export default function Home({ navigation }) {
                   bgColor={COLORS.white}
                   borderTopRadius={SIZES.radius10}
                 >
-                  <Image source={DeliveryImg} />
+                  <Image source={DeliveryImg} alt="delivery" />
                 </Center>
                 <Center h={50}>
                   <Text fontSize={SIZES.h4} bold color={"white"}>
@@ -177,7 +178,7 @@ const MenuButton = styled(TouchableOpacity)`
 const HomeContainer = styled(SafeAreaView)`
   flex: 1;
   background-color: ${(props) => COLORS.background};
-  padding: 10px 10px 0 10px;
+  padding: 0px 10px 0 10px;
   align-items: center;
   overflow: scroll;
 `;

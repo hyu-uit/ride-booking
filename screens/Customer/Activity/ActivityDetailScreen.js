@@ -14,8 +14,10 @@ import ButtonBack from "../../../components/Global/ButtonBack/ButtonBack";
 import MapView, { Marker } from "react-native-maps";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { Ionicons } from "@expo/vector-icons";
+import MapViewDirections from "react-native-maps-directions";
 
 const ActivityDetailScreen = () => {
+  // const API_KEY = "AIzaSyDEokOCthVrnmMPiI_fLEZKQtV1SjFvjxQ";
   return (
     <NativeBaseProvider>
       <VStack
@@ -40,6 +42,11 @@ const ActivityDetailScreen = () => {
                 <Marker
                   coordinate={{ latitude: 9.90761, longitude: 105.31181 }}
                 ></Marker>
+                {/* <MapViewDirections
+                  origin={{ latitude: 9.90761, longitude: 105.31181 }}
+                  destination={{ latitude: 10.77653, longitude: 106.700981 }}
+                  apikey={API_KEY}
+                /> */}
               </MapView>
 
               <View
