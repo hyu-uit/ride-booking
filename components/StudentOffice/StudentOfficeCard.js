@@ -14,7 +14,7 @@ import {
 import DefaultAvt from "../../assets/image6.png";
 import { COLORS, FONTS, SIZES } from "../../constants/theme";
 
-const StudentOfficeCard = ({ navigation }) => {
+const StudentOfficeCard = ({ navigation, onPress }) => {
   return (
     <VStack
       w={"100%"}
@@ -23,6 +23,7 @@ const StudentOfficeCard = ({ navigation }) => {
       borderRadius={"20px"}
       h={"130px"}
       mb={5}
+      onTouchEnd={onPress}
     >
       <HStack>
         <VStack w={"75%"}>

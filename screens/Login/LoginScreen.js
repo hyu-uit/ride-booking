@@ -73,6 +73,7 @@ const LoginScreen = ({ navigation }) => {
           position={"absolute"}
           bottom={20}
           borderRadius={20}
+          alignSelf={"center"}
         >
           <Button
             w={"50%"}

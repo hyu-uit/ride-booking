@@ -10,6 +10,7 @@ import RiderHomeScreen from "../screens/Rider/Home/RiderHomeScreen";
 import RiderProfileScreen from "../screens/Rider/RiderProfileScreen";
 import IncomeScreen from "../screens/Rider/IncomeScreen";
 import ScheduledScreen from "../screens/Customer/Scheduled/ScheduledScreen";
+import RiderScheduleScreen from "../screens/Rider/RiderSchedule";
 
 const MainRiderTab = createBottomTabNavigator();
 
@@ -28,7 +29,7 @@ const MainRiderNavigator = ({ navigation }) => {
 
           if (route.name === "HomeRider") {
             iconName = "home";
-          } else if (route.name === "Scheduled") {
+          } else if (route.name === "RiderScheduled") {
             iconName = "list";
           } else if (route.name === "Income") {
             iconName = "card-outline";
@@ -41,7 +42,10 @@ const MainRiderNavigator = ({ navigation }) => {
       })}
     >
       <MainRiderTab.Screen name="HomeRider" component={RiderHomeScreen} />
-      <MainRiderTab.Screen name="Scheduled" component={ScheduledScreen} />
+      <MainRiderTab.Screen
+        name="RiderScheduled"
+        component={RiderScheduleScreen}
+      />
       <MainRiderTab.Screen name="Income" component={IncomeScreen} />
       <MainRiderTab.Screen name="RiderProfile" component={RiderProfileScreen} />
     </MainRiderTab.Navigator>
