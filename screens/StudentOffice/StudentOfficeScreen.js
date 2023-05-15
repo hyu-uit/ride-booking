@@ -16,7 +16,7 @@ import { TabView, TabBar, SceneMap } from "react-native-tab-view";
 import HistoryCard from "../../components/HistoryCard";
 import StudentOfficeCard from "../../components/StudentOffice/StudentOfficeCard";
 
-const StudentOfficeScreen = () => {
+const StudentOfficeScreen = ({ navigation }) => {
   const [service, setService] = useState(0);
 
   const FirstRoute = () => (
@@ -27,7 +27,7 @@ const StudentOfficeScreen = () => {
         justifyContent={"center"}
         alignItems={"center"}
       >
-        <StudentOfficeCard />
+        <StudentOfficeCard navigation={navigation} />
         <StudentOfficeCard />
         <StudentOfficeCard />
         <StudentOfficeCard />

@@ -6,6 +6,7 @@ import { AuthenticationStackScreen } from "./AuthenticationNavigator";
 import MainNavigator from "./MainNavigator";
 import OnBoardingScreen from "../screens/OnBoardingScreen";
 import MainRiderNavigator from "./MainRiderNavigator";
+import { StudentOfficeStackScreen } from "./StudentOfficeNavigator";
 
 const Stack = createNativeStackNavigator();
 
@@ -23,6 +24,10 @@ export default function Navigation() {
           <Stack.Screen
             name="MainRiderNavigator"
             component={MainRiderNavigator}
+          />
+          <Stack.Screen
+            name="StudentOfficeNavigator"
+            component={StudentOfficeStackScreen}
           />
         </Stack.Navigator>
       </NavigationContainer>

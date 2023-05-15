@@ -20,7 +20,7 @@ const LoginScreen = ({ navigation }) => {
     // animation.current?.play();
   }, []);
   return (
-    <VStack paddingX={"10px"} bgColor={COLORS.background}>
+    <VStack bgColor={COLORS.background}>
       <VStack w={"100%"} h={"40%"}>
         <Image
           source={BlueBg}
@@ -57,7 +57,7 @@ const LoginScreen = ({ navigation }) => {
           source={require("../../assets/lottie/riding_bear.json")}
         />
       </VStack>
-      <VStack w={"100%"} h={"60%"}>
+      <VStack w={"100%"} h={"60%"} paddingX={"10px"}>
         <Text bold fontSize={60} color={COLORS.white} lineHeight={70}>
           Get Your {"\n"}Drive
         </Text>

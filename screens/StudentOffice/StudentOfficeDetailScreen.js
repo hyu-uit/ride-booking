@@ -36,7 +36,7 @@ const StudentOfficeDetailScreen = () => {
             </Text>
           </HStack>
 
-          <ScrollView>
+          <ScrollView showsVerticalScrollIndicator={false}>
             <VStack mt={8} pb={10}>
               <Text style={{ ...FONTS.h4, color: COLORS.fifthary }}>
                 Portrait picture
@@ -47,7 +47,7 @@ const StudentOfficeDetailScreen = () => {
                 borderRadius={10}
                 w={width + "px"}
                 h={height + "px"}
-                bgColor={COLORS.red}
+                bgColor={COLORS.fifthary}
                 alignSelf={"center"}
               ></View>
 
@@ -97,14 +97,14 @@ const StudentOfficeDetailScreen = () => {
               <View
                 h={IDHeight + "px"}
                 w={IDWidth + "px"}
-                bgColor={COLORS.red}
+                bgColor={COLORS.fifthary}
                 borderRadius={10}
                 mt={10}
               ></View>
               <View
                 h={IDHeight + "px"}
                 w={IDWidth + "px"}
-                bgColor={COLORS.red}
+                bgColor={COLORS.fifthary}
                 borderRadius={10}
                 mt={10}
               ></View>

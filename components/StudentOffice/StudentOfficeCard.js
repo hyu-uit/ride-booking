@@ -14,7 +14,7 @@ import {
 import DefaultAvt from "../../assets/image6.png";
 import { COLORS, FONTS, SIZES } from "../../constants/theme";
 
-const StudentOfficeCard = () => {
+const StudentOfficeCard = ({ navigation }) => {
   return (
     <VStack
       w={"100%"}
@@ -80,6 +80,9 @@ const StudentOfficeCard = () => {
             alignItems={"center"}
             mt={1}
             bgColor={COLORS.primary}
+            onPress={() => {
+              navigation.navigate("StudentOfficeDetail");
+            }}
           >
             <Text style={{ ...FONTS.h5, color: COLORS.white }}>Accept</Text>
           </Button>
