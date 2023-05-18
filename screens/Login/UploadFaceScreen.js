@@ -23,13 +23,56 @@ import {
 import * as ImagePicker from "expo-image-picker";
 import { Camera } from "expo-camera";
 import { launchCamera } from "react-native-image-picker";
+import { AsyncStorage } from "react-native"; 
+import { storage } from "../../config/config";
+import { ref, uploadBytesResumable } from "firebase/storage";
 
 const UploadFaceScreen = ({ navigation }) => {
+  const [phoneNumber, setPhoneNumber] = useState("");
+  useEffect(()=>{
+    AsyncStorage.getItem('phoneNumber').then(result => {
+      setPhoneNumber(result);
+      console.log(result);
+    })
+  }, [])
   const [width, setWidth] = useState(
     PixelRatio.roundToNearestPixel(SIZES.width - 20)
   );
   const [height, setHeight] = useState(0);
 
+  //upload image to firebase storage
+  const uploadImage = async ()=>{
+    //convert image into blob image
+    const blobImage = await new Promise((resolve, reject)=>{
+      const xhr = new XMLHttpRequest();
+      xhr.onload=function(){
+        resolve(xhr.response);
+      };
+      xhr.onerror=function(){
+        reject(TypeError("Network request failed"));
+      };
+      xhr.responseType="blob";
+      xhr.open("GET",image, true);
+      xhr.send(null);
+    });
+
+    const metadata = {
+      contentType: 'image/jpeg',
+    };
+
+
+    let name=phoneNumber+"face";
+    const storageRef = ref(storage, name);
+    uploadBytesResumable(storageRef, blobImage, metadata).then((snapshot) => {
+      console.log('Upload success!');
+    });
+
+    AsyncStorage.setItem('phoneNumber',phoneNumber);
+    navigation.navigate("MainRiderNavigator", {
+        screen: "HomeRider",
+      });
+    
+  }
   const handleLayout = (event) => {
     const { width } = event.nativeEvent.layout;
     const newHeight = width * 1.5;
@@ -139,11 +182,7 @@ const UploadFaceScreen = ({ navigation }) => {
             borderRadius={20}
             bgColor={COLORS.primary}
             mt={10}
-            onPress={() => {
-              navigation.navigate("MainRiderNavigator", {
-                screen: "HomeRider",
-              });
-            }}
+            onPress={ uploadImage}
           >
             <Text style={{ ...FONTS.h2 }} color={COLORS.white}>
               Continue

@@ -2,7 +2,6 @@ import {
   Button,
   HStack,
   Image,
-  Input,
   NativeBaseProvider,
   Text,
   VStack,
@@ -20,14 +19,74 @@ import {
   PixelRatio,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
-
+import { useEffect } from "react";
+import { AsyncStorage } from "react-native"; 
+import { storage } from "../../config/config";
+import { ref, uploadBytesResumable } from "firebase/storage";
 const UploadID = ({ navigation }) => {
+  const [phoneNumber, setPhoneNumber] = useState("");
+  useEffect(()=>{
+    AsyncStorage.getItem('phoneNumber').then(result => {
+      setPhoneNumber(result);
+      console.log(result);
+    })
+  }, [])
+
   const [width, setWidth] = useState(
     PixelRatio.roundToNearestPixel(SIZES.width - 20)
   );
   const [height, setHeight] = useState(0);
   const [imageFront, setImageFront] = useState(null);
   const [imageBack, setImageBack] = useState(null);
+
+  //upload image to firebase storage
+  const uploadImage = async ()=>{
+    //convert image into blob image
+    const uploadFront = await new Promise((resolve, reject)=>{
+      const xhr = new XMLHttpRequest();
+      xhr.onload=function(){
+        resolve(xhr.response);
+      };
+      xhr.onerror=function(){
+        reject(TypeError("Network request failed"));
+      };
+      xhr.responseType="blob";
+      xhr.open("GET",imageFront, true);
+      xhr.send(null);
+    });
+   
+    const uploadBack = await new Promise((resolve, reject)=>{
+      const xhr = new XMLHttpRequest();
+      xhr.onload=function(){
+        resolve(xhr.response);
+      };
+      xhr.onerror=function(){
+        reject(TypeError("Network request failed"));
+      };
+      xhr.responseType="blob";
+      xhr.open("GET",imageBack, true);
+      xhr.send(null);
+    });
+
+    const metadata = {
+      contentType: 'image/jpeg',
+    };
+
+
+    let frontName=phoneNumber+"front";
+    let backName=phoneNumber+"back";
+    const storageRef1 = ref(storage, frontName);
+    const storageRef2 = ref(storage, backName);
+    uploadBytesResumable(storageRef1, uploadFront, metadata).then((snapshot) => {
+      console.log('Upload success!');
+    });
+    uploadBytesResumable(storageRef2, uploadBack, metadata).then((snapshot) => {
+      console.log('Upload success!');
+    });
+
+    AsyncStorage.setItem('phoneNumber',phoneNumber);
+    navigation.navigate("UploadFace"); 
+  }
 
   const pickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -40,6 +99,8 @@ const UploadID = ({ navigation }) => {
     if (!result.canceled) {
       setImageFront(result.assets[0].uri);
     }
+    console.log(result.assets[0].uri);
+
   };
 
   const pickImageBack = async () => {
@@ -98,7 +159,8 @@ const UploadID = ({ navigation }) => {
                   alt="ID front"
                   // resizeMode="cover"
                   bg={COLORS.white}
-                ></Image>
+                >
+                </Image>
               </>
             ) : (
               <>
@@ -139,7 +201,7 @@ const UploadID = ({ navigation }) => {
                 <VStack justifyContent={"center"} alignItems={"center"}>
                   <Icon name="upload" size={50} color={COLORS.white} />
                   <Text style={{ ...FONTS.h4 }} color={COLORS.white} mt={5}>
-                    Upload your Student card (backl)
+                    Upload your Student card (back)
                   </Text>
                 </VStack>
               </>
@@ -149,9 +211,7 @@ const UploadID = ({ navigation }) => {
             w={"100%"}
             borderRadius={20}
             bgColor={COLORS.primary}
-            onPress={() => {
-              navigation.navigate("UploadFace");
-            }}
+            onPress={uploadImage}
             mt={10}
           >
             <Text style={{ ...FONTS.h2 }} color={COLORS.white}>
