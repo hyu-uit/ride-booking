@@ -1,5 +1,4 @@
 import {
-  Alert,
   Button,
   HStack,
   Input,
@@ -15,7 +14,9 @@ import ButtonBack from "../../components/Global/ButtonBack/ButtonBack";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { COLORS, FONTS } from "../../constants";
 import { db } from "../../config/config";
-import {doc,setDoc} from "firebase/firestore"
+import {doc,setDoc, addDoc} from "firebase/firestore"
+import { Alert} from 'react-native'
+import { AsyncStorage } from "react-native"; 
 
 const SignUpScreen = ({ navigation }) => {
   const [school, setSchool] = useState("");
@@ -23,15 +24,25 @@ const SignUpScreen = ({ navigation }) => {
   const [id, setID] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [email, setEmail] = useState("");
+  const [role, setRole] = useState("");
 
   const signUp = ()=>{
-      setDoc(doc(db, "Customer", phoneNumber),{
+    if(phoneNumber.length!==10){
+      Alert.alert( 'Invalid phone number',
+      'Please re-enter your phone number.',
+      [{
+        text: 'OK',
+    }])
+    }else{
+      setDoc(doc(db, role, phoneNumber),{
         displayName:name,
         email:email,
         school:school,
         studentID:id
       });    
+      AsyncStorage.setItem('phoneNumber',phoneNumber);
       navigation.navigate("UploadID"); 
+    }
   }
   return (
     <TouchableWithoutFeedback
@@ -62,8 +73,8 @@ const SignUpScreen = ({ navigation }) => {
                 placeholder="Choose role"
                 style={{ ...FONTS.body3 }}
                 color={COLORS.white}
-                onValueChange={(itemValue) => setSchool(itemValue)}
-                selectedValue={school}
+                onValueChange={(itemValue) => setRole(itemValue)}
+                selectedValue={role}
                 _selectedItem={{
                   bg: COLORS.fifthary,
                 }}
@@ -78,6 +89,7 @@ const SignUpScreen = ({ navigation }) => {
                 borderColor={COLORS.secondary}
                 mt={5}
                 placeholder="Full name"
+                onChangeText={(name)=>{setName(name)}}
                 style={{ ...FONTS.body3 }}
                 color={COLORS.white}
               />
@@ -88,6 +100,7 @@ const SignUpScreen = ({ navigation }) => {
                 borderColor={COLORS.secondary}
                 mt={5}
                 placeholder="Student ID"
+                onChangeText={(id)=>{setID(id)}}
                 style={{ ...FONTS.body3 }}
                 color={COLORS.white}
               />
@@ -129,6 +142,7 @@ const SignUpScreen = ({ navigation }) => {
                 borderColor={COLORS.secondary}
                 mt={5}
                 placeholder="Phone number"
+                onChangeText={(phoneNumber)=>{setPhoneNumber(phoneNumber)}}
                 style={{ ...FONTS.body3 }}
                 color={COLORS.white}
                 keyboardType="numeric"
@@ -140,6 +154,7 @@ const SignUpScreen = ({ navigation }) => {
                 borderColor={COLORS.secondary}
                 mt={5}
                 placeholder="Email address"
+                onChangeText={(email)=>{setEmail(email)}}
                 style={{ ...FONTS.body3 }}
                 color={COLORS.white}
               />
@@ -162,9 +177,9 @@ const SignUpScreen = ({ navigation }) => {
                   w={"100%"}
                   borderRadius={20}
                   bgColor={COLORS.primary}
-                  onPress={() => {
-                    navigation.navigate("UploadID");
-                  }}
+                  onPress={
+                    signUp
+                }
                 >
                   <Text style={{ ...FONTS.h2 }} color={COLORS.white}>
                     Continue
