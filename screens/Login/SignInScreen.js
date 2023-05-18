@@ -10,11 +10,50 @@ import React, { useState } from "react";
 import ButtonBack from "../../components/Global/ButtonBack/ButtonBack";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { COLORS, FONTS } from "../../constants";
-import { TouchableWithoutFeedback } from "react-native";
+import { Alert, TouchableWithoutFeedback } from "react-native";
 import { Keyboard } from "react-native";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "../../config/config";
 
 const SignInScreen = ({ navigation }) => {
   const [role, setRole] = useState(0);
+
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [displayOTPInput, setDisplayOTPInput]=useState(false);
+  const [code, setCode]=useState('');
+  const [confirmation, setConfirmation]=useState('');
+
+  const countryCode='+84';
+
+  // const requestOTP = async ()=>{
+  //   setDisplayOTPInput(true);
+    
+  //   const confirmation = await firebase.auth().signInWithPhoneNumber(countryCode+phoneNumber);
+  //   setConfirmation(confirmation);
+  // }
+  // const checkPhoneNumber = ()=>{
+  //   setDoc(doc(db, "Customer", "0972987357"),{
+      
+  //   })
+  // }
+  const checkPhoneNumber = ()=>{
+    getDoc(doc(db,"Customer",phoneNumber))
+      .then(docData=>{ 
+        if(docData.exists()){
+          navigation.navigate("Verify")
+        }else{
+          console.log("no such data");
+        }
+      }).catch((error)=>{
+      })
+}
+  const onHandleLogin=()=>{
+    if(role==1){
+      navigation.navigate("MainRiderNavigator", {
+        screen: "HomeRider",
+      });
+    }
+  }
 
   return (
     <TouchableWithoutFeedback
@@ -96,6 +135,7 @@ const SignInScreen = ({ navigation }) => {
             style={{ ...FONTS.body3 }}
             color={COLORS.white}
             keyboardType="numeric"
+            onChangeText={(text) => setPhoneNumber(text)}
           />
 
           <VStack position={"absolute"} bottom={10} w={"100%"}>
@@ -117,9 +157,13 @@ const SignInScreen = ({ navigation }) => {
               w={"100%"}
               borderRadius={20}
               bgColor={COLORS.primary}
-              onPress={() => {
-                navigation.navigate("Verify");
-              }}
+              onPress={
+                  // ()=>{navigation.navigate("Verify", {code: code});}
+                  //requestOTP
+                  //onHandleLogin
+                  //checkPhoneNumber
+                  checkPhoneNumber
+              }
             >
               <Text style={{ ...FONTS.h2 }} color={COLORS.white}>
                 Continue

@@ -1,4 +1,5 @@
 import {
+  Alert,
   Button,
   HStack,
   Input,
@@ -12,10 +13,25 @@ import React, { useState } from "react";
 import ButtonBack from "../../components/Global/ButtonBack/ButtonBack";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { COLORS, FONTS } from "../../constants";
+import { db } from "../../config/config";
+import {doc,setDoc} from "firebase/firestore"
 
 const SignUpScreen = ({ navigation }) => {
   const [school, setSchool] = useState("");
+  const [name, setName] = useState("");
+  const [id, setID] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [email, setEmail] = useState("");
 
+  const signUp = ()=>{
+      setDoc(doc(db, "Customer", phoneNumber),{
+        displayName:name,
+        email:email,
+        school:school,
+        studentID:id
+      });    
+      navigation.navigate("UploadID"); 
+  }
   return (
     <TouchableWithoutFeedback
       onPress={() => {
@@ -41,6 +57,7 @@ const SignUpScreen = ({ navigation }) => {
             mt={5}
             placeholder="Full name"
             style={{ ...FONTS.body3 }}
+            onChangeText={(name)=>{setName(name)}}
             color={COLORS.white}
           />
           <Input
@@ -51,6 +68,7 @@ const SignUpScreen = ({ navigation }) => {
             mt={5}
             placeholder="Student ID"
             style={{ ...FONTS.body3 }}
+            onChangeText={(id)=>{setID(id)}}
             color={COLORS.white}
           />
           <Select
@@ -90,6 +108,7 @@ const SignUpScreen = ({ navigation }) => {
             placeholder="Phone number"
             style={{ ...FONTS.body3 }}
             color={COLORS.white}
+            onChangeText={(phoneNumber)=>{setPhoneNumber(phoneNumber)}}
             keyboardType="numeric"
           />
           <Input
@@ -100,6 +119,7 @@ const SignUpScreen = ({ navigation }) => {
             mt={5}
             placeholder="Email address"
             style={{ ...FONTS.body3 }}
+            onChangeText={(email)=>{setEmail(email)}}
             color={COLORS.white}
           />
 
@@ -122,9 +142,8 @@ const SignUpScreen = ({ navigation }) => {
               w={"100%"}
               borderRadius={20}
               bgColor={COLORS.primary}
-              onPress={() => {
-                navigation.navigate("UploadID");
-              }}
+              onPress={signUp
+            }
             >
               <Text style={{ ...FONTS.h2 }} color={COLORS.white}>
                 Continue
