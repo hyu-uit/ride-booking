@@ -14,9 +14,12 @@ import { COLORS, FONTS, SIZES } from "../../constants/theme";
 import { SafeAreaView } from "react-native-safe-area-context";
 import ButtonBack from "../../components/Global/ButtonBack/ButtonBack";
 import { PixelRatio } from "react-native";
-import RejectModal from "../../components/Modal/RejectModal";
+import LoveIcon from "../../assets/icons8-smiling-face-with-heart-eyes-96.png";
+import SmileIcon from "../../assets/icons8-slightly-smiling-face-96.png";
+import DisappointedIcon from "../../assets/icons8-frowning-face-96.png";
+import SelectedButton from "../../components/Button/SelectedButton";
 
-const StudentOfficeDetailScreen = () => {
+const StudentListDetailScreen = () => {
   const width = 224;
   const height = width * 1.5;
 
@@ -109,31 +112,63 @@ const StudentOfficeDetailScreen = () => {
                 mt={10}
               ></View>
 
-              <HStack justifyContent={"space-between"}>
-                <Button
-                  w={"48%"}
-                  borderRadius={20}
-                  bgColor={COLORS.primary}
-                  onPress={() => {}}
-                  mt={10}
-                >
-                  <Text style={{ ...FONTS.h2 }} color={COLORS.white}>
-                    Accept
+              <Text style={{ ...FONTS.h4, color: COLORS.fifthary }} mt={10}>
+                Trip
+              </Text>
+              <Text style={{ ...FONTS.h3, color: COLORS.white }} mt={2}>
+                20
+              </Text>
+              <Text style={{ ...FONTS.h4, color: COLORS.fifthary }} mt={10}>
+                Rating
+              </Text>
+              <HStack mt={2} justifyContent={"space-between"}>
+                <VStack justifyContent={"center"} alignItems={"center"}>
+                  <Image size={70} source={LoveIcon} alt="Love" />
+                  <Text style={{ ...FONTS.h3, color: COLORS.white }} mt={2}>
+                    20
                   </Text>
-                </Button>
-                <Button
-                  w={"48%"}
-                  variant={"outline"}
-                  borderRadius={20}
-                  borderColor={COLORS.red}
-                  onPress={() => {}}
-                  mt={10}
-                >
-                  <Text style={{ ...FONTS.h2 }} color={COLORS.red}>
-                    Reject
+                </VStack>
+                <VStack justifyContent={"center"} alignItems={"center"}>
+                  <Image size={70} source={SmileIcon} alt="Smile" />
+                  <Text style={{ ...FONTS.h3, color: COLORS.white }} mt={2}>
+                    20
                   </Text>
-                </Button>
+                </VStack>
+                <VStack justifyContent={"center"} alignItems={"center"}>
+                  <Image size={70} source={DisappointedIcon} alt="Dissa" />
+                  <Text style={{ ...FONTS.h3, color: COLORS.white }} mt={2}>
+                    20
+                  </Text>
+                </VStack>
               </HStack>
+
+              <HStack justifyContent={"space-between"} space={2}>
+                <SelectedButton
+                  text={"Friendly (5)"}
+                  isSelected={false}
+                ></SelectedButton>
+                <SelectedButton
+                  text={"Friendly (5)"}
+                  isSelected={false}
+                ></SelectedButton>
+                <SelectedButton
+                  text={"Friendly (5)"}
+                  isSelected={false}
+                ></SelectedButton>
+              </HStack>
+
+              <Button
+                w={"100%"}
+                variant={"outline"}
+                borderRadius={20}
+                borderColor={COLORS.red}
+                onPress={() => {}}
+                mt={10}
+              >
+                <Text style={{ ...FONTS.h2 }} color={COLORS.red}>
+                  Lock account
+                </Text>
+              </Button>
             </VStack>
           </ScrollView>
         </VStack>
@@ -142,4 +177,4 @@ const StudentOfficeDetailScreen = () => {
   );
 };
 
-export default StudentOfficeDetailScreen;
+export default StudentListDetailScreen;

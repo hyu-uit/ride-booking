@@ -116,6 +116,9 @@ const SignInScreen = ({ navigation }) => {
               bgColor={role === 2 ? COLORS.fourthary : "transparent"}
               onPress={() => {
                 setRole(2);
+                navigation.navigate("StudentOfficeNavigator", {
+                  screen: "StudentOffice",
+                });
               }}
               ml={4}
             >

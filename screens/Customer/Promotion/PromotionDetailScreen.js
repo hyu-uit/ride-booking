@@ -13,7 +13,7 @@ import { SIZES, COLORS, FONTS } from "../../../constants/theme";
 import Img_Promotion from "../../../assets/images/Promotion/promotion.png";
 import ButtonBack from "../../../components/Global/ButtonBack/ButtonBack";
 
-const PromotionDetailScreen = () => {
+const PromotionDetailScreen = ({ navigation }) => {
   return (
     <VStack h={"100%"} paddingY={"20px"} bgColor={COLORS.background}>
       <SafeAreaView>

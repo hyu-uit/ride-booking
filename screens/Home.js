@@ -180,5 +180,5 @@ const HomeContainer = styled(SafeAreaView)`
   background-color: ${(props) => COLORS.background};
   padding: 0px 10px 0 10px;
   align-items: center;
-  overflow: scroll;
+  /* overflow: scroll; */
 `;

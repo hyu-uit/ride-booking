@@ -7,7 +7,7 @@ import {
   VStack,
   View,
 } from "native-base";
-import React from "react";
+import React, { useRef, useState } from "react";
 import ButtonBack from "../../components/Global/ButtonBack/ButtonBack";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { COLORS, FONTS } from "../../constants";
@@ -15,6 +15,12 @@ import { TouchableWithoutFeedback } from "react-native";
 import { Keyboard } from "react-native";
 
 const VerifyingScreen = ({ navigation }) => {
+  const firstInput = useRef();
+  const secondInput = useRef();
+  const thirdInput = useRef();
+  const fourthInput = useRef();
+
+  const [otp, setOtp] = useState({ 1: "", 2: "", 3: "", 4: "" });
   return (
     <TouchableWithoutFeedback
       onPress={() => {
@@ -53,6 +59,11 @@ const VerifyingScreen = ({ navigation }) => {
                 maxLength={1}
                 textAlign={"center"}
                 keyboardType="numeric"
+                ref={firstInput}
+                onChangeText={(text) => {
+                  setOtp({ ...otp, 1: text });
+                  text && secondInput.current.focus();
+                }}
               />
               <Input
                 w={"60px"}
@@ -66,6 +77,13 @@ const VerifyingScreen = ({ navigation }) => {
                 textAlign={"center"}
                 ml={5}
                 keyboardType="numeric"
+                ref={secondInput}
+                onChangeText={(text) => {
+                  setOtp({ ...otp, 2: text });
+                  text
+                    ? thirdInput.current.focus()
+                    : firstInput.current.focus();
+                }}
               />
               <Input
                 w={"60px"}
@@ -79,6 +97,13 @@ const VerifyingScreen = ({ navigation }) => {
                 textAlign={"center"}
                 ml={5}
                 keyboardType="numeric"
+                ref={thirdInput}
+                onChangeText={(text) => {
+                  setOtp({ ...otp, 3: text });
+                  text
+                    ? fourthInput.current.focus()
+                    : secondInput.current.focus();
+                }}
               />
               <Input
                 w={"60px"}
@@ -92,6 +117,11 @@ const VerifyingScreen = ({ navigation }) => {
                 textAlign={"center"}
                 ml={5}
                 keyboardType="numeric"
+                ref={fourthInput}
+                onChangeText={(text) => {
+                  setOtp({ ...otp, 4: text });
+                  !text && thirdInput.current.focus();
+                }}
               />
             </HStack>
             <Button
