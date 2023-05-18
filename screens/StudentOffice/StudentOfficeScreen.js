@@ -10,6 +10,7 @@ import {
   VStack,
   View,
   Icon,
+  FlatList,
 } from "native-base";
 import { COLORS, FONTS, SIZES } from "../../constants/theme";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -17,12 +18,55 @@ import { TabView, TabBar, SceneMap } from "react-native-tab-view";
 import HistoryCard from "../../components/HistoryCard";
 import StudentOfficeCard from "../../components/StudentOffice/StudentOfficeCard";
 import { Ionicons } from "@expo/vector-icons";
+import { query, collection, getDocs, where } from "firebase/firestore";
+import { db } from "../../config/config";
+import { useEffect } from "react";
+import { Alert, AsyncStorage } from "react-native";
 
 const StudentOfficeScreen = ({ navigation }) => {
   const [service, setService] = useState(0);
-
+  const [users, setUsers] = useState([]);
+  useEffect(()=>{
+    getUsers();
+  },[]);
+  const getUsers= ()=>{
+    let users=[]
+    getDocs(query(collection(db,"Customer"), where('status','==','pending')))
+      .then(docSnap=>{
+        docSnap.forEach((doc)=>{
+          users.push({role:"Customer",
+            phoneNumber:doc.id, 
+            school:doc.data().school,
+            displayName:doc.data().displayName, 
+            email:doc.data().email, 
+            studentID:doc.data().studentID, 
+            portrait:doc.data().portrait,
+            cardFront:doc.data().cardFront,
+            cardBack:doc.data().cardBack
+          })
+        });
+        //console.log("Document data:", users);
+      });
+      getDocs(query(collection(db,"Rider"), where('status','==','pending')))
+      .then(docSnap=>{
+        docSnap.forEach((doc)=>{
+          users.push({role:"Rider",
+            phoneNumber:doc.id, 
+            school:doc.data().school,
+            displayName:doc.data().displayName, 
+            email:doc.data().email, 
+            studentID:doc.data().studentID,   
+            portrait:doc.data().portrait,
+            cardFront:doc.data().cardFront,
+            cardBack:doc.data().cardBack
+          })
+        });
+        console.log("Document data:", users);
+        setUsers(users);
+      });
+  };
   return (
-    <VStack h={"100%"} bgColor={COLORS.background}>
+    <VStack h={"100%"} bgColor={COLORS.background} getUsers>
       <SafeAreaView>
         <VStack h={"100%"} mt={"17px"} paddingX={"10px"}>
           <HStack paddingX={5}>
@@ -46,7 +90,7 @@ const StudentOfficeScreen = ({ navigation }) => {
             mb={5}
             borderRadius={10}
             h={"50px"}
-            placeholder="Enter your destination"
+            placeholder="Search"
             width="100%"
             variant={"filled"}
             bgColor={COLORS.tertiary}
@@ -63,16 +107,17 @@ const StudentOfficeScreen = ({ navigation }) => {
               />
             }
           />
-          <ScrollView>
-            <StudentOfficeCard
-              onPress={() => {
-                navigation.navigate("StudentOfficeDetail");
-              }}
-            />
-            <StudentOfficeCard />
-            <StudentOfficeCard />
-            <StudentOfficeCard />
-            <StudentOfficeCard />
+          <ScrollView >
+              <FlatList
+              data={users}
+              keyExtractor={item=>item.name}
+              renderItem={({item})=><StudentOfficeCard onPress={()=> {    
+                AsyncStorage.setItem('role',item.role),
+                AsyncStorage.setItem('phoneNumber',item.phoneNumber),
+                navigation.navigate("StudentOfficeDetail")
+            }} 
+            user={item} key={item.name} ></StudentOfficeCard>}
+            ></FlatList>
           </ScrollView>
         </VStack>
       </SafeAreaView>

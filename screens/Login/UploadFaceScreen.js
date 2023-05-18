@@ -24,14 +24,21 @@ import * as ImagePicker from "expo-image-picker";
 import { Camera } from "expo-camera";
 import { launchCamera } from "react-native-image-picker";
 import { AsyncStorage } from "react-native"; 
-import { storage } from "../../config/config";
-import { ref, uploadBytesResumable } from "firebase/storage";
+import { db, storage } from "../../config/config";
+import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
+import { doc, updateDoc } from "firebase/firestore";
 
 const UploadFaceScreen = ({ navigation }) => {
   const [phoneNumber, setPhoneNumber] = useState("");
+  const [role, setRole] = useState("");
+
   useEffect(()=>{
     AsyncStorage.getItem('phoneNumber').then(result => {
       setPhoneNumber(result);
+      console.log(result);
+    });
+    AsyncStorage.getItem('role').then(result => {
+      setRole(result);
       console.log(result);
     })
   }, [])
@@ -60,13 +67,17 @@ const UploadFaceScreen = ({ navigation }) => {
       contentType: 'image/jpeg',
     };
 
-
     let name=phoneNumber+"face";
     const storageRef = ref(storage, name);
     uploadBytesResumable(storageRef, blobImage, metadata).then((snapshot) => {
       console.log('Upload success!');
+      getDownloadURL(storageRef).then((url) =>{
+        updateDoc(doc(db,role,phoneNumber),{
+          portrait:url
+        })
+      })
     });
-
+    AsyncStorage.setItem('role',role);
     AsyncStorage.setItem('phoneNumber',phoneNumber);
     navigation.navigate("MainRiderNavigator", {
         screen: "HomeRider",

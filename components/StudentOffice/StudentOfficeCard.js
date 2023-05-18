@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   Button,
   HStack,
@@ -10,11 +10,29 @@ import {
   VStack,
   View,
   Avatar,
+  Wrap,
 } from "native-base";
 import DefaultAvt from "../../assets/image6.png";
 import { COLORS, FONTS, SIZES } from "../../constants/theme";
 
-const StudentOfficeCard = ({ navigation, onPress }) => {
+function StudentOfficeCard (props, navigation) {
+   let {
+    role,
+    phoneNumber, 
+    school,
+    displayName, 
+    email, 
+    studentID,   
+    portrait,
+    cardFront,
+    cardBack
+  }=props.user
+  const {onPress} = props
+
+  // useEffect(()=>{
+  //   console.log(phoneNumber)
+  // }, []);
+
   return (
     <VStack
       w={"100%"}
@@ -23,18 +41,19 @@ const StudentOfficeCard = ({ navigation, onPress }) => {
       borderRadius={"20px"}
       h={"130px"}
       mb={5}
-      onTouchEnd={onPress}
+      
+     onTouchEnd={onPress}
     >
       <HStack>
         <VStack w={"75%"}>
           <HStack padding={3}>
-            <Avatar source={DefaultAvt} alt="ava"></Avatar>
+            <Avatar source={{uri:portrait}}></Avatar>
             <VStack ml={4}>
               <Text style={{ ...FONTS.h4, color: COLORS.white }}>
-                Huỳnh Thế Vĩ
+               {displayName}
               </Text>
               <Text style={{ ...FONTS.body5, color: COLORS.fifthary }}>
-                20520000
+               {studentID}
               </Text>
             </VStack>
           </HStack>
@@ -53,11 +72,11 @@ const StudentOfficeCard = ({ navigation, onPress }) => {
             </VStack>
             <VStack w={"20%"} alignItems={"center"} justifyContent={"center"}>
               <Text style={{ ...FONTS.body5, color: COLORS.grey }}>School</Text>
-              <Text style={{ ...FONTS.h6, color: COLORS.white }}>UIT</Text>
+              <Text style={{ ...FONTS.h6, color: COLORS.white }}>{school}</Text>
             </VStack>
-            <VStack w={"20%"} alignItems={"center"} justifyContent={"center"}>
+            <VStack w={"25%"} alignItems={"center"} justifyContent={"center"}>
               <Text style={{ ...FONTS.body5, color: COLORS.grey }}>Role</Text>
-              <Text style={{ ...FONTS.h6, color: COLORS.white }}>Driver</Text>
+              <Text style={{ ...FONTS.h6, color: COLORS.white }}>{role}</Text>
             </VStack>
           </HStack>
         </VStack>

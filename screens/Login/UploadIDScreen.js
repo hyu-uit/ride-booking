@@ -21,13 +21,20 @@ import {
 import * as ImagePicker from "expo-image-picker";
 import { useEffect } from "react";
 import { AsyncStorage } from "react-native"; 
-import { storage } from "../../config/config";
-import { ref, uploadBytesResumable } from "firebase/storage";
+import { db, storage } from "../../config/config";
+import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
+import { doc, updateDoc } from "firebase/firestore";
 const UploadID = ({ navigation }) => {
   const [phoneNumber, setPhoneNumber] = useState("");
+  //const [role, setRole] = useState("");
+
   useEffect(()=>{
     AsyncStorage.getItem('phoneNumber').then(result => {
       setPhoneNumber(result);
+      console.log(result);
+    });
+    AsyncStorage.getItem('role').then(result => {
+      setRole(result);
       console.log(result);
     })
   }, [])
@@ -79,12 +86,23 @@ const UploadID = ({ navigation }) => {
     const storageRef2 = ref(storage, backName);
     uploadBytesResumable(storageRef1, uploadFront, metadata).then((snapshot) => {
       console.log('Upload success!');
+      getDownloadURL(storageRef1).then((url) =>{
+        updateDoc(doc(db,role,phoneNumber),{
+          cardFront:url
+        })
+      })
     });
     uploadBytesResumable(storageRef2, uploadBack, metadata).then((snapshot) => {
       console.log('Upload success!');
+        getDownloadURL(storageRef2).then((url) =>{
+          updateDoc(doc(db,role,phoneNumber),{
+            cardBack:url
+          })
+        })
     });
 
     AsyncStorage.setItem('phoneNumber',phoneNumber);
+    AsyncStorage.setItem('role',role);
     navigation.navigate("UploadFace"); 
   }
 
