@@ -5,6 +5,7 @@ import SignUpScreen from "../screens/Login/SignUpScreen";
 import UploadFaceScreen from "../screens/Login/UploadFaceScreen";
 import UploadID from "../screens/Login/UploadIDScreen";
 import VerifyingScreen from "../screens/Login/VerifyingScreen";
+import PendingScreen from "../screens/Login/PendingScreen";
 
 const AuthenticationStack = createNativeStackNavigator();
 
@@ -20,6 +21,7 @@ export function AuthenticationStackScreen() {
       />
       <AuthenticationStack.Screen name="UploadID" component={UploadID} />
       <AuthenticationStack.Screen name="Verify" component={VerifyingScreen} />
+      <AuthenticationStack.Screen name="Pending" component={PendingScreen} />
     </AuthenticationStack.Navigator>
   );
 }

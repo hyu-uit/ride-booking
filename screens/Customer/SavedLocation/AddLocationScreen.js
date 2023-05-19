@@ -21,7 +21,7 @@ const AddLocationScreen = ({ navigation }) => {
                 <ButtonBack></ButtonBack>
               </View>
               <Text style={{ ...FONTS.h2, color: COLORS.white }} ml={4}>
-                Menu
+                Add location
               </Text>
               {/* <Button
                 bgColor={"transparent"}
