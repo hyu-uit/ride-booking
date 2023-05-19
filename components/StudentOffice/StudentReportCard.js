@@ -14,8 +14,18 @@ import { COLORS, SIZES, FONTS } from "../../constants/theme";
 import { TouchableOpacity } from "react-native";
 import DisappointedIcon from "../../assets/icons8-frowning-face-96.png";
 
-const StudentReportCard = ({ onPress, type }) => {
-  const [status, setStatus] = useState(0);
+function StudentReportCard (props){
+  let {
+    role,
+    phoneNumber, 
+    school,
+    displayName, 
+    email, 
+    studentID,   
+    portrait,
+  } = props.listUser
+  const {onPress} = props
+
   return (
     <View
       bgColor={"#101744"}
@@ -29,13 +39,13 @@ const StudentReportCard = ({ onPress, type }) => {
       <HStack>
         <VStack>
           <HStack w={"full"}>
-            <Avatar source={DefaultAvt} margin={"10px 0 0 10px"} />
+            <Avatar source={{uri:portrait}} margin={"10px 0 0 10px"} />
             <VStack margin={"10px 0 0 10px"}>
               <Text bold fontSize={SIZES.h4} color={"white"}>
-                Huỳnh Thế Vĩ
+                {displayName}
               </Text>
               <Text fontSize={SIZES.font} color={"#808080"}>
-                20520587
+                {studentID}
               </Text>
             </VStack>
           </HStack>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import {
   Button,
   HStack,
@@ -18,14 +18,58 @@ import LoveIcon from "../../assets/icons8-smiling-face-with-heart-eyes-96.png";
 import SmileIcon from "../../assets/icons8-slightly-smiling-face-96.png";
 import DisappointedIcon from "../../assets/icons8-frowning-face-96.png";
 import SelectedButton from "../../components/Button/SelectedButton";
+import { collection, deleteDoc, doc, getDoc, updateDoc } from "firebase/firestore";
+import { db } from "../../config/config";
+const StudentListDetailScreen = ({route, navigation}) => {
+  const [school, setSchool] = useState("");
+  const [portrait, setPortrait] = useState("");
+  const [cardBack, setCardBack] = useState("");
+  const [cardFront, setCardFront] = useState("");
+  const [studentID, setStudentID] = useState("");
+  const [email, setEmail] = useState("");
+  const [displayName, setDisplayName] = useState("");
+  const {phoneNumber,role} = route.params;
+  useEffect(() => {
+    getUserByPhoneNumber();
+  }, [])
+ 
+  const getUserByPhoneNumber = () => {
+    // setRole("Customer")
+    // setPhoneNumber("0393751403")
+    //getDoc(doc(db,"Customer" , "0393751403"))
+    let imgUrl=''
+    getDoc(doc(db,role, phoneNumber))
+      .then(docSnap => {
+        if (docSnap.exists()) {
+          //setRole(role)
+          setCardBack(docSnap.data().cardBack)
+          setCardFront(docSnap.data().cardFront)
+          setDisplayName(docSnap.data().displayName)
+          setEmail(docSnap.data().email)
+          //setPhoneNumber(docSnap.id)
+          imgUrl=docSnap.data().portrait
+          setSchool(docSnap.data().school)
+          setStudentID(docSnap.data().studentID)
+          //console.log(docSnap.data().portrait)
+        } else {
+          console.log("No such data")}
+          setPortrait(imgUrl)
 
-const StudentListDetailScreen = () => {
+      }) 
+      console.log(imgUrl)
+
+  };
   const width = 224;
   const height = width * 1.5;
 
   const IDWidth = PixelRatio.roundToNearestPixel(SIZES.width - 20);
   const IDHeight = IDWidth * (2 / 3);
-
+  const lockAccount = () => {
+    updateDoc(doc(db, role, phoneNumber), {
+      status: "locked",
+    });
+    navigation.navigate("StudentList");  
+  };
   return (
     <VStack h={"100%"} bgColor={COLORS.background}>
       <SafeAreaView>
@@ -52,19 +96,21 @@ const StudentListDetailScreen = () => {
                 h={height + "px"}
                 bgColor={COLORS.fifthary}
                 alignSelf={"center"}
-              ></View>
+              >                
+                <Image w={width + "px"} h={height + "px"} alt="portrait" source={{ uri:portrait }}></Image>
+              </View>
 
               <Text style={{ ...FONTS.h4, color: COLORS.fifthary }} mt={10}>
                 Role
               </Text>
               <Text style={{ ...FONTS.h3, color: COLORS.white }} mt={2}>
-                Driver
+                {role}
               </Text>
               <Text style={{ ...FONTS.h4, color: COLORS.fifthary }} mt={10}>
                 Full name
               </Text>
               <Text style={{ ...FONTS.h3, color: COLORS.white }} mt={2}>
-                Huỳnh Thế Vĩ
+                {displayName}
               </Text>
               <Text style={{ ...FONTS.h4, color: COLORS.fifthary }} mt={10}>
                 Birthday
@@ -76,25 +122,25 @@ const StudentListDetailScreen = () => {
                 Student ID
               </Text>
               <Text style={{ ...FONTS.h3, color: COLORS.white }} mt={2}>
-                20520000
+                {studentID}
               </Text>
               <Text style={{ ...FONTS.h4, color: COLORS.fifthary }} mt={10}>
                 School
               </Text>
               <Text style={{ ...FONTS.h3, color: COLORS.white }} mt={2}>
-                University of Information Technology
+                {school}
               </Text>
               <Text style={{ ...FONTS.h4, color: COLORS.fifthary }} mt={10}>
                 Phone number
               </Text>
               <Text style={{ ...FONTS.h3, color: COLORS.white }} mt={2}>
-                0848867000
+                {phoneNumber}
               </Text>
               <Text style={{ ...FONTS.h4, color: COLORS.fifthary }} mt={10}>
                 Email Address
               </Text>
               <Text style={{ ...FONTS.h3, color: COLORS.white }} mt={2}>
-                20520000@gm.uit.edu.vn
+                {email}
               </Text>
 
               <View
@@ -103,14 +149,19 @@ const StudentListDetailScreen = () => {
                 bgColor={COLORS.fifthary}
                 borderRadius={10}
                 mt={10}
-              ></View>
+              >               
+                 <Image h={IDHeight + "px"} w={IDWidth + "px"} alt="cardFront" source={{ uri: cardFront }}></Image>
+              </View>
               <View
                 h={IDHeight + "px"}
                 w={IDWidth + "px"}
                 bgColor={COLORS.fifthary}
                 borderRadius={10}
                 mt={10}
-              ></View>
+              >
+                  <Image h={IDHeight + "px"} w={IDWidth + "px"} alt="cardBack" source={{ uri: cardBack }}></Image>
+
+              </View>
 
               <Text style={{ ...FONTS.h4, color: COLORS.fifthary }} mt={10}>
                 Trip
@@ -162,10 +213,10 @@ const StudentListDetailScreen = () => {
                 variant={"outline"}
                 borderRadius={20}
                 borderColor={COLORS.red}
-                onPress={() => {}}
+                onPress={lockAccount}
                 mt={10}
               >
-                <Text style={{ ...FONTS.h2 }} color={COLORS.red}>
+                <Text style={{ ...FONTS.h2 }} color={COLORS.red} >
                   Lock account
                 </Text>
               </Button>

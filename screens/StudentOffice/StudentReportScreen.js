@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Button,
   HStack,
@@ -6,6 +6,7 @@ import {
   Input,
   ScrollView,
   Spacer,
+  FlatList,
   Text,
   VStack,
   View,
@@ -21,8 +22,91 @@ import BookingCard from "../../components/BookingCard/BookingCard";
 import { Ionicons } from "@expo/vector-icons";
 import StudentListCard from "../../components/StudentOffice/StudentListCard";
 import StudentReportCard from "../../components/StudentOffice/StudentReportCard";
-
+import { query, collection, getDocs, where } from "firebase/firestore";
+import { db } from "../../config/config";
 const StudentReportScreen = ({ navigation }) => {
+  const [usersRider, setUsersRider]= useState([]);
+  const [usersCustomer, setUsersCustomer]= useState([]);
+  const [usersLock, setUsersLock]= useState([]);
+
+  useEffect(()=>{
+    getUsersCustomer();
+    getUsersRider();
+    getUsersLock();
+  },[]);
+
+  const getUsersRider=()=>{
+    let usersRider=[]
+      getDocs(query(collection(db,"Rider"), where('status','==','active')))
+      .then(docSnap=>{
+        docSnap.forEach((doc)=>{
+          usersRider.push({role:"Rider",
+            phoneNumber:doc.id, 
+            school:doc.data().school,
+            displayName:doc.data().displayName, 
+            email:doc.data().email, 
+            studentID:doc.data().studentID,   
+            portrait:doc.data().portrait,
+            cardFront:doc.data().cardFront,
+            cardBack:doc.data().cardBack
+          })
+        });
+        setUsersRider(usersRider);
+      });
+  };
+  const getUsersCustomer=()=>{
+    let usersCustomer=[]
+      getDocs(query(collection(db,"Customer"), where('status','==','active')))
+      .then(docSnap=>{
+        docSnap.forEach((doc)=>{
+          usersCustomer.push({role:"Customer",
+            phoneNumber:doc.id, 
+            school:doc.data().school,
+            displayName:doc.data().displayName, 
+            email:doc.data().email, 
+            studentID:doc.data().studentID,   
+            portrait:doc.data().portrait,
+            cardFront:doc.data().cardFront,
+            cardBack:doc.data().cardBack
+          })
+        });
+        setUsersCustomer(usersCustomer);
+      });
+  };
+  const getUsersLock=()=>{
+    let usersLock=[]
+      getDocs(query(collection(db,"Customer"), where('status','==','locked')))
+      .then(docSnap=>{
+        docSnap.forEach((doc)=>{
+          usersLock.push({role:"Customer",
+            phoneNumber:doc.id, 
+            school:doc.data().school,
+            displayName:doc.data().displayName, 
+            email:doc.data().email, 
+            studentID:doc.data().studentID,   
+            portrait:doc.data().portrait,
+            cardFront:doc.data().cardFront,
+            cardBack:doc.data().cardBack
+          })
+        });
+      });
+      getDocs(query(collection(db,"Rider"), where('status','==','locked')))
+      .then(docSnap=>{
+        docSnap.forEach((doc)=>{
+          usersLock.push({role:"Rider",
+            phoneNumber:doc.id, 
+            school:doc.data().school,
+            displayName:doc.data().displayName, 
+            email:doc.data().email, 
+            studentID:doc.data().studentID,   
+            portrait:doc.data().portrait,
+            cardFront:doc.data().cardFront,
+            cardBack:doc.data().cardBack
+          })
+        });
+        setUsersLock(usersLock);
+      });
+  };
   const FirstRoute = () => (
     <VStack paddingX={"10px"}>
       <Input
@@ -48,10 +132,12 @@ const StudentReportScreen = ({ navigation }) => {
       />
       <ScrollView>
         <VStack mt={"17px"} justifyContent={"center"} alignItems={"center"}>
-          <StudentReportCard />
-          <StudentReportCard />
-          <StudentReportCard />
-          <StudentReportCard />
+         
+          <FlatList
+              data={usersCustomer}
+              keyExtractor={item=>item.name}
+              renderItem={({item})=><StudentReportCard listUser={item}></StudentReportCard>}
+          ></FlatList>
         </VStack>
       </ScrollView>
     </VStack>
@@ -82,9 +168,12 @@ const StudentReportScreen = ({ navigation }) => {
       />
       <ScrollView>
         <VStack mt={"17px"} justifyContent={"center"} alignItems={"center"}>
-          <StudentReportCard />
-          <StudentReportCard />
-          <StudentReportCard />
+          
+          <FlatList
+              data={usersRider}
+              keyExtractor={item=>item.name}
+              renderItem={({item})=><StudentReportCard listUser={item}></StudentReportCard>}
+          ></FlatList>
         </VStack>
       </ScrollView>
     </VStack>
@@ -115,8 +204,15 @@ const StudentReportScreen = ({ navigation }) => {
       />
       <ScrollView>
         <VStack mt={"17px"} justifyContent={"center"} alignItems={"center"}>
-          <StudentListCard />
-          <StudentListCard />
+          {/* <StudentListCard />
+          <StudentListCard /> */}
+          <FlatList
+              data={usersLock}
+              keyExtractor={item=>item.name}
+              renderItem={({item})=><StudentListCard
+              list={item}
+              ></StudentListCard>}
+          ></FlatList>
         </VStack>
       </ScrollView>
     </VStack>

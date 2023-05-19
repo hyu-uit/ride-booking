@@ -22,7 +22,7 @@ import { query, collection, getDocs, where } from "firebase/firestore";
 import { db } from "../../config/config";
 import { useEffect } from "react";
 import { Alert } from "react-native";
-import { AsyncStorage } from "react-native";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const StudentOfficeScreen = ({ navigation }) => {
   const [service, setService] = useState(0);
@@ -46,7 +46,6 @@ const StudentOfficeScreen = ({ navigation }) => {
             cardBack:doc.data().cardBack
           })
         });
-        //console.log("Document data:", users);
       });
       getDocs(query(collection(db,"Rider"), where('status','==','pending')))
       .then(docSnap=>{
@@ -62,7 +61,6 @@ const StudentOfficeScreen = ({ navigation }) => {
             cardBack:doc.data().cardBack
           })
         });
-        console.log("Document data:", users);
         setUsers(users);
       });
   };
@@ -113,9 +111,11 @@ const StudentOfficeScreen = ({ navigation }) => {
               data={users}
               keyExtractor={item=>item.name}
               renderItem={({item})=><StudentOfficeCard onPress={()=> {    
-                AsyncStorage.setItem('phoneNumber',item.phoneNumber),
-                AsyncStorage.setItem('role',item.role),
-                navigation.navigate("StudentOfficeDetail")
+                // AsyncStorage.setItem('phoneNumber',item.phoneNumber),
+                // AsyncStorage.setItem('role',item.role),
+                
+                const data ={phoneNumber:""+item.phoneNumber,role:""+item.role}
+                navigation.navigate("StudentOfficeDetail", data)
             }} 
             user={item} key={item.name} ></StudentOfficeCard>}
             ></FlatList>

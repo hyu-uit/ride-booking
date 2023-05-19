@@ -1,3 +1,4 @@
+
 import {
   Avatar,
   HStack,
@@ -13,8 +14,18 @@ import DefaultAvt from "../../assets/image6.png";
 import { COLORS, SIZES } from "../../constants/theme";
 import { TouchableOpacity } from "react-native";
 
-const StudentListCard = ({ onPress }) => {
-  const [status, setStatus] = useState(0);
+function StudentListCard (props, navigation)  {
+  let {
+    role,
+    phoneNumber, 
+    school,
+    displayName, 
+    email, 
+    studentID,   
+    portrait,
+  }=props.list
+  const {onPress} = props
+  //const [status, setStatus] = useState(0);
   return (
     <View
       bgColor={"#101744"}
@@ -26,13 +37,13 @@ const StudentListCard = ({ onPress }) => {
       onTouchEnd={onPress}
     >
       <HStack w={"full"}>
-        <Avatar source={DefaultAvt} margin={"10px 0 0 10px"} />
+        <Avatar source={{uri:portrait}} margin={"10px 0 0 10px"} />
         <VStack margin={"10px 0 0 10px"}>
           <Text bold fontSize={SIZES.h4} color={"white"}>
-            Huỳnh Thế Vĩ
+            {displayName}
           </Text>
           <Text fontSize={SIZES.font} color={"#808080"}>
-            20520587
+            {studentID}
           </Text>
         </VStack>
       </HStack>
