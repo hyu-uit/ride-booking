@@ -26,7 +26,7 @@ import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { doc, updateDoc } from "firebase/firestore";
 const UploadID = ({ navigation }) => {
   const [phoneNumber, setPhoneNumber] = useState("");
-  //const [role, setRole] = useState("");
+  const [role, setRole] = useState("");
 
   useEffect(()=>{
     AsyncStorage.getItem('phoneNumber').then(result => {
@@ -38,7 +38,7 @@ const UploadID = ({ navigation }) => {
       console.log(result);
     })
   }, [])
-
+  
   const [width, setWidth] = useState(
     PixelRatio.roundToNearestPixel(SIZES.width - 20)
   );

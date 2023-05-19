@@ -28,11 +28,6 @@ function StudentOfficeCard (props, navigation) {
     cardBack
   }=props.user
   const {onPress} = props
-
-  // useEffect(()=>{
-  //   console.log(phoneNumber)
-  // }, []);
-
   return (
     <VStack
       w={"100%"}

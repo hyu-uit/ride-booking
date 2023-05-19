@@ -21,7 +21,8 @@ import { Ionicons } from "@expo/vector-icons";
 import { query, collection, getDocs, where } from "firebase/firestore";
 import { db } from "../../config/config";
 import { useEffect } from "react";
-import { Alert, AsyncStorage } from "react-native";
+import { Alert } from "react-native";
+import { AsyncStorage } from "react-native";
 
 const StudentOfficeScreen = ({ navigation }) => {
   const [service, setService] = useState(0);
@@ -112,8 +113,8 @@ const StudentOfficeScreen = ({ navigation }) => {
               data={users}
               keyExtractor={item=>item.name}
               renderItem={({item})=><StudentOfficeCard onPress={()=> {    
-                AsyncStorage.setItem('role',item.role),
                 AsyncStorage.setItem('phoneNumber',item.phoneNumber),
+                AsyncStorage.setItem('role',item.role),
                 navigation.navigate("StudentOfficeDetail")
             }} 
             user={item} key={item.name} ></StudentOfficeCard>}

@@ -42,6 +42,7 @@ const SignInScreen = ({ navigation }) => {
         if(docData.exists()){
           navigation.navigate("Verify")
         }else{
+          Alert.alert("Phone number has not been registered!")
           console.log("no such data");
         }
       }).catch((error)=>{
