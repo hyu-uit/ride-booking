@@ -23,8 +23,13 @@ const ActivityScreen = ({ navigation }) => {
 
   const FirstRoute = () => (
     <ScrollView>
-      <VStack mt={"17px"} justifyContent={"center"} alignItems={"center"}>
-        <BookingCard />
+      <VStack
+        mt={"17px"}
+        paddingX={"10px"}
+        justifyContent={"center"}
+        alignItems={"center"}
+      >
+        <BookingCard onPress={() => navigation.navigate("ActivityDetail")} />
         <BookingCard />
         <BookingCard />
         <BookingCard />
@@ -34,7 +39,12 @@ const ActivityScreen = ({ navigation }) => {
 
   const SecondRoute = () => (
     <ScrollView>
-      <VStack mt={"17px"} justifyContent={"center"} alignItems={"center"}>
+      <VStack
+        mt={"17px"}
+        paddingX={"10px"}
+        justifyContent={"center"}
+        alignItems={"center"}
+      >
         <BookingCard />
         <BookingCard />
       </VStack>
@@ -43,7 +53,12 @@ const ActivityScreen = ({ navigation }) => {
 
   const ThirdRoute = () => (
     <ScrollView>
-      <VStack mt={"17px"} justifyContent={"center"} alignItems={"center"}>
+      <VStack
+        mt={"17px"}
+        paddingX={"10px"}
+        justifyContent={"center"}
+        alignItems={"center"}
+      >
         <BookingCard />
       </VStack>
     </ScrollView>

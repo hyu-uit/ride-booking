@@ -69,7 +69,11 @@ const SignInScreen = ({ navigation }) => {
         h={"100%"}
       >
         <SafeAreaView style={{ width: "100%", height: "100%" }}>
-          <ButtonBack></ButtonBack>
+          <ButtonBack
+            onPress={() => {
+              navigation.goBack();
+            }}
+          ></ButtonBack>
           <Text style={{ ...FONTS.h2 }} mt={10} color={COLORS.white}>
             Let's sign you in
           </Text>

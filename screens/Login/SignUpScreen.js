@@ -85,7 +85,11 @@ const SignUpScreen = ({ navigation }) => {
       >
         <SafeAreaView style={{ width: "100%", height: "100%" }}>
           <VStack paddingBottom={2}>
-            <ButtonBack></ButtonBack>
+            <ButtonBack
+              onPress={() => {
+                navigation.goBack();
+              }}
+            ></ButtonBack>
             <Text style={{ ...FONTS.h2 }} mt={10} color={COLORS.white}>
               Create Account
             </Text>
