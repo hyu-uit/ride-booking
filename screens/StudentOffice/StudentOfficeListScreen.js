@@ -1,4 +1,4 @@
-import React, { useState , useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import {
   Button,
   HStack,
@@ -23,91 +23,98 @@ import { query, collection, getDocs, where } from "firebase/firestore";
 import { db } from "../../config/config";
 
 const StudentOfficeListScreen = ({ navigation }) => {
+  const [usersRider, setUsersRider] = useState([]);
+  const [usersCustomer, setUsersCustomer] = useState([]);
+  const [usersLock, setUsersLock] = useState([]);
 
-  const [usersRider, setUsersRider]= useState([]);
-  const [usersCustomer, setUsersCustomer]= useState([]);
-  const [usersLock, setUsersLock]= useState([]);
-
-  useEffect(()=>{
+  useEffect(() => {
     getUsersCustomer();
     getUsersRider();
     getUsersLock();
-  },[]);
+  }, []);
 
-  const getUsersRider=()=>{
-    let usersRider=[]
-      getDocs(query(collection(db,"Rider"), where('status','==','active')))
-      .then(docSnap=>{
-        docSnap.forEach((doc)=>{
-          usersRider.push({role:"Rider",
-            phoneNumber:doc.id, 
-            school:doc.data().school,
-            displayName:doc.data().displayName, 
-            email:doc.data().email, 
-            studentID:doc.data().studentID,   
-            portrait:doc.data().portrait,
-            cardFront:doc.data().cardFront,
-            cardBack:doc.data().cardBack
-          })
+  const getUsersRider = () => {
+    let usersRider = [];
+    getDocs(
+      query(collection(db, "Rider"), where("status", "==", "active"))
+    ).then((docSnap) => {
+      docSnap.forEach((doc) => {
+        usersRider.push({
+          role: "Rider",
+          phoneNumber: doc.id,
+          school: doc.data().school,
+          displayName: doc.data().displayName,
+          email: doc.data().email,
+          studentID: doc.data().studentID,
+          portrait: doc.data().portrait,
+          cardFront: doc.data().cardFront,
+          cardBack: doc.data().cardBack,
         });
-        setUsersRider(usersRider);
       });
+      setUsersRider(usersRider);
+    });
   };
-  const getUsersCustomer=()=>{
-    let usersCustomer=[]
-      getDocs(query(collection(db,"Customer"), where('status','==','active')))
-      .then(docSnap=>{
-        docSnap.forEach((doc)=>{
-          usersCustomer.push({role:"Customer",
-            phoneNumber:doc.id, 
-            school:doc.data().school,
-            displayName:doc.data().displayName, 
-            email:doc.data().email, 
-            studentID:doc.data().studentID,   
-            portrait:doc.data().portrait,
-            cardFront:doc.data().cardFront,
-            cardBack:doc.data().cardBack
-          })
+  const getUsersCustomer = () => {
+    let usersCustomer = [];
+    getDocs(
+      query(collection(db, "Customer"), where("status", "==", "active"))
+    ).then((docSnap) => {
+      docSnap.forEach((doc) => {
+        usersCustomer.push({
+          role: "Customer",
+          phoneNumber: doc.id,
+          school: doc.data().school,
+          displayName: doc.data().displayName,
+          email: doc.data().email,
+          studentID: doc.data().studentID,
+          portrait: doc.data().portrait,
+          cardFront: doc.data().cardFront,
+          cardBack: doc.data().cardBack,
         });
-        setUsersCustomer(usersCustomer);
       });
+      setUsersCustomer(usersCustomer);
+    });
   };
-  const getUsersLock=()=>{
-    let usersLock=[]
-      getDocs(query(collection(db,"Customer"), where('status','==','locked')))
-      .then(docSnap=>{
-        docSnap.forEach((doc)=>{
-          usersLock.push({role:"Customer",
-            phoneNumber:doc.id, 
-            school:doc.data().school,
-            displayName:doc.data().displayName, 
-            email:doc.data().email, 
-            studentID:doc.data().studentID,   
-            portrait:doc.data().portrait,
-            cardFront:doc.data().cardFront,
-            cardBack:doc.data().cardBack
-          })
+  const getUsersLock = () => {
+    let usersLock = [];
+    getDocs(
+      query(collection(db, "Customer"), where("status", "==", "locked"))
+    ).then((docSnap) => {
+      docSnap.forEach((doc) => {
+        usersLock.push({
+          role: "Customer",
+          phoneNumber: doc.id,
+          school: doc.data().school,
+          displayName: doc.data().displayName,
+          email: doc.data().email,
+          studentID: doc.data().studentID,
+          portrait: doc.data().portrait,
+          cardFront: doc.data().cardFront,
+          cardBack: doc.data().cardBack,
         });
       });
-      getDocs(query(collection(db,"Rider"), where('status','==','locked')))
-      .then(docSnap=>{
-        docSnap.forEach((doc)=>{
-          usersLock.push({role:"Rider",
-            phoneNumber:doc.id, 
-            school:doc.data().school,
-            displayName:doc.data().displayName, 
-            email:doc.data().email, 
-            studentID:doc.data().studentID,   
-            portrait:doc.data().portrait,
-            cardFront:doc.data().cardFront,
-            cardBack:doc.data().cardBack
-          })
+    });
+    getDocs(
+      query(collection(db, "Rider"), where("status", "==", "locked"))
+    ).then((docSnap) => {
+      docSnap.forEach((doc) => {
+        usersLock.push({
+          role: "Rider",
+          phoneNumber: doc.id,
+          school: doc.data().school,
+          displayName: doc.data().displayName,
+          email: doc.data().email,
+          studentID: doc.data().studentID,
+          portrait: doc.data().portrait,
+          cardFront: doc.data().cardFront,
+          cardBack: doc.data().cardBack,
         });
-        setUsersLock(usersLock);
       });
+      setUsersLock(usersLock);
+    });
   };
   const FirstRoute = () => (
-    <VStack paddingX={"10px"}>
+    <VStack paddingX={"10px"} w={"100%"}>
       <Input
         mb={5}
         borderRadius={10}
@@ -129,24 +136,30 @@ const StudentOfficeListScreen = ({ navigation }) => {
           />
         }
       />
-    <VStack mt={"17px"} justifyContent={"end"} alignItems={"center"}>
-      <ScrollView>
+      <VStack mt={"17px"} justifyContent={"end"} alignItems={"center"}>
+        <ScrollView w={"100%"}>
           {/* <StudentListCard
             onPress={() => {
               navigation.navigate("StudentListDetail");
             }}
           /> */}
           <FlatList
-              data={usersCustomer}
-              keyExtractor={item=>item.name}
-              renderItem={({item})=><StudentListCard
-              onPress={()=> {
-                const data ={phoneNumber:""+item.phoneNumber,role:""+item.role}
-                navigation.navigate("StudentListDetail",data)
-            }}              list={item}
-              ></StudentListCard>}
+            data={usersCustomer}
+            keyExtractor={(item) => item.name}
+            renderItem={({ item }) => (
+              <StudentListCard
+                onPress={() => {
+                  const data = {
+                    phoneNumber: "" + item.phoneNumber,
+                    role: "" + item.role,
+                  };
+                  navigation.navigate("StudentListDetail", data);
+                }}
+                list={item}
+              ></StudentListCard>
+            )}
           ></FlatList>
-      </ScrollView>
+        </ScrollView>
       </VStack>
     </VStack>
   );
@@ -174,20 +187,26 @@ const StudentOfficeListScreen = ({ navigation }) => {
           />
         }
       />
-      <ScrollView>
-        <VStack mt={"17px"} justifyContent={"center"} alignItems={"center"}>
-        <FlatList
-              data={usersRider}
-              keyExtractor={item=>item.name}
-              renderItem={({item})=><StudentListCard
-              onPress={()=> {
-                const data ={phoneNumber:""+item.phoneNumber,role:""+item.role}
-                navigation.navigate("StudentListDetail",data)
-            }}              list={item}
-              ></StudentListCard>}
+      <VStack mt={"17px"} justifyContent={"center"} alignItems={"center"}>
+        <ScrollView w={"100%"}>
+          <FlatList
+            data={usersRider}
+            keyExtractor={(item) => item.name}
+            renderItem={({ item }) => (
+              <StudentListCard
+                onPress={() => {
+                  const data = {
+                    phoneNumber: "" + item.phoneNumber,
+                    role: "" + item.role,
+                  };
+                  navigation.navigate("StudentListDetail", data);
+                }}
+                list={item}
+              ></StudentListCard>
+            )}
           ></FlatList>
-        </VStack>
-      </ScrollView>
+        </ScrollView>
+      </VStack>
     </VStack>
   );
 
@@ -214,21 +233,26 @@ const StudentOfficeListScreen = ({ navigation }) => {
           />
         }
       />
-      <ScrollView>
-        <VStack mt={"17px"} justifyContent={"center"} alignItems={"center"}>
-        <FlatList
-              data={usersLock}
-              keyExtractor={item=>item.name}
-              renderItem={({item})=><StudentListCard
-              onPress={()=> {
-                const data ={phoneNumber:""+item.phoneNumber,role:""+item.role}
-                navigation.navigate("StudentListDetail",data)
-            }}
+      <VStack mt={"17px"} justifyContent={"center"} alignItems={"center"}>
+        <ScrollView w={"100%"}>
+          <FlatList
+            data={usersLock}
+            keyExtractor={(item) => item.name}
+            renderItem={({ item }) => (
+              <StudentListCard
+                onPress={() => {
+                  const data = {
+                    phoneNumber: "" + item.phoneNumber,
+                    role: "" + item.role,
+                  };
+                  navigation.navigate("StudentListDetail", data);
+                }}
                 list={item}
-              ></StudentListCard>}
+              ></StudentListCard>
+            )}
           ></FlatList>
-        </VStack>
-      </ScrollView>
+        </ScrollView>
+      </VStack>
     </VStack>
   );
 
