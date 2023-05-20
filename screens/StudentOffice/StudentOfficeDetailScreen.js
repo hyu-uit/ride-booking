@@ -85,6 +85,7 @@ const StudentOfficeDetailScreen = ({ navigation, route }) => {
 
   const rejectRequest = () => {
     deleteDoc(doc(db, role, phoneNumber));
+    navigation.navigate("StudentOffice");
   };
   return (
     <VStack h={"100%"} bgColor={COLORS.background}>
