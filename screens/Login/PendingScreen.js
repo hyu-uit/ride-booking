@@ -13,7 +13,6 @@ import {
 } from "native-base";
 import { COLORS, FONTS, SIZES } from "../../constants/theme";
 import { SafeAreaView } from "react-native-safe-area-context";
-import PendingImg from "../../assets/images/StudentOffice/pending.png";
 
 const PendingScreen = ({ navigation }) => {
   return (

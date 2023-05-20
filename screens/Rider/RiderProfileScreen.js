@@ -19,85 +19,79 @@ import avatarIcon from "../../assets/avatar.png";
 
 const RiderProfileScreen = ({ navigation }) => {
   return (
-    <View
+    <VStack
       style={{
         backgroundColor: COLORS.background,
         height: "100%",
-        paddingVertical: 60,
-        paddingHorizontal: 20,
+        paddingHorizontal: 10,
       }}
     >
-      <VStack space={3} style={{ alignItems: "center" }}>
-        <View alignItems={"center"}>
-          <Text
-            style={{ color: COLORS.white, ...FONTS.h3, fontWeight: "bold" }}
-          >
-            Profile
+      <View alignItems={"center"}>
+        <Text style={{ color: COLORS.white, ...FONTS.h3, fontWeight: "bold" }}>
+          Profile
+        </Text>
+      </View>
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <VStack alignItems={"center"}>
+          <Avatar
+            source={avatarIcon}
+            style={{ height: 118, width: 118, marginTop: 15 }}
+          ></Avatar>
+          <Text style={{ ...FONTS.h1, color: COLORS.white }} mt={2}>
+            Phuong Uyen
           </Text>
-          <View
-            style={{
-              backgroundColor: COLORS.fourthary,
-              width: 68,
-              height: 5,
-              marginTop: 10,
+        </VStack>
+        <VStack marginTop={5} space={8}>
+          <VStack>
+            <Text style={{ ...FONTS.h4, color: COLORS.fifthary }} mt={10}>
+              Birthday
+            </Text>
+            <Text style={{ ...FONTS.h3, color: COLORS.white }} mt={2}>
+              23/03/2002
+            </Text>
+            <Text style={{ ...FONTS.h4, color: COLORS.fifthary }} mt={10}>
+              Student ID
+            </Text>
+            <Text style={{ ...FONTS.h3, color: COLORS.white }} mt={2}>
+              20520000
+            </Text>
+            <Text style={{ ...FONTS.h4, color: COLORS.fifthary }} mt={10}>
+              School
+            </Text>
+            <Text style={{ ...FONTS.h3, color: COLORS.white }} mt={2}>
+              University of Information Technology
+            </Text>
+            <Text style={{ ...FONTS.h4, color: COLORS.fifthary }} mt={10}>
+              Phone number
+            </Text>
+            <Text style={{ ...FONTS.h3, color: COLORS.white }} mt={2}>
+              0848867000
+            </Text>
+            <Text style={{ ...FONTS.h4, color: COLORS.fifthary }} mt={10}>
+              Email Address
+            </Text>
+            <Text style={{ ...FONTS.h3, color: COLORS.white }} mt={2}>
+              20520000@gm.uit.edu.vn
+            </Text>
+          </VStack>
+          <Button
+            w={"100%"}
+            mt={5}
+            borderRadius={20}
+            bgColor={COLORS.primary}
+            onPress={() => {
+              navigation.navigate("AuthenticationStack", {
+                screen: "SignIn",
+              });
             }}
-          ></View>
-        </View>
-        <Avatar
-          source={avatarIcon}
-          style={{ height: 118, width: 118, marginTop: 15 }}
-        ></Avatar>
-        <Text style={{ ...FONTS.h1, color: COLORS.white }}>Phuong Uyen</Text>
-      </VStack>
-      <VStack marginTop={5} space={8}>
-        <View>
-          <Text style={{ color: COLORS.grey, ...FONTS.body3 }}>
-            Vehicle information
-          </Text>
-          <View
-            justifyContent={"center"}
-            paddingHorizontal={24}
-            style={styles.label}
           >
-            <Text style={{ color: COLORS.grey, ...FONTS.body3 }}>
-              Ride Brand
+            <Text style={{ ...FONTS.h2 }} color={COLORS.white}>
+              Log Out
             </Text>
-            <Text style={{ color: COLORS.lightWhite, ...FONTS.body2 }}>
-              59X3-12345
-            </Text>
-          </View>
-        </View>
-        <View>
-          <Text style={{ color: COLORS.grey, ...FONTS.body3 }}>
-            Phone number
-          </Text>
-          <View
-            justifyContent={"center"}
-            paddingHorizontal={24}
-            style={styles.label}
-          >
-            <Text style={{ color: COLORS.lightWhite, ...FONTS.body2 }}>
-              0393123456
-            </Text>
-          </View>
-        </View>
-        <Button
-          w={"100%"}
-          mt={20}
-          borderRadius={20}
-          bgColor={COLORS.primary}
-          onPress={() => {
-            navigation.navigate("AuthenticationStack", {
-              screen: "Login",
-            });
-          }}
-        >
-          <Text style={{ ...FONTS.h2 }} color={COLORS.white}>
-            Log Out
-          </Text>
-        </Button>
-      </VStack>
-    </View>
+          </Button>
+        </VStack>
+      </ScrollView>
+    </VStack>
   );
 };
 const styles = StyleSheet.create({

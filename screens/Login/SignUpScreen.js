@@ -31,6 +31,9 @@ import {
 } from "firebase/firestore";
 import { Alert } from "react-native";
 import { AsyncStorage } from "react-native";
+import { LogBox } from "react-native";
+
+LogBox.ignoreAllLogs(); //Ignore all log notifications
 
 const SignUpScreen = ({ navigation }) => {
   const [school, setSchool] = useState("");
@@ -114,7 +117,7 @@ const SignUpScreen = ({ navigation }) => {
                 navigation.goBack();
               }}
             ></ButtonBack>
-            <Text style={{ ...FONTS.h2 }} mt={10} color={COLORS.white}>
+            <Text style={{ ...FONTS.h2 }} mt={2} color={COLORS.white}>
               Create Account
             </Text>
 

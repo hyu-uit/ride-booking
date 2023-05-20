@@ -10,6 +10,7 @@ import {
   Avatar,
   Switch,
   ScrollView,
+  Icon,
 } from "native-base";
 import DefaultAvt from "../../../assets/image6.png";
 import React, { useEffect, useState } from "react";
@@ -19,9 +20,12 @@ import QRImage from "../../../assets/images/Rider/qrImg.png";
 import { TabView, TabBar, SceneMap } from "react-native-tab-view";
 import HistoryCard from "../../../components/HistoryCard";
 import * as ImagePicker from "expo-image-picker";
+import HistoryPickUpCard from "../../../components/Driver/HistoryPickUpCard";
+import { Ionicons } from "@expo/vector-icons";
 
-const RiderHomeScreen = () => {
+const RiderHomeScreen = ({ navigation }) => {
   const [service, setService] = useState(0);
+  const [status, setStatus] = useState(0);
 
   const openCamera = async () => {
     let permissionResult = await ImagePicker.requestCameraPermissionsAsync();
@@ -38,10 +42,14 @@ const RiderHomeScreen = () => {
   const FirstRoute = () => (
     <ScrollView showsVerticalScrollIndicator={false}>
       <VStack mt={"17px"} justifyContent={"center"} alignItems={"center"}>
-        <HistoryCard />
-        <HistoryCard />
-        <HistoryCard />
-        <HistoryCard />
+        <HistoryPickUpCard
+          onPress={() => {
+            navigation.navigate("TripDetail");
+          }}
+        />
+        <HistoryPickUpCard />
+        <HistoryPickUpCard />
+        <HistoryPickUpCard />
       </VStack>
     </ScrollView>
   );
@@ -49,8 +57,10 @@ const RiderHomeScreen = () => {
   const SecondRoute = () => (
     <ScrollView showsVerticalScrollIndicator={false}>
       <VStack mt={"17px"} justifyContent={"center"} alignItems={"center"}>
-        <HistoryCard />
-        <HistoryCard />
+        <HistoryPickUpCard />
+        <HistoryPickUpCard />
+        <HistoryPickUpCard />
+        <HistoryPickUpCard />
       </VStack>
     </ScrollView>
   );
@@ -58,7 +68,10 @@ const RiderHomeScreen = () => {
   const ThirdRoute = () => (
     <ScrollView>
       <VStack mt={"17px"} justifyContent={"center"} alignItems={"center"}>
-        <HistoryCard />
+        <HistoryPickUpCard />
+        <HistoryPickUpCard />
+        <HistoryPickUpCard />
+        <HistoryPickUpCard />
       </VStack>
     </ScrollView>
   );
@@ -109,6 +122,52 @@ const RiderHomeScreen = () => {
                   <Switch defaultIsChecked></Switch>
                 </HStack>
               </HStack>
+
+              {status === 0 ? (
+                <></>
+              ) : (
+                <>
+                  <VStack
+                    bgColor={COLORS.fourthary}
+                    borderRadius={10}
+                    padding={3}
+                  >
+                    <HStack w={"100%"}>
+                      <Avatar source={DefaultAvt} alt="ava" />
+                      <Text
+                        fontSize={SIZES.h4}
+                        color={COLORS.fifthary}
+                        ml={2}
+                        bold
+                        position={"absolute"}
+                        right={0}
+                      >
+                        On going
+                      </Text>
+                      <VStack ml={2}>
+                        <HStack>
+                          <Text fontSize={SIZES.h4} color={COLORS.white} bold>
+                            Huỳnh Thế Vĩ
+                          </Text>
+                        </HStack>
+                        <Text fontSize={10} color={COLORS.grey}>
+                          University of Information Technology
+                        </Text>
+                      </VStack>
+                    </HStack>
+                    <HStack mt={2}>
+                      <Ionicons
+                        name={"location"}
+                        size={20}
+                        color={COLORS.white}
+                      />
+                      <Text fontSize={SIZES.h5} color={COLORS.white} bold>
+                        University of Information Technology
+                      </Text>
+                    </HStack>
+                  </VStack>
+                </>
+              )}
             </VStack>
             <TabView
               navigationState={{ index, routes }}

@@ -19,6 +19,7 @@ import IC_Bike_White from "../../assets/images/Activity/ic_bike_white.png";
 import IC_Bike_Blue from "../../assets/images/Activity/ic_bike_blue.png";
 import HistoryCard from "../../components/HistoryCard";
 import DriverBookingCard from "../../components/Driver/DriverBookingCard";
+import RequestCard from "../../components/Driver/RequestCard";
 
 const RiderSchedule = () => {
   const [service, setService] = useState(0);
@@ -26,7 +27,10 @@ const RiderSchedule = () => {
   const FirstRoute = () => (
     <ScrollView>
       <VStack mt={"17px"} justifyContent={"center"} alignItems={"center"}>
-        <DriverBookingCard />
+        <RequestCard />
+        <RequestCard />
+        <RequestCard />
+        <RequestCard />
       </VStack>
     </ScrollView>
   );
@@ -34,8 +38,10 @@ const RiderSchedule = () => {
   const SecondRoute = () => (
     <ScrollView>
       <VStack mt={"17px"} justifyContent={"center"} alignItems={"center"}>
-        <HistoryCard />
-        <HistoryCard />
+        <RequestCard />
+        <RequestCard />
+        <RequestCard />
+        <RequestCard />
       </VStack>
     </ScrollView>
   );

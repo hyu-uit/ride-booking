@@ -2,15 +2,10 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import React from "react";
 import { COLORS } from "../constants";
 import { Ionicons } from "@expo/vector-icons";
-import { HomeStackScreen } from "./HomeNavigator";
-import { ActivityStackScreen } from "./ActivityNavigator";
-import { PromotionStackScreen } from "./PromotionNavigator";
-import CustomerProfile from "../screens/Customer/Profile/CustomerProfile";
-import RiderHomeScreen from "../screens/Rider/Home/RiderHomeScreen";
 import RiderProfileScreen from "../screens/Rider/RiderProfileScreen";
 import IncomeScreen from "../screens/Rider/IncomeScreen";
-import ScheduledScreen from "../screens/Customer/Scheduled/ScheduledScreen";
 import RiderScheduleScreen from "../screens/Rider/RiderSchedule";
+import { RiderHomeStackScreen } from "./RiderHomeNavigator";
 
 const MainRiderTab = createBottomTabNavigator();
 
@@ -27,7 +22,7 @@ const MainRiderNavigator = ({ navigation }) => {
         tabBarIcon: ({ color, size }) => {
           let iconName;
 
-          if (route.name === "HomeRider") {
+          if (route.name === "RiderHomeStack") {
             iconName = "home";
           } else if (route.name === "RiderScheduled") {
             iconName = "list";
@@ -41,7 +36,10 @@ const MainRiderNavigator = ({ navigation }) => {
         },
       })}
     >
-      <MainRiderTab.Screen name="HomeRider" component={RiderHomeScreen} />
+      <MainRiderTab.Screen
+        name="RiderHomeStack"
+        component={RiderHomeStackScreen}
+      />
       <MainRiderTab.Screen
         name="RiderScheduled"
         component={RiderScheduleScreen}
