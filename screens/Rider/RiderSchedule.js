@@ -18,6 +18,7 @@ import { TabView, TabBar, SceneMap } from "react-native-tab-view";
 import IC_Bike_White from "../../assets/images/Activity/ic_bike_white.png";
 import IC_Bike_Blue from "../../assets/images/Activity/ic_bike_blue.png";
 import HistoryCard from "../../components/HistoryCard";
+import DriverBookingCard from "../../components/Driver/DriverBookingCard";
 
 const RiderSchedule = () => {
   const [service, setService] = useState(0);
@@ -25,14 +26,7 @@ const RiderSchedule = () => {
   const FirstRoute = () => (
     <ScrollView>
       <VStack mt={"17px"} justifyContent={"center"} alignItems={"center"}>
-        <HistoryCard />
-        <HistoryCard />
-        <HistoryCard />
-        <HistoryCard />
-        <HistoryCard />
-        <HistoryCard />
-        <HistoryCard />
-        <HistoryCard />
+        <DriverBookingCard />
       </VStack>
     </ScrollView>
   );
@@ -74,7 +68,7 @@ const RiderSchedule = () => {
           justifyContent={"center"}
         >
           <View style={{ position: "absolute", left: 0 }}></View>
-          <Text style={{ ...FONTS.h2, color: COLORS.white }} ml={4}>
+          <Text style={{ ...FONTS.h2, color: COLORS.white }} ml={4} mb={5}>
             Scheduled
           </Text>
         </HStack>

@@ -45,8 +45,8 @@ const ActivityScreen = ({ navigation }) => {
         justifyContent={"center"}
         alignItems={"center"}
       >
-        <BookingCard />
-        <BookingCard />
+        <BookingCard sta={1} />
+        <BookingCard sta={1} />
       </VStack>
     </ScrollView>
   );
@@ -59,7 +59,7 @@ const ActivityScreen = ({ navigation }) => {
         justifyContent={"center"}
         alignItems={"center"}
       >
-        <BookingCard />
+        <BookingCard sta={1} />
       </VStack>
     </ScrollView>
   );

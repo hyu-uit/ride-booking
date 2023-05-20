@@ -15,13 +15,19 @@ import { COLORS, FONTS, SIZES } from "../../constants/theme";
 import { SafeAreaView } from "react-native-safe-area-context";
 import ButtonBack from "../../components/Global/ButtonBack/ButtonBack";
 import { PixelRatio } from "react-native";
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import RejectModal from "../../components/Modal/RejectModal";
-import { collection, deleteDoc, doc, getDoc, updateDoc } from "firebase/firestore";
+import {
+  collection,
+  deleteDoc,
+  doc,
+  getDoc,
+  updateDoc,
+} from "firebase/firestore";
 import { db } from "../../config/config";
 import { Alert } from "react-native";
 
-const StudentOfficeDetailScreen = ({navigation, route}) => {
+const StudentOfficeDetailScreen = ({ navigation, route }) => {
   // const [phoneNumber, setPhoneNumber] = useState("");
   // const [role, setRole] = useState("");
   const [school, setSchool] = useState("");
@@ -32,37 +38,37 @@ const StudentOfficeDetailScreen = ({navigation, route}) => {
   const [email, setEmail] = useState("");
   const [displayName, setDisplayName] = useState("");
 
-  const {phoneNumber,role} = route.params;
+  const { phoneNumber, role } = route.params;
   useEffect(() => {
     getUserByPhoneNumber();
-  }, [])
- 
+  }, []);
+
   const getUserByPhoneNumber = () => {
     // setRole("Customer")
     // setPhoneNumber("0393751403")
     //getDoc(doc(db,"Customer" , "0393751403"))
-    let imgUrl=''
-    getDoc(doc(db,role, phoneNumber))
-      .then(docSnap => {
-        if (docSnap.exists()) {
-          //setRole(role)
-          setCardBack(docSnap.data().cardBack)
-          setCardFront(docSnap.data().cardFront)
-          setDisplayName(docSnap.data().displayName)
-          setEmail(docSnap.data().email)
-          //setPhoneNumber(docSnap.id)
-          imgUrl=docSnap.data().portrait
-          setSchool(docSnap.data().school)
-          setStudentID(docSnap.data().studentID)
-          //console.log(docSnap.data().portrait)
-          imgUrl=docSnap.data().portrait
-        } else {
-          console.log("No such data")}
-          setPortrait(imgUrl)
-
-      }) 
-      console.log(imgUrl)
-
+    let imgUrl = "";
+    getDoc(doc(db, role, phoneNumber)).then((docSnap) => {
+      if (docSnap.exists()) {
+        //setRole(role)
+        setCardBack(docSnap.data().cardBack);
+        setCardFront(docSnap.data().cardFront);
+        setDisplayName(docSnap.data().displayName);
+        setEmail(docSnap.data().email);
+        //setPhoneNumber(docSnap.id)
+        imgUrl = docSnap.data().portrait;
+        setSchool(docSnap.data().school);
+        setStudentID(docSnap.data().studentID);
+        //console.log(docSnap.data().portrait)
+        imgUrl = docSnap.data().portrait;
+        console.log(cardFront);
+        console.log(cardBack);
+      } else {
+        console.log("No such data");
+      }
+      setPortrait(imgUrl);
+    });
+    console.log(imgUrl);
   };
   const width = 224;
   const height = width * 1.5;
@@ -74,12 +80,12 @@ const StudentOfficeDetailScreen = ({navigation, route}) => {
     updateDoc(doc(db, role, phoneNumber), {
       status: "active",
     });
-    navigation.navigate("StudentOffice");  
+    navigation.navigate("StudentOffice");
   };
 
   const rejectRequest = () => {
-    deleteDoc(doc(db,role,phoneNumber))
-  }
+    deleteDoc(doc(db, role, phoneNumber));
+  };
   return (
     <VStack h={"100%"} bgColor={COLORS.background}>
       <SafeAreaView>
@@ -108,13 +114,21 @@ const StudentOfficeDetailScreen = ({navigation, route}) => {
                 alignSelf={"center"}
                 justifyContent={"center"}
               >
-                <Image w={width + "px"} h={height + "px"} alt="portrait" source={{ uri:portrait }}></Image>
+                <Image
+                  w={width + "px"}
+                  h={height + "px"}
+                  alt="portrait"
+                  source={{
+                    uri: "https://firebasestorage.googleapis.com/v0/b/ride-booking-8d9af.appspot.com/o/0848867679face?alt=media&token=d3af0a62-3a38-4bf2-9345-a4e61c4d656f",
+                  }}
+                ></Image>
               </View>
 
               <Text style={{ ...FONTS.h4, color: COLORS.fifthary }} mt={10}>
                 Role
               </Text>
-              <Text style={{ ...FONTS.h3, color: COLORS.white }} mt={2}>{role}
+              <Text style={{ ...FONTS.h3, color: COLORS.white }} mt={2}>
+                {role}
               </Text>
               <Text style={{ ...FONTS.h4, color: COLORS.fifthary }} mt={10}>
                 Full name
@@ -160,7 +174,14 @@ const StudentOfficeDetailScreen = ({navigation, route}) => {
                 borderRadius={10}
                 mt={10}
               >
-                <Image h={IDHeight + "px"} w={IDWidth + "px"} alt="cardFront" source={{ uri: cardFront }}></Image>
+                <Image
+                  h={IDHeight + "px"}
+                  w={IDWidth + "px"}
+                  alt="cardFront"
+                  source={{
+                    uri: "https://firebasestorage.googleapis.com/v0/b/ride-booking-8d9af.appspot.com/o/0848867679front?alt=media&token=ee7995d9-a538-44a1-b98a-ff8d7f674a59",
+                  }}
+                ></Image>
               </View>
               <View
                 h={IDHeight + "px"}
@@ -169,7 +190,14 @@ const StudentOfficeDetailScreen = ({navigation, route}) => {
                 borderRadius={10}
                 mt={10}
               >
-                <Image h={IDHeight + "px"} w={IDWidth + "px"} alt="cardBack" source={{ uri: cardBack }}></Image>
+                <Image
+                  h={IDHeight + "px"}
+                  w={IDWidth + "px"}
+                  alt="cardBack"
+                  source={{
+                    uri: "https://firebasestorage.googleapis.com/v0/b/ride-booking-8d9af.appspot.com/o/0848867679back?alt=media&token=2ef403f8-ec7a-4296-83bf-5f381514d7af",
+                  }}
+                ></Image>
               </View>
 
               <HStack justifyContent={"space-between"}>

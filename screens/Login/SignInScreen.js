@@ -19,42 +19,42 @@ const SignInScreen = ({ navigation }) => {
   const [role, setRole] = useState(0);
 
   const [phoneNumber, setPhoneNumber] = useState("");
-  const [displayOTPInput, setDisplayOTPInput]=useState(false);
-  const [code, setCode]=useState('');
-  const [confirmation, setConfirmation]=useState('');
+  const [displayOTPInput, setDisplayOTPInput] = useState(false);
+  const [code, setCode] = useState("");
+  const [confirmation, setConfirmation] = useState("");
 
-  const countryCode='+84';
+  const countryCode = "+84";
 
   // const requestOTP = async ()=>{
   //   setDisplayOTPInput(true);
-    
+
   //   const confirmation = await firebase.auth().signInWithPhoneNumber(countryCode+phoneNumber);
   //   setConfirmation(confirmation);
   // }
   // const checkPhoneNumber = ()=>{
   //   setDoc(doc(db, "Customer", "0972987357"),{
-      
+
   //   })
   // }
-  const checkPhoneNumber = ()=>{
-    getDoc(doc(db,"Customer",phoneNumber))
-      .then(docData=>{ 
-        if(docData.exists()){
-          navigation.navigate("Verify")
-        }else{
-          Alert.alert("Phone number has not been registered!")
+  const checkPhoneNumber = () => {
+    getDoc(doc(db, "Customer", phoneNumber))
+      .then((docData) => {
+        if (docData.exists()) {
+          navigation.navigate("Verify");
+        } else {
+          Alert.alert("Phone number has not been registered!");
           console.log("no such data");
         }
-      }).catch((error)=>{
       })
-}
-  const onHandleLogin=()=>{
-    if(role==1){
+      .catch((error) => {});
+  };
+  const onHandleLogin = () => {
+    if (role == 1) {
       navigation.navigate("MainRiderNavigator", {
         screen: "HomeRider",
       });
     }
-  }
+  };
 
   return (
     <TouchableWithoutFeedback
@@ -76,9 +76,6 @@ const SignInScreen = ({ navigation }) => {
           ></ButtonBack>
           <Text style={{ ...FONTS.h2 }} mt={10} color={COLORS.white}>
             Let's sign you in
-          </Text>
-          <Text style={{ ...FONTS.bopdy3 }} mt={60} color={COLORS.white}>
-            Please choose your role
           </Text>
           <HStack mt={7} w={"100%"}>
             <Button
@@ -105,6 +102,9 @@ const SignInScreen = ({ navigation }) => {
               bgColor={role === 1 ? COLORS.fourthary : "transparent"}
               onPress={() => {
                 setRole(1);
+                navigation.navigate("MainRiderNavigator", {
+                  screen: "HomeRider",
+                });
               }}
               ml={4}
             >
@@ -155,7 +155,7 @@ const SignInScreen = ({ navigation }) => {
                 onPress={() => {
                   navigation.navigate("SignUp");
                 }}
-                color={COLORS.white}
+                color={COLORS.primary}
                 style={{ ...FONTS.body3, fontWeight: "bold" }}
               >
                 Register
@@ -166,11 +166,11 @@ const SignInScreen = ({ navigation }) => {
               borderRadius={20}
               bgColor={COLORS.primary}
               onPress={
-                  // ()=>{navigation.navigate("Verify", {code: code});}
-                  //requestOTP
-                  //onHandleLogin
-                  //checkPhoneNumber
-                  checkPhoneNumber
+                // ()=>{navigation.navigate("Verify", {code: code});}
+                //requestOTP
+                //onHandleLogin
+                //checkPhoneNumber
+                checkPhoneNumber
               }
             >
               <Text style={{ ...FONTS.h2 }} color={COLORS.white}>

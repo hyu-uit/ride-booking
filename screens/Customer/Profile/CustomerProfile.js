@@ -17,8 +17,25 @@ import { SIZES, COLORS, FONTS } from "../../../constants/theme";
 import ButtonBack from "../../../components/Global/ButtonBack/ButtonBack";
 import DefaultAvt from "../../../assets/image6.png";
 import { Ionicons } from "@expo/vector-icons";
+import * as ImagePicker from "expo-image-picker";
 
 const CustomerProfile = ({ navigation }) => {
+  const [profileImg, setProfileImg] = useState(null);
+
+  const pickImage = async () => {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [3, 4],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      setProfileImg(result.assets[0].uri);
+    }
+    console.log(result.assets[0].uri);
+  };
+
   return (
     <VStack h={"100%"} paddingTop={"20px"} bgColor={COLORS.background}>
       <SafeAreaView>
@@ -31,10 +48,15 @@ const CustomerProfile = ({ navigation }) => {
           <ScrollView showsVerticalScrollIndicator={false}>
             <VStack mt={5} alignItems={"center"}>
               <HStack w={"118px"}>
-                <Avatar source={DefaultAvt} h={"118px"} w={"118px"} />
+                <Avatar
+                  source={!profileImg ? DefaultAvt : { uri: profileImg }}
+                  h={"118px"}
+                  w={"118px"}
+                />
                 <Button
                   bgColor={"transparent"}
                   style={{ position: "absolute", bottom: -10, right: -15 }}
+                  onPress={pickImage}
                 >
                   <Ionicons name="pencil" size={20} color={COLORS.white} />
                 </Button>

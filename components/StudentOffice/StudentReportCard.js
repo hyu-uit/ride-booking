@@ -14,17 +14,12 @@ import { COLORS, SIZES, FONTS } from "../../constants/theme";
 import { TouchableOpacity } from "react-native";
 import DisappointedIcon from "../../assets/icons8-frowning-face-96.png";
 
-function StudentReportCard (props){
-  let {
-    role,
-    phoneNumber, 
-    school,
-    displayName, 
-    email, 
-    studentID,   
-    portrait,
-  } = props.listUser
-  const {onPress} = props
+function StudentReportCard(props) {
+  let { role, phoneNumber, school, displayName, email, studentID, portrait } =
+    props.listUser;
+  const { onPress } = props;
+
+  const [locked, setLocked] = useState();
 
   return (
     <View
@@ -39,7 +34,7 @@ function StudentReportCard (props){
       <HStack>
         <VStack>
           <HStack w={"full"}>
-            <Avatar source={{uri:portrait}} margin={"10px 0 0 10px"} />
+            <Avatar source={{ uri: portrait }} margin={"10px 0 0 10px"} />
             <VStack margin={"10px 0 0 10px"}>
               <Text bold fontSize={SIZES.h4} color={"white"}>
                 {displayName}
@@ -82,22 +77,42 @@ function StudentReportCard (props){
           </HStack>
         </VStack>
         <VStack alignItems={"flex-end"} flex>
-          <Button
-            w={"70%"}
-            variant={"outline"}
-            borderRadius={20}
-            borderColor={COLORS.red}
-            onPress={() => {}}
-            mt={10}
-          >
-            <Text style={{ ...FONTS.h6 }} color={COLORS.red}>
-              Lock account
-            </Text>
-          </Button>
+          {locked === 0 ? (
+            <>
+              <Button
+                w={"70%"}
+                variant={"outline"}
+                borderRadius={20}
+                borderColor={COLORS.red}
+                onPress={() => {}}
+                mt={10}
+              >
+                <Text style={{ ...FONTS.h6 }} color={COLORS.red}>
+                  Lock account
+                </Text>
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button
+                w={"70%"}
+                variant={"outline"}
+                borderRadius={20}
+                mr={2}
+                borderColor={COLORS.primary}
+                onPress={() => {}}
+                mt={10}
+              >
+                <Text style={{ ...FONTS.h6 }} color={COLORS.white}>
+                  Unlock
+                </Text>
+              </Button>
+            </>
+          )}
         </VStack>
       </HStack>
     </View>
   );
-};
+}
 
 export default StudentReportCard;

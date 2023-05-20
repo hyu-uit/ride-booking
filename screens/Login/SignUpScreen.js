@@ -7,15 +7,29 @@ import {
   Select,
   Text,
   VStack,
+  View,
 } from "native-base";
-import { Keyboard, TouchableWithoutFeedback } from "react-native";
+import {
+  Keyboard,
+  ScrollViewBase,
+  TouchableWithoutFeedback,
+} from "react-native";
 import React, { useState } from "react";
 import ButtonBack from "../../components/Global/ButtonBack/ButtonBack";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { COLORS, FONTS } from "../../constants";
 import { db } from "../../config/config";
-import { doc, setDoc, addDoc, getDoc, getDocs, query, collection, documentId } from "firebase/firestore"
-import { Alert } from 'react-native'
+import {
+  doc,
+  setDoc,
+  addDoc,
+  getDoc,
+  getDocs,
+  query,
+  collection,
+  documentId,
+} from "firebase/firestore";
+import { Alert } from "react-native";
 import { AsyncStorage } from "react-native";
 
 const SignUpScreen = ({ navigation }) => {
@@ -27,49 +41,59 @@ const SignUpScreen = ({ navigation }) => {
   const [role, setRole] = useState("");
 
   const signUp = () => {
-    if (role == "" || name == "" || id == "", school == "", phoneNumber == "", email == "") {
-      Alert.alert('Please enter your information.', '',
-        [{
-          text: 'OK',
-        }])
+    if (
+      (role == "" || name == "" || id == "",
+      school == "",
+      phoneNumber == "",
+      email == "")
+    ) {
+      Alert.alert("Please enter your information.", "", [
+        {
+          text: "OK",
+        },
+      ]);
     } else if (phoneNumber.length !== 10) {
-      Alert.alert('Invalid phone number',
-        'Please re-enter your phone number.',
-        [{
-          text: 'OK',
-        }])
+      Alert.alert(
+        "Invalid phone number",
+        "Please re-enter your phone number.",
+        [
+          {
+            text: "OK",
+          },
+        ]
+      );
     } else {
-      let count =0;
-      getDocs(collection(db, role))
-        .then(docSnap=>{
-          docSnap.forEach((doc)=>{
-            if(doc.id==phoneNumber) count++;
-            console.log(doc.id);
-          });
-          if (count==0) {
-            setDoc(doc(db, role, phoneNumber), {
-              displayName: name,
-              email: email,
-              school: school,
-              studentID: id,
-              status: "pending"
-            });
-            AsyncStorage.setItem('phoneNumber', phoneNumber);
-            AsyncStorage.setItem('role', role);
-            navigation.navigate("UploadID");
-          } else {
-            Alert.alert('Phone number has been existed!',
-              'Please re-enter your phone number.',
-              [{
-                text: 'OK',
-              }])
-          }
+      let count = 0;
+      getDocs(collection(db, role)).then((docSnap) => {
+        docSnap.forEach((doc) => {
+          if (doc.id == phoneNumber) count++;
+          console.log(doc.id);
         });
-          
-
+        if (count == 0) {
+          setDoc(doc(db, role, phoneNumber), {
+            displayName: name,
+            email: email,
+            school: school,
+            studentID: id,
+            status: "pending",
+          });
+          AsyncStorage.setItem("phoneNumber", phoneNumber);
+          AsyncStorage.setItem("role", role);
+          navigation.navigate("UploadID");
+        } else {
+          Alert.alert(
+            "Phone number has been existed!",
+            "Please re-enter your phone number.",
+            [
+              {
+                text: "OK",
+              },
+            ]
+          );
+        }
+      });
     }
-  }
-
+  };
 
   return (
     <TouchableWithoutFeedback
@@ -120,7 +144,9 @@ const SignUpScreen = ({ navigation }) => {
                 borderColor={COLORS.secondary}
                 mt={5}
                 placeholder="Full name"
-                onChangeText={(name) => { setName(name) }}
+                onChangeText={(name) => {
+                  setName(name);
+                }}
                 style={{ ...FONTS.body3 }}
                 color={COLORS.white}
               />
@@ -131,7 +157,9 @@ const SignUpScreen = ({ navigation }) => {
                 borderColor={COLORS.secondary}
                 mt={5}
                 placeholder="Student ID"
-                onChangeText={(id) => { setID(id) }}
+                onChangeText={(id) => {
+                  setID(id);
+                }}
                 style={{ ...FONTS.body3 }}
                 color={COLORS.white}
               />
@@ -173,7 +201,9 @@ const SignUpScreen = ({ navigation }) => {
                 borderColor={COLORS.secondary}
                 mt={5}
                 placeholder="Phone number"
-                onChangeText={(phoneNumber) => { setPhoneNumber(phoneNumber) }}
+                onChangeText={(phoneNumber) => {
+                  setPhoneNumber(phoneNumber);
+                }}
                 style={{ ...FONTS.body3 }}
                 color={COLORS.white}
                 keyboardType="numeric"
@@ -185,7 +215,9 @@ const SignUpScreen = ({ navigation }) => {
                 borderColor={COLORS.secondary}
                 mt={5}
                 placeholder="Email address"
-                onChangeText={(email) => { setEmail(email) }}
+                onChangeText={(email) => {
+                  setEmail(email);
+                }}
                 style={{ ...FONTS.body3 }}
                 color={COLORS.white}
               />
@@ -208,9 +240,7 @@ const SignUpScreen = ({ navigation }) => {
                   w={"100%"}
                   borderRadius={20}
                   bgColor={COLORS.primary}
-                  onPress={
-                    signUp
-                  }
+                  onPress={signUp}
                 >
                   <Text style={{ ...FONTS.h2 }} color={COLORS.white}>
                     Continue

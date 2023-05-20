@@ -25,87 +25,95 @@ import StudentReportCard from "../../components/StudentOffice/StudentReportCard"
 import { query, collection, getDocs, where } from "firebase/firestore";
 import { db } from "../../config/config";
 const StudentReportScreen = ({ navigation }) => {
-  const [usersRider, setUsersRider]= useState([]);
-  const [usersCustomer, setUsersCustomer]= useState([]);
-  const [usersLock, setUsersLock]= useState([]);
+  const [usersRider, setUsersRider] = useState([]);
+  const [usersCustomer, setUsersCustomer] = useState([]);
+  const [usersLock, setUsersLock] = useState([]);
 
-  useEffect(()=>{
+  useEffect(() => {
     getUsersCustomer();
     getUsersRider();
     getUsersLock();
-  },[]);
+  }, []);
 
-  const getUsersRider=()=>{
-    let usersRider=[]
-      getDocs(query(collection(db,"Rider"), where('status','==','active')))
-      .then(docSnap=>{
-        docSnap.forEach((doc)=>{
-          usersRider.push({role:"Rider",
-            phoneNumber:doc.id, 
-            school:doc.data().school,
-            displayName:doc.data().displayName, 
-            email:doc.data().email, 
-            studentID:doc.data().studentID,   
-            portrait:doc.data().portrait,
-            cardFront:doc.data().cardFront,
-            cardBack:doc.data().cardBack
-          })
+  const getUsersRider = () => {
+    let usersRider = [];
+    getDocs(
+      query(collection(db, "Rider"), where("status", "==", "active"))
+    ).then((docSnap) => {
+      docSnap.forEach((doc) => {
+        usersRider.push({
+          role: "Rider",
+          phoneNumber: doc.id,
+          school: doc.data().school,
+          displayName: doc.data().displayName,
+          email: doc.data().email,
+          studentID: doc.data().studentID,
+          portrait: doc.data().portrait,
+          cardFront: doc.data().cardFront,
+          cardBack: doc.data().cardBack,
         });
-        setUsersRider(usersRider);
       });
+      setUsersRider(usersRider);
+    });
   };
-  const getUsersCustomer=()=>{
-    let usersCustomer=[]
-      getDocs(query(collection(db,"Customer"), where('status','==','active')))
-      .then(docSnap=>{
-        docSnap.forEach((doc)=>{
-          usersCustomer.push({role:"Customer",
-            phoneNumber:doc.id, 
-            school:doc.data().school,
-            displayName:doc.data().displayName, 
-            email:doc.data().email, 
-            studentID:doc.data().studentID,   
-            portrait:doc.data().portrait,
-            cardFront:doc.data().cardFront,
-            cardBack:doc.data().cardBack
-          })
+  const getUsersCustomer = () => {
+    let usersCustomer = [];
+    getDocs(
+      query(collection(db, "Customer"), where("status", "==", "active"))
+    ).then((docSnap) => {
+      docSnap.forEach((doc) => {
+        usersCustomer.push({
+          role: "Customer",
+          phoneNumber: doc.id,
+          school: doc.data().school,
+          displayName: doc.data().displayName,
+          email: doc.data().email,
+          studentID: doc.data().studentID,
+          portrait: doc.data().portrait,
+          cardFront: doc.data().cardFront,
+          cardBack: doc.data().cardBack,
         });
-        setUsersCustomer(usersCustomer);
       });
+      setUsersCustomer(usersCustomer);
+    });
   };
-  const getUsersLock=()=>{
-    let usersLock=[]
-      getDocs(query(collection(db,"Customer"), where('status','==','locked')))
-      .then(docSnap=>{
-        docSnap.forEach((doc)=>{
-          usersLock.push({role:"Customer",
-            phoneNumber:doc.id, 
-            school:doc.data().school,
-            displayName:doc.data().displayName, 
-            email:doc.data().email, 
-            studentID:doc.data().studentID,   
-            portrait:doc.data().portrait,
-            cardFront:doc.data().cardFront,
-            cardBack:doc.data().cardBack
-          })
+  const getUsersLock = () => {
+    let usersLock = [];
+    getDocs(
+      query(collection(db, "Customer"), where("status", "==", "locked"))
+    ).then((docSnap) => {
+      docSnap.forEach((doc) => {
+        usersLock.push({
+          role: "Customer",
+          phoneNumber: doc.id,
+          school: doc.data().school,
+          displayName: doc.data().displayName,
+          email: doc.data().email,
+          studentID: doc.data().studentID,
+          portrait: doc.data().portrait,
+          cardFront: doc.data().cardFront,
+          cardBack: doc.data().cardBack,
         });
       });
-      getDocs(query(collection(db,"Rider"), where('status','==','locked')))
-      .then(docSnap=>{
-        docSnap.forEach((doc)=>{
-          usersLock.push({role:"Rider",
-            phoneNumber:doc.id, 
-            school:doc.data().school,
-            displayName:doc.data().displayName, 
-            email:doc.data().email, 
-            studentID:doc.data().studentID,   
-            portrait:doc.data().portrait,
-            cardFront:doc.data().cardFront,
-            cardBack:doc.data().cardBack
-          })
+    });
+    getDocs(
+      query(collection(db, "Rider"), where("status", "==", "locked"))
+    ).then((docSnap) => {
+      docSnap.forEach((doc) => {
+        usersLock.push({
+          role: "Rider",
+          phoneNumber: doc.id,
+          school: doc.data().school,
+          displayName: doc.data().displayName,
+          email: doc.data().email,
+          studentID: doc.data().studentID,
+          portrait: doc.data().portrait,
+          cardFront: doc.data().cardFront,
+          cardBack: doc.data().cardBack,
         });
-        setUsersLock(usersLock);
       });
+      setUsersLock(usersLock);
+    });
   };
   const FirstRoute = () => (
     <VStack paddingX={"10px"}>
@@ -130,16 +138,17 @@ const StudentReportScreen = ({ navigation }) => {
           />
         }
       />
-      <ScrollView>
-        <VStack mt={"17px"} justifyContent={"center"} alignItems={"center"}>
-         
+      <VStack mt={"17px"} justifyContent={"center"} alignItems={"center"}>
+        <ScrollView w={"100%"}>
           <FlatList
-              data={usersCustomer}
-              keyExtractor={item=>item.name}
-              renderItem={({item})=><StudentReportCard listUser={item}></StudentReportCard>}
+            data={usersCustomer}
+            keyExtractor={(item) => item.name}
+            renderItem={({ item }) => (
+              <StudentReportCard listUser={item}></StudentReportCard>
+            )}
           ></FlatList>
-        </VStack>
-      </ScrollView>
+        </ScrollView>
+      </VStack>
     </VStack>
   );
 
@@ -166,16 +175,17 @@ const StudentReportScreen = ({ navigation }) => {
           />
         }
       />
-      <ScrollView>
-        <VStack mt={"17px"} justifyContent={"center"} alignItems={"center"}>
-          
+      <VStack mt={"17px"} justifyContent={"center"} alignItems={"center"}>
+        <ScrollView w={"100%"}>
           <FlatList
-              data={usersRider}
-              keyExtractor={item=>item.name}
-              renderItem={({item})=><StudentReportCard listUser={item}></StudentReportCard>}
+            data={usersRider}
+            keyExtractor={(item) => item.name}
+            renderItem={({ item }) => (
+              <StudentReportCard listUser={item}></StudentReportCard>
+            )}
           ></FlatList>
-        </VStack>
-      </ScrollView>
+        </ScrollView>
+      </VStack>
     </VStack>
   );
 
@@ -202,19 +212,19 @@ const StudentReportScreen = ({ navigation }) => {
           />
         }
       />
-      <ScrollView>
-        <VStack mt={"17px"} justifyContent={"center"} alignItems={"center"}>
+      <VStack mt={"17px"} justifyContent={"center"} alignItems={"center"}>
+        <ScrollView w={"100%"}>
           {/* <StudentListCard />
           <StudentListCard /> */}
           <FlatList
-              data={usersLock}
-              keyExtractor={item=>item.name}
-              renderItem={({item})=><StudentListCard
-              list={item}
-              ></StudentListCard>}
+            data={usersLock}
+            keyExtractor={(item) => item.name}
+            renderItem={({ item }) => (
+              <StudentListCard list={item}></StudentListCard>
+            )}
           ></FlatList>
-        </VStack>
-      </ScrollView>
+        </ScrollView>
+      </VStack>
     </VStack>
   );
 

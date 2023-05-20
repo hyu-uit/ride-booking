@@ -22,47 +22,51 @@ import { query, collection, getDocs, where } from "firebase/firestore";
 import { db } from "../../config/config";
 import { useEffect } from "react";
 import { Alert } from "react-native";
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const StudentOfficeScreen = ({ navigation }) => {
   const [service, setService] = useState(0);
   const [users, setUsers] = useState([]);
-  useEffect(()=>{
+  useEffect(() => {
     getUsers();
-  },[]);
-  const getUsers= ()=>{
-    let users=[]
-    getDocs(query(collection(db,"Customer"), where('status','==','pending')))
-      .then(docSnap=>{
-        docSnap.forEach((doc)=>{
-          users.push({role:"Customer",
-            phoneNumber:doc.id, 
-            school:doc.data().school,
-            displayName:doc.data().displayName, 
-            email:doc.data().email, 
-            studentID:doc.data().studentID, 
-            portrait:doc.data().portrait,
-            cardFront:doc.data().cardFront,
-            cardBack:doc.data().cardBack
-          })
+  }, []);
+  const getUsers = () => {
+    let users = [];
+    getDocs(
+      query(collection(db, "Customer"), where("status", "==", "pending"))
+    ).then((docSnap) => {
+      docSnap.forEach((doc) => {
+        users.push({
+          role: "Customer",
+          phoneNumber: doc.id,
+          school: doc.data().school,
+          displayName: doc.data().displayName,
+          email: doc.data().email,
+          studentID: doc.data().studentID,
+          portrait: doc.data().portrait,
+          cardFront: doc.data().cardFront,
+          cardBack: doc.data().cardBack,
         });
       });
-      getDocs(query(collection(db,"Rider"), where('status','==','pending')))
-      .then(docSnap=>{
-        docSnap.forEach((doc)=>{
-          users.push({role:"Rider",
-            phoneNumber:doc.id, 
-            school:doc.data().school,
-            displayName:doc.data().displayName, 
-            email:doc.data().email, 
-            studentID:doc.data().studentID,   
-            portrait:doc.data().portrait,
-            cardFront:doc.data().cardFront,
-            cardBack:doc.data().cardBack
-          })
+    });
+    getDocs(
+      query(collection(db, "Rider"), where("status", "==", "pending"))
+    ).then((docSnap) => {
+      docSnap.forEach((doc) => {
+        users.push({
+          role: "Rider",
+          phoneNumber: doc.id,
+          school: doc.data().school,
+          displayName: doc.data().displayName,
+          email: doc.data().email,
+          studentID: doc.data().studentID,
+          portrait: doc.data().portrait,
+          cardFront: doc.data().cardFront,
+          cardBack: doc.data().cardBack,
         });
-        setUsers(users);
       });
+      setUsers(users);
+    });
   };
   return (
     <VStack h={"100%"} bgColor={COLORS.background} getUsers>
@@ -106,18 +110,26 @@ const StudentOfficeScreen = ({ navigation }) => {
               />
             }
           />
-          <ScrollView >
-              <FlatList
+          <ScrollView>
+            <FlatList
               data={users}
-              keyExtractor={item=>item.name}
-              renderItem={({item})=><StudentOfficeCard onPress={()=> {    
-                // AsyncStorage.setItem('phoneNumber',item.phoneNumber),
-                // AsyncStorage.setItem('role',item.role),
-                
-                const data ={phoneNumber:""+item.phoneNumber,role:""+item.role}
-                navigation.navigate("StudentOfficeDetail", data)
-            }} 
-            user={item} key={item.name} ></StudentOfficeCard>}
+              keyExtractor={(item) => item.name}
+              renderItem={({ item }) => (
+                <StudentOfficeCard
+                  onPress={() => {
+                    // AsyncStorage.setItem('phoneNumber',item.phoneNumber),
+                    // AsyncStorage.setItem('role',item.role),
+
+                    const data = {
+                      phoneNumber: "" + item.phoneNumber,
+                      role: "" + item.role,
+                    };
+                    navigation.navigate("StudentOfficeDetail", data);
+                  }}
+                  user={item}
+                  key={item.name}
+                ></StudentOfficeCard>
+              )}
             ></FlatList>
           </ScrollView>
         </VStack>
