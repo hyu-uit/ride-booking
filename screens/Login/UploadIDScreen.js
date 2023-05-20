@@ -27,6 +27,10 @@ import { doc, updateDoc } from "firebase/firestore";
 const UploadID = ({ navigation }) => {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [role, setRole] = useState("");
+  const [email, setEmail] = useState("");
+  const [id, setStudentID] = useState("");
+  const [school, setSchool] = useState("");
+  const [name, setDisplayName] = useState("");
 
   useEffect(()=>{
     AsyncStorage.getItem('phoneNumber').then(result => {
@@ -35,6 +39,22 @@ const UploadID = ({ navigation }) => {
     });
     AsyncStorage.getItem('role').then(result => {
       setRole(result);
+      console.log(result);
+    });
+    AsyncStorage.getItem('email').then(result => {
+      setEmail(result);
+      console.log(result);
+    });
+    AsyncStorage.getItem('studentID').then(result => {
+      setStudentID(result);
+      console.log(result);
+    });
+    AsyncStorage.getItem('school').then(result => {
+      setSchool(result);
+      console.log(result);
+    });
+    AsyncStorage.getItem('displayName').then(result => {
+      setDisplayName(result);
       console.log(result);
     })
   }, [])
@@ -48,61 +68,15 @@ const UploadID = ({ navigation }) => {
 
   //upload image to firebase storage
   const uploadImage = async ()=>{
-    //convert image into blob image
-    const uploadFront = await new Promise((resolve, reject)=>{
-      const xhr = new XMLHttpRequest();
-      xhr.onload=function(){
-        resolve(xhr.response);
-      };
-      xhr.onerror=function(){
-        reject(TypeError("Network request failed"));
-      };
-      xhr.responseType="blob";
-      xhr.open("GET",imageFront, true);
-      xhr.send(null);
-    });
-   
-    const uploadBack = await new Promise((resolve, reject)=>{
-      const xhr = new XMLHttpRequest();
-      xhr.onload=function(){
-        resolve(xhr.response);
-      };
-      xhr.onerror=function(){
-        reject(TypeError("Network request failed"));
-      };
-      xhr.responseType="blob";
-      xhr.open("GET",imageBack, true);
-      xhr.send(null);
-    });
-
-    const metadata = {
-      contentType: 'image/jpeg',
-    };
-
-
-    let frontName=phoneNumber+"front";
-    let backName=phoneNumber+"back";
-    const storageRef1 = ref(storage, frontName);
-    const storageRef2 = ref(storage, backName);
-    uploadBytesResumable(storageRef1, uploadFront, metadata).then((snapshot) => {
-      console.log('Upload success!');
-      getDownloadURL(storageRef1).then((url) =>{
-        updateDoc(doc(db,role,phoneNumber),{
-          cardFront:url
-        })
-      })
-    });
-    uploadBytesResumable(storageRef2, uploadBack, metadata).then((snapshot) => {
-      console.log('Upload success!');
-        getDownloadURL(storageRef2).then((url) =>{
-          updateDoc(doc(db,role,phoneNumber),{
-            cardBack:url
-          })
-        })
-    });
-
+  
     AsyncStorage.setItem('phoneNumber',phoneNumber);
     AsyncStorage.setItem('role',role);
+    AsyncStorage.setItem('cardFront',imageFront);
+    AsyncStorage.setItem('cardBack',imageBack);
+    AsyncStorage.setItem('email',email);
+    AsyncStorage.setItem('displayName',name);
+    AsyncStorage.setItem('studentID',id);
+    AsyncStorage.setItem('school',school);
     navigation.navigate("UploadFace"); 
   }
 

@@ -14,6 +14,8 @@ import {
 } from "native-base";
 import DefaultAvt from "../../assets/image6.png";
 import { COLORS, FONTS, SIZES } from "../../constants/theme";
+import { deleteDoc, updateDoc, doc } from "@firebase/firestore";
+import { db } from "../../config/config";
 
 function StudentOfficeCard (props, navigation) {
    let {
@@ -28,6 +30,14 @@ function StudentOfficeCard (props, navigation) {
     cardBack
   }=props.user
   const {onPress} = props
+  const acceptAccount = ()=>{
+    updateDoc(doc(db,role,phoneNumber),{
+      status:"active"
+    });
+  } 
+  const rejectAccount = ()=>{
+    deleteDoc(doc(db,role,phoneNumber));
+  }
   return (
     <VStack
       w={"100%"}
@@ -84,6 +94,7 @@ function StudentOfficeCard (props, navigation) {
             justifyContent={"center"}
             alignItems={"center"}
             borderRadius={"10px"}
+            onPress={rejectAccount}
           >
             <Text style={{ ...FONTS.h5, color: COLORS.red }}>Reject</Text>
           </Button>
@@ -95,9 +106,7 @@ function StudentOfficeCard (props, navigation) {
             alignItems={"center"}
             mt={1}
             bgColor={COLORS.primary}
-            onPress={() => {
-              navigation.navigate("StudentOfficeDetail");
-            }}
+            onPress={acceptAccount}
           >
             <Text style={{ ...FONTS.h5, color: COLORS.white }}>Accept</Text>
           </Button>

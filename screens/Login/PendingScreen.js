@@ -13,7 +13,6 @@ import {
 } from "native-base";
 import { COLORS, FONTS, SIZES } from "../../constants/theme";
 import { SafeAreaView } from "react-native-safe-area-context";
-import PendingImg from "../../assets/images/StudentOffice/pending.png";
 
 const PendingScreen = ({ navigation }) => {
   return (
@@ -24,7 +23,7 @@ const PendingScreen = ({ navigation }) => {
             h={"40%"}
             resizeMode="contain"
             alt="pending"
-            source={require("../../assets/images/StudentOffice/pending.png")}
+            source={{}}
           />
           <Text style={{ ...FONTS.h1, color: COLORS.white }} mt={10}>
             PENDING
