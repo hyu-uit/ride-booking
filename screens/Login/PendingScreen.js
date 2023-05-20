@@ -23,7 +23,7 @@ const PendingScreen = ({ navigation }) => {
             h={"40%"}
             resizeMode="contain"
             alt="pending"
-            source={require("../../assets/images/StudentOffice/pending.png")}
+            source={{}}
           />
           <Text style={{ ...FONTS.h1, color: COLORS.white }} mt={10}>
             PENDING

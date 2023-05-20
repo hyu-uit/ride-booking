@@ -23,22 +23,53 @@ import {
 import * as ImagePicker from "expo-image-picker";
 import { Camera } from "expo-camera";
 import { launchCamera } from "react-native-image-picker";
-import { AsyncStorage } from "react-native"; 
+import { AsyncStorage } from "react-native";
 import { db, storage } from "../../config/config";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
-import { doc, updateDoc } from "firebase/firestore";
+import { doc, updateDoc, setDoc } from "firebase/firestore";
+import { async } from "q";
 
 const UploadFaceScreen = ({ navigation }) => {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [role, setRole] = useState("");
+  const [email, setEmail] = useState("");
+  const [id, setStudentID] = useState("");
+  const [school, setSchool] = useState("");
+  const [name, setDisplayName] = useState("");
+  const [imageFront, setImageFront] = useState("");
+  const [imageBack, setImageBack] = useState("");
 
-  useEffect(()=>{
+  useEffect(() => {
     AsyncStorage.getItem('phoneNumber').then(result => {
       setPhoneNumber(result);
       console.log(result);
     });
     AsyncStorage.getItem('role').then(result => {
       setRole(result);
+      console.log(result);
+    });
+     AsyncStorage.getItem('email').then(result => {
+      setEmail(result);
+      console.log(result);
+    });
+    AsyncStorage.getItem('studentID').then(result => {
+      setStudentID(result);
+      console.log(result);
+    });
+    AsyncStorage.getItem('school').then(result => {
+      setSchool(result);
+      console.log(result);
+    });
+    AsyncStorage.getItem('displayName').then(result => {
+      setDisplayName(result);
+      console.log(result);
+    });
+    AsyncStorage.getItem('cardFront').then(result => {
+      setImageFront(result);
+      console.log(result);
+    });
+    AsyncStorage.getItem('cardBack').then(result => {
+      setImageBack(result);
       console.log(result);
     })
   }, [])
@@ -47,43 +78,106 @@ const UploadFaceScreen = ({ navigation }) => {
   );
   const [height, setHeight] = useState(0);
 
-  //upload image to firebase storage
-  const uploadImage = async ()=>{
+  const createAccount = async () => {
+    //load account to dtb
+     setDoc(doc(db, role, phoneNumber), {
+            displayName: name,
+            email: email,
+            school: school,
+            studentID: id,
+            status: "pending",
+          });
+    //upload image to firebase storage
+    uploadImage();
+    AsyncStorage.setItem('role', role);
+    AsyncStorage.setItem('phoneNumber', phoneNumber);
+    navigation.navigate("MainRiderNavigator", {
+      screen: "HomeRider",
+    });
+  }
+
+  const uploadImage = async () => {
     //convert image into blob image
-    const blobImage = await new Promise((resolve, reject)=>{
+    const blobImage = await new Promise((resolve, reject) => {
       const xhr = new XMLHttpRequest();
-      xhr.onload=function(){
+      xhr.onload = function () {
         resolve(xhr.response);
       };
-      xhr.onerror=function(){
+      xhr.onerror = function () {
         reject(TypeError("Network request failed"));
       };
-      xhr.responseType="blob";
-      xhr.open("GET",image, true);
+      xhr.responseType = "blob";
+      xhr.open("GET", image, true);
       xhr.send(null);
     });
 
+    const uploadFront = await new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      xhr.onload = function () {
+        resolve(xhr.response);
+      };
+      xhr.onerror = function () {
+        reject(TypeError("Network request failed"));
+      };
+      xhr.responseType = "blob";
+      xhr.open("GET", imageFront, true);
+      xhr.send(null);
+    });
+
+    const uploadBack = await new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      xhr.onload = function () {
+        resolve(xhr.response);
+      };
+      xhr.onerror = function () {
+        reject(TypeError("Network request failed"));
+      };
+      xhr.responseType = "blob";
+      xhr.open("GET", imageBack, true);
+      xhr.send(null);
+    });
+
+    //type of file
     const metadata = {
       contentType: 'image/jpeg',
     };
 
-    let name=phoneNumber+"face";
+    let name = phoneNumber + "face";
+    let frontName = phoneNumber + "front";
+    let backName = phoneNumber + "back";
+
     const storageRef = ref(storage, name);
+    const storageRef1 = ref(storage, frontName);
+    const storageRef2 = ref(storage, backName);
+
     uploadBytesResumable(storageRef, blobImage, metadata).then((snapshot) => {
       console.log('Upload success!');
-      getDownloadURL(storageRef).then((url) =>{
-        updateDoc(doc(db,role,phoneNumber),{
-          portrait:url
+      getDownloadURL(storageRef).then((url) => {
+        updateDoc(doc(db, role, phoneNumber), {
+          portrait: url
         })
       })
     });
-    AsyncStorage.setItem('role',role);
-    AsyncStorage.setItem('phoneNumber',phoneNumber);
-    navigation.navigate("MainRiderNavigator", {
-        screen: "HomeRider",
-      });
-    
+
+    uploadBytesResumable(storageRef1, uploadFront, metadata).then((snapshot) => {
+      console.log('Upload success!');
+      getDownloadURL(storageRef1).then((url) => {
+        updateDoc(doc(db, role, phoneNumber), {
+          cardFront: url
+        })
+      })
+    });
+
+    uploadBytesResumable(storageRef2, uploadBack, metadata).then((snapshot) => {
+      console.log('Upload success!');
+      getDownloadURL(storageRef2).then((url) => {
+        updateDoc(doc(db, role, phoneNumber), {
+          cardBack: url
+        })
+      })
+    });
   }
+
   const handleLayout = (event) => {
     const { width } = event.nativeEvent.layout;
     const newHeight = width * 1.5;
@@ -193,7 +287,7 @@ const UploadFaceScreen = ({ navigation }) => {
             borderRadius={20}
             bgColor={COLORS.primary}
             mt={10}
-            onPress={ uploadImage}
+            onPress={createAccount}
           >
             <Text style={{ ...FONTS.h2 }} color={COLORS.white}>
               Continue

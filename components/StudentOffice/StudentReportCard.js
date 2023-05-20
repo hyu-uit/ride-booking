@@ -11,8 +11,10 @@ import {
 import React, { useState } from "react";
 import DefaultAvt from "../../assets/image6.png";
 import { COLORS, SIZES, FONTS } from "../../constants/theme";
-import { TouchableOpacity } from "react-native";
+import { Alert, TouchableOpacity } from "react-native";
 import DisappointedIcon from "../../assets/icons8-frowning-face-96.png";
+import { doc, updateDoc } from "@firebase/firestore";
+import { db } from "../../config/config";
 
 function StudentReportCard(props) {
   let { role, phoneNumber, school, displayName, email, studentID, portrait } =
@@ -20,6 +22,12 @@ function StudentReportCard(props) {
   const { onPress } = props;
 
   const [locked, setLocked] = useState();
+
+  const lockAccount = ()=>{
+    updateDoc(doc(db,role,phoneNumber),{
+      status:"locked"
+    });
+  }
 
   return (
     <View
@@ -84,7 +92,7 @@ function StudentReportCard(props) {
                 variant={"outline"}
                 borderRadius={20}
                 borderColor={COLORS.red}
-                onPress={() => {}}
+                onPress={lockAccount}
                 mt={10}
               >
                 <Text style={{ ...FONTS.h6 }} color={COLORS.red}>
@@ -100,7 +108,7 @@ function StudentReportCard(props) {
                 borderRadius={20}
                 mr={2}
                 borderColor={COLORS.primary}
-                onPress={() => {}}
+                onPress={lockAccount}
                 mt={10}
               >
                 <Text style={{ ...FONTS.h6 }} color={COLORS.white}>

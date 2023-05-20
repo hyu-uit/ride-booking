@@ -73,15 +73,19 @@ const SignUpScreen = ({ navigation }) => {
           console.log(doc.id);
         });
         if (count == 0) {
-          setDoc(doc(db, role, phoneNumber), {
-            displayName: name,
-            email: email,
-            school: school,
-            studentID: id,
-            status: "pending",
-          });
+          // setDoc(doc(db, role, phoneNumber), {
+          //   displayName: name,
+          //   email: email,
+          //   school: school,
+          //   studentID: id,
+          //   status: "pending",
+          // });
           AsyncStorage.setItem("phoneNumber", phoneNumber);
           AsyncStorage.setItem("role", role);
+          AsyncStorage.setItem("displayName", name);
+          AsyncStorage.setItem("school", school);
+          AsyncStorage.setItem("studentID", id);
+          AsyncStorage.setItem("email", email);
           navigation.navigate("UploadID");
         } else {
           Alert.alert(
