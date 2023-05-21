@@ -40,39 +40,39 @@ const UploadFaceScreen = ({ navigation }) => {
   const [imageBack, setImageBack] = useState("");
 
   useEffect(() => {
-    AsyncStorage.getItem('phoneNumber').then(result => {
+    AsyncStorage.getItem("phoneNumber").then((result) => {
       setPhoneNumber(result);
       console.log(result);
     });
-    AsyncStorage.getItem('role').then(result => {
+    AsyncStorage.getItem("role").then((result) => {
       setRole(result);
       console.log(result);
     });
-     AsyncStorage.getItem('email').then(result => {
+    AsyncStorage.getItem("email").then((result) => {
       setEmail(result);
       console.log(result);
     });
-    AsyncStorage.getItem('studentID').then(result => {
+    AsyncStorage.getItem("studentID").then((result) => {
       setStudentID(result);
       console.log(result);
     });
-    AsyncStorage.getItem('school').then(result => {
+    AsyncStorage.getItem("school").then((result) => {
       setSchool(result);
       console.log(result);
     });
-    AsyncStorage.getItem('displayName').then(result => {
+    AsyncStorage.getItem("displayName").then((result) => {
       setDisplayName(result);
       console.log(result);
     });
-    AsyncStorage.getItem('cardFront').then(result => {
+    AsyncStorage.getItem("cardFront").then((result) => {
       setImageFront(result);
       console.log(result);
     });
-    AsyncStorage.getItem('cardBack').then(result => {
+    AsyncStorage.getItem("cardBack").then((result) => {
       setImageBack(result);
       console.log(result);
-    })
-  }, [])
+    });
+  }, []);
   const [width, setWidth] = useState(
     PixelRatio.roundToNearestPixel(SIZES.width - 20)
   );
@@ -80,21 +80,21 @@ const UploadFaceScreen = ({ navigation }) => {
 
   const createAccount = async () => {
     //load account to dtb
-     setDoc(doc(db, role, phoneNumber), {
-            displayName: name,
-            email: email,
-            school: school,
-            studentID: id,
-            status: "pending",
-          });
+    setDoc(doc(db, role, phoneNumber), {
+      displayName: name,
+      email: email,
+      school: school,
+      studentID: id,
+      status: "pending",
+    });
     //upload image to firebase storage
     uploadImage();
-    AsyncStorage.setItem('role', role);
-    AsyncStorage.setItem('phoneNumber', phoneNumber);
-    navigation.navigate("MainRiderNavigator", {
-      screen: "HomeRider",
+    AsyncStorage.setItem("role", role);
+    AsyncStorage.setItem("phoneNumber", phoneNumber);
+    navigation.navigate("AuthenticationStack", {
+      screen: "Login",
     });
-  }
+  };
 
   const uploadImage = async () => {
     //convert image into blob image
@@ -139,7 +139,7 @@ const UploadFaceScreen = ({ navigation }) => {
 
     //type of file
     const metadata = {
-      contentType: 'image/jpeg',
+      contentType: "image/jpeg",
     };
 
     let name = phoneNumber + "face";
@@ -151,32 +151,34 @@ const UploadFaceScreen = ({ navigation }) => {
     const storageRef2 = ref(storage, backName);
 
     uploadBytesResumable(storageRef, blobImage, metadata).then((snapshot) => {
-      console.log('Upload success!');
+      console.log("Upload success!");
       getDownloadURL(storageRef).then((url) => {
         updateDoc(doc(db, role, phoneNumber), {
-          portrait: url
-        })
-      })
+          portrait: url,
+        });
+      });
     });
 
-    uploadBytesResumable(storageRef1, uploadFront, metadata).then((snapshot) => {
-      console.log('Upload success!');
-      getDownloadURL(storageRef1).then((url) => {
-        updateDoc(doc(db, role, phoneNumber), {
-          cardFront: url
-        })
-      })
-    });
+    uploadBytesResumable(storageRef1, uploadFront, metadata).then(
+      (snapshot) => {
+        console.log("Upload success!");
+        getDownloadURL(storageRef1).then((url) => {
+          updateDoc(doc(db, role, phoneNumber), {
+            cardFront: url,
+          });
+        });
+      }
+    );
 
     uploadBytesResumable(storageRef2, uploadBack, metadata).then((snapshot) => {
-      console.log('Upload success!');
+      console.log("Upload success!");
       getDownloadURL(storageRef2).then((url) => {
         updateDoc(doc(db, role, phoneNumber), {
-          cardBack: url
-        })
-      })
+          cardBack: url,
+        });
+      });
     });
-  }
+  };
 
   const handleLayout = (event) => {
     const { width } = event.nativeEvent.layout;
