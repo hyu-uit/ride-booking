@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Center,
   Divider,
@@ -12,8 +12,36 @@ import {
 import { TouchableOpacity, StyleSheet } from "react-native";
 import { COLORS, FONTS } from "../../constants/theme";
 import locationLineIcon from "../../assets/location-line-full.png";
+import { doc, getDoc } from "@firebase/firestore";
+import { db } from "../../config/config";
 
-const HistoryPickUpCard = ({ onPress }) => {
+function HistoryPickUpCard( props, navigation) {
+  let {
+    idCustomer,
+    idTrip,
+    pickUpLat,
+    pickUpLong,
+    destLat,
+    destLong,
+    date,
+    time,
+    status,
+    totalPrice,
+    distance
+  } = props.trip
+
+ const [name, setName] = useState("")
+  const {onPress}=props
+  useEffect(() => {
+    getNameCustomer();
+  }, []);
+  const getNameCustomer=()=>{
+    getDoc(doc(db,"Customer",idCustomer)).then(docData=>{
+      if(docData.exists()){
+        setName(docData.data().displayName)
+      }
+    })
+  }
   return (
     <View
       onTouchEnd={onPress}
@@ -39,7 +67,7 @@ const HistoryPickUpCard = ({ onPress }) => {
               fontWeight: "bold",
             }}
           >
-            Phuong Uyen
+            {name}
           </Text>
           <Text
             color={COLORS.white}
@@ -48,17 +76,17 @@ const HistoryPickUpCard = ({ onPress }) => {
               marginLeft: 5,
             }}
           >
-            20,000đ
+            {totalPrice}
           </Text>
         </HStack>
         <Text
           paddingLeft={26}
           style={{ color: COLORS.lightGrey, ...FONTS.body6 }}
         >
-          #ID00001
+          {idTrip}
         </Text>
         <Text paddingLeft={26} style={styles.detailText}>
-          Today, 12h15
+          {date}, {time}
         </Text>
         <VStack marginTop={2} paddingRight={26}>
           <HStack alignItems={"center"}>

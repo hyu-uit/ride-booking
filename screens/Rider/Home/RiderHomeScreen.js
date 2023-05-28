@@ -11,6 +11,7 @@ import {
   Switch,
   ScrollView,
   Icon,
+  FlatList,
 } from "native-base";
 import DefaultAvt from "../../../assets/image6.png";
 import React, { useEffect, useState } from "react";
@@ -22,10 +23,97 @@ import HistoryCard from "../../../components/HistoryCard";
 import * as ImagePicker from "expo-image-picker";
 import HistoryPickUpCard from "../../../components/Driver/HistoryPickUpCard";
 import { Ionicons } from "@expo/vector-icons";
+import { collection, getDocs, query, where } from "@firebase/firestore";
+import { db } from "../../../config/config";
+import { when } from "q";
 
-const RiderHomeScreen = ({ navigation }) => {
+const RiderHomeScreen = ({ navigation, route }) => {
   const [service, setService] = useState(0);
   const [status, setStatus] = useState(0);
+  // const { data } = route.params;
+  // const { phoneNumber, role } = data;
+
+  // useEffect(() => {
+  //   console.log(phoneNumber)
+  // }, []);
+  const [waitingTrips, setWaitingTrips] = useState([]);
+  const [finishedTrips, setFinishedTrips] = useState([]);
+  const [canceledTrips, setCanceledTrips] = useState([]);
+
+  useEffect(() => {
+    getWaitingTrips();
+    getFinishedTrips();
+    getCanceledTrips();
+  }, [navigation]);
+
+  const getWaitingTrips = () => {
+    let waitingTrips = [];
+    getDocs(
+      query(collection(db, "ListTrip"), where("status", "==", "waiting"))
+    ).then((docSnap) => {
+      docSnap.forEach((doc) => {
+        waitingTrips.push({
+          idCustomer:doc.data().idCustomer,
+          idTrip:doc.id,
+          pickUpLat:doc.data().pickUpLat,
+          pickUpLong:doc.data().pickUpLong,
+          destLat:doc.data().destLat,
+          destLong:doc.data().destLong,
+          date:doc.data().date,
+          time:doc.data().time,
+          totalPrice:doc.data().totalPrice,
+          distance:doc.data().distance,
+        });
+      });
+      setWaitingTrips(waitingTrips);
+    });
+  };
+
+  const getFinishedTrips = () => {
+    let finishedTrips = [];
+    getDocs(
+      query(collection(db, "ListTrip"), where("status", "==", "done"))
+    ).then((docSnap) => {
+      docSnap.forEach((doc) => {
+        finishedTrips.push({
+          idCustomer:doc.data().idCustomer,
+          idTrip:doc.id,
+          pickUpLat:doc.data().pickUpLat,
+          pickUpLong:doc.data().pickUpLong,
+          destLat:doc.data().destLat,
+          destLong:doc.data().destLong,
+          date:doc.data().date,
+          time:doc.data().time,
+          totalPrice:doc.data().totalPrice,
+          distance:doc.data().distance,
+        });
+      });
+      setFinishedTrips(finishedTrips);
+    });
+  }; 
+
+  const getCanceledTrips = () => {
+    let canceledTrips = [];
+    getDocs(
+      query(collection(db, "ListTrip"), where("status", "==", "canceled"))
+    ).then((docSnap) => {
+      docSnap.forEach((doc) => {
+        canceledTrips.push({
+          idCustomer:doc.data().idCustomer,
+          idTrip:doc.id,
+          pickUpLat:doc.data().pickUpLat,
+          pickUpLong:doc.data().pickUpLong,
+          destLat:doc.data().destLat,
+          destLong:doc.data().destLong,
+          date:doc.data().date,
+          time:doc.data().time,
+          totalPrice:doc.data().totalPrice,
+          distance:doc.data().distance,
+        });
+      });
+      setCanceledTrips(canceledTrips);
+    });
+  };
 
   const openCamera = async () => {
     let permissionResult = await ImagePicker.requestCameraPermissionsAsync();
@@ -40,40 +128,54 @@ const RiderHomeScreen = ({ navigation }) => {
   };
 
   const FirstRoute = () => (
-    <ScrollView showsVerticalScrollIndicator={false}>
       <VStack mt={"17px"} justifyContent={"center"} alignItems={"center"}>
-        <HistoryPickUpCard
-          onPress={() => {
-            navigation.navigate("TripDetail");
-          }}
-        />
-        <HistoryPickUpCard />
-        <HistoryPickUpCard />
-        <HistoryPickUpCard />
+       <FlatList
+          data={waitingTrips}
+          keyExtractor={(item) => item.idTrip}
+          renderItem={({item})=>(
+            <HistoryPickUpCard
+            onPress={() => {
+              const data = {
+                idTrip:""+item.idTrip
+              };
+              navigation.navigate("TripDetail", data);
+            }}
+              trip = {item}
+              key={item.idTrip}
+            ></HistoryPickUpCard>
+          )}
+       ></FlatList>
       </VStack>
-    </ScrollView>
   );
-
+          
   const SecondRoute = () => (
-    <ScrollView showsVerticalScrollIndicator={false}>
       <VStack mt={"17px"} justifyContent={"center"} alignItems={"center"}>
-        <HistoryPickUpCard />
-        <HistoryPickUpCard />
-        <HistoryPickUpCard />
-        <HistoryPickUpCard />
+         <FlatList
+          data={finishedTrips}
+          keyExtractor={(item) => item.idTrip}
+          renderItem={({item})=>(
+            <HistoryPickUpCard
+              trip = {item}
+              key={item.idTrip}
+            ></HistoryPickUpCard>
+          )}
+       ></FlatList>
       </VStack>
-    </ScrollView>
   );
 
   const ThirdRoute = () => (
-    <ScrollView>
       <VStack mt={"17px"} justifyContent={"center"} alignItems={"center"}>
-        <HistoryPickUpCard />
-        <HistoryPickUpCard />
-        <HistoryPickUpCard />
-        <HistoryPickUpCard />
+         <FlatList
+          data={canceledTrips}
+          keyExtractor={(item) => item.idTrip}
+          renderItem={({item})=>(
+            <HistoryPickUpCard
+              trip = {item}
+              key={item.idTrip}
+            ></HistoryPickUpCard>
+          )}
+       ></FlatList>
       </VStack>
-    </ScrollView>
   );
 
   const renderScene = SceneMap({

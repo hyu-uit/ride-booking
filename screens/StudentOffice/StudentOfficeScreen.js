@@ -29,7 +29,6 @@ const StudentOfficeScreen = ({ navigation }) => {
   const [users, setUsers] = useState([]);
   useEffect(() => {
     getUsers();
-    
   }, [navigation]);
   const getUsers = () => {
     let users = [];

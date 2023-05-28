@@ -12,8 +12,51 @@ import {
 import { TouchableOpacity, StyleSheet } from "react-native";
 import { COLORS, FONTS } from "../../constants/theme";
 import locationLineIcon from "../../assets/location-line.png";
+import { useState } from "react";
+import { useEffect } from "react";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "../../config/config";
 
-const PopUpRequestCard = ({ onClickAccept, onClickReject }) => {
+function PopUpRequestCard (props){
+  //const {trip} = props
+  let {
+    idCustomer,
+    idTrip,
+    pickUpLat,
+    pickUpLong,
+    destLat,
+    destLong,
+    date,
+    time,
+    status,
+    totalPrice,
+    distance
+  } = props.trip
+  const [name, setName] = useState("")
+
+  // useEffect(()=>{
+  //   getNameCustomer()
+  // }, [])
+
+  // const getNameCustomer=()=>{
+  //   getDoc(doc(db,"ListTrip",idTrip)).then(tripData=>{
+  //     if(tripData.exists()){
+  //       let getIDCus=tripData.data().idCustomer
+  //       getDoc(doc(db,"Customer",idCustomer)).then(docData=>{
+  //         if(docData.exists()){
+  //           setName(docData.data().displayName)
+  //         }
+  //       })
+  //     }
+  //   })
+  
+  // }
+  const onClickAccept= ()=>{
+
+  }
+  const onClickReject= ()=>{
+
+  }
   return (
     <View
       bgColor={COLORS.fourthary}
@@ -34,7 +77,7 @@ const PopUpRequestCard = ({ onClickAccept, onClickReject }) => {
                 fontWeight: "bold",
               }}
             >
-              Phuong Uyen
+              {name}
             </Text>
             <Text
               color={COLORS.lightGrey}
@@ -43,7 +86,7 @@ const PopUpRequestCard = ({ onClickAccept, onClickReject }) => {
                 marginLeft: 5,
               }}
             >
-              #ID00001
+              {idTrip}
             </Text>
           </HStack>
           <View>
@@ -54,12 +97,12 @@ const PopUpRequestCard = ({ onClickAccept, onClickReject }) => {
                 alignItems: "flex-end",
               }}
             >
-              20,000đ
+              {totalPrice}
             </Text>
           </View>
         </HStack>
         <HStack>
-          <Text style={styles.detailText}>5.4km</Text>
+          <Text style={styles.detailText}>{distance}</Text>
           <Text style={styles.detailTextNotBold}> - You’re </Text>
           <Text style={styles.detailText}>0h 15m</Text>
           <Text style={styles.detailTextNotBold}> away</Text>

@@ -35,27 +35,21 @@ const UploadID = ({ navigation }) => {
   useEffect(()=>{
     AsyncStorage.getItem('phoneNumber').then(result => {
       setPhoneNumber(result);
-      console.log(result);
     });
     AsyncStorage.getItem('role').then(result => {
       setRole(result);
-      console.log(result);
     });
     AsyncStorage.getItem('email').then(result => {
       setEmail(result);
-      console.log(result);
     });
     AsyncStorage.getItem('studentID').then(result => {
       setStudentID(result);
-      console.log(result);
     });
     AsyncStorage.getItem('school').then(result => {
       setSchool(result);
-      console.log(result);
     });
     AsyncStorage.getItem('displayName').then(result => {
       setDisplayName(result);
-      console.log(result);
     })
   }, [])
   
@@ -91,7 +85,7 @@ const UploadID = ({ navigation }) => {
     if (!result.canceled) {
       setImageFront(result.assets[0].uri);
     }
-    console.log(result.assets[0].uri);
+    //console.log(result.assets[0].uri);
 
   };
 

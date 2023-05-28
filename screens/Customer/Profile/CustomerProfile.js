@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Button,
   HStack,
@@ -18,9 +18,36 @@ import ButtonBack from "../../../components/Global/ButtonBack/ButtonBack";
 import DefaultAvt from "../../../assets/image6.png";
 import { Ionicons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
+import { AsyncStorage } from "react-native";
+import { doc, getDoc } from "@firebase/firestore";
+import { db } from "../../../config/config";
 
-const CustomerProfile = ({ navigation }) => {
+const CustomerProfile = ({ navigation, route}) => {
   const [profileImg, setProfileImg] = useState(null);
+
+  const [users, setUsers] = useState([]);
+  //const { phoneNumber, role } = route.params;
+
+  // useEffect(() => {
+ 
+  //   getUsers();
+  // }, []);
+
+  // const getUsers = () => {
+    
+  //   let users = [];
+  //   getDoc(doc(db, "Customer", phoneNumber)).then((docSnap) => {
+  //     docSnap.forEach((doc) => {
+  //       users.push({
+  //         school: doc.data().school,
+  //         displayName: doc.data().displayName,
+  //         email: doc.data().email,
+  //         studentID: doc.data().studentID,
+  //         portrait: doc.data().portrait,
+  //       });
+  //     });
+  //   });
+  // };
 
   const pickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({

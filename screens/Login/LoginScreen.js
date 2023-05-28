@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import {
   Button,
   HStack,
@@ -12,12 +12,21 @@ import { SIZES, COLORS, FONTS } from "../../constants/theme";
 import BlueBg from "../../assets/images/Login/blueBg.png";
 import { SafeAreaView } from "react-native-safe-area-context";
 import LottieView from "lottie-react-native";
+import { AsyncStorage } from "react-native"; 
 
 const LoginScreen = ({ navigation }) => {
   const animation = useRef(null);
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [role, setRole] = useState("");
   useEffect(() => {
     // You can control the ref programmatically, rather than using autoPlay
     // animation.current?.play();
+    AsyncStorage.getItem("phoneNumber").then((result) => {
+      setPhoneNumber(result);
+    });
+    AsyncStorage.getItem("role").then((result) => {
+      setRole(result);
+    });
   }, []);
   return (
     <VStack bgColor={COLORS.background}>

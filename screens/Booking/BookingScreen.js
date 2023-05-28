@@ -26,6 +26,8 @@ import LocationCardFinder from "../../components/LocationCard/LocationCard.Finde
 import ConfirmModal from "../../components/Modal/ConfirmModal";
 import ButtonBack from "../../components/Global/ButtonBack/ButtonBack";
 import FlagIcon from "../../assets/icons/icons8-flag-filled-48.png";
+import { addDoc, collection, doc, setDoc } from "@firebase/firestore";
+import { db } from "../../config/config";
 
 const initialState = {
   step: 1,
@@ -78,9 +80,31 @@ export default function BookingScreen({ navigation }) {
     // Do any necessary form validation or error checking here
     dispatch({ type: "SET_STEP", payload: 6 });
   };
+  const createOrder = async () => {
+    const currentDate = new Date();
+    const currentDay = currentDate.getDate();
+    const currentMonth = currentDate.getMonth() + 1; 
+    const currentYear = currentDate.getFullYear();
+    const currentHour = currentDate.getHours();
+    const currentMinute = currentDate.getMinutes();
 
+    addDoc(collection(db, "ListTrip"), {
+      idCustomer: "0393751403",
+      pickUpLat:"",
+      pickUpLong:"",
+      destLat:"",      
+      destLong:"",
+      date:""+currentDay+"/"+currentMonth+"/"+currentYear,
+      time:""+currentHour+":"+currentMinute,
+      distance:"4km",
+      totalPrice:"55.000đ",
+      status: "waiting",
+    });
+    //upload image to firebase storage
+  };
   const handleStep6Submit = () => {
     // Do any necessary form validation or error checking here
+    createOrder();
     dispatch({ type: "SET_STEP", payload: 7 });
   };
 

@@ -7,19 +7,52 @@ import {
   VStack,
   View,
 } from "native-base";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import ButtonBack from "../../components/Global/ButtonBack/ButtonBack";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { COLORS, FONTS } from "../../constants";
 import { TouchableWithoutFeedback } from "react-native";
 import { Keyboard } from "react-native";
+import { AsyncStorage } from "react-native"; 
 
 const VerifyingScreen = ({ navigation }) => {
   const firstInput = useRef();
   const secondInput = useRef();
   const thirdInput = useRef();
   const fourthInput = useRef();
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [role, setRole] = useState("");
 
+  useEffect(() => {
+    AsyncStorage.getItem("phoneNumber").then((result) => {
+      setPhoneNumber(result);
+    });
+    AsyncStorage.getItem("role").then((result) => {
+      setRole(result);
+    });
+  }, []);
+  const signInOption = () => {
+    {
+      (role == "Customer") ? (navigation.navigate("MainNavigator", {
+        screen: "HomeStack",
+        params: {
+          screen: "Home",
+          data : {
+            phoneNumber: "" + phoneNumber,
+            role: "" + role,
+          }
+        },
+      })) : (navigation.navigate("MainRiderNavigator", {
+        screen: "HomeRider",
+        params: {
+        data : {
+            phoneNumber: "" + phoneNumber,
+            role: "" + role,
+          }
+        },
+      }))
+    }
+  }
   const [otp, setOtp] = useState({ 1: "", 2: "", 3: "", 4: "" });
   return (
     <TouchableWithoutFeedback
@@ -129,13 +162,8 @@ const VerifyingScreen = ({ navigation }) => {
               borderRadius={20}
               bgColor={COLORS.primary}
               mt={50}
-              onPress={() =>
-                navigation.navigate("MainNavigator", {
-                  screen: "HomeStack",
-                  params: {
-                    screen: "Home",
-                  },
-                })
+              onPress={
+                signInOption
               }
             >
               <Text style={{ ...FONTS.h2 }} color={COLORS.white}>

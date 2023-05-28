@@ -26,7 +26,9 @@ import { TouchableWithoutFeedback } from "react-native";
 import { Keyboard } from "react-native";
 import LottieView from "lottie-react-native";
 
-export default function Home({ navigation }) {
+export default function Home({ navigation, route }) {
+  
+
   return (
     <TouchableWithoutFeedback
       onPress={() => {
@@ -90,7 +92,8 @@ export default function Home({ navigation }) {
             <HStack w={"100%"} justifyContent={"space-evenly"} marginBottom={5}>
               <TouchableOpacity
                 onPress={() => {
-                  navigation.navigate("Booking");
+                  const data = {phoneNumber:'0393751403'}
+                  navigation.navigate("Booking", data);
                 }}
               >
                 <VStack

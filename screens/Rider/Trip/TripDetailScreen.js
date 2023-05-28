@@ -20,8 +20,36 @@ import MapView, { Marker } from "react-native-maps";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { Ionicons } from "@expo/vector-icons";
 import PopUpRequestCard from "../../../components/Driver/PopUpRequestCard";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "../../../config/config";
 
-const TripDetailScreen = ({ navigation }) => {
+const TripDetailScreen = ({ navigation, route }) => {
+  const {idTrip} = route.params;
+  const [tripData, setTrip] = useState([]);
+  useEffect(()=>{
+    getTrip()
+  }, []);
+  const getTrip = () =>{
+    let tripData=[]
+    console.log(idTrip)
+    getDoc(doc(db,"ListTrip", idTrip)).then((doc)=>{
+      if(doc.exists()){
+        tripData.push({
+          idCustomer:doc.data().idCustomer,
+          idTrip:doc.id,
+          pickUpLat:doc.data().pickUpLat,
+          pickUpLong:doc.data().pickUpLong,
+          destLat:doc.data().destLat,
+          destLong:doc.data().destLong,
+          date:doc.data().date,
+          time:doc.data().time,
+          totalPrice:doc.data().totalPrice,
+          distance:doc.data().distance,
+        });
+      }
+      setTrip(tripData);
+    })
+  }
   return (
     <VStack h={"100%"} bgColor={COLORS.background}>
       <SafeAreaView>
@@ -44,7 +72,8 @@ const TripDetailScreen = ({ navigation }) => {
             coordinate={{ latitude: 9.90761, longitude: 105.31181 }}
           ></Marker>
         </MapView>
-        <PopUpRequestCard />
+        <PopUpRequestCard trip={tripData}
+        ></PopUpRequestCard>
         {/* <HStack justifyContent={"center"} mb={"20px"}>
           <View style={{ position: "absolute", left: 0 }}>
             <ButtonBack></ButtonBack>

@@ -6,7 +6,7 @@ import {
   Text,
   VStack,
 } from "native-base";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ButtonBack from "../../components/Global/ButtonBack/ButtonBack";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { COLORS, FONTS } from "../../constants";
@@ -14,6 +14,7 @@ import { Alert, TouchableWithoutFeedback } from "react-native";
 import { Keyboard } from "react-native";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../../config/config";
+import { AsyncStorage } from "react-native"; 
 
 const SignInScreen = ({ navigation }) => {
   const [role, setRole] = useState(0);
@@ -37,9 +38,13 @@ const SignInScreen = ({ navigation }) => {
   //   })
   // }
   const checkPhoneNumber = () => {
-    getDoc(doc(db, "Customer", phoneNumber))
+    let getRole="";
+    {role != 2 ? role == 0 ? getRole="Customer" : getRole="Rider" :getRole="StudentOffice" }
+    getDoc(doc(db, getRole, phoneNumber))
       .then((docData) => {
         if (docData.exists()) {
+          AsyncStorage.setItem('phoneNumber',phoneNumber);
+          AsyncStorage.setItem('role',getRole);
           navigation.navigate("Verify");
         } else {
           Alert.alert("Phone number has not been registered!");
@@ -102,9 +107,9 @@ const SignInScreen = ({ navigation }) => {
               bgColor={role === 1 ? COLORS.fourthary : "transparent"}
               onPress={() => {
                 setRole(1);
-                navigation.navigate("MainRiderNavigator", {
-                  screen: "HomeRider",
-                });
+                // navigation.navigate("MainRiderNavigator", {
+                //   screen: "HomeRider",
+                // });
               }}
               ml={4}
             >
