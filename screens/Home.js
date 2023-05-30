@@ -5,6 +5,7 @@ import {
   Avatar,
   Button,
   Center,
+  FlatList,
   HStack,
   Icon,
   Image,
@@ -25,11 +26,42 @@ import DeliveryImg from "../assets/images/delivery_1.png";
 import { TouchableWithoutFeedback } from "react-native";
 import { Keyboard } from "react-native";
 import LottieView from "lottie-react-native";
+import { useState } from "react";
+import { collection, getDocs, query, where } from "firebase/firestore";
+import { db } from "../config/config";
+import { useEffect } from "react";
 
 export default function Home({ navigation, route }) {
-
+  const [historyTrips, setHistoryTrips] = useState([]);
+ 
+  useEffect(() => {
+    getHistoryTrips();
+  }, [navigation]);
   //const {phoneNumber, role} = route.params;
-  
+  const getHistoryTrips = () => {
+    let historyTrips = [];
+    getDocs(
+      query(collection(db, "ListTrip"), where("status", "==", "done"))
+    ).then((docSnap) => {
+      docSnap.forEach((doc) => {
+        historyTrips.push({
+          idCustomer: doc.data().idCustomer,
+          idTrip: doc.id,
+          pickUpLat: doc.data().pickUpLat,
+          pickUpLong: doc.data().pickUpLong,
+          destLat: doc.data().destLat,
+          destLong: doc.data().destLong,
+          date: doc.data().date,
+          time: doc.data().time,
+          datePickUp:doc.data().datePickUp,
+          timePickUp:doc.data().timePickUp,
+          totalPrice: doc.data().totalPrice,
+          distance: doc.data().distance,
+        });
+      });
+      setHistoryTrips(historyTrips);
+    });
+  };
   return ( 
     <TouchableWithoutFeedback
       onPress={() => {
@@ -153,16 +185,30 @@ export default function Home({ navigation, route }) {
               Last booking
             </Text>
             <VStack w={"100%"}>
-              <HistoryCard
+              {/* <HistoryCard
                 onPress={() => {
                   navigation.navigate("ActivityDetail");
                 }}
-              />
-              <HistoryCard />
-              <HistoryCard />
-              <HistoryCard />
-              <HistoryCard />
-              <HistoryCard />
+              /> */}
+              <FlatList
+                padding={"10px"}
+                mt={2}
+                horizontal={false}
+                data={historyTrips}
+                keyExtractor={(item) => item.idTrip}
+                renderItem={({ item }) => (
+                  <HistoryCard
+                    onPress={() => {
+                      const data = {
+                        idTrip: "" + item.idTrip
+                      };
+                      navigation.navigate("ActivityDetail", data);
+                    }}
+                    trip={item}
+                    key={item.idTrip}
+                  ></HistoryCard>
+                )}
+              ></FlatList>
             </VStack>
           </ScrollView>
         </HStack>

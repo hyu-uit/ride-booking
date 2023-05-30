@@ -31,9 +31,20 @@ const VerifyingScreen = ({ navigation }) => {
       setRole(result);
     });
   }, []);
+  // navigation.navigate("StudentOfficeNavigator", {
+  //   screen: "StudentOffice",
+  // });
   const signInOption = () => {
     {
-      (role == "Customer") ? (navigation.navigate("MainNavigator", {
+      (role == "Customer") ? (role=="Rider") ? (navigation.navigate("MainRiderNavigator", {
+        screen: "HomeRider",
+        params: {
+        data : {
+            phoneNumber: "" + phoneNumber,
+            role: "" + role,
+          }
+        },
+      })) : (navigation.navigate("MainNavigator", {
         screen: "HomeStack",
         params: {
           screen: "Home",
@@ -42,15 +53,15 @@ const VerifyingScreen = ({ navigation }) => {
             role: "" + role,
           }
         },
-      })) : (navigation.navigate("MainRiderNavigator", {
-        screen: "HomeRider",
+      })):  (navigation.navigate("StudentOfficeNavigator", {
+        screen: "StudentOffice",
         params: {
-        data : {
+          data : {
             phoneNumber: "" + phoneNumber,
             role: "" + role,
           }
         },
-      }))
+      })) 
     }
   }
   const [otp, setOtp] = useState({ 1: "", 2: "", 3: "", 4: "" });

@@ -37,21 +37,38 @@ const SignInScreen = ({ navigation }) => {
 
   //   })
   // }
+
+  const isPhoneNumberNull = () =>{
+
+  }
+
   const checkPhoneNumber = () => {
-    let getRole="";
-    {role != 2 ? role == 0 ? getRole="Customer" : getRole="Rider" :getRole="StudentOffice" }
-    getDoc(doc(db, getRole, phoneNumber))
-      .then((docData) => {
-        if (docData.exists()) {
-          AsyncStorage.setItem('phoneNumber',phoneNumber);
-          AsyncStorage.setItem('role',getRole);
-          navigation.navigate("Verify");
-        } else {
-          Alert.alert("Phone number has not been registered!");
-          console.log("no such data");
-        }
-      })
-      .catch((error) => {});
+    if(phoneNumber.length !== 10){
+      Alert.alert(
+        "Invalid phone number",
+        "Please re-enter your phone number.",
+        [
+          {
+            text: "OK",
+          },
+        ]
+      );
+    }else{
+      let getRole="";
+      {role != 2 ? role == 0 ? getRole="Customer" : getRole="Rider" :getRole="StudentOffice" }
+      getDoc(doc(db, getRole, phoneNumber))
+        .then((docData) => {
+          if (docData.exists()) {
+            AsyncStorage.setItem('phoneNumber',phoneNumber);
+            AsyncStorage.setItem('role',getRole);
+            navigation.navigate("Verify");
+          } else {
+            Alert.alert("Phone number has not been registered!");
+            console.log("no such data");
+          }
+        })
+        .catch((error) => {});
+    }
   };
   const onHandleLogin = () => {
     if (role == 1) {
@@ -126,9 +143,9 @@ const SignInScreen = ({ navigation }) => {
               bgColor={role === 2 ? COLORS.fourthary : "transparent"}
               onPress={() => {
                 setRole(2);
-                navigation.navigate("StudentOfficeNavigator", {
-                  screen: "StudentOffice",
-                });
+                // navigation.navigate("StudentOfficeNavigator", {
+                //   screen: "StudentOffice",
+                // });
               }}
               ml={4}
             >

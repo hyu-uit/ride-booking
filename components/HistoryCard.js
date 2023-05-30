@@ -13,8 +13,43 @@ import DefaultAvt from "../assets/image6.png";
 import CarImg from "../assets/image8.png";
 import { COLORS, SIZES } from "../constants/theme";
 import { TouchableOpacity } from "react-native";
+import { useState } from "react";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "../config/config";
 
-const HistoryCard = ({ onPress }) => {
+function HistoryCard(props) {
+  let {
+    idCustomer,
+    idRider,
+    idTrip,
+    pickUpLat,
+    pickUpLong,
+    destLat,
+    destLong,
+    date,
+    time,
+    datePickUp,
+    timePickUp,
+    status,
+    totalPrice,
+    distance
+  } = props.trip
+  const {onPress} = props
+  const [name, setName] = useState("")
+  const [licensePlates, setLicensePlates] = useState("")
+
+  if(idTrip!==undefined){
+    getDoc(doc(db,"ListTrip",idTrip)).then(tripData=>{
+      if(tripData.exists()){
+        getDoc(doc(db,"Rider",tripData.data().idRider)).then(docData=>{
+          if(docData.exists()){
+            setName(docData.data().displayName)
+            setLicensePlates(docData.data().licensePlates)
+          }
+        })
+      }
+    })
+  }
   return (
     <View
       bgColor={"#101744"}
@@ -29,10 +64,10 @@ const HistoryCard = ({ onPress }) => {
         <Avatar source={DefaultAvt} margin={"10px 0 0 10px"} />
         <VStack margin={"10px 0 0 10px"}>
           <Text bold fontSize={SIZES.h4} color={"white"}>
-            62K4-1646
+            {licensePlates}
           </Text>
           <Text fontSize={SIZES.font} color={"#808080"}>
-            Nguyen Tri Duc
+            {name}
           </Text>
         </VStack>
         <Button
@@ -67,7 +102,7 @@ const HistoryCard = ({ onPress }) => {
             Time
           </Text>
           <Text bold fontSize={10} color={"white"}>
-            14:20, 07/03/2023
+            {timePickUp}, {datePickUp}
           </Text>
         </VStack>
         {/* <Image source={CarImg} alt="car" marginLeft={"auto"} /> */}

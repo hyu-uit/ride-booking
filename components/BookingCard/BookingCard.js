@@ -12,13 +12,45 @@ import React, { useEffect, useState } from "react";
 import DefaultAvt from "../../assets/image6.png";
 import { COLORS, SIZES } from "../../constants/theme";
 import { TouchableOpacity } from "react-native";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "../../config/config";
 
-const BookingCard = ({ onPress, sta }) => {
+function BookingCard (props){
+  let {
+    idCustomer,
+    idTrip,
+    pickUpLat,
+    pickUpLong,
+    destLat,
+    destLong,
+    date,
+    time,
+    datePickUp,
+    timePickUp,
+    status,
+    idRider,
+    totalPrice,
+    distance
+  } = props.trip
+
+ const [name, setName] = useState("")
+ const [licensePlates, setLicensePlates] = useState("")
+
+  const {onPress, sta}=props
   useEffect(() => {
-    setStatus(sta);
-  });
+    getNameRider();
+    setState(sta);
+  }, []);
+  const getNameRider=()=>{
+    getDoc(doc(db,"Rider",idRider)).then(docData=>{
+      if(docData.exists()){
+        setName(docData.data().displayName)
+        setLicensePlates(docData.data().licensePlates)
+      }
+    })
+  }
 
-  const [status, setStatus] = useState(0);
+  const [state, setState] = useState(0);
   return (
     <View
       bgColor={"#101744"}
@@ -31,14 +63,14 @@ const BookingCard = ({ onPress, sta }) => {
     >
       <HStack w={"full"}>
         <Avatar source={DefaultAvt} margin={"10px 0 0 10px"} />
-        {status === 1 ? (
+        {state === 1 ? (
           <>
             <VStack margin={"10px 0 0 10px"}>
               <Text bold fontSize={SIZES.h4} color={"white"}>
-                62K4-1646
+                {licensePlates}
               </Text>
               <Text fontSize={SIZES.font} color={"#808080"}>
-                Nguyen Tri Duc
+                {name}
               </Text>
             </VStack>
           </>
