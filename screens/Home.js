@@ -27,9 +27,10 @@ import { Keyboard } from "react-native";
 import LottieView from "lottie-react-native";
 
 export default function Home({ navigation, route }) {
-  
 
-  return (
+  //const {phoneNumber, role} = route.params;
+  
+  return ( 
     <TouchableWithoutFeedback
       onPress={() => {
         Keyboard.dismiss();

@@ -14,7 +14,7 @@ import { COLORS, FONTS } from "../../constants/theme";
 import locationLineIcon from "../../assets/location-line.png";
 import { useState } from "react";
 import { useEffect } from "react";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../../config/config";
 
 function PopUpRequestCard (props){
@@ -32,31 +32,87 @@ function PopUpRequestCard (props){
     totalPrice,
     distance
   } = props.trip
-  const [name, setName] = useState("")
-
-  // useEffect(()=>{
-  //   getNameCustomer()
-  // }, [])
-
-  // const getNameCustomer=()=>{
-  //   getDoc(doc(db,"ListTrip",idTrip)).then(tripData=>{
-  //     if(tripData.exists()){
-  //       let getIDCus=tripData.data().idCustomer
-  //       getDoc(doc(db,"Customer",idCustomer)).then(docData=>{
-  //         if(docData.exists()){
-  //           setName(docData.data().displayName)
-  //         }
-  //       })
-  //     }
-  //   })
   
-  // }
-  const onClickAccept= ()=>{
+const [name, setName] = useState("")
+const [state, setState] = useState(0); 
+const { navigation } = props;
 
-  }
-  const onClickReject= ()=>{
+if(idTrip!==undefined){
+  getDoc(doc(db,"ListTrip",idTrip)).then(tripData=>{
+    if(tripData.exists()){
+      getDoc(doc(db,"Customer",tripData.data().idCustomer)).then(docData=>{
+        if(docData.exists()){
+          setName(docData.data().displayName)
+        }
+      })
+    }
+  })
+}
 
+
+const completeTrip = () => {
+  navigation.replace("MainRiderNavigator", {
+    screen: "HomeRider",
+  });
+}
+const setStatusAccept = () => {
+  updateDoc(doc(db,"ListTrip",idTrip),{
+    status:"accepted"
+  })
+};
+const setStatusCancel = () => {
+  updateDoc(doc(db,"ListTrip",idTrip),{
+    status:"canceled"
+  })
+};
+const setStatusReject = () => {
+  navigation.replace("MainRiderNavigator", {
+    screen: "HomeRider",
+  });
+};
+const setStatusComplete = () => {
+  updateDoc(doc(db,"ListTrip",idTrip),{
+    status:"done"
+  })
+};
+
+const onClickAccept= ()=>{
+  if (state === 0) {
+  setStatusAccept()
+    setState(1);
+  } else if(state===1){
+    setState(2);
   }
+}
+
+ const getButtonTextAccept = () => {
+  if (state === 0) {
+    return 'Accept';
+  } else if(state===1){
+    return 'Done';
+  }else {
+    setStatusComplete()
+    completeTrip()
+  }
+};
+
+const getButtonTextReject = () => {
+  if (state === 0) {
+    return 'Reject';
+  } else if(state===1){
+    return 'Cancel';
+  }else {
+    completeTrip()
+  }
+};
+const onClickReject= ()=>{
+  if (state === 0) {
+    setStatusReject()
+  } else if(state===1){
+    setStatusCancel()
+    completeTrip()
+  }
+}
   return (
     <View
       bgColor={COLORS.fourthary}
@@ -79,15 +135,6 @@ function PopUpRequestCard (props){
             >
               {name}
             </Text>
-            <Text
-              color={COLORS.lightGrey}
-              style={{
-                ...FONTS.body6,
-                marginLeft: 5,
-              }}
-            >
-              {idTrip}
-            </Text>
           </HStack>
           <View>
             <Text
@@ -101,6 +148,14 @@ function PopUpRequestCard (props){
             </Text>
           </View>
         </HStack>
+        <Text
+              color={COLORS.lightGrey}
+              style={{
+                ...FONTS.body6,
+              }}
+            >
+              {idTrip}
+            </Text>
         <HStack>
           <Text style={styles.detailText}>{distance}</Text>
           <Text style={styles.detailTextNotBold}> - You’re </Text>
@@ -111,12 +166,12 @@ function PopUpRequestCard (props){
       <View
         bgColor={COLORS.tertiary}
         w={"100%"}
-        h={230}
+        h={210}
         borderTopRadius={20}
         position={"absolute"}
         bottom={0}
       >
-        <VStack marginTop={8}>
+        <VStack marginTop={4}>
           <HStack alignItems={"center"}>
             <Image alt="location line" source={locationLineIcon}></Image>
             <VStack space={5}>
@@ -143,9 +198,8 @@ function PopUpRequestCard (props){
             }}
           >
             <TouchableOpacity
-              onPress={() => {
-                onClickReject;
-              }}
+              onPress={onClickReject
+              }
               style={{
                 borderColor: COLORS.red,
                 height: 59,
@@ -162,7 +216,7 @@ function PopUpRequestCard (props){
                 fontSize={20}
                 styles={{ ...FONTS.h3 }}
               >
-                Reject
+                 {getButtonTextReject()}
               </Text>
             </TouchableOpacity>
             <View
@@ -173,9 +227,8 @@ function PopUpRequestCard (props){
               }}
             >
               <TouchableOpacity
-                onPress={() => {
-                  onClickAccept;
-                }}
+                onPress={onClickAccept
+                }
                 style={{
                   borderColor: COLORS.primary,
                   backgroundColor: COLORS.primary,
@@ -193,7 +246,7 @@ function PopUpRequestCard (props){
                   fontSize={20}
                   styles={{ ...FONTS.h3 }}
                 >
-                  Accept
+                  {getButtonTextAccept()}
                 </Text>
               </TouchableOpacity>
             </View>
@@ -219,3 +272,4 @@ const styles = StyleSheet.create({
   },
 });
 export default PopUpRequestCard;
+

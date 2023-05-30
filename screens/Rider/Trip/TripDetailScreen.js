@@ -25,16 +25,15 @@ import { db } from "../../../config/config";
 
 const TripDetailScreen = ({ navigation, route }) => {
   const {idTrip} = route.params;
-  const [tripData, setTrip] = useState([]);
+  const [tripData, setTrip] = useState({});
   useEffect(()=>{
     getTrip()
   }, []);
   const getTrip = () =>{
-    let tripData=[]
-    console.log(idTrip)
+    let data={}
     getDoc(doc(db,"ListTrip", idTrip)).then((doc)=>{
       if(doc.exists()){
-        tripData.push({
+        data={
           idCustomer:doc.data().idCustomer,
           idTrip:doc.id,
           pickUpLat:doc.data().pickUpLat,
@@ -45,9 +44,9 @@ const TripDetailScreen = ({ navigation, route }) => {
           time:doc.data().time,
           totalPrice:doc.data().totalPrice,
           distance:doc.data().distance,
-        });
+        };
       }
-      setTrip(tripData);
+      setTrip(data);
     })
   }
   return (
@@ -72,8 +71,7 @@ const TripDetailScreen = ({ navigation, route }) => {
             coordinate={{ latitude: 9.90761, longitude: 105.31181 }}
           ></Marker>
         </MapView>
-        <PopUpRequestCard trip={tripData}
-        ></PopUpRequestCard>
+        <PopUpRequestCard trip={tripData} navigation={navigation}></PopUpRequestCard>
         {/* <HStack justifyContent={"center"} mb={"20px"}>
           <View style={{ position: "absolute", left: 0 }}>
             <ButtonBack></ButtonBack>

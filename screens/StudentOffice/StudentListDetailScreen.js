@@ -37,7 +37,6 @@ const StudentListDetailScreen = ({route, navigation}) => {
     // setRole("Customer")
     // setPhoneNumber("0393751403")
     //getDoc(doc(db,"Customer" , "0393751403"))
-    let imgUrl=''
     getDoc(doc(db,role, phoneNumber))
       .then(docSnap => {
         if (docSnap.exists()) {
@@ -47,17 +46,12 @@ const StudentListDetailScreen = ({route, navigation}) => {
           setDisplayName(docSnap.data().displayName)
           setEmail(docSnap.data().email)
           //setPhoneNumber(docSnap.id)
-          imgUrl=docSnap.data().portrait
           setSchool(docSnap.data().school)
+          setPortrait(docSnap.data().portrait)
           setStudentID(docSnap.data().studentID)
-          //console.log(docSnap.data().portrait)
         } else {
           console.log("No such data")}
-          setPortrait(imgUrl)
-
       }) 
-      console.log(imgUrl)
-
   };
   const width = 224;
   const height = width * 1.5;
