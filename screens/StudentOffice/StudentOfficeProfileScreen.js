@@ -20,24 +20,38 @@ import { db } from "../../config/config";
 
 const StudentOfficeProfileScreen = ({ navigation }) => {
   const [phoneNumber, setPhoneNumber] = useState(null);
+  const [uniName, setUniName] = useState(null);
+  const [logo, setLogo] = useState(null);
+  const [address, setAddress] = useState(null);
 
   useEffect(() => {
-    getFromAsyncStorage("phoneNumber")
-      .then((value) => setPhoneNumber(value))
-      .catch((err) => console.log(err));
-    fetchData();
+    fetchDataAndPhoneNumber()
   });
-
-  const fetchData = () => {
-    getDoc(doc(db, "StudentOffice", phoneNumber))
-      .then((docData) => {
-        setUniName(docData.data().name);
-        setAcronym(docData.data().acronym);
-        setLogo(docData.data().logo);
-      })
-      .catch((error) => {});
+  const fetchDataAndPhoneNumber = async () => {
+    try {
+      const phoneNumberValue = await getFromAsyncStorage("phoneNumber");
+      setPhoneNumber(phoneNumberValue);
+  
+      if (phoneNumberValue) {
+        fetchData(phoneNumberValue);
+      }
+    } catch (err) {
+      console.log(err);
+    }
   };
+  
+  const fetchData = async (phoneNumber) => {
+    try {
+      const docData = await getDoc(doc(db, "StudentOffice", phoneNumber));
+      setUniName(docData.data().name);
+      setLogo(docData.data().logo);
+      setAddress(docData.data().address);
 
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  
   return (
     <VStack h={"100%"} paddingTop={"20px"} bgColor={COLORS.background}>
       <SafeAreaView>
@@ -51,7 +65,7 @@ const StudentOfficeProfileScreen = ({ navigation }) => {
             <VStack mt={5} alignItems={"center"}>
               <HStack w={"118px"}>
                 <Image
-                  src="https://cdn.haitrieu.com/wp-content/uploads/2021/10/Logo-DH-Cong-Nghe-Thong-Tin-UIT.png"
+                  source={{ uri: logo }}
                   h={"118px"}
                   w={"118px"}
                   resizeMode="center"
@@ -64,13 +78,13 @@ const StudentOfficeProfileScreen = ({ navigation }) => {
                 Name
               </Text>
               <Text style={{ ...FONTS.h4, color: COLORS.white }} mt={2}>
-                University of Information Technology
+                {uniName}
               </Text>
               <Text style={{ ...FONTS.h4, color: COLORS.fifthary }} mt={10}>
                 Address
               </Text>
               <Text style={{ ...FONTS.h4, color: COLORS.white }} mt={2}>
-                01 Hàn Thuyên, Khu phố 6, Linh Trung, Thủ Đức, Sài Gòn
+                {address}
               </Text>
             </VStack>
 

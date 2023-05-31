@@ -41,24 +41,35 @@ const StudentOfficeScreen = ({ navigation }) => {
   const [logo, setLogo] = useState(null);
 
   useEffect(() => {
-    getUsers();
-    getFromAsyncStorage("phoneNumber")
-      .then((value) => setPhoneNumber(value))
-      .catch((err) => console.log(err));
-    fetchData();
+    fetchDataAndPhoneNumber();
   }, [navigation]);
-
-  const fetchData = () => {
-    getDoc(doc(db, "StudentOffice", phoneNumber))
-      .then((docData) => {
-        setUniName(docData.data().name);
-        setAcronym(docData.data().acronym);
-        setLogo(docData.data().logo);
-      })
-      .catch((error) => {});
+  
+  const fetchDataAndPhoneNumber = async () => {
+    try {
+      const phoneNumberValue = await getFromAsyncStorage("phoneNumber");
+      setPhoneNumber(phoneNumberValue);
+  
+      if (phoneNumberValue) {
+        fetchData(phoneNumberValue);
+        await getUsers();
+      }
+    } catch (err) {
+      console.log(err);
+    }
   };
-
-  const getUsers = () => {
+  
+  const fetchData = async (phoneNumber) => {
+    try {
+      const docData = await getDoc(doc(db, "StudentOffice", phoneNumber));
+      setUniName(docData.data().name);
+      setAcronym(docData.data().acronym);
+      setLogo(docData.data().logo);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  
+  const getUsers = async () => {
     let users = [];
     getDocs(
       query(collection(db, "Customer"), where("status", "==", "pending"))
@@ -112,7 +123,7 @@ const StudentOfficeScreen = ({ navigation }) => {
               <Text style={{ ...FONTS.body6, color: COLORS.lightGrey }}>
                 {acronym}
               </Text>
-              <Text style={{ ...FONTS.h6, color: COLORS.white }}></Text>
+              <Text style={{ ...FONTS.h6, color: COLORS.white }}>{uniName}</Text>
             </VStack>
           </HStack>
           <Input

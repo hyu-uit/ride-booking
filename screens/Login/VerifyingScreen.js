@@ -35,38 +35,23 @@ const VerifyingScreen = ({ navigation }) => {
   //   screen: "StudentOffice",
   // });
   const signInOption = () => {
-    {
-      role == "Customer"
-        ? role == "Rider"
-          ? navigation.navigate("MainRiderNavigator", {
-              screen: "HomeRider",
-              params: {
-                data: {
-                  phoneNumber: "" + phoneNumber,
-                  role: "" + role,
-                },
-              },
-            })
-          : navigation.navigate("MainNavigator", {
-              screen: "HomeStack",
-              params: {
-                screen: "Home",
-                data: {
-                  phoneNumber: "" + phoneNumber,
-                  role: "" + role,
-                },
-              },
-            })
-        : navigation.navigate("StudentOfficeNavigator", {
-            screen: "StudentOffice",
-            params: {
-              data: {
-                phoneNumber: "" + phoneNumber,
-                role: "" + role,
-              },
-            },
-          });
-    }
+    console.log(role)
+      if(role == "Customer"){
+        navigation.navigate("MainNavigator", {
+          screen: "HomeStack",
+          params: {
+            screen: "Home"
+          },
+        })
+      }else if(role=="Rider"){
+        navigation.navigate("StudentOfficeNavigator", {
+          screen: "StudentOffice",
+        })
+      }else{
+        navigation.navigate("MainRiderNavigator", {
+          screen: "HomeRider",
+        })
+      }
   };
   const [otp, setOtp] = useState({ 1: "", 2: "", 3: "", 4: "" });
   return (
