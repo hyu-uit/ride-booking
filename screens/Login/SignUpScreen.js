@@ -32,6 +32,8 @@ import {
 import { Alert } from "react-native";
 import { AsyncStorage } from "react-native";
 import { LogBox } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import DateTimePicker from "@react-native-community/datetimepicker";
 
 LogBox.ignoreAllLogs(); //Ignore all log notifications
 
@@ -42,6 +44,19 @@ const SignUpScreen = ({ navigation }) => {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [email, setEmail] = useState("");
   const [role, setRole] = useState("");
+
+  const [date, setDate] = useState(new Date());
+  const [showPicker, setShowPicker] = useState(false);
+
+  const showDatePicker = () => {
+    setShowPicker(true);
+  };
+
+  const handleDateChange = (event, selectedDate) => {
+    const currentDate = selectedDate || date;
+    setShowPicker(Platform.OS === "ios");
+    setDate(currentDate);
+  };
 
   const signUp = () => {
     if (
@@ -70,7 +85,6 @@ const SignUpScreen = ({ navigation }) => {
       getDocs(collection(db, role)).then((docSnap) => {
         docSnap.forEach((doc) => {
           if (doc.id == phoneNumber) count++;
-          console.log(doc.id);
         });
         if (count == 0) {
           // setDoc(doc(db, role, phoneNumber), {
@@ -125,7 +139,7 @@ const SignUpScreen = ({ navigation }) => {
               <Text style={{ ...FONTS.h2 }} mt={2} color={COLORS.white}>
                 Create Account
               </Text>
-              <ScrollView>
+              <ScrollView showsVerticalScrollIndicator={false} mb={20}>
                 <Select
                   w={"100%"}
                   h={"77px"}
@@ -157,6 +171,41 @@ const SignUpScreen = ({ navigation }) => {
                   style={{ ...FONTS.body3 }}
                   color={COLORS.white}
                 />
+                <View
+                  w={"100%"}
+                  h={"77px"}
+                  borderRadius={20}
+                  borderColor={COLORS.secondary}
+                  borderWidth={1}
+                  paddingLeft={4}
+                  mt={5}
+                  justifyContent={"center"}
+                >
+                  <HStack w={"100%"}>
+                    {/* <Text style={{ ...FONTS.body3, color: COLORS.white }}>
+                      30/05/2023
+                    </Text> */}
+                    <Ionicons
+                      onPress={showDatePicker}
+                      size={20}
+                      name="calendar"
+                      style={{
+                        position: "absolute",
+                        right: 20,
+                        color: COLORS.white,
+                      }}
+                    />
+                    {showPicker && (
+                      <DateTimePicker
+                        testID="dateTimePicker"
+                        value={date}
+                        mode="date"
+                        display="default"
+                        onChange={handleDateChange}
+                      />
+                    )}
+                  </HStack>
+                </View>
                 <Input
                   w={"100%"}
                   h={"77px"}

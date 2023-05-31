@@ -53,16 +53,16 @@ const RiderHomeScreen = ({ navigation, route }) => {
     ).then((docSnap) => {
       docSnap.forEach((doc) => {
         waitingTrips.push({
-          idCustomer:doc.data().idCustomer,
-          idTrip:doc.id,
-          pickUpLat:doc.data().pickUpLat,
-          pickUpLong:doc.data().pickUpLong,
-          destLat:doc.data().destLat,
-          destLong:doc.data().destLong,
-          date:doc.data().date,
-          time:doc.data().time,
-          totalPrice:doc.data().totalPrice,
-          distance:doc.data().distance,
+          idCustomer: doc.data().idCustomer,
+          idTrip: doc.id,
+          pickUpLat: doc.data().pickUpLat,
+          pickUpLong: doc.data().pickUpLong,
+          destLat: doc.data().destLat,
+          destLong: doc.data().destLong,
+          date: doc.data().date,
+          time: doc.data().time,
+          totalPrice: doc.data().totalPrice,
+          distance: doc.data().distance,
         });
       });
       setWaitingTrips(waitingTrips);
@@ -76,21 +76,21 @@ const RiderHomeScreen = ({ navigation, route }) => {
     ).then((docSnap) => {
       docSnap.forEach((doc) => {
         finishedTrips.push({
-          idCustomer:doc.data().idCustomer,
-          idTrip:doc.id,
-          pickUpLat:doc.data().pickUpLat,
-          pickUpLong:doc.data().pickUpLong,
-          destLat:doc.data().destLat,
-          destLong:doc.data().destLong,
-          date:doc.data().date,
-          time:doc.data().time,
-          totalPrice:doc.data().totalPrice,
-          distance:doc.data().distance,
+          idCustomer: doc.data().idCustomer,
+          idTrip: doc.id,
+          pickUpLat: doc.data().pickUpLat,
+          pickUpLong: doc.data().pickUpLong,
+          destLat: doc.data().destLat,
+          destLong: doc.data().destLong,
+          date: doc.data().date,
+          time: doc.data().time,
+          totalPrice: doc.data().totalPrice,
+          distance: doc.data().distance,
         });
       });
       setFinishedTrips(finishedTrips);
     });
-  }; 
+  };
 
   const getCanceledTrips = () => {
     let canceledTrips = [];
@@ -99,16 +99,16 @@ const RiderHomeScreen = ({ navigation, route }) => {
     ).then((docSnap) => {
       docSnap.forEach((doc) => {
         canceledTrips.push({
-          idCustomer:doc.data().idCustomer,
-          idTrip:doc.id,
-          pickUpLat:doc.data().pickUpLat,
-          pickUpLong:doc.data().pickUpLong,
-          destLat:doc.data().destLat,
-          destLong:doc.data().destLong,
-          date:doc.data().date,
-          time:doc.data().time,
-          totalPrice:doc.data().totalPrice,
-          distance:doc.data().distance,
+          idCustomer: doc.data().idCustomer,
+          idTrip: doc.id,
+          pickUpLat: doc.data().pickUpLat,
+          pickUpLong: doc.data().pickUpLong,
+          destLat: doc.data().destLat,
+          destLong: doc.data().destLong,
+          date: doc.data().date,
+          time: doc.data().time,
+          totalPrice: doc.data().totalPrice,
+          distance: doc.data().distance,
         });
       });
       setCanceledTrips(canceledTrips);
@@ -128,54 +128,42 @@ const RiderHomeScreen = ({ navigation, route }) => {
   };
 
   const FirstRoute = () => (
-      <VStack mt={"17px"} justifyContent={"center"} alignItems={"center"}>
-       <FlatList
-          data={waitingTrips}
-          keyExtractor={(item) => item.idTrip}
-          renderItem={({item})=>(
-            <HistoryPickUpCard
-            onPress={() => {
-              const data = {
-                idTrip:""+item.idTrip
-              };
-              navigation.navigate("TripDetail", data);
-            }}
-              trip = {item}
-              key={item.idTrip}
-            ></HistoryPickUpCard>
-          )}
-       ></FlatList>
-      </VStack>
+    <FlatList
+      data={waitingTrips}
+      keyExtractor={(item) => item.idTrip}
+      renderItem={({ item }) => (
+        <HistoryPickUpCard
+          onPress={() => {
+            const data = {
+              idTrip: "" + item.idTrip,
+            };
+            navigation.navigate("TripDetail", data);
+          }}
+          trip={item}
+          key={item.idTrip}
+        ></HistoryPickUpCard>
+      )}
+    ></FlatList>
   );
-          
+
   const SecondRoute = () => (
-      <VStack mt={"17px"} justifyContent={"center"} alignItems={"center"}>
-         <FlatList
-          data={finishedTrips}
-          keyExtractor={(item) => item.idTrip}
-          renderItem={({item})=>(
-            <HistoryPickUpCard
-              trip = {item}
-              key={item.idTrip}
-            ></HistoryPickUpCard>
-          )}
-       ></FlatList>
-      </VStack>
+    <FlatList
+      data={finishedTrips}
+      keyExtractor={(item) => item.idTrip}
+      renderItem={({ item }) => (
+        <HistoryPickUpCard trip={item} key={item.idTrip}></HistoryPickUpCard>
+      )}
+    ></FlatList>
   );
 
   const ThirdRoute = () => (
-      <VStack mt={"17px"} justifyContent={"center"} alignItems={"center"}>
-         <FlatList
-          data={canceledTrips}
-          keyExtractor={(item) => item.idTrip}
-          renderItem={({item})=>(
-            <HistoryPickUpCard
-              trip = {item}
-              key={item.idTrip}
-            ></HistoryPickUpCard>
-          )}
-       ></FlatList>
-      </VStack>
+    <FlatList
+      data={canceledTrips}
+      keyExtractor={(item) => item.idTrip}
+      renderItem={({ item }) => (
+        <HistoryPickUpCard trip={item} key={item.idTrip}></HistoryPickUpCard>
+      )}
+    ></FlatList>
   );
 
   const renderScene = SceneMap({

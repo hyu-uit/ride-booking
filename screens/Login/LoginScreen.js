@@ -12,7 +12,7 @@ import { SIZES, COLORS, FONTS } from "../../constants/theme";
 import BlueBg from "../../assets/images/Login/blueBg.png";
 import { SafeAreaView } from "react-native-safe-area-context";
 import LottieView from "lottie-react-native";
-import { AsyncStorage } from "react-native"; 
+import { AsyncStorage } from "react-native";
 
 const LoginScreen = ({ navigation }) => {
   const animation = useRef(null);
