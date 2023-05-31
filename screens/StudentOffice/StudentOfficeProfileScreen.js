@@ -13,8 +13,31 @@ import React, { useState } from "react";
 import ButtonBack from "../../components/Global/ButtonBack/ButtonBack";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { COLORS, FONTS, SIZES } from "../../constants";
+import { useEffect } from "react";
+import { getFromAsyncStorage } from "../../helper/asyncStorage";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "../../config/config";
 
 const StudentOfficeProfileScreen = ({ navigation }) => {
+  const [phoneNumber, setPhoneNumber] = useState(null);
+
+  useEffect(() => {
+    getFromAsyncStorage("phoneNumber")
+      .then((value) => setPhoneNumber(value))
+      .catch((err) => console.log(err));
+    fetchData();
+  });
+
+  const fetchData = () => {
+    getDoc(doc(db, "StudentOffice", phoneNumber))
+      .then((docData) => {
+        setUniName(docData.data().name);
+        setAcronym(docData.data().acronym);
+        setLogo(docData.data().logo);
+      })
+      .catch((error) => {});
+  };
+
   return (
     <VStack h={"100%"} paddingTop={"20px"} bgColor={COLORS.background}>
       <SafeAreaView>
@@ -40,13 +63,13 @@ const StudentOfficeProfileScreen = ({ navigation }) => {
               <Text style={{ ...FONTS.h4, color: COLORS.fifthary }} mt={10}>
                 Name
               </Text>
-              <Text style={{ ...FONTS.h3, color: COLORS.white }} mt={2}>
+              <Text style={{ ...FONTS.h4, color: COLORS.white }} mt={2}>
                 University of Information Technology
               </Text>
               <Text style={{ ...FONTS.h4, color: COLORS.fifthary }} mt={10}>
                 Address
               </Text>
-              <Text style={{ ...FONTS.h3, color: COLORS.white }} mt={2}>
+              <Text style={{ ...FONTS.h4, color: COLORS.white }} mt={2}>
                 01 Hàn Thuyên, Khu phố 6, Linh Trung, Thủ Đức, Sài Gòn
               </Text>
             </VStack>

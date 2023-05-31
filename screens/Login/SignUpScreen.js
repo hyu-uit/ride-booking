@@ -37,7 +37,7 @@ import { Ionicons } from "@expo/vector-icons";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import moment from "moment";
 
-// LogBox.ignoreAllLogs(); //Ignore all log notifications
+LogBox.ignoreAllLogs(); //Ignore all log notifications
 
 const SignUpScreen = ({ navigation }) => {
   const [school, setSchool] = useState("");

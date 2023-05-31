@@ -1,4 +1,3 @@
-import React from "react";
 import styled from "styled-components";
 import { FONTS, COLORS, SIZES } from "../constants";
 import {
@@ -26,15 +25,21 @@ import DeliveryImg from "../assets/images/delivery_1.png";
 import { TouchableWithoutFeedback } from "react-native";
 import { Keyboard } from "react-native";
 import LottieView from "lottie-react-native";
+import { useEffect } from "react";
+import { getFromAsyncStorage } from "../helper/asyncStorage";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useState } from "react";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../config/config";
-import { useEffect } from "react";
 
 export default function Home({ navigation, route }) {
+  const [phone, setPhone] = useState("");
   const [historyTrips, setHistoryTrips] = useState([]);
 
   useEffect(() => {
+    getFromAsyncStorage("phoneNumber")
+      .then((value) => setPhone(value))
+      .catch((err) => console.log(err));
     getHistoryTrips();
   }, [navigation]);
   //const {phoneNumber, role} = route.params;

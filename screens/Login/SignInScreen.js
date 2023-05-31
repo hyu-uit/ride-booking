@@ -15,6 +15,7 @@ import { Keyboard } from "react-native";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../../config/config";
 import { AsyncStorage } from "react-native";
+import { saveToAsyncStorage } from "../../helper/asyncStorage";
 
 const SignInScreen = ({ navigation }) => {
   const [role, setRole] = useState(0);
@@ -41,35 +42,45 @@ const SignInScreen = ({ navigation }) => {
   const isPhoneNumberNull = () => {};
 
   const checkPhoneNumber = () => {
-    if (phoneNumber.length !== 10) {
-      Alert.alert(
-        "Invalid phone number",
-        "Please re-enter your phone number.",
-        [
-          {
-            text: "OK",
-          },
-        ]
-      );
+    let getRole = "";
+    {
+      role != 2
+        ? role == 0
+          ? (getRole = "Customer")
+          : (getRole = "Rider")
+        : (getRole = "StudentOffice");
+    }
+
+    if (getRole === "StudentOffice") {
+      getDoc(doc(db, getRole, phoneNumber))
+        .then((docData) => {
+          if (docData.exists()) {
+            // AsyncStorage.setItem("phoneNumber", phoneNumber);
+            // AsyncStorage.setItem("role", getRole);
+            saveToAsyncStorage("phoneNumber", phoneNumber);
+            saveToAsyncStorage("role", getRole);
+            navigation.navigate("StudentOfficeNavigator", {
+              screen: "StudentOffice",
+            });
+          } else {
+            Alert.alert("Wrong phone number!");
+            console.log("no such data");
+          }
+        })
+        .catch((error) => {});
     } else {
-      let getRole = "";
-      {
-        role != 2
-          ? role == 0
-            ? (getRole = "Customer")
-            : (getRole = "Rider")
-          : (getRole = "StudentOffice");
-      }
       getDoc(doc(db, getRole, phoneNumber))
         .then((docData) => {
           if (docData.exists() && docData.data().status === "active") {
-            AsyncStorage.setItem("phoneNumber", phoneNumber);
-            AsyncStorage.setItem("role", getRole);
+            console.log(phoneNumber + getRole);
+            // AsyncStorage.setItem("phoneNumber", phoneNumber);
+            // AsyncStorage.setItem("role", getRole);
+            saveToAsyncStorage("phoneNumber", phoneNumber);
+            saveToAsyncStorage("role", getRole);
             navigation.navigate("Verify");
           } else if (docData.exists() && docData.data().status === "pending") {
             navigation.navigate("Pending");
           } else {
-            navigation.navigate("Pending");
             Alert.alert("Phone number has not been registered!");
             console.log("no such data");
           }
