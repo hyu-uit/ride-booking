@@ -19,7 +19,8 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.thevihuynh.carbooking",
       "infoPlist": {
-        "NSPhotoLibraryUsageDescription": "To select photos from your library"
+        "NSPhotoLibraryUsageDescription": "To select photos from your library",
+        "NSLocationWhenInUseUsageDescription": "Allow $(PRODUCT_NAME) to use your location"
       }
     },
     "android": {
@@ -32,7 +33,8 @@
         "READ_EXTERNAL_STORAGE",
         "WRITE_EXTERNAL_STORAGE",
         "CAMERA",
-        "MEDIA_LIBRARY"
+        "MEDIA_LIBRARY",
+        "LOCATION"
       ]
     },
     "web": {
@@ -45,6 +47,12 @@
           "RNMapboxMapsImpl": "mapbox",
           "RNMapboxMapsDownloadToken": "sk.eyJ1IjoiZHVjbmd1eWVudHJpIiwiYSI6ImNsZjNkdGY0czAwZnkzdHIwMmpydWJpOTgifQ.SoQYVlwvSEhFn1tehWqPrA"
         }
+      ],
+      [
+        "expo-location",
+          {
+            "locationWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location."
+          }
       ]
     ],
     "extra": {
@@ -54,4 +62,5 @@
     },
     "permissions": ["camera"]
   }
+  
 }
