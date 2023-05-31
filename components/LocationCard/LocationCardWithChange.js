@@ -13,8 +13,15 @@ import { COLORS, SIZES } from "../../constants";
 import ArrowDownIcon from "../../assets/icons/icons8-down-arrow-48.png";
 import LocationIcon from "../../assets/icons/icons8-location-48.png";
 import ChangeIcon from "../../assets/icons/icons8-change-48.png";
+import { useRef } from "react";
+import { useEffect } from "react";
 
 const LocationCardWithChange = () => {
+  // const inputRef = useRef(null);
+
+  // useEffect(() => {
+  //   inputRef.current.focus();
+  // }, []);
   return (
     <Flex marginTop={3} marginLeft={3} marginRight={3}>
       <HStack
@@ -32,6 +39,7 @@ const LocationCardWithChange = () => {
               Pick-up
             </Text>
             <Input
+              // ref={inputRef}
               variant="unstyled"
               placeholder="Enter your location"
               bold

@@ -27,38 +27,34 @@ import { Keyboard } from "react-native";
 import LottieView from "lottie-react-native";
 
 export default function Home({ navigation, route }) {
-  
-
   return (
-    <TouchableWithoutFeedback
-      onPress={() => {
-        Keyboard.dismiss();
-      }}
-    >
-      <HomeContainer>
-        <HStack w={"full"} alignContent={"center"}>
-          <Avatar source={DefaultAvt} margin={"10px 0 0 10px"} />
-          <VStack margin={"10px 0 0 10px"}>
-            <Text fontSize={10} color={COLORS.grey}>
-              Welcome back
-            </Text>
-            <Text fontSize={SIZES.h4} color={COLORS.white} bold>
-              Nguyen Tri Duc
-            </Text>
-          </VStack>
-          <MenuButton
-            onPress={() => {
-              navigation.navigate("Menu");
-            }}
-          >
-            <Center h={"100%"}>
-              <Image w={"25px"} h={"25px"} source={MenuIcon} alt="menu icon" />
-            </Center>
-          </MenuButton>
-        </HStack>
-        <HStack>
-          <ScrollView showsVerticalScrollIndicator={false}>
-            <Input
+    <HomeContainer>
+      <HStack w={"full"} alignContent={"center"}>
+        <Avatar source={DefaultAvt} margin={"10px 0 0 10px"} />
+        <VStack margin={"10px 0 0 10px"}>
+          <Text fontSize={10} color={COLORS.grey}>
+            Welcome back
+          </Text>
+          <Text fontSize={SIZES.h4} color={COLORS.white} bold>
+            Nguyen Tri Duc
+          </Text>
+        </VStack>
+        <MenuButton
+          onPress={() => {
+            navigation.navigate("Menu");
+          }}
+        >
+          <Center h={"100%"}>
+            <Image w={"25px"} h={"25px"} source={MenuIcon} alt="menu icon" />
+          </Center>
+        </MenuButton>
+      </HStack>
+      <HStack>
+        <ScrollView showsVerticalScrollIndicator={false}>
+          {/* <Input
+              onPressIn={() => {
+                navigation.navigate("Booking");
+              }}
               mb={10}
               borderRadius={10}
               h={"50px"}
@@ -78,8 +74,34 @@ export default function Home({ navigation, route }) {
                   as={<Ionicons name="ios-search" />}
                 />
               }
+            /> */}
+
+          <HStack
+            w={"100%"}
+            borderRadius={10}
+            bgColor={COLORS.tertiary}
+            borderWidth={0}
+            h={"50px"}
+            mb={10}
+            mt={8}
+            alignItems={"center"}
+            onTouchEnd={() => {
+              navigation.navigate("Booking");
+            }}
+          >
+            <Icon
+              ml="2"
+              size="4"
+              color={COLORS.white}
+              as={<Ionicons name="ios-search" />}
             />
-            {/* <HStack
+            <Text
+              style={{ ...FONTS.body3, color: COLORS.grey, marginLeft: 10 }}
+            >
+              Enter your destination
+            </Text>
+          </HStack>
+          {/* <HStack
               marginTop={5}
               marginBottom={5}
               space={3}
@@ -89,84 +111,83 @@ export default function Home({ navigation, route }) {
               <SelectedButton text={"School"} />
               <SelectedButton text={"Hotel"} />
             </HStack> */}
-            <HStack w={"100%"} justifyContent={"space-evenly"} marginBottom={5}>
-              <TouchableOpacity
-                onPress={() => {
-                  const data = {phoneNumber:'0393751403'}
-                  navigation.navigate("Booking", data);
-                }}
-              >
-                <VStack
-                  borderColor={"white"}
-                  borderWidth={1}
-                  borderRadius={SIZES.radius10}
-                >
-                  <Center
-                    w={"150px"}
-                    h={"120px"}
-                    bgColor={COLORS.fourthary}
-                    borderTopRadius={SIZES.radius10}
-                  >
-                    <Image source={BikeImg} alt="bike" />
-                  </Center>
-                  <Center h={50}>
-                    <Text fontSize={SIZES.h4} bold color={"white"}>
-                      BIKE
-                    </Text>
-                  </Center>
-                </VStack>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => {
-                  navigation.navigate("Booking");
-                }}
-              >
-                <VStack
-                  borderColor={"white"}
-                  borderWidth={1}
-                  borderRadius={SIZES.radius10}
-                >
-                  <Center
-                    w={"150px"}
-                    h={"120px"}
-                    bgColor={COLORS.white}
-                    borderTopRadius={SIZES.radius10}
-                  >
-                    <Image source={DeliveryImg} alt="delivery" />
-                  </Center>
-                  <Center h={50}>
-                    <Text fontSize={SIZES.h4} bold color={"white"}>
-                      DELIVERY
-                    </Text>
-                  </Center>
-                </VStack>
-              </TouchableOpacity>
-            </HStack>
-            <Text
-              fontSize={SIZES.h4}
-              bold
-              color={"white"}
-              alignSelf={"flex-start"}
-              marginBottom={3}
+          <HStack w={"100%"} justifyContent={"space-evenly"} marginBottom={5}>
+            <TouchableOpacity
+              onPress={() => {
+                const data = { phoneNumber: "0393751403" };
+                navigation.navigate("Booking", data);
+              }}
             >
-              Last booking
-            </Text>
-            <VStack w={"100%"}>
-              <HistoryCard
-                onPress={() => {
-                  navigation.navigate("ActivityDetail");
-                }}
-              />
-              <HistoryCard />
-              <HistoryCard />
-              <HistoryCard />
-              <HistoryCard />
-              <HistoryCard />
-            </VStack>
-          </ScrollView>
-        </HStack>
-      </HomeContainer>
-    </TouchableWithoutFeedback>
+              <VStack
+                borderColor={"white"}
+                borderWidth={1}
+                borderRadius={SIZES.radius10}
+              >
+                <Center
+                  w={"150px"}
+                  h={"120px"}
+                  bgColor={COLORS.fourthary}
+                  borderTopRadius={SIZES.radius10}
+                >
+                  <Image source={BikeImg} alt="bike" />
+                </Center>
+                <Center h={50}>
+                  <Text fontSize={SIZES.h4} bold color={"white"}>
+                    BIKE
+                  </Text>
+                </Center>
+              </VStack>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate("Booking");
+              }}
+            >
+              <VStack
+                borderColor={"white"}
+                borderWidth={1}
+                borderRadius={SIZES.radius10}
+              >
+                <Center
+                  w={"150px"}
+                  h={"120px"}
+                  bgColor={COLORS.white}
+                  borderTopRadius={SIZES.radius10}
+                >
+                  <Image source={DeliveryImg} alt="delivery" />
+                </Center>
+                <Center h={50}>
+                  <Text fontSize={SIZES.h4} bold color={"white"}>
+                    DELIVERY
+                  </Text>
+                </Center>
+              </VStack>
+            </TouchableOpacity>
+          </HStack>
+          <Text
+            fontSize={SIZES.h4}
+            bold
+            color={"white"}
+            alignSelf={"flex-start"}
+            marginBottom={3}
+          >
+            Last booking
+          </Text>
+          <VStack w={"100%"}>
+            <HistoryCard
+              onPress={() => {
+                navigation.navigate("ActivityDetail");
+              }}
+            />
+            <HistoryCard />
+            <HistoryCard />
+            <HistoryCard />
+            <HistoryCard />
+            <HistoryCard />
+          </VStack>
+        </ScrollView>
+      </HStack>
+    </HomeContainer>
   );
 }
 

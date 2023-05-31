@@ -33,6 +33,10 @@ const ActivityScreen = ({ navigation }) => {
         <BookingCard />
         <BookingCard />
         <BookingCard />
+        <BookingCard />
+        <BookingCard />
+        <BookingCard />
+        <BookingCard />
       </VStack>
     </ScrollView>
   );

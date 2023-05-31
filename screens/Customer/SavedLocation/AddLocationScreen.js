@@ -18,7 +18,11 @@ const AddLocationScreen = ({ navigation }) => {
           <VStack paddingX={"10px"} h={"100%"}>
             <HStack mb={"20px"} alignItems={"center"}>
               <View style={{ left: 0 }}>
-                <ButtonBack></ButtonBack>
+                <ButtonBack
+                  onPress={() => {
+                    navigation.goBack();
+                  }}
+                ></ButtonBack>
               </View>
               <Text style={{ ...FONTS.h2, color: COLORS.white }} ml={4}>
                 Add location
@@ -65,7 +69,7 @@ const AddLocationScreen = ({ navigation }) => {
               <Button
                 w={"100%"}
                 position={"absolute"}
-                bottom={100}
+                bottom={120}
                 borderRadius={20}
                 bgColor={COLORS.primary}
                 onPress={() => {

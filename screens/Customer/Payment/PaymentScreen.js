@@ -22,12 +22,16 @@ import LogoSmartPay from "../../../assets/images/Logos/smartpay.png";
 import LogoViettel from "../../../assets/images/Logos/viettel.png";
 import LogoVisa from "../../../assets/images/Logos/visa.png";
 
-const PaymentScreen = () => {
+const PaymentScreen = ({ navigation }) => {
   return (
     <VStack h={"100%"} paddingY={"20px"} bgColor={COLORS.background}>
       <SafeAreaView>
         <VStack paddingX={"10px"}>
-          <ButtonBack></ButtonBack>
+          <ButtonBack
+            onPress={() => {
+              navigation.goBack();
+            }}
+          ></ButtonBack>
           <HStack mt={10}></HStack>
           <PaymentMethodCard logo={LogoZalo} name={"Zalo"} />
           <PaymentMethodCard logo={LogoMomo} name={"Momo"} />
