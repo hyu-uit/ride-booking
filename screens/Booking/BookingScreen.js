@@ -83,25 +83,25 @@ export default function BookingScreen({ navigation }) {
   const createOrder = async () => {
     const currentDate = new Date();
     const currentDay = currentDate.getDate();
-    const currentMonth = currentDate.getMonth() + 1; 
+    const currentMonth = currentDate.getMonth() + 1;
     const currentYear = currentDate.getFullYear();
     const currentHour = currentDate.getHours();
     const currentMinute = currentDate.getMinutes();
 
     addDoc(collection(db, "ListTrip"), {
       idCustomer: "0393751403",
-      pickUpLat:"",
-      pickUpLong:"",
-      destLat:"",      
-      destLong:"",
+      pickUpLat: "",
+      pickUpLong: "",
+      destLat: "",
+      destLong: "",
       //nếu mà ngày đón không phải hôm nay thì isScheduled = true
-      isScheduled:"false",
-      datePickUp:""+currentDay+"/"+currentMonth+"/"+currentYear,
-      timePickUp:""+currentHour+":"+currentMinute,
-      date:""+currentDay+"/"+currentMonth+"/"+currentYear,
-      time:""+currentHour+":"+currentMinute,
-      distance:"4km",
-      totalPrice:"55000",
+      isScheduled: "false",
+      datePickUp: "" + currentDay + "/" + currentMonth + "/" + currentYear,
+      timePickUp: "" + currentHour + ":" + currentMinute,
+      date: "" + currentDay + "/" + currentMonth + "/" + currentYear,
+      time: "" + currentHour + ":" + currentMinute,
+      distance: "4km",
+      totalPrice: "55000",
       status: "waiting",
     });
     //upload image to firebase storage

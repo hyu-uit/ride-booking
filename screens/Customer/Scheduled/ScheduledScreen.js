@@ -19,7 +19,7 @@ import IC_Bike_White from "../../../assets/images/Activity/ic_bike_white.png";
 import IC_Bike_Blue from "../../../assets/images/Activity/ic_bike_blue.png";
 import HistoryCard from "../../../components/HistoryCard";
 
-const ScheduledScreen = () => {
+const ScheduledScreen = ({ navigation }) => {
   const [service, setService] = useState(0);
 
   const FirstRoute = () => (
@@ -77,7 +77,11 @@ const ScheduledScreen = () => {
           justifyContent={"center"}
         >
           <View style={{ position: "absolute", left: 0 }}>
-            <ButtonBack></ButtonBack>
+            <ButtonBack
+              onPress={() => {
+                navigation.goBack();
+              }}
+            ></ButtonBack>
           </View>
           <Text style={{ ...FONTS.h2, color: COLORS.white }} ml={4}>
             Scheduled

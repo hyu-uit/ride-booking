@@ -1,21 +1,12 @@
 import React, { useEffect, useState } from "react";
-import {
-  Center,
-  Divider,
-  Flex,
-  HStack,
-  Image,
-  Text,
-  VStack,
-  View,
-} from "native-base";
+import { HStack, Image, Text, VStack, View } from "native-base";
 import { TouchableOpacity, StyleSheet } from "react-native";
 import { COLORS, FONTS } from "../../constants/theme";
 import locationLineIcon from "../../assets/location-line-full.png";
 import { doc, getDoc } from "@firebase/firestore";
 import { db } from "../../config/config";
 
-function HistoryPickUpCard( props, navigation) {
+function HistoryPickUpCard(props, navigation) {
   let {
     idCustomer,
     idTrip,
@@ -29,21 +20,21 @@ function HistoryPickUpCard( props, navigation) {
     timePickUp,
     status,
     totalPrice,
-    distance
-  } = props.trip
+    distance,
+  } = props.trip;
 
- const [name, setName] = useState("")
-  const {onPress}=props
+  const [name, setName] = useState("");
+  const { onPress } = props;
   useEffect(() => {
     getNameCustomer();
   }, []);
-  const getNameCustomer=()=>{
-    getDoc(doc(db,"Customer",idCustomer)).then(docData=>{
-      if(docData.exists()){
-        setName(docData.data().displayName)
+  const getNameCustomer = () => {
+    getDoc(doc(db, "Customer", idCustomer)).then((docData) => {
+      if (docData.exists()) {
+        setName(docData.data().displayName);
       }
-    })
-  }
+    });
+  };
   return (
     <View
       onTouchEnd={onPress}
@@ -113,7 +104,7 @@ function HistoryPickUpCard( props, navigation) {
       </VStack>
     </View>
   );
-};
+}
 const styles = StyleSheet.create({
   titleText: {
     color: COLORS.grey,

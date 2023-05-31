@@ -13,6 +13,7 @@ import {
   Keyboard,
   TouchableWithoutFeedback,
   KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 import React, { useState } from "react";
 import ButtonBack from "../../components/Global/ButtonBack/ButtonBack";
@@ -32,8 +33,11 @@ import {
 import { Alert } from "react-native";
 import { AsyncStorage } from "react-native";
 import { LogBox } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import DateTimePicker from "@react-native-community/datetimepicker";
+import moment from "moment";
 
-LogBox.ignoreAllLogs(); //Ignore all log notifications
+// LogBox.ignoreAllLogs(); //Ignore all log notifications
 
 const SignUpScreen = ({ navigation }) => {
   const [school, setSchool] = useState("");
@@ -42,6 +46,17 @@ const SignUpScreen = ({ navigation }) => {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [email, setEmail] = useState("");
   const [role, setRole] = useState("");
+
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [finalDate, setFinalDate] = useState(null);
+
+  const handleDateChange = (_event, date) => {
+    setShowDatePicker(false);
+    setSelectedDate(date);
+    setShowTimePicker(true);
+    setFinalDate(moment(selectedDate).format("DD-MM-YYYY"));
+  };
 
   const signUp = () => {
     if (
@@ -70,7 +85,6 @@ const SignUpScreen = ({ navigation }) => {
       getDocs(collection(db, role)).then((docSnap) => {
         docSnap.forEach((doc) => {
           if (doc.id == phoneNumber) count++;
-          console.log(doc.id);
         });
         if (count == 0) {
           // setDoc(doc(db, role, phoneNumber), {
@@ -122,10 +136,10 @@ const SignUpScreen = ({ navigation }) => {
                   navigation.goBack();
                 }}
               ></ButtonBack>
-              <Text style={{ ...FONTS.h2 }} mt={2} color={COLORS.white}>
+              <Text style={{ ...FONTS.h2 }} mt={2} mb={2} color={COLORS.white}>
                 Create Account
               </Text>
-              <ScrollView>
+              <ScrollView showsVerticalScrollIndicator={false} mb={20}>
                 <Select
                   w={"100%"}
                   h={"77px"}
@@ -157,6 +171,51 @@ const SignUpScreen = ({ navigation }) => {
                   style={{ ...FONTS.body3 }}
                   color={COLORS.white}
                 />
+                <View
+                  w={"100%"}
+                  h={"77px"}
+                  borderRadius={20}
+                  borderColor={COLORS.secondary}
+                  borderWidth={1}
+                  paddingLeft={4}
+                  mt={5}
+                  justifyContent={"center"}
+                >
+                  <HStack w={"100%"}>
+                    {/* <Text style={{ ...FONTS.body3, color: COLORS.white }}>
+                      30/05/2023
+                    </Text> */}
+                    {Platform.OS === "android" ? (
+                      <>
+                        <Text style={{ ...FONTS.body3, color: COLORS.white }}>
+                          {moment(selectedDate).format("DD-MM-YYYY")}
+                        </Text>
+                      </>
+                    ) : (
+                      <></>
+                    )}
+                    <Ionicons
+                      onPress={() => {
+                        setShowDatePicker(true);
+                      }}
+                      size={20}
+                      name="calendar"
+                      style={{
+                        position: "absolute",
+                        right: 20,
+                        color: COLORS.white,
+                      }}
+                    />
+                    {showDatePicker && (
+                      <DateTimePicker
+                        value={selectedDate}
+                        mode="date"
+                        // onChange={handleDateChange}
+                        onChange={handleDateChange}
+                      />
+                    )}
+                  </HStack>
+                </View>
                 <Input
                   w={"100%"}
                   h={"77px"}
@@ -237,7 +296,7 @@ const SignUpScreen = ({ navigation }) => {
                       onPress={() => {
                         navigation.navigate("SignIn");
                       }}
-                      color={COLORS.white}
+                      color={COLORS.primary}
                       style={{ ...FONTS.body3, fontWeight: "bold" }}
                     >
                       Sign in

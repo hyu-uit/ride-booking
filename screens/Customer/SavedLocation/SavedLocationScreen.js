@@ -24,7 +24,11 @@ const SavedLocationScreen = ({ onClickCard, onClickAdd, navigation }) => {
           marginHorizontal: 10,
         }}
       >
-        <ButtonBack />
+        <ButtonBack
+          onPress={() => {
+            navigation.goBack();
+          }}
+        />
         <View
           style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
         >
@@ -57,11 +61,17 @@ const SavedLocationScreen = ({ onClickCard, onClickAdd, navigation }) => {
         <TouchableOpacity>
           <SavedLocationCard onPress={() => onClickCard}></SavedLocationCard>
         </TouchableOpacity>
-        <HStack space={8} paddingLeft={6} paddingTop={3} paddingBottom={3}>
+        <HStack
+          onTouchEnd={() => navigation.navigate("AddLocation")}
+          space={8}
+          paddingLeft={6}
+          paddingTop={3}
+          paddingBottom={3}
+        >
           <TouchableOpacity onPress={() => onClickAdd}>
             <Image alt="plus icon" source={plusIcon}></Image>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => navigation.navigate("AddLocation")}>
+          <TouchableOpacity>
             <Text color={COLORS.fifthary} bold style={{ ...FONTS.h4 }}>
               Add location
             </Text>

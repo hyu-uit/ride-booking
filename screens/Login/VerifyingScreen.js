@@ -13,7 +13,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { COLORS, FONTS } from "../../constants";
 import { TouchableWithoutFeedback } from "react-native";
 import { Keyboard } from "react-native";
-import { AsyncStorage } from "react-native"; 
+import { AsyncStorage } from "react-native";
 
 const VerifyingScreen = ({ navigation }) => {
   const firstInput = useRef();
@@ -36,34 +36,38 @@ const VerifyingScreen = ({ navigation }) => {
   // });
   const signInOption = () => {
     {
-      (role == "Customer") ? (role=="Rider") ? (navigation.navigate("MainRiderNavigator", {
-        screen: "HomeRider",
-        params: {
-        data : {
-            phoneNumber: "" + phoneNumber,
-            role: "" + role,
-          }
-        },
-      })) : (navigation.navigate("MainNavigator", {
-        screen: "HomeStack",
-        params: {
-          screen: "Home",
-          data : {
-            phoneNumber: "" + phoneNumber,
-            role: "" + role,
-          }
-        },
-      })):  (navigation.navigate("StudentOfficeNavigator", {
-        screen: "StudentOffice",
-        params: {
-          data : {
-            phoneNumber: "" + phoneNumber,
-            role: "" + role,
-          }
-        },
-      })) 
+      role == "Customer"
+        ? role == "Rider"
+          ? navigation.navigate("MainRiderNavigator", {
+              screen: "HomeRider",
+              params: {
+                data: {
+                  phoneNumber: "" + phoneNumber,
+                  role: "" + role,
+                },
+              },
+            })
+          : navigation.navigate("MainNavigator", {
+              screen: "HomeStack",
+              params: {
+                screen: "Home",
+                data: {
+                  phoneNumber: "" + phoneNumber,
+                  role: "" + role,
+                },
+              },
+            })
+        : navigation.navigate("StudentOfficeNavigator", {
+            screen: "StudentOffice",
+            params: {
+              data: {
+                phoneNumber: "" + phoneNumber,
+                role: "" + role,
+              },
+            },
+          });
     }
-  }
+  };
   const [otp, setOtp] = useState({ 1: "", 2: "", 3: "", 4: "" });
   return (
     <TouchableWithoutFeedback
@@ -78,7 +82,11 @@ const VerifyingScreen = ({ navigation }) => {
         h={"100%"}
       >
         <SafeAreaView style={{ width: "100%", height: "100%" }}>
-          <ButtonBack></ButtonBack>
+          <ButtonBack
+            onPress={() => {
+              navigation.goBack();
+            }}
+          ></ButtonBack>
           <View style={{ alignItems: "center" }}>
             <Text style={{ ...FONTS.h2 }} color={COLORS.white}>
               Verification
@@ -173,9 +181,7 @@ const VerifyingScreen = ({ navigation }) => {
               borderRadius={20}
               bgColor={COLORS.primary}
               mt={50}
-              onPress={
-                signInOption
-              }
+              onPress={signInOption}
             >
               <Text style={{ ...FONTS.h2 }} color={COLORS.white}>
                 Request again

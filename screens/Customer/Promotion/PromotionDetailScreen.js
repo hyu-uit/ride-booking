@@ -18,7 +18,11 @@ const PromotionDetailScreen = ({ navigation }) => {
     <VStack h={"100%"} paddingY={"20px"} bgColor={COLORS.background}>
       <SafeAreaView>
         <VStack paddingX={"10px"} h={"100%"}>
-          <ButtonBack />
+          <ButtonBack
+            onPress={() => {
+              navigation.goBack();
+            }}
+          />
           <Image source={Img_Promotion} alt="promotion" mt={5} w={"100%"} />
 
           <Text style={{ ...FONTS.h4, color: COLORS.fifthary }} mt={5}>

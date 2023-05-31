@@ -14,7 +14,7 @@ import { Alert, TouchableWithoutFeedback } from "react-native";
 import { Keyboard } from "react-native";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../../config/config";
-import { AsyncStorage } from "react-native"; 
+import { AsyncStorage } from "react-native";
 
 const SignInScreen = ({ navigation }) => {
   const [role, setRole] = useState(0);
@@ -38,12 +38,10 @@ const SignInScreen = ({ navigation }) => {
   //   })
   // }
 
-  const isPhoneNumberNull = () =>{
-
-  }
+  const isPhoneNumberNull = () => {};
 
   const checkPhoneNumber = () => {
-    if(phoneNumber.length !== 10){
+    if (phoneNumber.length !== 10) {
       Alert.alert(
         "Invalid phone number",
         "Please re-enter your phone number.",
@@ -53,16 +51,25 @@ const SignInScreen = ({ navigation }) => {
           },
         ]
       );
-    }else{
-      let getRole="";
-      {role != 2 ? role == 0 ? getRole="Customer" : getRole="Rider" :getRole="StudentOffice" }
+    } else {
+      let getRole = "";
+      {
+        role != 2
+          ? role == 0
+            ? (getRole = "Customer")
+            : (getRole = "Rider")
+          : (getRole = "StudentOffice");
+      }
       getDoc(doc(db, getRole, phoneNumber))
         .then((docData) => {
-          if (docData.exists()) {
-            AsyncStorage.setItem('phoneNumber',phoneNumber);
-            AsyncStorage.setItem('role',getRole);
+          if (docData.exists() && docData.data().status === "active") {
+            AsyncStorage.setItem("phoneNumber", phoneNumber);
+            AsyncStorage.setItem("role", getRole);
             navigation.navigate("Verify");
+          } else if (docData.exists() && docData.data().status === "pending") {
+            navigation.navigate("Pending");
           } else {
+            navigation.navigate("Pending");
             Alert.alert("Phone number has not been registered!");
             console.log("no such data");
           }
@@ -103,7 +110,6 @@ const SignInScreen = ({ navigation }) => {
             <Button
               variant={"outline"}
               w={"27%"}
-              h={"40px"}
               borderRadius={10}
               bgColor={role === 0 ? COLORS.fourthary : "transparent"}
               borderColor={COLORS.fifthary}
@@ -118,7 +124,6 @@ const SignInScreen = ({ navigation }) => {
             <Button
               variant={"outline"}
               w={"18%"}
-              h={"40px"}
               borderRadius={10}
               borderColor={COLORS.fifthary}
               bgColor={role === 1 ? COLORS.fourthary : "transparent"}
@@ -137,7 +142,6 @@ const SignInScreen = ({ navigation }) => {
             <Button
               variant={"outline"}
               w={"40%"}
-              h={"40px"}
               borderRadius={10}
               borderColor={COLORS.fifthary}
               bgColor={role === 2 ? COLORS.fourthary : "transparent"}

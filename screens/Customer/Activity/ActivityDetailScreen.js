@@ -21,43 +21,43 @@ import { doc, getDoc } from "firebase/firestore";
 import { db } from "../../../config/config";
 
 const ActivityDetailScreen = ({ navigation, route }) => {
-  const {idTrip} = route.params;
+  const { idTrip } = route.params;
   const [tripData, setTrip] = useState([]);
 
   // const API_KEY = "AIzaSyDEokOCthVrnmMPiI_fLEZKQtV1SjFvjxQ";
   // const API_KEY = "AIzaSyA_suPUj4xs62VSz5pbRPQ1R-9Bk9Nh6dY";
   // const API_KEY = "AIzaSyAeoFwgal1syynMHwIR8zBa770UPiaFLFw";
 
-  useEffect(()=>{
-    getTrip()
+  useEffect(() => {
+    getTrip();
   }, []);
-  const getTrip = () =>{
-    let data={}
-    getDoc(doc(db,"ListTrip", idTrip)).then((tripData)=>{
-      if(tripData.exists()){
-        getDoc(doc(db,"Rider",tripData.data().idRider)).then(docData=>{
-          if(docData.exists()){
-            data={
-              idCustomer:tripData.data().idCustomer,
-              idTrip:tripData.id,
-              pickUpLat:tripData.data().pickUpLat,
-              pickUpLong:tripData.data().pickUpLong,
-              destLat:tripData.data().destLat,
-              destLong:tripData.data().destLong,
-              date:tripData.data().date,
-              time:tripData.data().time,
-              totalPrice:tripData.data().totalPrice,
-              distance:tripData.data().distance,
-              licensePlates:docData.data().licensePlates,
-              transportType:docData.data().transportType,
-              displayName:docData.data().displayName
-            }
+  const getTrip = () => {
+    let data = {};
+    getDoc(doc(db, "ListTrip", idTrip)).then((tripData) => {
+      if (tripData.exists()) {
+        getDoc(doc(db, "Rider", tripData.data().idRider)).then((docData) => {
+          if (docData.exists()) {
+            data = {
+              idCustomer: tripData.data().idCustomer,
+              idTrip: tripData.id,
+              pickUpLat: tripData.data().pickUpLat,
+              pickUpLong: tripData.data().pickUpLong,
+              destLat: tripData.data().destLat,
+              destLong: tripData.data().destLong,
+              date: tripData.data().date,
+              time: tripData.data().time,
+              totalPrice: tripData.data().totalPrice,
+              distance: tripData.data().distance,
+              licensePlates: docData.data().licensePlates,
+              transportType: docData.data().transportType,
+              displayName: docData.data().displayName,
+            };
             setTrip(data);
           }
-        })  
+        });
       }
-    })
-  }
+    });
+  };
 
   return (
     <NativeBaseProvider>
@@ -71,7 +71,11 @@ const ActivityDetailScreen = ({ navigation, route }) => {
           <VStack>
             <HStack justifyContent={"center"} mb={"20px"}>
               <View style={{ position: "absolute", left: 0 }}>
-                <ButtonBack></ButtonBack>
+                <ButtonBack
+                  onPress={() => {
+                    navigation.goBack();
+                  }}
+                ></ButtonBack>
               </View>
               <Text style={{ ...FONTS.h2, color: COLORS.white }}>Detail</Text>
             </HStack>
@@ -196,7 +200,7 @@ const ActivityDetailScreen = ({ navigation, route }) => {
                   />
                   <VStack ml={"12px"} justifyContent={"center"}>
                     <Text style={{ ...FONTS.h5, color: COLORS.white }}>
-                     {tripData.displayName}
+                      {tripData.displayName}
                     </Text>
                     <Text style={{ ...FONTS.body6, color: COLORS.fourthary }}>
                       University of Information Technology

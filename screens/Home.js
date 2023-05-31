@@ -33,7 +33,7 @@ import { useEffect } from "react";
 
 export default function Home({ navigation, route }) {
   const [historyTrips, setHistoryTrips] = useState([]);
- 
+
   useEffect(() => {
     getHistoryTrips();
   }, [navigation]);
@@ -53,8 +53,8 @@ export default function Home({ navigation, route }) {
           destLong: doc.data().destLong,
           date: doc.data().date,
           time: doc.data().time,
-          datePickUp:doc.data().datePickUp,
-          timePickUp:doc.data().timePickUp,
+          datePickUp: doc.data().datePickUp,
+          timePickUp: doc.data().timePickUp,
           totalPrice: doc.data().totalPrice,
           distance: doc.data().distance,
         });
@@ -62,7 +62,7 @@ export default function Home({ navigation, route }) {
       setHistoryTrips(historyTrips);
     });
   };
-  return ( 
+  return (
     <TouchableWithoutFeedback
       onPress={() => {
         Keyboard.dismiss();
@@ -91,27 +91,31 @@ export default function Home({ navigation, route }) {
         </HStack>
         <HStack>
           <ScrollView showsVerticalScrollIndicator={false}>
-            <Input
-              mb={10}
+            <HStack
+              w={"100%"}
               borderRadius={10}
-              h={"50px"}
-              placeholder="Enter your destination"
-              width="100%"
-              variant={"filled"}
               bgColor={COLORS.tertiary}
               borderWidth={0}
-              fontSize={SIZES.body3}
-              color={COLORS.white}
-              marginTop={8}
-              InputLeftElement={
-                <Icon
-                  ml="2"
-                  size="4"
-                  color={COLORS.white}
-                  as={<Ionicons name="ios-search" />}
-                />
-              }
-            />
+              h={"50px"}
+              mb={10}
+              mt={8}
+              alignItems={"center"}
+              onTouchEnd={() => {
+                navigation.navigate("Booking");
+              }}
+            >
+              <Icon
+                ml="2"
+                size="4"
+                color={COLORS.white}
+                as={<Ionicons name="ios-search" />}
+              />
+              <Text
+                style={{ ...FONTS.body3, color: COLORS.grey, marginLeft: 10 }}
+              >
+                Enter your destination
+              </Text>
+            </HStack>
             {/* <HStack
               marginTop={5}
               marginBottom={5}
@@ -125,7 +129,7 @@ export default function Home({ navigation, route }) {
             <HStack w={"100%"} justifyContent={"space-evenly"} marginBottom={5}>
               <TouchableOpacity
                 onPress={() => {
-                  const data = {phoneNumber:'0393751403'}
+                  const data = { phoneNumber: "0393751403" };
                   navigation.navigate("Booking", data);
                 }}
               >
@@ -200,7 +204,7 @@ export default function Home({ navigation, route }) {
                   <HistoryCard
                     onPress={() => {
                       const data = {
-                        idTrip: "" + item.idTrip
+                        idTrip: "" + item.idTrip,
                       };
                       navigation.navigate("ActivityDetail", data);
                     }}

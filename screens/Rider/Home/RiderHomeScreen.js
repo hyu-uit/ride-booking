@@ -39,7 +39,7 @@ const RiderHomeScreen = ({ navigation, route }) => {
   const [waitingTrips, setWaitingTrips] = useState([]);
   const [finishedTrips, setFinishedTrips] = useState([]);
   const [canceledTrips, setCanceledTrips] = useState([]);
-  const currentDate = moment().format('DD/M/YYYY');
+  const currentDate = moment().format("DD/M/YYYY");
 
   useEffect(() => {
     getWaitingTrips();
@@ -50,21 +50,25 @@ const RiderHomeScreen = ({ navigation, route }) => {
   const getWaitingTrips = () => {
     let waitingTrips = [];
     getDocs(
-      query(collection(db, "ListTrip"), where("isScheduled", "==", "false"),where("date","==",currentDate))
+      query(
+        collection(db, "ListTrip"),
+        where("isScheduled", "==", "false"),
+        where("date", "==", currentDate)
+      )
     ).then((docSnap) => {
       docSnap.forEach((doc) => {
-        if(doc.data().status=="waiting"){
+        if (doc.data().status == "waiting") {
           waitingTrips.push({
             idCustomer: doc.data().idCustomer,
             idTrip: doc.id,
             pickUpLat: doc.data().pickUpLat,
             pickUpLong: doc.data().pickUpLong,
-            destLat: doc.data().destLat,                                                                        
+            destLat: doc.data().destLat,
             destLong: doc.data().destLong,
             date: doc.data().date,
             time: doc.data().time,
-            datePickUp:doc.data().datePickUp,
-            timePickUp:doc.data().timePickUp,
+            datePickUp: doc.data().datePickUp,
+            timePickUp: doc.data().timePickUp,
             totalPrice: doc.data().totalPrice,
             distance: doc.data().distance,
           });
@@ -89,8 +93,8 @@ const RiderHomeScreen = ({ navigation, route }) => {
           destLong: doc.data().destLong,
           date: doc.data().date,
           time: doc.data().time,
-          datePickUp:doc.data().datePickUp,
-          timePickUp:doc.data().timePickUp,
+          datePickUp: doc.data().datePickUp,
+          timePickUp: doc.data().timePickUp,
           totalPrice: doc.data().totalPrice,
           distance: doc.data().distance,
         });
@@ -114,8 +118,8 @@ const RiderHomeScreen = ({ navigation, route }) => {
           destLong: doc.data().destLong,
           date: doc.data().date,
           time: doc.data().time,
-          datePickUp:doc.data().datePickUp,
-          timePickUp:doc.data().timePickUp,
+          datePickUp: doc.data().datePickUp,
+          timePickUp: doc.data().timePickUp,
           totalPrice: doc.data().totalPrice,
           distance: doc.data().distance,
         });
@@ -147,7 +151,7 @@ const RiderHomeScreen = ({ navigation, route }) => {
         <HistoryPickUpCard
           onPress={() => {
             const data = {
-              idTrip: "" + item.idTrip
+              idTrip: "" + item.idTrip,
             };
             navigation.navigate("TripDetail", data);
           }}
@@ -166,10 +170,7 @@ const RiderHomeScreen = ({ navigation, route }) => {
       data={finishedTrips}
       keyExtractor={(item) => item.idTrip}
       renderItem={({ item }) => (
-        <HistoryPickUpCard
-          trip={item}
-          key={item.idTrip}
-        ></HistoryPickUpCard>
+        <HistoryPickUpCard trip={item} key={item.idTrip}></HistoryPickUpCard>
       )}
     ></FlatList>
   );
@@ -182,10 +183,7 @@ const RiderHomeScreen = ({ navigation, route }) => {
       data={canceledTrips}
       keyExtractor={(item) => item.idTrip}
       renderItem={({ item }) => (
-        <HistoryPickUpCard
-          trip={item}
-          key={item.idTrip}
-        ></HistoryPickUpCard>
+        <HistoryPickUpCard trip={item} key={item.idTrip}></HistoryPickUpCard>
       )}
     ></FlatList>
   );

@@ -12,7 +12,12 @@ import { SIZES, COLORS, FONTS } from "../../constants/theme";
 import BlueBg from "../../assets/images/Login/blueBg.png";
 import { SafeAreaView } from "react-native-safe-area-context";
 import LottieView from "lottie-react-native";
-import { AsyncStorage } from "react-native"; 
+import { AsyncStorage } from "react-native";
+import {
+  getFromAsyncStorage,
+  saveToAsyncStorage,
+} from "../../helper/asyncStorage";
+import { IS_FIRST_USE } from "../../constants/asyncStorageKey";
 
 const LoginScreen = ({ navigation }) => {
   const animation = useRef(null);
@@ -21,12 +26,15 @@ const LoginScreen = ({ navigation }) => {
   useEffect(() => {
     // You can control the ref programmatically, rather than using autoPlay
     // animation.current?.play();
-    AsyncStorage.getItem("phoneNumber").then((result) => {
-      setPhoneNumber(result);
-    });
-    AsyncStorage.getItem("role").then((result) => {
-      setRole(result);
-    });
+
+    saveToAsyncStorage(IS_FIRST_USE, false);
+
+    // AsyncStorage.getItem("phoneNumber").then((result) => {
+    //   setPhoneNumber(result);
+    // });
+    // AsyncStorage.getItem("role").then((result) => {
+    //   setRole(result);
+    // });
   }, []);
   return (
     <VStack bgColor={COLORS.background}>

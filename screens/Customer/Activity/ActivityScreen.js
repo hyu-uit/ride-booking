@@ -42,8 +42,8 @@ const ActivityScreen = ({ navigation }) => {
         if (doc.data().status == "waiting") {
           waitingTrips.push({
             idCustomer: doc.data().idCustomer,
-            idTrip: doc.id,            
-            idRider:doc.data().idRider,
+            idTrip: doc.id,
+            idRider: doc.data().idRider,
             pickUpLat: doc.data().pickUpLat,
             pickUpLong: doc.data().pickUpLong,
             destLat: doc.data().destLat,
@@ -70,7 +70,7 @@ const ActivityScreen = ({ navigation }) => {
           confirmedTrips.push({
             idCustomer: doc.data().idCustomer,
             idTrip: doc.id,
-            idRider:doc.data().idRider,
+            idRider: doc.data().idRider,
             pickUpLat: doc.data().pickUpLat,
             pickUpLong: doc.data().pickUpLong,
             destLat: doc.data().destLat,
@@ -96,8 +96,8 @@ const ActivityScreen = ({ navigation }) => {
         if (doc.data().status == "canceled") {
           canceledTrips.push({
             idCustomer: doc.data().idCustomer,
-            idTrip: doc.id,            
-            idRider:doc.data().idRider,
+            idTrip: doc.id,
+            idRider: doc.data().idRider,
             pickUpLat: doc.data().pickUpLat,
             pickUpLong: doc.data().pickUpLong,
             destLat: doc.data().destLat,
@@ -116,7 +116,6 @@ const ActivityScreen = ({ navigation }) => {
   };
   const FirstRoute = () => (
     <ScrollView>
-
       {/* <BookingCard onPress={() => navigation.navigate("ActivityDetail")} /> */}
       <FlatList
         padding={"10px"}
@@ -128,7 +127,7 @@ const ActivityScreen = ({ navigation }) => {
           <BookingCard
             onPress={() => {
               const data = {
-                idTrip: "" + item.idTrip
+                idTrip: "" + item.idTrip,
               };
               navigation.navigate("ActivityDetail", data);
             }}
@@ -142,51 +141,53 @@ const ActivityScreen = ({ navigation }) => {
 
   const SecondRoute = () => (
     <ScrollView>
-        {/* <BookingCard sta={1} />
+      {/* <BookingCard sta={1} />
         <BookingCard sta={1} /> */}
-        <FlatList
-          padding={"10px"}
-          mt={2}
-          horizontal={false}
-          data={confirmedTrips}
-          keyExtractor={(item) => item.idTrip}
-          renderItem={({ item }) => (
-            <BookingCard sta={1}
-              onPress={() => {
-                const data = {
-                  idTrip: "" + item.idTrip
-                };
-                navigation.navigate("ActivityDetail", data);
-              }}
-              trip={item}
-              key={item.idTrip}
-            ></BookingCard>
-          )}
-        ></FlatList>
+      <FlatList
+        padding={"10px"}
+        mt={2}
+        horizontal={false}
+        data={confirmedTrips}
+        keyExtractor={(item) => item.idTrip}
+        renderItem={({ item }) => (
+          <BookingCard
+            sta={1}
+            onPress={() => {
+              const data = {
+                idTrip: "" + item.idTrip,
+              };
+              navigation.navigate("ActivityDetail", data);
+            }}
+            trip={item}
+            key={item.idTrip}
+          ></BookingCard>
+        )}
+      ></FlatList>
     </ScrollView>
   );
 
   const ThirdRoute = () => (
     <ScrollView>
-     <FlatList
-          padding={"10px"}
-          mt={2}
-          horizontal={false}
-          data={canceledTrips}
-          keyExtractor={(item) => item.idTrip}
-          renderItem={({ item }) => (
-            <BookingCard sta={1}
-              onPress={() => {
-                const data = {
-                  idTrip: "" + item.idTrip
-                };
-                navigation.navigate("ActivityDetail", data);
-              }}
-              trip={item}
-              key={item.idTrip}
-            ></BookingCard>
-          )}
-        ></FlatList>
+      <FlatList
+        padding={"10px"}
+        mt={2}
+        horizontal={false}
+        data={canceledTrips}
+        keyExtractor={(item) => item.idTrip}
+        renderItem={({ item }) => (
+          <BookingCard
+            sta={1}
+            onPress={() => {
+              const data = {
+                idTrip: "" + item.idTrip,
+              };
+              navigation.navigate("ActivityDetail", data);
+            }}
+            trip={item}
+            key={item.idTrip}
+          ></BookingCard>
+        )}
+      ></FlatList>
     </ScrollView>
   );
 
@@ -226,7 +227,7 @@ const ActivityScreen = ({ navigation }) => {
                     <Image
                       source={IC_Bike_White}
                       alt="Icon bike"
-                    // Other props here
+                      // Other props here
                     />
                   </>
                 ) : (
@@ -234,7 +235,7 @@ const ActivityScreen = ({ navigation }) => {
                     <Image
                       source={IC_Bike_Blue}
                       alt="Icon bike"
-                    // Other props here
+                      // Other props here
                     />
                   </>
                 )}
@@ -267,7 +268,7 @@ const ActivityScreen = ({ navigation }) => {
                     <Image
                       source={require("../../../assets/images/Activity/ic_send_white.png")}
                       alt="Icon send"
-                    // Other props here
+                      // Other props here
                     />
                   </>
                 ) : (
@@ -275,7 +276,7 @@ const ActivityScreen = ({ navigation }) => {
                     <Image
                       source={require("../../../assets/images/Activity/ic_send_blue.png")}
                       alt="Icon send"
-                    // Other props here
+                      // Other props here
                     />
                   </>
                 )}
