@@ -15,6 +15,7 @@ import { Keyboard } from "react-native";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../../config/config";
 import { AsyncStorage } from "react-native";
+import { saveToAsyncStorage } from "../../helper/asyncStorage";
 
 const SignInScreen = ({ navigation }) => {
   const [role, setRole] = useState(0);
@@ -46,21 +47,43 @@ const SignInScreen = ({ navigation }) => {
           : (getRole = "Rider")
         : (getRole = "StudentOffice");
     }
-    getDoc(doc(db, getRole, phoneNumber))
-      .then((docData) => {
-        if (docData.exists() && docData.data().status === "active") {
-          AsyncStorage.setItem("phoneNumber", phoneNumber);
-          AsyncStorage.setItem("role", getRole);
-          navigation.navigate("Verify");
-        } else if (docData.exists() && docData.data().status === "pending") {
-          navigation.navigate("Pending");
-        } else {
-          navigation.navigate("Pending");
-          Alert.alert("Phone number has not been registered!");
-          console.log("no such data");
-        }
-      })
-      .catch((error) => {});
+
+    if (getRole === "StudentOffice") {
+      getDoc(doc(db, getRole, phoneNumber))
+        .then((docData) => {
+          if (docData.exists()) {
+            // AsyncStorage.setItem("phoneNumber", phoneNumber);
+            // AsyncStorage.setItem("role", getRole);
+            saveToAsyncStorage("phoneNumber", phoneNumber);
+            saveToAsyncStorage("role", getRole);
+            navigation.navigate("StudentOfficeNavigator", {
+              screen: "StudentOffice",
+            });
+          } else {
+            Alert.alert("Wrong phone number!");
+            console.log("no such data");
+          }
+        })
+        .catch((error) => {});
+    } else {
+      getDoc(doc(db, getRole, phoneNumber))
+        .then((docData) => {
+          if (docData.exists() && docData.data().status === "active") {
+            console.log(phoneNumber + getRole);
+            // AsyncStorage.setItem("phoneNumber", phoneNumber);
+            // AsyncStorage.setItem("role", getRole);
+            saveToAsyncStorage("phoneNumber", phoneNumber);
+            saveToAsyncStorage("role", getRole);
+            navigation.navigate("Verify");
+          } else if (docData.exists() && docData.data().status === "pending") {
+            navigation.navigate("Pending");
+          } else {
+            Alert.alert("Phone number has not been registered!");
+            console.log("no such data");
+          }
+        })
+        .catch((error) => {});
+    }
   };
   const onHandleLogin = () => {
     if (role == 1) {
@@ -132,9 +155,9 @@ const SignInScreen = ({ navigation }) => {
               bgColor={role === 2 ? COLORS.fourthary : "transparent"}
               onPress={() => {
                 setRole(2);
-                navigation.navigate("StudentOfficeNavigator", {
-                  screen: "StudentOffice",
-                });
+                // navigation.navigate("StudentOfficeNavigator", {
+                //   screen: "StudentOffice",
+                // });
               }}
               ml={4}
             >

@@ -25,8 +25,18 @@ import DeliveryImg from "../assets/images/delivery_1.png";
 import { TouchableWithoutFeedback } from "react-native";
 import { Keyboard } from "react-native";
 import LottieView from "lottie-react-native";
+import { useEffect } from "react";
+import { getFromAsyncStorage } from "../helper/asyncStorage";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useState } from "react";
 
 export default function Home({ navigation, route }) {
+  const [phone, setPhone] = useState("");
+  useEffect(() => {
+    getFromAsyncStorage("phoneNumber")
+      .then((value) => setPhone(value))
+      .catch((err) => console.log(err));
+  });
   return (
     <HomeContainer>
       <HStack w={"full"} alignContent={"center"}>

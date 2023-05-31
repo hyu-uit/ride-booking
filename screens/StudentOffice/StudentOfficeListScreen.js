@@ -137,29 +137,28 @@ const StudentOfficeListScreen = ({ navigation }) => {
         }
       />
       <VStack mt={"17px"} justifyContent={"end"} alignItems={"center"}>
-        <ScrollView w={"100%"}>
-          {/* <StudentListCard
+        {/* <StudentListCard
             onPress={() => {
               navigation.navigate("StudentListDetail");
             }}
           /> */}
-          <FlatList
-            data={usersCustomer}
-            keyExtractor={(item) => item.name}
-            renderItem={({ item }) => (
-              <StudentListCard
-                onPress={() => {
-                  const data = {
-                    phoneNumber: "" + item.phoneNumber,
-                    role: "" + item.role,
-                  };
-                  navigation.navigate("StudentListDetail", data);
-                }}
-                list={item}
-              ></StudentListCard>
-            )}
-          ></FlatList>
-        </ScrollView>
+        <FlatList
+          w={"100%"}
+          data={usersCustomer}
+          keyExtractor={(item) => item.name}
+          renderItem={({ item }) => (
+            <StudentListCard
+              onPress={() => {
+                const data = {
+                  phoneNumber: "" + item.phoneNumber,
+                  role: "" + item.role,
+                };
+                navigation.navigate("StudentListDetail", data);
+              }}
+              list={item}
+            ></StudentListCard>
+          )}
+        ></FlatList>
       </VStack>
     </VStack>
   );
@@ -188,24 +187,23 @@ const StudentOfficeListScreen = ({ navigation }) => {
         }
       />
       <VStack mt={"17px"} justifyContent={"center"} alignItems={"center"}>
-        <ScrollView w={"100%"}>
-          <FlatList
-            data={usersRider}
-            keyExtractor={(item) => item.name}
-            renderItem={({ item }) => (
-              <StudentListCard
-                onPress={() => {
-                  const data = {
-                    phoneNumber: "" + item.phoneNumber,
-                    role: "" + item.role,
-                  };
-                  navigation.navigate("StudentListDetail", data);
-                }}
-                list={item}
-              ></StudentListCard>
-            )}
-          ></FlatList>
-        </ScrollView>
+        <FlatList
+          w={"100%"}
+          data={usersRider}
+          keyExtractor={(item) => item.name}
+          renderItem={({ item }) => (
+            <StudentListCard
+              onPress={() => {
+                const data = {
+                  phoneNumber: "" + item.phoneNumber,
+                  role: "" + item.role,
+                };
+                navigation.navigate("StudentListDetail", data);
+              }}
+              list={item}
+            ></StudentListCard>
+          )}
+        ></FlatList>
       </VStack>
     </VStack>
   );
@@ -234,24 +232,23 @@ const StudentOfficeListScreen = ({ navigation }) => {
         }
       />
       <VStack mt={"17px"} justifyContent={"center"} alignItems={"center"}>
-        <ScrollView w={"100%"}>
-          <FlatList
-            data={usersLock}
-            keyExtractor={(item) => item.name}
-            renderItem={({ item }) => (
-              <StudentListCard
-                onPress={() => {
-                  const data = {
-                    phoneNumber: "" + item.phoneNumber,
-                    role: "" + item.role,
-                  };
-                  navigation.navigate("StudentListDetail", data);
-                }}
-                list={item}
-              ></StudentListCard>
-            )}
-          ></FlatList>
-        </ScrollView>
+        <FlatList
+          w={"100%"}
+          data={usersLock}
+          keyExtractor={(item) => item.name}
+          renderItem={({ item }) => (
+            <StudentListCard
+              onPress={() => {
+                const data = {
+                  phoneNumber: "" + item.phoneNumber,
+                  role: "" + item.role,
+                };
+                navigation.navigate("StudentListDetail", data);
+              }}
+              list={item}
+            ></StudentListCard>
+          )}
+        ></FlatList>
       </VStack>
     </VStack>
   );

@@ -18,18 +18,46 @@ import { TabView, TabBar, SceneMap } from "react-native-tab-view";
 import HistoryCard from "../../components/HistoryCard";
 import StudentOfficeCard from "../../components/StudentOffice/StudentOfficeCard";
 import { Ionicons } from "@expo/vector-icons";
-import { query, collection, getDocs, where } from "firebase/firestore";
+import {
+  query,
+  collection,
+  getDocs,
+  where,
+  getDoc,
+  doc,
+} from "firebase/firestore";
 import { db } from "../../config/config";
 import { useEffect } from "react";
 import { Alert } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { getFromAsyncStorage } from "../../helper/asyncStorage";
 
 const StudentOfficeScreen = ({ navigation }) => {
   const [service, setService] = useState(0);
   const [users, setUsers] = useState([]);
+
+  const [phoneNumber, setPhoneNumber] = useState(null);
+  const [uniName, setUniName] = useState(null);
+  const [acronym, setAcronym] = useState(null);
+  const [logo, setLogo] = useState(null);
+
   useEffect(() => {
     getUsers();
+    getFromAsyncStorage("phoneNumber")
+      .then((value) => setPhoneNumber(value))
+      .catch((err) => console.log(err));
+    fetchData();
   }, [navigation]);
+
+  const fetchData = () => {
+    getDoc(doc(db, "StudentOffice", phoneNumber))
+      .then((docData) => {
+        setUniName(docData.data().name);
+        setAcronym(docData.data().acronym);
+        setLogo(docData.data().logo);
+      })
+      .catch((error) => {});
+  };
+
   const getUsers = () => {
     let users = [];
     getDocs(
@@ -74,7 +102,7 @@ const StudentOfficeScreen = ({ navigation }) => {
         <VStack h={"100%"} mt={"17px"} paddingX={"10px"}>
           <HStack paddingX={5}>
             <Image
-              source={require("../../assets/images/logoUIT.png")}
+              source={{ uri: logo }}
               alt="logo"
               w={10}
               h={10}
@@ -82,11 +110,9 @@ const StudentOfficeScreen = ({ navigation }) => {
             />
             <VStack ml={5}>
               <Text style={{ ...FONTS.body6, color: COLORS.lightGrey }}>
-                UIT
+                {acronym}
               </Text>
-              <Text style={{ ...FONTS.h6, color: COLORS.white }}>
-                University of Information Technology
-              </Text>
+              <Text style={{ ...FONTS.h6, color: COLORS.white }}></Text>
             </VStack>
           </HStack>
           <Input
