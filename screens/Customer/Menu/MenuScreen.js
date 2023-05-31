@@ -24,7 +24,11 @@ const MenuScreen = ({ navigation }) => {
         <VStack paddingX={"10px"} h={"100%"}>
           <HStack justifyContent={"center"} mb={"20px"}>
             <View style={{ position: "absolute", left: 0 }}>
-              <ButtonBack></ButtonBack>
+              <ButtonBack
+                onPress={() => {
+                  navigation.goBack();
+                }}
+              ></ButtonBack>
             </View>
             <Text style={{ ...FONTS.h2, color: COLORS.white }}>Menu</Text>
           </HStack>

@@ -16,7 +16,7 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import { Ionicons } from "@expo/vector-icons";
 import MapViewDirections from "react-native-maps-directions";
 
-const ActivityDetailScreen = () => {
+const ActivityDetailScreen = ({ navigation }) => {
   // const API_KEY = "AIzaSyDEokOCthVrnmMPiI_fLEZKQtV1SjFvjxQ";
   // const API_KEY = "AIzaSyA_suPUj4xs62VSz5pbRPQ1R-9Bk9Nh6dY";
   // const API_KEY = "AIzaSyAeoFwgal1syynMHwIR8zBa770UPiaFLFw";
@@ -32,7 +32,11 @@ const ActivityDetailScreen = () => {
           <VStack>
             <HStack justifyContent={"center"} mb={"20px"}>
               <View style={{ position: "absolute", left: 0 }}>
-                <ButtonBack></ButtonBack>
+                <ButtonBack
+                  onPress={() => {
+                    navigation.goBack();
+                  }}
+                ></ButtonBack>
               </View>
               <Text style={{ ...FONTS.h2, color: COLORS.white }}>Detail</Text>
             </HStack>

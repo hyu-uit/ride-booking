@@ -48,11 +48,14 @@ const SignInScreen = ({ navigation }) => {
     }
     getDoc(doc(db, getRole, phoneNumber))
       .then((docData) => {
-        if (docData.exists()) {
+        if (docData.exists() && docData.data().status === "active") {
           AsyncStorage.setItem("phoneNumber", phoneNumber);
           AsyncStorage.setItem("role", getRole);
           navigation.navigate("Verify");
+        } else if (docData.exists() && docData.data().status === "pending") {
+          navigation.navigate("Pending");
         } else {
+          navigation.navigate("Pending");
           Alert.alert("Phone number has not been registered!");
           console.log("no such data");
         }

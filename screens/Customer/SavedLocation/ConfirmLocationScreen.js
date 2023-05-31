@@ -18,7 +18,11 @@ const ConfirmLocationScreen = ({ navigation }) => {
           <VStack paddingX={"10px"} h={"100%"}>
             <HStack mb={"20px"} alignItems={"center"} justifyContent={"center"}>
               <View style={{ position: "absolute", left: 0 }}>
-                <ButtonBack></ButtonBack>
+                <ButtonBack
+                  onPress={() => {
+                    navigation.goBack();
+                  }}
+                ></ButtonBack>
               </View>
               <Text style={{ ...FONTS.h2, color: COLORS.white }} ml={4}>
                 Confirm location

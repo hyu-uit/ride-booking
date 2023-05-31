@@ -2,6 +2,7 @@ import { NativeBaseProvider } from "native-base";
 import Navigation from "./navigation";
 import { useFonts } from "expo-font";
 import * as Font from "expo-font";
+import { AppProvider } from "./context/AppContext";
 
 async function loadFonts() {
   await Font.loadAsync({
@@ -23,5 +24,9 @@ export default function App() {
   loadFonts().then(() => {
     // Start your app
   });
-  return <Navigation></Navigation>;
+  return (
+    <AppProvider>
+      <Navigation></Navigation>
+    </AppProvider>
+  );
 }

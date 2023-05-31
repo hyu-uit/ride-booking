@@ -13,6 +13,7 @@ import {
   Keyboard,
   TouchableWithoutFeedback,
   KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 import React, { useState } from "react";
 import ButtonBack from "../../components/Global/ButtonBack/ButtonBack";
@@ -34,8 +35,9 @@ import { AsyncStorage } from "react-native";
 import { LogBox } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import DateTimePicker from "@react-native-community/datetimepicker";
+import moment from "moment";
 
-LogBox.ignoreAllLogs(); //Ignore all log notifications
+// LogBox.ignoreAllLogs(); //Ignore all log notifications
 
 const SignUpScreen = ({ navigation }) => {
   const [school, setSchool] = useState("");
@@ -45,17 +47,15 @@ const SignUpScreen = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [role, setRole] = useState("");
 
-  const [date, setDate] = useState(new Date());
-  const [showPicker, setShowPicker] = useState(false);
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [finalDate, setFinalDate] = useState(null);
 
-  const showDatePicker = () => {
-    setShowPicker(true);
-  };
-
-  const handleDateChange = (event, selectedDate) => {
-    const currentDate = selectedDate || date;
-    setShowPicker(Platform.OS === "ios");
-    setDate(currentDate);
+  const handleDateChange = (_event, date) => {
+    setShowDatePicker(false);
+    setSelectedDate(date);
+    setShowTimePicker(true);
+    setFinalDate(moment(selectedDate).format("DD-MM-YYYY"));
   };
 
   const signUp = () => {
@@ -136,7 +136,7 @@ const SignUpScreen = ({ navigation }) => {
                   navigation.goBack();
                 }}
               ></ButtonBack>
-              <Text style={{ ...FONTS.h2 }} mt={2} color={COLORS.white}>
+              <Text style={{ ...FONTS.h2 }} mt={2} mb={2} color={COLORS.white}>
                 Create Account
               </Text>
               <ScrollView showsVerticalScrollIndicator={false} mb={20}>
@@ -185,8 +185,19 @@ const SignUpScreen = ({ navigation }) => {
                     {/* <Text style={{ ...FONTS.body3, color: COLORS.white }}>
                       30/05/2023
                     </Text> */}
+                    {Platform.OS === "android" ? (
+                      <>
+                        <Text style={{ ...FONTS.body3, color: COLORS.white }}>
+                          {moment(selectedDate).format("DD-MM-YYYY")}
+                        </Text>
+                      </>
+                    ) : (
+                      <></>
+                    )}
                     <Ionicons
-                      onPress={showDatePicker}
+                      onPress={() => {
+                        setShowDatePicker(true);
+                      }}
                       size={20}
                       name="calendar"
                       style={{
@@ -195,12 +206,11 @@ const SignUpScreen = ({ navigation }) => {
                         color: COLORS.white,
                       }}
                     />
-                    {showPicker && (
+                    {showDatePicker && (
                       <DateTimePicker
-                        testID="dateTimePicker"
-                        value={date}
+                        value={selectedDate}
                         mode="date"
-                        display="default"
+                        // onChange={handleDateChange}
                         onChange={handleDateChange}
                       />
                     )}
@@ -286,7 +296,7 @@ const SignUpScreen = ({ navigation }) => {
                       onPress={() => {
                         navigation.navigate("SignIn");
                       }}
-                      color={COLORS.white}
+                      color={COLORS.primary}
                       style={{ ...FONTS.body3, fontWeight: "bold" }}
                     >
                       Sign in
