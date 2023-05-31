@@ -28,10 +28,25 @@ import ButtonBack from "../../components/Global/ButtonBack/ButtonBack";
 import FlagIcon from "../../assets/icons/icons8-flag-filled-48.png";
 import { addDoc, collection, doc, setDoc } from "@firebase/firestore";
 import { db } from "../../config/config";
+import { fetchCurrentUserLocation } from "../../helper/location";
+import { getFromAsyncStorage } from "../../helper/asyncStorage";
 
 const initialState = {
   step: 1,
-  location: "",
+  region: {
+    latitude: 0, // Initial latitude
+    longitude: 0, // Initial longitude
+    latitudeDelta: 0.005, //zoom
+    longitudeDelta: 0.005, //zoom
+  },
+  pickUpLocation: {
+    latitude: 0, // Initial latitude
+    longitude: 0, // Initial longitude
+  }, // Initial user location
+  destinationLocation: {
+    latitude: 0, // Initial latitude
+    longitude: 0, // Initial longitude
+  }, // Initial user location
   bookingDetails: "",
   price: "",
   note: "",
@@ -65,6 +80,23 @@ const stateReducer = (state, action) => {
 
 export default function BookingScreen({ navigation }) {
   const [state, dispatch] = useReducer(stateReducer, initialState);
+
+  const chooseFromMapHandler = () => {
+    Geocoder.from(41.89, 12.49)
+      .then((json) => {
+        console.log(json);
+        var addressComponent = json.results[0].address_components[0];
+        console.log(addressComponent);
+      })
+      .catch((error) => console.warn(error));
+    // fetchCurrentUserLocation()
+    //   .then(({ latitude, longitude }) => {
+    //     console.log(latitude + " " + longitude);
+    //     dispatch({ type: "SET_LOCATION", payload: { latitude, longitude } });
+    //     dispatch({ type: "SET_STEP", payload: 2 });
+    //   })
+    //   .catch((err) => console.log(err));
+  };
 
   const handleStep3Submit = () => {
     // Do any necessary form validation or error checking here
@@ -160,10 +192,7 @@ export default function BookingScreen({ navigation }) {
                     w={"90%"}
                     borderRadius={10}
                     bgColor={COLORS.primary}
-                    onTouchEnd={
-                      (value) => dispatch({ type: "SET_STEP", payload: 2 })
-                      // console.log(navigation.getParent())
-                    }
+                    onTouchEnd={chooseFromMapHandler}
                   >
                     <Text fontSize={SIZES.h5} bold color={"white"}>
                       Choose from map
@@ -181,6 +210,7 @@ export default function BookingScreen({ navigation }) {
             <MapView
               style={{ flex: 1, borderRadius: 10, marginTop: 10 }}
               provider="google"
+              onPress={(event) => console.log(event.nativeEvent)}
             ></MapView>
             <Center
               w={"100%"}

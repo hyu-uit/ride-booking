@@ -1,8 +1,8 @@
 import { NativeBaseProvider } from "native-base";
 import Navigation from "./navigation";
-import { useFonts } from "expo-font";
 import * as Font from "expo-font";
 import { AppProvider } from "./context/AppContext";
+import Geocoder from "react-native-geocoding";
 
 async function loadFonts() {
   await Font.loadAsync({
@@ -22,11 +22,13 @@ async function loadFonts() {
 }
 export default function App() {
   loadFonts().then(() => {
-    // Start your app
+    Geocoder.init("AIzaSyCdVOmKHCAC6pBedDk_XGL975A5xJFkuTw", {
+      language: "vi",
+    });
+    return (
+      <AppProvider>
+        <Navigation></Navigation>
+      </AppProvider>
+    );
   });
-  return (
-    <AppProvider>
-      <Navigation></Navigation>
-    </AppProvider>
-  );
 }
