@@ -31,9 +31,9 @@ const StudentOfficeDetailScreen = ({ navigation, route }) => {
   // const [phoneNumber, setPhoneNumber] = useState("");
   // const [role, setRole] = useState("");
   const [school, setSchool] = useState("");
-  const [portrait, setPortrait] = useState("");
-  const [cardBack, setCardBack] = useState("");
-  const [cardFront, setCardFront] = useState("");
+  const [portrait, setPortrait] = useState(null);
+  const [cardBack, setCardBack] = useState(null);
+  const [cardFront, setCardFront] = useState(null);
   const [studentID, setStudentID] = useState("");
   const [email, setEmail] = useState("");
   const [displayName, setDisplayName] = useState("");
@@ -44,29 +44,26 @@ const StudentOfficeDetailScreen = ({ navigation, route }) => {
   }, []);
 
   const getUserByPhoneNumber = () => {
-    // setRole("Customer")
-    // setPhoneNumber("0393751403")
-    //getDoc(doc(db,"Customer" , "0393751403"))
-    getDoc(doc(db, role, phoneNumber)).then((docSnap) => {
+   getDoc(doc(db, role, phoneNumber)).then((docSnap) => {
       if (docSnap.exists()) {
-        //setRole(role)
+        console.log(docSnap.data().portrait)
+        console.log(docSnap.data().cardBack)
+        console.log(docSnap.data().cardFront)
+
+        //setRole(role)r
         setCardBack(docSnap.data().cardBack);
         setCardFront(docSnap.data().cardFront);
         setDisplayName(docSnap.data().displayName);
         setEmail(docSnap.data().email);
-        //setPhoneNumber(docSnap.id)
         setSchool(docSnap.data().school);
         setStudentID(docSnap.data().studentID);
         setPortrait(docSnap.data().portrait)
-        //console.log(docSnap.data().portrait)
-        console.log(cardFront);
-        console.log(cardBack);
       } else {
         console.log("No such data");
       }
     });
   };
-  console.log(portrait)
+
   const width = 224;
   const height = width * 1.5;
 

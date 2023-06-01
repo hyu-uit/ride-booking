@@ -37,6 +37,7 @@ function HistoryCard(props) {
   const {onPress} = props
   const [name, setName] = useState("")
   const [licensePlates, setLicensePlates] = useState("")
+  const [avt, setAvatar] = useState(null)
 
   if(idTrip!==undefined){
     getDoc(doc(db,"ListTrip",idTrip)).then(tripData=>{
@@ -45,6 +46,7 @@ function HistoryCard(props) {
           if(docData.exists()){
             setName(docData.data().displayName)
             setLicensePlates(docData.data().licensePlates)
+            setAvatar(docData.data().portrait)
           }
         })
       }
@@ -61,7 +63,7 @@ function HistoryCard(props) {
       onTouchEnd={onPress}
     >
       <HStack w={"full"}>
-        <Avatar source={DefaultAvt} margin={"10px 0 0 10px"} />
+        <Avatar source={{uri:avt}} margin={"10px 0 0 10px"} />
         <VStack margin={"10px 0 0 10px"}>
           <Text bold fontSize={SIZES.h4} color={"white"}>
             {licensePlates}

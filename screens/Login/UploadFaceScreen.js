@@ -38,8 +38,9 @@ const UploadFaceScreen = ({ navigation }) => {
   const [name, setDisplayName] = useState("");
   const [imageFront, setImageFront] = useState("");
   const [imageBack, setImageBack] = useState("");
+  const [finalDate, setFinalDate] = useState("null");
 
-  useEffect(() => {
+useEffect(() => {
     AsyncStorage.getItem("phoneNumber").then((result) => {
       setPhoneNumber(result);
     });
@@ -64,6 +65,9 @@ const UploadFaceScreen = ({ navigation }) => {
     AsyncStorage.getItem("cardBack").then((result) => {
       setImageBack(result);
     });
+    AsyncStorage.getItem("dob").then((result) => {
+      setFinalDate(result);
+    });
   }, []);
   const [width, setWidth] = useState(
     PixelRatio.roundToNearestPixel(SIZES.width - 20)
@@ -77,6 +81,7 @@ const UploadFaceScreen = ({ navigation }) => {
       email: email,
       school: school,
       studentID: id,
+      birthday:finalDate,
       status: "pending",
     });
     //upload image to firebase storage

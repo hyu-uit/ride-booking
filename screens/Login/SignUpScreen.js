@@ -100,6 +100,7 @@ const SignUpScreen = ({ navigation }) => {
           AsyncStorage.setItem("school", school);
           AsyncStorage.setItem("studentID", id);
           AsyncStorage.setItem("email", email);
+          AsyncStorage.setItem("dob", finalDate);
           navigation.navigate("UploadID");
         } else {
           Alert.alert(

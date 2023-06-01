@@ -22,9 +22,9 @@ import { collection, deleteDoc, doc, getDoc, updateDoc } from "firebase/firestor
 import { db } from "../../config/config";
 const StudentListDetailScreen = ({route, navigation}) => {
   const [school, setSchool] = useState("");
-  const [portrait, setPortrait] = useState("");
-  const [cardBack, setCardBack] = useState("");
-  const [cardFront, setCardFront] = useState("");
+  const [portrait, setPortrait] = useState(null);
+  const [cardBack, setCardBack] = useState(null);
+  const [cardFront, setCardFront] = useState(null);
   const [studentID, setStudentID] = useState("");
   const [email, setEmail] = useState("");
   const [displayName, setDisplayName] = useState("");

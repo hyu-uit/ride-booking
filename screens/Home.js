@@ -29,42 +29,66 @@ import { useEffect } from "react";
 import { getFromAsyncStorage } from "../helper/asyncStorage";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useState } from "react";
-import { collection, getDocs, query, where } from "firebase/firestore";
+import { collection, doc, getDoc, getDocs, query, where } from "firebase/firestore";
 import { db } from "../config/config";
 
 export default function Home({ navigation, route }) {
   const [phone, setPhone] = useState("");
   const [historyTrips, setHistoryTrips] = useState([]);
-
+  const [name, SetName] = useState(null);
+  const [avt, SetAvatar] = useState(null);
   useEffect(() => {
-    getFromAsyncStorage("phoneNumber")
-      .then((value) => setPhone(value))
-      .catch((err) => console.log(err));
-    getHistoryTrips();
+    fetchDataAndPhoneNumber()    
   }, [navigation]);
+
+  const fetchDataAndPhoneNumber = async () => {
+    try {
+      const phoneNumberValue = await getFromAsyncStorage("phoneNumber");
+      setPhone(phoneNumberValue);
+
+      if (phoneNumberValue) {
+        fetchData(phoneNumberValue);
+        getHistoryTrips(phoneNumberValue)
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  const fetchData = async (phoneNumber) => {
+    try {
+      const docData = await getDoc(doc(db, "Customer", phoneNumber));
+      SetName(docData.data().displayName);
+      SetAvatar(docData.data().portrait);
+    } catch (error) {
+      console.error(error);
+    }
+  };
   //const {phoneNumber, role} = route.params;
-  const getHistoryTrips = () => {
+  const getHistoryTrips =async (phoneNumber) => {
     let historyTrips = [];
     getDocs(
-      query(collection(db, "ListTrip"), where("status", "==", "done"))
+      query(collection(db, "ListTrip"), where("idCustomer", "==", phoneNumber))
     ).then((docSnap) => {
-      docSnap.forEach((doc) => {
-        historyTrips.push({
-          idCustomer: doc.data().idCustomer,
-          idTrip: doc.id,
-          pickUpLat: doc.data().pickUpLat,
-          pickUpLong: doc.data().pickUpLong,
-          destLat: doc.data().destLat,
-          destLong: doc.data().destLong,
-          date: doc.data().date,
-          time: doc.data().time,
-          datePickUp: doc.data().datePickUp,
-          timePickUp: doc.data().timePickUp,
-          totalPrice: doc.data().totalPrice,
-          distance: doc.data().distance,
+        docSnap.forEach((doc) => {
+          console.log(doc.data().idCustomer)
+          if(doc.data().status==="done"){
+            historyTrips.push({
+              idCustomer: doc.data().idCustomer,
+              idTrip: doc.id,
+              pickUpLat: doc.data().pickUpLat,
+              pickUpLong: doc.data().pickUpLong,
+              destLat: doc.data().destLat,
+              destLong: doc.data().destLong,
+              date: doc.data().date,
+              time: doc.data().time,
+              datePickUp: doc.data().datePickUp,
+              timePickUp: doc.data().timePickUp,
+              totalPrice: doc.data().totalPrice,
+              distance: doc.data().distance,
+            });
+          }
         });
-      });
-      setHistoryTrips(historyTrips);
+        setHistoryTrips(historyTrips);
     });
   };
   return (
@@ -75,13 +99,13 @@ export default function Home({ navigation, route }) {
     >
       <HomeContainer>
         <HStack w={"full"} alignContent={"center"}>
-          <Avatar source={DefaultAvt} margin={"10px 0 0 10px"} />
+          <Avatar source={{uri:avt}} margin={"10px 0 0 10px"} />
           <VStack margin={"10px 0 0 10px"}>
             <Text fontSize={10} color={COLORS.grey}>
               Welcome back
             </Text>
             <Text fontSize={SIZES.h4} color={COLORS.white} bold>
-              Nguyen Tri Duc
+              {name}
             </Text>
           </VStack>
           <MenuButton

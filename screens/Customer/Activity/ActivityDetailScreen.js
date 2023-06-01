@@ -45,6 +45,7 @@ const ActivityDetailScreen = ({ navigation, route }) => {
               destLat: tripData.data().destLat,
               destLong: tripData.data().destLong,
               date: tripData.data().date,
+              portrait:docData.data().portrait,
               time: tripData.data().time,
               totalPrice: tripData.data().totalPrice,
               distance: tripData.data().distance,
@@ -58,6 +59,7 @@ const ActivityDetailScreen = ({ navigation, route }) => {
       }
     });
   };
+  console.log(tripData.portrait)
 
   return (
     <NativeBaseProvider>
@@ -189,7 +191,7 @@ const ActivityDetailScreen = ({ navigation, route }) => {
                 </Text>
                 <HStack mt={"5px"}>
                   <Image
-                    source={require("../../../assets/images/Activity/ic_bike_white.png")}
+                    source={{uri:tripData.portrait}}
                     alt="Avatar"
                     style={{
                       borderRadius: SIZES.radius50,
@@ -307,7 +309,7 @@ const ActivityDetailScreen = ({ navigation, route }) => {
                     alignItems={"flex-end"}
                   >
                     <Text style={{ ...FONTS.h2, color: COLORS.white }}>
-                      {tripData.totalPrice}
+                      30000dd
                     </Text>
                     <Text
                       style={{
@@ -316,7 +318,7 @@ const ActivityDetailScreen = ({ navigation, route }) => {
                         textDecorationLine: "line-through",
                       }}
                     >
-                      30,000đ
+                      {tripData.totalPrice}
                     </Text>
                   </VStack>
                 </HStack>

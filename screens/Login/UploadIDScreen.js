@@ -31,6 +31,7 @@ const UploadID = ({ navigation }) => {
   const [id, setStudentID] = useState("");
   const [school, setSchool] = useState("");
   const [name, setDisplayName] = useState("");
+  const [finalDate, setFinalDate] = useState("null");
 
   useEffect(()=>{
     AsyncStorage.getItem('phoneNumber').then(result => {
@@ -50,6 +51,9 @@ const UploadID = ({ navigation }) => {
     });
     AsyncStorage.getItem('displayName').then(result => {
       setDisplayName(result);
+    });
+    AsyncStorage.getItem('dob').then(result => {
+      setFinalDate(result);
     })
   }, [])
   
@@ -60,9 +64,8 @@ const UploadID = ({ navigation }) => {
   const [imageFront, setImageFront] = useState(null);
   const [imageBack, setImageBack] = useState(null);
 
-  //upload image to firebase storage
   const uploadImage = async ()=>{
-  
+    
     AsyncStorage.setItem('phoneNumber',phoneNumber);
     AsyncStorage.setItem('role',role);
     AsyncStorage.setItem('cardFront',imageFront);
@@ -71,6 +74,7 @@ const UploadID = ({ navigation }) => {
     AsyncStorage.setItem('displayName',name);
     AsyncStorage.setItem('studentID',id);
     AsyncStorage.setItem('school',school);
+    AsyncStorage.setItem('dob',finalDate);
     navigation.navigate("UploadFace"); 
   }
 
@@ -85,7 +89,7 @@ const UploadID = ({ navigation }) => {
     if (!result.canceled) {
       setImageFront(result.assets[0].uri);
     }
-    //console.log(result.assets[0].uri);
+    console.log(result.assets[0].uri);
 
   };
 

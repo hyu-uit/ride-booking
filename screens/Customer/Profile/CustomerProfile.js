@@ -19,35 +19,97 @@ import DefaultAvt from "../../../assets/image6.png";
 import { Ionicons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import { AsyncStorage } from "react-native";
-import { doc, getDoc } from "@firebase/firestore";
-import { db } from "../../../config/config";
+import { doc, getDoc, updateDoc } from "@firebase/firestore";
+import { db, storage } from "../../../config/config";
+import { getFromAsyncStorage } from "../../../helper/asyncStorage";
+import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 
 const CustomerProfile = ({ navigation, route}) => {
   const [profileImg, setProfileImg] = useState(null);
+  const [phone, setPhone] = useState("");
 
-  const [users, setUsers] = useState([]);
-  //const { phoneNumber, role } = route.params;
+  const [users, setUsers] = useState({});
+  useEffect(() => {
+    fetchDataAndPhoneNumber()    
+  }, [navigation]);
+  const fetchDataAndPhoneNumber = async () => {
+    try {
+      let phoneNumberValue = await getFromAsyncStorage("phoneNumber");
+      setPhone(phoneNumberValue);
 
-  // useEffect(() => {
- 
-  //   getUsers();
-  // }, []);
-
-  // const getUsers = () => {
+      if (phoneNumberValue) {
+        getUsers(phoneNumberValue);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  const getUsers = async (phoneNumber) => {
+    try {
+      let users={}
+      const docData = await getDoc(doc(db, "Customer", phoneNumber))
+        users ={
+          school: docData.data().school,
+          displayName: docData.data().displayName,
+          email: docData.data().email,
+          studentID: docData.data().studentID,
+          portrait: docData.data().portrait,
+          birthday: docData.data().birthday,
+        }
+        setUsers(users)
     
-  //   let users = [];
-  //   getDoc(doc(db, "Customer", phoneNumber)).then((docSnap) => {
-  //     docSnap.forEach((doc) => {
-  //       users.push({
-  //         school: doc.data().school,
-  //         displayName: doc.data().displayName,
-  //         email: doc.data().email,
-  //         studentID: doc.data().studentID,
-  //         portrait: doc.data().portrait,
-  //       });
-  //     });
-  //   });
-  // };
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const uploadImage = async () => {
+    //convert image into blob image
+    const blobImage = await new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      xhr.onload = function () {
+        resolve(xhr.response);
+      };
+      xhr.onerror = function () {
+        reject(TypeError("Network request failed"));
+      };
+      xhr.responseType = "blob";
+      xhr.open("GET", profileImg, true);
+      xhr.send(null);
+    });
+
+    //type of file
+    const metadata = {
+      contentType: "image/jpeg",
+    };
+
+    let name = phone + "face";
+    const storageRef = ref(storage, name);
+
+    const uploadTask = uploadBytesResumable(storageRef, blobImage, metadata);
+    uploadTask.on(
+      "state_changed",
+      (snapshot) => {
+        console.log("Uploading")
+      },
+      (error) => {
+        console.log(error)
+
+      },
+      () => {    
+        getDownloadURL(storageRef)
+          .then((url) => {
+            console.log(url);
+    
+            updateDoc(doc(db, "Customer", phone), {
+              portrait: url,
+            });
+          })
+          .catch((error) => {
+            
+          });
+      }
+    );
+  };
 
   const pickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -59,8 +121,8 @@ const CustomerProfile = ({ navigation, route}) => {
 
     if (!result.canceled) {
       setProfileImg(result.assets[0].uri);
+      uploadImage()
     }
-    console.log(result.assets[0].uri);
   };
 
   return (
@@ -76,7 +138,7 @@ const CustomerProfile = ({ navigation, route}) => {
             <VStack mt={5} alignItems={"center"}>
               <HStack w={"118px"}>
                 <Avatar
-                  source={!profileImg ? DefaultAvt : { uri: profileImg }}
+                  source={!profileImg ? {uri:users.portrait} : { uri: profileImg }}
                   h={"118px"}
                   w={"118px"}
                 />
@@ -95,37 +157,38 @@ const CustomerProfile = ({ navigation, route}) => {
                 Full name
               </Text>
               <Text style={{ ...FONTS.h3, color: COLORS.white }} mt={2}>
-                Huỳnh Thế Vĩ
+                {users.displayName}
               </Text>
               <Text style={{ ...FONTS.h4, color: COLORS.fifthary }} mt={10}>
                 Birthday
               </Text>
               <Text style={{ ...FONTS.h3, color: COLORS.white }} mt={2}>
-                23/03/2002
+              {users.birthday}
               </Text>
               <Text style={{ ...FONTS.h4, color: COLORS.fifthary }} mt={10}>
                 Student ID
               </Text>
               <Text style={{ ...FONTS.h3, color: COLORS.white }} mt={2}>
-                20520000
+              {users.studentID}
               </Text>
               <Text style={{ ...FONTS.h4, color: COLORS.fifthary }} mt={10}>
                 School
               </Text>
               <Text style={{ ...FONTS.h3, color: COLORS.white }} mt={2}>
-                University of Information Technology
+              {users.school}
               </Text>
               <Text style={{ ...FONTS.h4, color: COLORS.fifthary }} mt={10}>
                 Phone number
               </Text>
               <Text style={{ ...FONTS.h3, color: COLORS.white }} mt={2}>
-                0848867000
+                {phone}
               </Text>
               <Text style={{ ...FONTS.h4, color: COLORS.fifthary }} mt={10}>
                 Email Address
               </Text>
               <Text style={{ ...FONTS.h3, color: COLORS.white }} mt={2}>
-                20520000@gm.uit.edu.vn
+                 {users.email}
+
               </Text>
             </VStack>
 
