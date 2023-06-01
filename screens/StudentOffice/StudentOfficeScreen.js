@@ -28,7 +28,6 @@ import {
 } from "firebase/firestore";
 import { db } from "../../config/config";
 import { useEffect } from "react";
-import { Alert } from "react-native";
 import { getFromAsyncStorage } from "../../helper/asyncStorage";
 
 const StudentOfficeScreen = ({ navigation }) => {
@@ -42,21 +41,46 @@ const StudentOfficeScreen = ({ navigation }) => {
 
   useEffect(() => {
     getUsers();
-    getFromAsyncStorage("phoneNumber")
-      .then((value) => setPhoneNumber(value))
-      .catch((err) => console.log(err));
+    // getFromAsyncStorage("phoneNumber")
+    //   .then((value) => setPhoneNumber(value))
+    //   .catch((err) => console.log(err));
+    // fetchData();
+    // fetchData();
+    // getFromAsyncStorage("phoneNumber")
+    //   .then((value) => setPhoneNumber(value))
+    //   .catch((err) => console.log(err));
+
     fetchData();
   }, [navigation]);
 
-  const fetchData = () => {
-    getDoc(doc(db, "StudentOffice", phoneNumber))
-      .then((docData) => {
+  const fetchData = async () => {
+    try {
+      const phoneNumber = await getFromAsyncStorage("phoneNumber"); // Wait for getFromAsyncStorage to complete
+      setPhoneNumber(phoneNumber);
+
+      const docData = await getDoc(doc(db, "StudentOffice", phoneNumber)); // Wait for getDoc to complete
+      if (docData.exists()) {
         setUniName(docData.data().name);
         setAcronym(docData.data().acronym);
         setLogo(docData.data().logo);
-      })
-      .catch((error) => {});
+      } else {
+        Alert.alert("Wrong phone number!");
+        console.log("no such data");
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
+
+  // const fetchData = () => {
+  //   getDoc(doc(db, "StudentOffice", phoneNumber))
+  //     .then((docData) => {
+  //       setUniName(docData.data().name);
+  //       setAcronym(docData.data().acronym);
+  //       setLogo(docData.data().logo);
+  //     })
+  //     .catch((error) => {});
+  // };
 
   const getUsers = () => {
     let users = [];
@@ -112,7 +136,9 @@ const StudentOfficeScreen = ({ navigation }) => {
               <Text style={{ ...FONTS.body6, color: COLORS.lightGrey }}>
                 {acronym}
               </Text>
-              <Text style={{ ...FONTS.h6, color: COLORS.white }}></Text>
+              <Text style={{ ...FONTS.h6, color: COLORS.white }}>
+                {uniName}
+              </Text>
             </VStack>
           </HStack>
           <Input

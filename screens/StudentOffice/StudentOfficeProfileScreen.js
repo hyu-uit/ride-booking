@@ -20,6 +20,9 @@ import { db } from "../../config/config";
 
 const StudentOfficeProfileScreen = ({ navigation }) => {
   const [phoneNumber, setPhoneNumber] = useState(null);
+  const [uniName, setUniName] = useState(null);
+  const [address, setAddress] = useState(null);
+  const [logo, setLogo] = useState(null);
 
   useEffect(() => {
     getFromAsyncStorage("phoneNumber")
@@ -28,14 +31,31 @@ const StudentOfficeProfileScreen = ({ navigation }) => {
     fetchData();
   });
 
-  const fetchData = () => {
+  const fetchData = async () => {
+    console.log(phoneNumber);
     getDoc(doc(db, "StudentOffice", phoneNumber))
       .then((docData) => {
-        setUniName(docData.data().name);
-        setAcronym(docData.data().acronym);
-        setLogo(docData.data().logo);
+        if (docData.exists()) {
+          // AsyncStorage.setItem("phoneNumber", phoneNumber);
+          // AsyncStorage.setItem("role", getRole);
+          setUniName(docData.data().name);
+          setAddress(docData.data().address);
+          setLogo(docData.data().logo);
+        } else {
+          Alert.alert("Wrong phone number!");
+          console.log("no such data");
+        }
       })
       .catch((error) => {});
+    // try {
+    //   await GetInfo(); // Wait for GetInfo to complete before proceeding
+    //   const docData = await getDoc(doc(db, "StudentOffice", phoneNumber));
+    //   setUniName(docData.data().name);
+    //   setAcronym(docData.data().acronym);
+    //   setLogo(docData.data().logo);
+    // } catch (error) {
+    //   console.log(error);
+    // }
   };
 
   return (
@@ -51,10 +71,10 @@ const StudentOfficeProfileScreen = ({ navigation }) => {
             <VStack mt={5} alignItems={"center"}>
               <HStack w={"118px"}>
                 <Image
-                  src="https://cdn.haitrieu.com/wp-content/uploads/2021/10/Logo-DH-Cong-Nghe-Thong-Tin-UIT.png"
+                  source={{ uri: logo }}
                   h={"118px"}
                   w={"118px"}
-                  resizeMode="center"
+                  resizeMode="contain"
                 ></Image>
               </HStack>
             </VStack>
@@ -64,13 +84,13 @@ const StudentOfficeProfileScreen = ({ navigation }) => {
                 Name
               </Text>
               <Text style={{ ...FONTS.h4, color: COLORS.white }} mt={2}>
-                University of Information Technology
+                {uniName}
               </Text>
               <Text style={{ ...FONTS.h4, color: COLORS.fifthary }} mt={10}>
                 Address
               </Text>
               <Text style={{ ...FONTS.h4, color: COLORS.white }} mt={2}>
-                01 Hàn Thuyên, Khu phố 6, Linh Trung, Thủ Đức, Sài Gòn
+                {address}
               </Text>
             </VStack>
 
