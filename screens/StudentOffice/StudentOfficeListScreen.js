@@ -263,7 +263,7 @@ const StudentOfficeListScreen = ({ navigation }) => {
   const [routes] = React.useState([
     { key: "first", title: "Customer" },
     { key: "second", title: "Rider" },
-    { key: "third", title: "Locked" },
+    { key: "third", title: "Bad" },
   ]);
 
   return (

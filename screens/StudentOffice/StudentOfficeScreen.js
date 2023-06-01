@@ -28,7 +28,6 @@ import {
 } from "firebase/firestore";
 import { db } from "../../config/config";
 import { useEffect } from "react";
-import { Alert } from "react-native";
 import { getFromAsyncStorage } from "../../helper/asyncStorage";
 
 const StudentOfficeScreen = ({ navigation }) => {
@@ -43,12 +42,12 @@ const StudentOfficeScreen = ({ navigation }) => {
   useEffect(() => {
     fetchDataAndPhoneNumber();
   }, [navigation]);
-  
+
   const fetchDataAndPhoneNumber = async () => {
     try {
       const phoneNumberValue = await getFromAsyncStorage("phoneNumber");
       setPhoneNumber(phoneNumberValue);
-  
+
       if (phoneNumberValue) {
         fetchData(phoneNumberValue);
         await getUsers();
@@ -57,7 +56,7 @@ const StudentOfficeScreen = ({ navigation }) => {
       console.log(err);
     }
   };
-  
+
   const fetchData = async (phoneNumber) => {
     try {
       const docData = await getDoc(doc(db, "StudentOffice", phoneNumber));
@@ -68,7 +67,7 @@ const StudentOfficeScreen = ({ navigation }) => {
       console.error(error);
     }
   };
-  
+
   const getUsers = async () => {
     let users = [];
     getDocs(
@@ -123,7 +122,9 @@ const StudentOfficeScreen = ({ navigation }) => {
               <Text style={{ ...FONTS.body6, color: COLORS.lightGrey }}>
                 {acronym}
               </Text>
-              <Text style={{ ...FONTS.h6, color: COLORS.white }}>{uniName}</Text>
+              <Text style={{ ...FONTS.h6, color: COLORS.white }}>
+                {uniName}
+              </Text>
             </VStack>
           </HStack>
           <Input

@@ -14,6 +14,7 @@ import { COLORS, FONTS } from "../../constants";
 import { TouchableWithoutFeedback } from "react-native";
 import { Keyboard } from "react-native";
 import { AsyncStorage } from "react-native";
+import { getFromAsyncStorage } from "../../helper/asyncStorage";
 
 const VerifyingScreen = ({ navigation }) => {
   const firstInput = useRef();
@@ -24,34 +25,44 @@ const VerifyingScreen = ({ navigation }) => {
   const [role, setRole] = useState("");
 
   useEffect(() => {
-    AsyncStorage.getItem("phoneNumber").then((result) => {
-      setPhoneNumber(result);
-    });
-    AsyncStorage.getItem("role").then((result) => {
-      setRole(result);
-    });
+    // AsyncStorage.getItem("phoneNumber").then((result) => {
+    //   setPhoneNumber(result);
+    // });
+    // AsyncStorage.getItem("role").then((result) => {
+    //   setRole(result);
+    // });
+    getFromAsyncStorage("phoneNumber")
+      .then((value) => setPhoneNumber(value))
+      .catch((err) => console.log(err));
+
+    getFromAsyncStorage("role")
+      .then((value) => setRole(value))
+      .catch((err) => console.log(err));
   }, []);
   // navigation.navigate("StudentOfficeNavigator", {
   //   screen: "StudentOffice",
   // });
   const signInOption = () => {
-    console.log(role)
-      if(role == "Customer"){
-        navigation.navigate("MainNavigator", {
+    role === "Customer"
+      ? navigation.navigate("MainNavigator", {
           screen: "HomeStack",
           params: {
-            screen: "Home"
+            screen: "Home",
+            data: {
+              phoneNumber: "" + phoneNumber,
+              role: "" + role,
+            },
           },
         })
-      }else if(role=="Rider"){
-        navigation.navigate("StudentOfficeNavigator", {
-          screen: "StudentOffice",
-        })
-      }else{
-        navigation.navigate("MainRiderNavigator", {
+      : navigation.navigate("MainRiderNavigator", {
           screen: "HomeRider",
-        })
-      }
+          params: {
+            data: {
+              phoneNumber: "" + phoneNumber,
+              role: "" + role,
+            },
+          },
+        });
   };
   const [otp, setOtp] = useState({ 1: "", 2: "", 3: "", 4: "" });
   return (

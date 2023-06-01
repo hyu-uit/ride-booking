@@ -21,17 +21,17 @@ import { db } from "../../config/config";
 const StudentOfficeProfileScreen = ({ navigation }) => {
   const [phoneNumber, setPhoneNumber] = useState(null);
   const [uniName, setUniName] = useState(null);
-  const [logo, setLogo] = useState(null);
   const [address, setAddress] = useState(null);
+  const [logo, setLogo] = useState(null);
 
   useEffect(() => {
-    fetchDataAndPhoneNumber()
+    fetchDataAndPhoneNumber();
   });
   const fetchDataAndPhoneNumber = async () => {
     try {
       const phoneNumberValue = await getFromAsyncStorage("phoneNumber");
       setPhoneNumber(phoneNumberValue);
-  
+
       if (phoneNumberValue) {
         fetchData(phoneNumberValue);
       }
@@ -39,19 +39,18 @@ const StudentOfficeProfileScreen = ({ navigation }) => {
       console.log(err);
     }
   };
-  
+
   const fetchData = async (phoneNumber) => {
     try {
       const docData = await getDoc(doc(db, "StudentOffice", phoneNumber));
       setUniName(docData.data().name);
       setLogo(docData.data().logo);
       setAddress(docData.data().address);
-
     } catch (error) {
       console.error(error);
     }
   };
-  
+
   return (
     <VStack h={"100%"} paddingTop={"20px"} bgColor={COLORS.background}>
       <SafeAreaView>
@@ -68,7 +67,7 @@ const StudentOfficeProfileScreen = ({ navigation }) => {
                   source={{ uri: logo }}
                   h={"118px"}
                   w={"118px"}
-                  resizeMode="center"
+                  resizeMode="contain"
                 ></Image>
               </HStack>
             </VStack>
