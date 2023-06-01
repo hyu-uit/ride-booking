@@ -38,6 +38,9 @@ const SignInScreen = ({ navigation }) => {
 
   //   })
   // }
+
+  const isPhoneNumberNull = () => {};
+
   const checkPhoneNumber = () => {
     let getRole = "";
     {

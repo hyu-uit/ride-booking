@@ -1,6 +1,7 @@
 import React from "react";
 import {
   Button,
+  FlatList,
   HStack,
   Image,
   Input,
@@ -20,29 +21,119 @@ import IC_Bike_Blue from "../../assets/images/Activity/ic_bike_blue.png";
 import HistoryCard from "../../components/HistoryCard";
 import DriverBookingCard from "../../components/Driver/DriverBookingCard";
 import RequestCard from "../../components/Driver/RequestCard";
+import moment from "moment";
+import { useEffect } from "react";
+import { collection, getDocs, query, where } from "firebase/firestore";
+import { db } from "../../config/config";
+import ConfirmedScheduledTrip from "../../components/Driver/ConfirmedScheduledTrip";
 
 const RiderSchedule = () => {
   const [service, setService] = useState(0);
+  const [waitingTrips, setWaitingTrips] = useState({});
+  const [confirmedTrips, setConfirmedTrips] = useState({});
 
+  useEffect(() => {
+    getWaitingTrips();
+    getConfirmedTrips();
+  }, []);
+  
+  const getWaitingTrips = () => {
+    let waitingTrips = [];
+    getDocs(
+      query(collection(db, "ListTrip"), where("isScheduled", "==", "true"))
+    ).then((docSnap) => {
+      docSnap.forEach((doc) => {
+        if(doc.data().status=="waiting"){
+          waitingTrips.push({
+            idCustomer: doc.data().idCustomer,
+            idTrip: doc.id,
+            pickUpLat: doc.data().pickUpLat,
+            pickUpLong: doc.data().pickUpLong,
+            destLat: doc.data().destLat,
+            destLong: doc.data().destLong,
+            date: doc.data().date,
+            time: doc.data().time,
+            datePickUp:doc.data().datePickUp,
+            timePickUp:doc.data().timePickUp,
+            totalPrice: doc.data().totalPrice,
+            distance: doc.data().distance,
+          });
+        }
+      });
+      setWaitingTrips(waitingTrips);
+    });
+  };
+  const getConfirmedTrips = () => {
+    let confirmedTrips = [];
+    getDocs(
+      query(collection(db, "ListTrip"), where("isScheduled", "==", "true"))
+    ).then((docSnap) => {
+      docSnap.forEach((doc) => {
+        if(doc.data().status=="confirmed"){
+          confirmedTrips.push({
+            idCustomer: doc.data().idCustomer,
+            idTrip: doc.id,
+            pickUpLat: doc.data().pickUpLat,
+            pickUpLong: doc.data().pickUpLong,
+            destLat: doc.data().destLat,
+            destLong: doc.data().destLong,
+            date: doc.data().date,
+            time: doc.data().time,
+            datePickUp:doc.data().datePickUp,
+            timePickUp:doc.data().timePickUp,
+            totalPrice: doc.data().totalPrice,
+            distance: doc.data().distance,
+          });
+        }
+      });
+      setConfirmedTrips(confirmedTrips);
+    });
+  };
   const FirstRoute = () => (
     <ScrollView>
-      <VStack mt={"17px"} justifyContent={"center"} alignItems={"center"}>
-        <RequestCard />
-        <RequestCard />
-        <RequestCard />
-        <RequestCard />
-      </VStack>
+      <FlatList
+      padding={"10px"}
+      mt={2}
+      horizontal={false}
+      data={waitingTrips}
+      keyExtractor={(item) => item.idTrip}
+      renderItem={({ item }) => (
+        <RequestCard
+          onPress={() => {
+            const data = {
+              idTrip: "" + item.idTrip
+            };
+            navigation.navigate("TripDetail", data);
+          }}
+          trip={item}
+          key={item.idTrip}
+        ></RequestCard>
+      )}
+    ></FlatList>
     </ScrollView>
   );
 
   const SecondRoute = () => (
     <ScrollView>
-      <VStack mt={"17px"} justifyContent={"center"} alignItems={"center"}>
-        <RequestCard />
-        <RequestCard />
-        <RequestCard />
-        <RequestCard />
-      </VStack>
+      <FlatList
+      padding={"10px"}
+      mt={2}
+      horizontal={false}
+      data={confirmedTrips}
+      keyExtractor={(item) => item.idTrip}
+      renderItem={({ item }) => (
+        <ConfirmedScheduledTrip
+          onPress={() => {
+            const data = {
+              idTrip: "" + item.idTrip
+            };
+            navigation.navigate("TripDetail", data);
+          }}
+          trip={item}
+          key={item.idTrip}
+        ></ConfirmedScheduledTrip>
+      )}
+    ></FlatList>
     </ScrollView>
   );
 

@@ -16,6 +16,8 @@ function HistoryPickUpCard(props, navigation) {
     destLong,
     date,
     time,
+    datePickUp,
+    timePickUp,
     status,
     totalPrice,
     distance,
@@ -77,7 +79,7 @@ function HistoryPickUpCard(props, navigation) {
           {idTrip}
         </Text>
         <Text paddingLeft={26} style={styles.detailText}>
-          {date}, {time}
+          {datePickUp}, {timePickUp}
         </Text>
         <VStack marginTop={2} paddingRight={26}>
           <HStack alignItems={"center"}>

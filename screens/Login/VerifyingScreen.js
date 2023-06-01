@@ -39,6 +39,9 @@ const VerifyingScreen = ({ navigation }) => {
       .then((value) => setRole(value))
       .catch((err) => console.log(err));
   }, []);
+  // navigation.navigate("StudentOfficeNavigator", {
+  //   screen: "StudentOffice",
+  // });
   const signInOption = () => {
     role === "Customer"
       ? navigation.navigate("MainNavigator", {

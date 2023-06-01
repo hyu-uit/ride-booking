@@ -1,10 +1,10 @@
-import React from "react";
 import styled from "styled-components";
 import { FONTS, COLORS, SIZES } from "../constants";
 import {
   Avatar,
   Button,
   Center,
+  FlatList,
   HStack,
   Icon,
   Image,
@@ -29,89 +29,99 @@ import { useEffect } from "react";
 import { getFromAsyncStorage } from "../helper/asyncStorage";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useState } from "react";
+import { collection, getDocs, query, where } from "firebase/firestore";
+import { db } from "../config/config";
 
 export default function Home({ navigation, route }) {
   const [phone, setPhone] = useState("");
+  const [historyTrips, setHistoryTrips] = useState([]);
+
   useEffect(() => {
     getFromAsyncStorage("phoneNumber")
       .then((value) => setPhone(value))
       .catch((err) => console.log(err));
-  });
+    getHistoryTrips();
+  }, [navigation]);
+  //const {phoneNumber, role} = route.params;
+  const getHistoryTrips = () => {
+    let historyTrips = [];
+    getDocs(
+      query(collection(db, "ListTrip"), where("status", "==", "done"))
+    ).then((docSnap) => {
+      docSnap.forEach((doc) => {
+        historyTrips.push({
+          idCustomer: doc.data().idCustomer,
+          idTrip: doc.id,
+          pickUpLat: doc.data().pickUpLat,
+          pickUpLong: doc.data().pickUpLong,
+          destLat: doc.data().destLat,
+          destLong: doc.data().destLong,
+          date: doc.data().date,
+          time: doc.data().time,
+          datePickUp: doc.data().datePickUp,
+          timePickUp: doc.data().timePickUp,
+          totalPrice: doc.data().totalPrice,
+          distance: doc.data().distance,
+        });
+      });
+      setHistoryTrips(historyTrips);
+    });
+  };
   return (
-    <HomeContainer>
-      <HStack w={"full"} alignContent={"center"}>
-        <Avatar source={DefaultAvt} margin={"10px 0 0 10px"} />
-        <VStack margin={"10px 0 0 10px"}>
-          <Text fontSize={10} color={COLORS.grey}>
-            Welcome back
-          </Text>
-          <Text fontSize={SIZES.h4} color={COLORS.white} bold>
-            Nguyen Tri Duc
-          </Text>
-        </VStack>
-        <MenuButton
-          onPress={() => {
-            navigation.navigate("Menu");
-          }}
-        >
-          <Center h={"100%"}>
-            <Image w={"25px"} h={"25px"} source={MenuIcon} alt="menu icon" />
-          </Center>
-        </MenuButton>
-      </HStack>
-      <HStack>
-        <ScrollView showsVerticalScrollIndicator={false}>
-          {/* <Input
-              onPressIn={() => {
-                navigation.navigate("Booking");
-              }}
-              mb={10}
-              borderRadius={10}
-              h={"50px"}
-              placeholder="Enter your destination"
-              width="100%"
-              variant={"filled"}
-              bgColor={COLORS.tertiary}
-              borderWidth={0}
-              fontSize={SIZES.body3}
-              color={COLORS.white}
-              marginTop={8}
-              InputLeftElement={
-                <Icon
-                  ml="2"
-                  size="4"
-                  color={COLORS.white}
-                  as={<Ionicons name="ios-search" />}
-                />
-              }
-            /> */}
-
-          <HStack
-            w={"100%"}
-            borderRadius={10}
-            bgColor={COLORS.tertiary}
-            borderWidth={0}
-            h={"50px"}
-            mb={10}
-            mt={8}
-            alignItems={"center"}
-            onTouchEnd={() => {
-              navigation.navigate("Booking");
+    <TouchableWithoutFeedback
+      onPress={() => {
+        Keyboard.dismiss();
+      }}
+    >
+      <HomeContainer>
+        <HStack w={"full"} alignContent={"center"}>
+          <Avatar source={DefaultAvt} margin={"10px 0 0 10px"} />
+          <VStack margin={"10px 0 0 10px"}>
+            <Text fontSize={10} color={COLORS.grey}>
+              Welcome back
+            </Text>
+            <Text fontSize={SIZES.h4} color={COLORS.white} bold>
+              Nguyen Tri Duc
+            </Text>
+          </VStack>
+          <MenuButton
+            onPress={() => {
+              navigation.navigate("Menu");
             }}
           >
-            <Icon
-              ml="2"
-              size="4"
-              color={COLORS.white}
-              as={<Ionicons name="ios-search" />}
-            />
-            <Text
-              style={{ ...FONTS.body3, color: COLORS.grey, marginLeft: 10 }}
+            <Center h={"100%"}>
+              <Image w={"25px"} h={"25px"} source={MenuIcon} alt="menu icon" />
+            </Center>
+          </MenuButton>
+        </HStack>
+        <HStack>
+          <ScrollView showsVerticalScrollIndicator={false}>
+            <HStack
+              w={"100%"}
+              borderRadius={10}
+              bgColor={COLORS.tertiary}
+              borderWidth={0}
+              h={"50px"}
+              mb={10}
+              mt={8}
+              alignItems={"center"}
+              onTouchEnd={() => {
+                navigation.navigate("Booking");
+              }}
             >
-              Enter your destination
-            </Text>
-          </HStack>
-          {/* <HStack
+              <Icon
+                ml="2"
+                size="4"
+                color={COLORS.white}
+                as={<Ionicons name="ios-search" />}
+              />
+              <Text
+                style={{ ...FONTS.body3, color: COLORS.grey, marginLeft: 10 }}
+              >
+                Enter your destination
+              </Text>
+            </HStack>
+            {/* <HStack
               marginTop={5}
               marginBottom={5}
               space={3}
@@ -121,83 +131,98 @@ export default function Home({ navigation, route }) {
               <SelectedButton text={"School"} />
               <SelectedButton text={"Hotel"} />
             </HStack> */}
-          <HStack w={"100%"} justifyContent={"space-evenly"} marginBottom={5}>
-            <TouchableOpacity
-              onPress={() => {
-                const data = { phoneNumber: "0393751403" };
-                navigation.navigate("Booking", data);
-              }}
-            >
-              <VStack
-                borderColor={"white"}
-                borderWidth={1}
-                borderRadius={SIZES.radius10}
+            <HStack w={"100%"} justifyContent={"space-evenly"} marginBottom={5}>
+              <TouchableOpacity
+                onPress={() => {
+                  const data = { phoneNumber: "0393751403" };
+                  navigation.navigate("Booking", data);
+                }}
               >
-                <Center
-                  w={"150px"}
-                  h={"120px"}
-                  bgColor={COLORS.fourthary}
-                  borderTopRadius={SIZES.radius10}
+                <VStack
+                  borderColor={"white"}
+                  borderWidth={1}
+                  borderRadius={SIZES.radius10}
                 >
-                  <Image source={BikeImg} alt="bike" />
-                </Center>
-                <Center h={50}>
-                  <Text fontSize={SIZES.h4} bold color={"white"}>
-                    BIKE
-                  </Text>
-                </Center>
-              </VStack>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => {
-                navigation.navigate("Booking");
-              }}
-            >
-              <VStack
-                borderColor={"white"}
-                borderWidth={1}
-                borderRadius={SIZES.radius10}
+                  <Center
+                    w={"150px"}
+                    h={"120px"}
+                    bgColor={COLORS.fourthary}
+                    borderTopRadius={SIZES.radius10}
+                  >
+                    <Image source={BikeImg} alt="bike" />
+                  </Center>
+                  <Center h={50}>
+                    <Text fontSize={SIZES.h4} bold color={"white"}>
+                      BIKE
+                    </Text>
+                  </Center>
+                </VStack>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate("Booking");
+                }}
               >
-                <Center
-                  w={"150px"}
-                  h={"120px"}
-                  bgColor={COLORS.white}
-                  borderTopRadius={SIZES.radius10}
+                <VStack
+                  borderColor={"white"}
+                  borderWidth={1}
+                  borderRadius={SIZES.radius10}
                 >
-                  <Image source={DeliveryImg} alt="delivery" />
-                </Center>
-                <Center h={50}>
-                  <Text fontSize={SIZES.h4} bold color={"white"}>
-                    DELIVERY
-                  </Text>
-                </Center>
-              </VStack>
-            </TouchableOpacity>
-          </HStack>
-          <Text
-            fontSize={SIZES.h4}
-            bold
-            color={"white"}
-            alignSelf={"flex-start"}
-            marginBottom={3}
-          >
-            Last booking
-          </Text>
-          <VStack w={"100%"}>
-            <HistoryCard
-              onPress={() => {
-                navigation.navigate("ActivityDetail");
-              }}
-            />
-            <HistoryCard />
-            <HistoryCard />
-            <HistoryCard />
-            <HistoryCard />
-            <HistoryCard />
-          </VStack>
-        </ScrollView>
-      </HStack>
-    </HomeContainer>
+                  <Center
+                    w={"150px"}
+                    h={"120px"}
+                    bgColor={COLORS.white}
+                    borderTopRadius={SIZES.radius10}
+                  >
+                    <Image source={DeliveryImg} alt="delivery" />
+                  </Center>
+                  <Center h={50}>
+                    <Text fontSize={SIZES.h4} bold color={"white"}>
+                      DELIVERY
+                    </Text>
+                  </Center>
+                </VStack>
+              </TouchableOpacity>
+            </HStack>
+            <Text
+              fontSize={SIZES.h4}
+              bold
+              color={"white"}
+              alignSelf={"flex-start"}
+              marginBottom={3}
+            >
+              Last booking
+            </Text>
+            <VStack w={"100%"}>
+              {/* <HistoryCard
+                onPress={() => {
+                  navigation.navigate("ActivityDetail");
+                }}
+              /> */}
+              <FlatList
+                padding={"10px"}
+                mt={2}
+                horizontal={false}
+                data={historyTrips}
+                keyExtractor={(item) => item.idTrip}
+                renderItem={({ item }) => (
+                  <HistoryCard
+                    onPress={() => {
+                      const data = {
+                        idTrip: "" + item.idTrip,
+                      };
+                      navigation.navigate("ActivityDetail", data);
+                    }}
+                    trip={item}
+                    key={item.idTrip}
+                  ></HistoryCard>
+                )}
+              ></FlatList>
+            </VStack>
+          </ScrollView>
+        </HStack>
+      </HomeContainer>
+    </TouchableWithoutFeedback>
   );
 }
 

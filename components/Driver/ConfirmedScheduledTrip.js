@@ -5,7 +5,7 @@ import { COLORS, FONTS } from "../../constants/theme";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../../config/config";
 
-function RequestCard (props) {
+function ConfirmedScheduledTrip (props) {
   let {
     idCustomer,
     idTrip,
@@ -35,11 +35,12 @@ if(idTrip!==undefined){
     }
   })
 }
-  const onClickAccept=()=>{
+  const onClickCancel=()=>{
     updateDoc(doc(db,"ListTrip",idTrip),{
-      status:"confirmed"
+      status:"waiting"
     })
   }
+
   return (
     <View
       h={140}
@@ -108,26 +109,26 @@ if(idTrip!==undefined){
             <HStack>
               <View
                 style={{
-                  alignItems: "flex-end",
-                  justifyContent: "center",
+                  alignContent: "center",
                 }}
               >
                 <TouchableOpacity
                   onPress={
-                    onClickAccept}
+                    onClickCancel
+                  }
                   style={{
-                    borderColor: COLORS.primary,
-                    backgroundColor: COLORS.primary,
+                    borderColor: COLORS.red,
                     height: 30,
                     width: 90,
+                    marginRight: 10,
                     borderWidth: 1,
                     borderRadius: 10,
                     justifyContent: "center",
                     alignItems: "center",
                   }}
                 >
-                  <Text bold color={COLORS.white} styles={{ ...FONTS.h5 }}>
-                    Accept
+                  <Text bold color={COLORS.red} styles={{ ...FONTS.h5 }}>
+                    Cancel
                   </Text>
                 </TouchableOpacity>
               </View>
@@ -149,4 +150,4 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
 });
-export default RequestCard;
+export default ConfirmedScheduledTrip;

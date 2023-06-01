@@ -1,7 +1,8 @@
 import { View, Text } from "react-native";
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Button,
+  FlatList,
   HStack,
   Image,
   NativeBaseProvider,
@@ -17,54 +18,176 @@ import IC_Bike_White from "../../../assets/images/Activity/ic_bike_white.png";
 import IC_Bike_Blue from "../../../assets/images/Activity/ic_bike_blue.png";
 import HistoryCard from "../../../components/HistoryCard";
 import BookingCard from "../../../components/BookingCard/BookingCard";
+import { collection, getDocs, query, where } from "firebase/firestore";
+import { db } from "../../../config/config";
 
 const ActivityScreen = ({ navigation }) => {
   const [service, setService] = useState(0);
+  const [waitingTrips, setWaitingTrips] = useState({});
+  const [confirmedTrips, setConfirmedTrips] = useState({});
+  const [canceledTrips, setCanceledTrips] = useState({});
 
+  useEffect(() => {
+    getWaitingTrips();
+    getConfirmedTrips();
+    getCanceledTrips();
+  }, []);
+
+  const getWaitingTrips = () => {
+    let waitingTrips = [];
+    getDocs(
+      query(collection(db, "ListTrip"), where("isScheduled", "==", "true"))
+    ).then((docSnap) => {
+      docSnap.forEach((doc) => {
+        if (doc.data().status == "waiting") {
+          waitingTrips.push({
+            idCustomer: doc.data().idCustomer,
+            idTrip: doc.id,
+            idRider: doc.data().idRider,
+            pickUpLat: doc.data().pickUpLat,
+            pickUpLong: doc.data().pickUpLong,
+            destLat: doc.data().destLat,
+            destLong: doc.data().destLong,
+            date: doc.data().date,
+            time: doc.data().time,
+            datePickUp: doc.data().datePickUp,
+            timePickUp: doc.data().timePickUp,
+            totalPrice: doc.data().totalPrice,
+            distance: doc.data().distance,
+          });
+        }
+      });
+      setWaitingTrips(waitingTrips);
+    });
+  };
+  const getConfirmedTrips = () => {
+    let confirmedTrips = [];
+    getDocs(
+      query(collection(db, "ListTrip"), where("isScheduled", "==", "true"))
+    ).then((docSnap) => {
+      docSnap.forEach((doc) => {
+        if (doc.data().status == "confirmed") {
+          confirmedTrips.push({
+            idCustomer: doc.data().idCustomer,
+            idTrip: doc.id,
+            idRider: doc.data().idRider,
+            pickUpLat: doc.data().pickUpLat,
+            pickUpLong: doc.data().pickUpLong,
+            destLat: doc.data().destLat,
+            destLong: doc.data().destLong,
+            date: doc.data().date,
+            time: doc.data().time,
+            datePickUp: doc.data().datePickUp,
+            timePickUp: doc.data().timePickUp,
+            totalPrice: doc.data().totalPrice,
+            distance: doc.data().distance,
+          });
+        }
+      });
+      setConfirmedTrips(confirmedTrips);
+    });
+  };
+  const getCanceledTrips = () => {
+    let canceledTrips = [];
+    getDocs(
+      query(collection(db, "ListTrip"), where("isScheduled", "==", "true"))
+    ).then((docSnap) => {
+      docSnap.forEach((doc) => {
+        if (doc.data().status == "canceled") {
+          canceledTrips.push({
+            idCustomer: doc.data().idCustomer,
+            idTrip: doc.id,
+            idRider: doc.data().idRider,
+            pickUpLat: doc.data().pickUpLat,
+            pickUpLong: doc.data().pickUpLong,
+            destLat: doc.data().destLat,
+            destLong: doc.data().destLong,
+            date: doc.data().date,
+            time: doc.data().time,
+            datePickUp: doc.data().datePickUp,
+            timePickUp: doc.data().timePickUp,
+            totalPrice: doc.data().totalPrice,
+            distance: doc.data().distance,
+          });
+        }
+      });
+      setCanceledTrips(canceledTrips);
+    });
+  };
   const FirstRoute = () => (
     <ScrollView>
-      <VStack
-        mt={"17px"}
-        paddingX={"10px"}
-        justifyContent={"center"}
-        alignItems={"center"}
-      >
-        <BookingCard onPress={() => navigation.navigate("ActivityDetail")} />
-        <BookingCard />
-        <BookingCard />
-        <BookingCard />
-        <BookingCard />
-        <BookingCard />
-        <BookingCard />
-        <BookingCard />
-      </VStack>
+      {/* <BookingCard onPress={() => navigation.navigate("ActivityDetail")} /> */}
+      <FlatList
+        padding={"10px"}
+        mt={2}
+        horizontal={false}
+        data={waitingTrips}
+        keyExtractor={(item) => item.idTrip}
+        renderItem={({ item }) => (
+          <BookingCard
+            onPress={() => {
+              const data = {
+                idTrip: "" + item.idTrip,
+              };
+              navigation.navigate("ActivityDetail", data);
+            }}
+            trip={item}
+            key={item.idTrip}
+          ></BookingCard>
+        )}
+      ></FlatList>
     </ScrollView>
   );
 
   const SecondRoute = () => (
     <ScrollView>
-      <VStack
-        mt={"17px"}
-        paddingX={"10px"}
-        justifyContent={"center"}
-        alignItems={"center"}
-      >
-        <BookingCard sta={1} />
-        <BookingCard sta={1} />
-      </VStack>
+      {/* <BookingCard sta={1} />
+        <BookingCard sta={1} /> */}
+      <FlatList
+        padding={"10px"}
+        mt={2}
+        horizontal={false}
+        data={confirmedTrips}
+        keyExtractor={(item) => item.idTrip}
+        renderItem={({ item }) => (
+          <BookingCard
+            sta={1}
+            onPress={() => {
+              const data = {
+                idTrip: "" + item.idTrip,
+              };
+              navigation.navigate("ActivityDetail", data);
+            }}
+            trip={item}
+            key={item.idTrip}
+          ></BookingCard>
+        )}
+      ></FlatList>
     </ScrollView>
   );
 
   const ThirdRoute = () => (
     <ScrollView>
-      <VStack
-        mt={"17px"}
-        paddingX={"10px"}
-        justifyContent={"center"}
-        alignItems={"center"}
-      >
-        <BookingCard sta={1} />
-      </VStack>
+      <FlatList
+        padding={"10px"}
+        mt={2}
+        horizontal={false}
+        data={canceledTrips}
+        keyExtractor={(item) => item.idTrip}
+        renderItem={({ item }) => (
+          <BookingCard
+            sta={1}
+            onPress={() => {
+              const data = {
+                idTrip: "" + item.idTrip,
+              };
+              navigation.navigate("ActivityDetail", data);
+            }}
+            trip={item}
+            key={item.idTrip}
+          ></BookingCard>
+        )}
+      ></FlatList>
     </ScrollView>
   );
 

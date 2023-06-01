@@ -15,11 +15,50 @@ import MapView, { Marker } from "react-native-maps";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { Ionicons } from "@expo/vector-icons";
 import MapViewDirections from "react-native-maps-directions";
+import { useState } from "react";
+import { useEffect } from "react";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "../../../config/config";
 
-const ActivityDetailScreen = ({ navigation }) => {
+const ActivityDetailScreen = ({ navigation, route }) => {
+  const { idTrip } = route.params;
+  const [tripData, setTrip] = useState([]);
+
   // const API_KEY = "AIzaSyDEokOCthVrnmMPiI_fLEZKQtV1SjFvjxQ";
   // const API_KEY = "AIzaSyA_suPUj4xs62VSz5pbRPQ1R-9Bk9Nh6dY";
   // const API_KEY = "AIzaSyAeoFwgal1syynMHwIR8zBa770UPiaFLFw";
+
+  useEffect(() => {
+    getTrip();
+  }, []);
+  const getTrip = () => {
+    let data = {};
+    getDoc(doc(db, "ListTrip", idTrip)).then((tripData) => {
+      if (tripData.exists()) {
+        getDoc(doc(db, "Rider", tripData.data().idRider)).then((docData) => {
+          if (docData.exists()) {
+            data = {
+              idCustomer: tripData.data().idCustomer,
+              idTrip: tripData.id,
+              pickUpLat: tripData.data().pickUpLat,
+              pickUpLong: tripData.data().pickUpLong,
+              destLat: tripData.data().destLat,
+              destLong: tripData.data().destLong,
+              date: tripData.data().date,
+              time: tripData.data().time,
+              totalPrice: tripData.data().totalPrice,
+              distance: tripData.data().distance,
+              licensePlates: docData.data().licensePlates,
+              transportType: docData.data().transportType,
+              displayName: docData.data().displayName,
+            };
+            setTrip(data);
+          }
+        });
+      }
+    });
+  };
+
   return (
     <NativeBaseProvider>
       <VStack
@@ -69,7 +108,7 @@ const ActivityDetailScreen = ({ navigation }) => {
                     ID:{" "}
                   </Text>
                   <Text style={{ ...FONTS.h5, color: COLORS.white }}>
-                    91176
+                    {idTrip}
                   </Text>
                 </HStack>
 
@@ -161,7 +200,7 @@ const ActivityDetailScreen = ({ navigation }) => {
                   />
                   <VStack ml={"12px"} justifyContent={"center"}>
                     <Text style={{ ...FONTS.h5, color: COLORS.white }}>
-                      SnowFlower
+                      {tripData.displayName}
                     </Text>
                     <Text style={{ ...FONTS.body6, color: COLORS.fourthary }}>
                       University of Information Technology
@@ -197,7 +236,7 @@ const ActivityDetailScreen = ({ navigation }) => {
                         color: COLORS.white,
                       }}
                     >
-                      59X3-91176
+                      {tripData.licensePlates}
                     </Text>
                     <Text
                       style={{
@@ -206,7 +245,7 @@ const ActivityDetailScreen = ({ navigation }) => {
                         color: COLORS.white,
                       }}
                     >
-                      59X3-91176
+                      {tripData.transportType}
                     </Text>
                   </VStack>
                   <VStack position={"absolute"} right={0} bottom={0}>
@@ -245,7 +284,7 @@ const ActivityDetailScreen = ({ navigation }) => {
                           marginLeft: 10,
                         }}
                       >
-                        2km
+                        {tripData.distance}
                       </Text>
                     </HStack>
                     <HStack mt={2}>
@@ -268,7 +307,7 @@ const ActivityDetailScreen = ({ navigation }) => {
                     alignItems={"flex-end"}
                   >
                     <Text style={{ ...FONTS.h2, color: COLORS.white }}>
-                      20,000đ
+                      {tripData.totalPrice}
                     </Text>
                     <Text
                       style={{

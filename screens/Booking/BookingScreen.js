@@ -94,10 +94,14 @@ export default function BookingScreen({ navigation }) {
       pickUpLong: "",
       destLat: "",
       destLong: "",
+      //nếu mà ngày đón không phải hôm nay thì isScheduled = true
+      isScheduled: "false",
+      datePickUp: "" + currentDay + "/" + currentMonth + "/" + currentYear,
+      timePickUp: "" + currentHour + ":" + currentMinute,
       date: "" + currentDay + "/" + currentMonth + "/" + currentYear,
       time: "" + currentHour + ":" + currentMinute,
       distance: "4km",
-      totalPrice: "55.000đ",
+      totalPrice: "55000",
       status: "waiting",
     });
     //upload image to firebase storage
