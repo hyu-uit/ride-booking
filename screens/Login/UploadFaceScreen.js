@@ -71,6 +71,12 @@ const UploadFaceScreen = ({ navigation }) => {
     getFromAsyncStorage("dob").then((result) => {
       setFinalDate(result);
     });
+    getFromAsyncStorage("licensePlates").then((result) => {
+      setFinalDate(result);
+    });
+    getFromAsyncStorage("transportType").then((result) => {
+      setFinalDate(result);
+    });
   }, []);
   const [width, setWidth] = useState(
     PixelRatio.roundToNearestPixel(SIZES.width - 20)

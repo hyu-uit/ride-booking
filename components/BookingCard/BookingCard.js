@@ -35,6 +35,7 @@ function BookingCard (props){
 
  const [name, setName] = useState("")
  const [licensePlates, setLicensePlates] = useState("")
+ const [avt, setAvatar] = useState(null)
 
   const {onPress, sta}=props
   useEffect(() => {
@@ -46,6 +47,7 @@ function BookingCard (props){
       if(docData.exists()){
         setName(docData.data().displayName)
         setLicensePlates(docData.data().licensePlates)
+        setAvatar(docData.data().portrait)
       }
     })
   }
@@ -62,7 +64,7 @@ function BookingCard (props){
       onTouchEnd={onPress}
     >
       <HStack w={"full"}>
-        <Avatar source={DefaultAvt} margin={"10px 0 0 10px"} />
+        <Avatar source={{uri:avt}} margin={"10px 0 0 10px"} />
         {state === 1 ? (
           <>
             <VStack margin={"10px 0 0 10px"}>

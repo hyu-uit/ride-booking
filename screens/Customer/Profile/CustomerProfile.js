@@ -62,8 +62,22 @@ const CustomerProfile = ({ navigation, route}) => {
       console.error(error);
     }
   };
-  const uploadImage = async () => {
-    //convert image into blob image
+  const pickImage = async () => {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [3, 4],
+      quality: 1,
+    });
+  
+    if (!result.canceled) {
+      setProfileImg(result.assets[0].uri);
+      uploadImage(result.assets[0].uri);
+    }
+  };
+  
+  const uploadImage = async (imageUri) => {
+    // convert image into blob image
     const blobImage = await new Promise((resolve, reject) => {
       const xhr = new XMLHttpRequest();
       xhr.onload = function () {
@@ -73,56 +87,39 @@ const CustomerProfile = ({ navigation, route}) => {
         reject(TypeError("Network request failed"));
       };
       xhr.responseType = "blob";
-      xhr.open("GET", profileImg, true);
+      xhr.open("GET", imageUri, true);
       xhr.send(null);
     });
-
-    //type of file
+  
+    // type of file
     const metadata = {
       contentType: "image/jpeg",
     };
-
-    let name = phone + "face";
+  
+    const name = phone + "face";
     const storageRef = ref(storage, name);
-
+  
     const uploadTask = uploadBytesResumable(storageRef, blobImage, metadata);
     uploadTask.on(
       "state_changed",
       (snapshot) => {
-        console.log("Uploading")
+        console.log("Uploading");
       },
       (error) => {
-        console.log(error)
-
+        console.log(error);
       },
-      () => {    
+      () => {
         getDownloadURL(storageRef)
-          .then((url) => {
-            console.log(url);
-    
+          .then((url) => {  
             updateDoc(doc(db, "Customer", phone), {
               portrait: url,
             });
           })
           .catch((error) => {
-            
+            console.log(error);
           });
       }
     );
-  };
-
-  const pickImage = async () => {
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      aspect: [3, 4],
-      quality: 1,
-    });
-
-    if (!result.canceled) {
-      setProfileImg(result.assets[0].uri);
-      uploadImage()
-    }
   };
 
   return (

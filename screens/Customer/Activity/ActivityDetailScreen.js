@@ -52,6 +52,7 @@ const ActivityDetailScreen = ({ navigation, route }) => {
               licensePlates: docData.data().licensePlates,
               transportType: docData.data().transportType,
               displayName: docData.data().displayName,
+              school: docData.data().school,
             };
             setTrip(data);
           }
@@ -59,7 +60,6 @@ const ActivityDetailScreen = ({ navigation, route }) => {
       }
     });
   };
-  console.log(tripData.portrait)
 
   return (
     <NativeBaseProvider>
@@ -205,7 +205,7 @@ const ActivityDetailScreen = ({ navigation, route }) => {
                       {tripData.displayName}
                     </Text>
                     <Text style={{ ...FONTS.body6, color: COLORS.fourthary }}>
-                      University of Information Technology
+                      {tripData.school}
                     </Text>
                   </VStack>
                 </HStack>
@@ -309,7 +309,7 @@ const ActivityDetailScreen = ({ navigation, route }) => {
                     alignItems={"flex-end"}
                   >
                     <Text style={{ ...FONTS.h2, color: COLORS.white }}>
-                      30000dd
+                      {tripData.totalPrice}
                     </Text>
                     <Text
                       style={{

@@ -38,7 +38,6 @@ const initialState = {
   paymentMethod: "",
   isModalCancelShow: false,
 };
-
 const stateReducer = (state, action) => {
   switch (action.type) {
     case "SET_STEP":
@@ -63,7 +62,10 @@ const stateReducer = (state, action) => {
   }
 };
 
-export default function BookingScreen({ navigation }) {
+export default function BookingScreen({ navigation, route }) {
+  const {idPromotion} = route.params;
+  console.log(idPromotion)
+
   const [state, dispatch] = useReducer(stateReducer, initialState);
 
   const handleStep3Submit = () => {

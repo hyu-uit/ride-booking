@@ -70,7 +70,6 @@ export default function Home({ navigation, route }) {
       query(collection(db, "ListTrip"), where("idCustomer", "==", phoneNumber))
     ).then((docSnap) => {
         docSnap.forEach((doc) => {
-          console.log(doc.data().idCustomer)
           if(doc.data().status==="done"){
             historyTrips.push({
               idCustomer: doc.data().idCustomer,

@@ -5,15 +5,26 @@ import { SIZES, COLORS, FONTS } from "../constants/theme";
 import pricePromotionIcon from "../assets/price-promotion.png";
 import arrowWhite from "../assets/arrow-white.png";
 
-const PromotionCard = ({ navigate }) => {
+function PromotionCard (props) {
+  let {
+    idPromotion,
+    name,
+    value,
+    expiryDate,
+    description
+  } = props.promotion;
+  const { onPress,navigate } = props;
+
   return (
     <View
       style={{
-        marginBottom: 10,
+        marginBottom: 20,
         backgroundColor: COLORS.tertiary,
         marginHorizontal: 10,
         flexDirection: "row",
+        
       }}
+      onTouchEnd={onPress}
     >
       <View style={{ width: 14 }}>
         <View
@@ -49,7 +60,7 @@ const PromotionCard = ({ navigate }) => {
                 marginTop: 18,
               }}
             >
-              Discount 10K
+             {name}
             </Text>
             <Text
               style={{
@@ -62,7 +73,7 @@ const PromotionCard = ({ navigate }) => {
                 marginTop: 6,
               }}
             >
-              02/04/2023
+              {expiryDate}
             </Text>
             <View
               style={{
@@ -102,7 +113,7 @@ const PromotionCard = ({ navigate }) => {
                   marginLeft: 10,
                 }}
               >
-                10.000đ
+                {value}
               </Text>
             </View>
             <View

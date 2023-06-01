@@ -20,26 +20,40 @@ import HistoryCard from "../../../components/HistoryCard";
 import BookingCard from "../../../components/BookingCard/BookingCard";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../../../config/config";
+import { getFromAsyncStorage } from "../../../helper/asyncStorage";
 
 const ActivityScreen = ({ navigation }) => {
   const [service, setService] = useState(0);
   const [waitingTrips, setWaitingTrips] = useState({});
   const [confirmedTrips, setConfirmedTrips] = useState({});
   const [canceledTrips, setCanceledTrips] = useState({});
+  const [phoneNumber, setPhone] = useState(null);
 
   useEffect(() => {
-    getWaitingTrips();
-    getConfirmedTrips();
-    getCanceledTrips();
-  }, []);
+    fetchDataAndPhoneNumber()    
+  }, [navigation]);
 
-  const getWaitingTrips = () => {
+  const fetchDataAndPhoneNumber = async () => {
+    try {
+      const phoneNumberValue = await getFromAsyncStorage("phoneNumber");
+      setPhone(phoneNumberValue);
+
+      if (phoneNumberValue) {
+        getWaitingTrips(phoneNumberValue);
+        getConfirmedTrips(phoneNumberValue);
+        getCanceledTrips(phoneNumberValue);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  const getWaitingTrips = async(phoneNumber) => {
     let waitingTrips = [];
     getDocs(
       query(collection(db, "ListTrip"), where("isScheduled", "==", "true"))
     ).then((docSnap) => {
       docSnap.forEach((doc) => {
-        if (doc.data().status == "waiting") {
+        if (doc.data().status == "waiting"&&doc.data().idCustomer==phoneNumber) {
           waitingTrips.push({
             idCustomer: doc.data().idCustomer,
             idTrip: doc.id,
@@ -60,13 +74,13 @@ const ActivityScreen = ({ navigation }) => {
       setWaitingTrips(waitingTrips);
     });
   };
-  const getConfirmedTrips = () => {
+  const getConfirmedTrips = async(phoneNumber)  => {
     let confirmedTrips = [];
     getDocs(
       query(collection(db, "ListTrip"), where("isScheduled", "==", "true"))
     ).then((docSnap) => {
       docSnap.forEach((doc) => {
-        if (doc.data().status == "confirmed") {
+        if (doc.data().status == "confirmed"&&doc.data().idCustomer==phoneNumber) {
           confirmedTrips.push({
             idCustomer: doc.data().idCustomer,
             idTrip: doc.id,
@@ -87,13 +101,13 @@ const ActivityScreen = ({ navigation }) => {
       setConfirmedTrips(confirmedTrips);
     });
   };
-  const getCanceledTrips = () => {
+  const getCanceledTrips = async(phoneNumber) => {
     let canceledTrips = [];
     getDocs(
       query(collection(db, "ListTrip"), where("isScheduled", "==", "true"))
     ).then((docSnap) => {
       docSnap.forEach((doc) => {
-        if (doc.data().status == "canceled") {
+        if (doc.data().status == "canceled"&&doc.data().idCustomer==phoneNumber) {
           canceledTrips.push({
             idCustomer: doc.data().idCustomer,
             idTrip: doc.id,
@@ -114,6 +128,7 @@ const ActivityScreen = ({ navigation }) => {
       setCanceledTrips(canceledTrips);
     });
   };
+
   const FirstRoute = () => (
     <ScrollView>
       {/* <BookingCard onPress={() => navigation.navigate("ActivityDetail")} /> */}
