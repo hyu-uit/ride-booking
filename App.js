@@ -21,14 +21,13 @@ async function loadFonts() {
   });
 }
 export default function App() {
-  loadFonts().then(() => {
-    Geocoder.init("AIzaSyCdVOmKHCAC6pBedDk_XGL975A5xJFkuTw", {
-      language: "vi",
-    });
-    return (
-      <AppProvider>
-        <Navigation></Navigation>
-      </AppProvider>
-    );
-  });
+  loadFonts().then(() => {});
+  // Geocoder.init("", {
+  //   language: "vi",
+  // });
+  return (
+    <AppProvider>
+      <Navigation></Navigation>
+    </AppProvider>
+  );
 }

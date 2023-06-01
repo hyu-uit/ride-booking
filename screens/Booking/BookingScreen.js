@@ -1,18 +1,7 @@
-import React, { useReducer, useState } from "react";
+import React, { useReducer } from "react";
 import styled from "styled-components";
-import { FONTS, COLORS, SIZES } from "../../constants/theme";
-import {
-  Button,
-  Center,
-  HStack,
-  Image,
-  Text,
-  VStack,
-  Modal,
-  Flex,
-  Divider,
-  View,
-} from "native-base";
+import { COLORS, SIZES } from "../../constants/theme";
+import { Button, Center, HStack, Image, Text, VStack, View } from "native-base";
 import { SafeAreaView } from "react-native-safe-area-context";
 import MapView from "react-native-maps";
 import { Keyboard, TouchableWithoutFeedback } from "react-native";
@@ -30,6 +19,7 @@ import { addDoc, collection, doc, setDoc } from "@firebase/firestore";
 import { db } from "../../config/config";
 import { fetchCurrentUserLocation } from "../../helper/location";
 import { getFromAsyncStorage } from "../../helper/asyncStorage";
+import Geocoder from "react-native-geocoding";
 
 const initialState = {
   step: 1,
@@ -82,20 +72,19 @@ export default function BookingScreen({ navigation }) {
   const [state, dispatch] = useReducer(stateReducer, initialState);
 
   const chooseFromMapHandler = () => {
-    Geocoder.from(41.89, 12.49)
-      .then((json) => {
-        console.log(json);
-        var addressComponent = json.results[0].address_components[0];
-        console.log(addressComponent);
+    // Geocoder.from(41.89, 12.49).then((json) => {
+    //   console.log(json);
+    //   var addressComponent = json.results[0].address_components[0];
+    //   console.log(addressComponent);
+    // });
+    //   .catch((error) => console.warn(error));
+    fetchCurrentUserLocation()
+      .then(({ latitude, longitude }) => {
+        console.log(latitude + " " + longitude);
+        dispatch({ type: "SET_LOCATION", payload: { latitude, longitude } });
+        dispatch({ type: "SET_STEP", payload: 2 });
       })
-      .catch((error) => console.warn(error));
-    // fetchCurrentUserLocation()
-    //   .then(({ latitude, longitude }) => {
-    //     console.log(latitude + " " + longitude);
-    //     dispatch({ type: "SET_LOCATION", payload: { latitude, longitude } });
-    //     dispatch({ type: "SET_STEP", payload: 2 });
-    //   })
-    //   .catch((err) => console.log(err));
+      .catch((err) => console.log(err));
   };
 
   const handleStep3Submit = () => {
