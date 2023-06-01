@@ -189,56 +189,56 @@ const StudentReportScreen = ({ navigation }) => {
     </VStack>
   );
 
-  const ThirdRoute = () => (
-    <VStack paddingX={"10px"}>
-      <Input
-        mb={5}
-        borderRadius={10}
-        h={"50px"}
-        placeholder="Search by Student ID"
-        width="100%"
-        variant={"filled"}
-        bgColor={COLORS.tertiary}
-        borderWidth={0}
-        fontSize={SIZES.body3}
-        color={COLORS.white}
-        marginTop={8}
-        InputLeftElement={
-          <Icon
-            ml="2"
-            size="4"
-            color={COLORS.white}
-            as={<Ionicons name="ios-search" />}
-          />
-        }
-      />
-      <VStack mt={"17px"} justifyContent={"center"} alignItems={"center"}>
-        <ScrollView w={"100%"}>
-          {/* <StudentListCard />
-          <StudentListCard /> */}
-          <FlatList
-            data={usersLock}
-            keyExtractor={(item) => item.name}
-            renderItem={({ item }) => (
-              <StudentListCard list={item}></StudentListCard>
-            )}
-          ></FlatList>
-        </ScrollView>
-      </VStack>
-    </VStack>
-  );
+  // const ThirdRoute = () => (
+  //   <VStack paddingX={"10px"}>
+  //     <Input
+  //       mb={5}
+  //       borderRadius={10}
+  //       h={"50px"}
+  //       placeholder="Search by Student ID"
+  //       width="100%"
+  //       variant={"filled"}
+  //       bgColor={COLORS.tertiary}
+  //       borderWidth={0}
+  //       fontSize={SIZES.body3}
+  //       color={COLORS.white}
+  //       marginTop={8}
+  //       InputLeftElement={
+  //         <Icon
+  //           ml="2"
+  //           size="4"
+  //           color={COLORS.white}
+  //           as={<Ionicons name="ios-search" />}
+  //         />
+  //       }
+  //     />
+  //     <VStack mt={"17px"} justifyContent={"center"} alignItems={"center"}>
+  //       <ScrollView w={"100%"}>
+  //         {/* <StudentListCard />
+  //         <StudentListCard /> */}
+  //         <FlatList
+  //           data={usersLock}
+  //           keyExtractor={(item) => item.name}
+  //           renderItem={({ item }) => (
+  //             <StudentListCard list={item}></StudentListCard>
+  //           )}
+  //         ></FlatList>
+  //       </ScrollView>
+  //     </VStack>
+  //   </VStack>
+  // );
 
   const renderScene = SceneMap({
     first: FirstRoute,
     second: SecondRoute,
-    third: ThirdRoute,
+    // third: ThirdRoute,
   });
 
   const [index, setIndex] = React.useState(0);
   const [routes] = React.useState([
     { key: "first", title: "Customer" },
     { key: "second", title: "Rider" },
-    { key: "third", title: "Locked" },
+    // { key: "third", title: "Locked" },
   ]);
 
   return (

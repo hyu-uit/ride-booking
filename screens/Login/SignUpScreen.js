@@ -54,7 +54,7 @@ const SignUpScreen = ({ navigation }) => {
   const handleDateChange = (_event, date) => {
     setShowDatePicker(false);
     setSelectedDate(date);
-    setShowTimePicker(true);
+    setShowDatePicker(true);
     setFinalDate(moment(selectedDate).format("DD-MM-YYYY"));
   };
 

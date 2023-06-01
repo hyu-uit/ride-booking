@@ -24,20 +24,31 @@ export default function Navigation() {
       <NavigationContainer>
         <Stack.Navigator screenOptions={{ headerShown: false }}>
           {isFirstUse ? (
-            <Stack.Screen name="OnBoarding" component={OnBoardingScreen} />
+            <Stack.Screen
+              name="OnBoarding"
+              component={OnBoardingScreen}
+              // options={{ gestureEnabled: false }}
+            />
           ) : null}
           <Stack.Screen
             name="AuthenticationStack"
             component={AuthenticationStackScreen}
+            options={{ gestureEnabled: false }}
           />
-          <Stack.Screen name="MainNavigator" component={MainNavigator} />
+          <Stack.Screen
+            name="MainNavigator"
+            component={MainNavigator}
+            options={{ gestureEnabled: false }}
+          />
           <Stack.Screen
             name="MainRiderNavigator"
             component={MainRiderNavigator}
+            options={{ gestureEnabled: false }}
           />
           <Stack.Screen
             name="StudentOfficeNavigator"
             component={StudentOfficeStackScreen}
+            options={{ gestureEnabled: false }}
           />
         </Stack.Navigator>
       </NavigationContainer>

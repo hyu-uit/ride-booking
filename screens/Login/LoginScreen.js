@@ -12,7 +12,7 @@ import { SIZES, COLORS, FONTS } from "../../constants/theme";
 import BlueBg from "../../assets/images/Login/blueBg.png";
 import { SafeAreaView } from "react-native-safe-area-context";
 import LottieView from "lottie-react-native";
-import { AsyncStorage } from "react-native";
+import { AsyncStorage, BackHandler } from "react-native";
 import {
   getFromAsyncStorage,
   saveToAsyncStorage,
