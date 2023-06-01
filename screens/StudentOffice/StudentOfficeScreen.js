@@ -148,28 +148,26 @@ const StudentOfficeScreen = ({ navigation }) => {
               />
             }
           />
-          <ScrollView>
-            <FlatList
-              data={users}
-              keyExtractor={(item) => item.name}
-              renderItem={({ item }) => (
-                <StudentOfficeCard
-                  onPress={() => {
-                    // AsyncStorage.setItem('phoneNumber',item.phoneNumber),
-                    // AsyncStorage.setItem('role',item.role),
+          <FlatList
+            data={users}
+            keyExtractor={(item) => item.name}
+            renderItem={({ item }) => (
+              <StudentOfficeCard
+                onPress={() => {
+                  // AsyncStorage.setItem('phoneNumber',item.phoneNumber),
+                  // AsyncStorage.setItem('role',item.role),
 
-                    const data = {
-                      phoneNumber: "" + item.phoneNumber,
-                      role: "" + item.role,
-                    };
-                    navigation.navigate("StudentOfficeDetail", data);
-                  }}
-                  user={item}
-                  key={item.name}
-                ></StudentOfficeCard>
-              )}
-            ></FlatList>
-          </ScrollView>
+                  const data = {
+                    phoneNumber: "" + item.phoneNumber,
+                    role: "" + item.role,
+                  };
+                  navigation.navigate("StudentOfficeDetail", data);
+                }}
+                user={item}
+                key={item.name}
+              ></StudentOfficeCard>
+            )}
+          ></FlatList>
         </VStack>
       </SafeAreaView>
     </VStack>

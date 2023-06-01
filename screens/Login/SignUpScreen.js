@@ -36,6 +36,7 @@ import { LogBox } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import moment from "moment";
+import { saveToAsyncStorage } from "../../helper/asyncStorage";
 
 LogBox.ignoreAllLogs(); //Ignore all log notifications
 
@@ -46,16 +47,29 @@ const SignUpScreen = ({ navigation }) => {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [email, setEmail] = useState("");
   const [role, setRole] = useState("");
+  const [licensePlates, setLicensePlates] = useState("");
+  const [transportType, setTransportType] = useState("");
 
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [finalDate, setFinalDate] = useState(null);
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
   const handleDateChange = (_event, date) => {
-    setShowDatePicker(false);
-    setSelectedDate(date);
-    setShowDatePicker(true);
-    setFinalDate(moment(selectedDate).format("DD-MM-YYYY"));
+    const now = new Date();
+    const birthday = new Date(date);
+    if (birthday.getTime() > now.getTime()) {
+      Alert.alert("Please check your birthday.", "", [
+        {
+          text: "OK",
+        },
+      ]);
+    } else {
+      setShowDatePicker(false);
+      setSelectedDate(date);
+      setShowDatePicker(false);
+      setFinalDate(moment(selectedDate).format("DD-MM-YYYY"));
+    }
   };
 
   const signUp = () => {
@@ -80,6 +94,12 @@ const SignUpScreen = ({ navigation }) => {
           },
         ]
       );
+    } else if (!emailRegex.test(email)) {
+      Alert.alert("Please check your email address.", "", [
+        {
+          text: "OK",
+        },
+      ]);
     } else {
       let count = 0;
       getDocs(collection(db, role)).then((docSnap) => {
@@ -94,12 +114,14 @@ const SignUpScreen = ({ navigation }) => {
           //   studentID: id,
           //   status: "pending",
           // });
-          AsyncStorage.setItem("phoneNumber", phoneNumber);
-          AsyncStorage.setItem("role", role);
-          AsyncStorage.setItem("displayName", name);
-          AsyncStorage.setItem("school", school);
-          AsyncStorage.setItem("studentID", id);
-          AsyncStorage.setItem("email", email);
+          saveToAsyncStorage("phoneNumber", phoneNumber);
+          saveToAsyncStorage("role", role);
+          saveToAsyncStorage("displayName", name);
+          saveToAsyncStorage("school", school);
+          saveToAsyncStorage("studentID", id);
+          saveToAsyncStorage("email", email);
+          saveToAsyncStorage("licensePlates", licensePlates);
+          saveToAsyncStorage("transportType", transportType);
           AsyncStorage.setItem("dob", finalDate);
           navigation.navigate("UploadID");
         } else {
@@ -159,6 +181,38 @@ const SignUpScreen = ({ navigation }) => {
                   <Select.Item label="Customer" value="Customer" />
                   <Select.Item label="Rider" value="Rider" />
                 </Select>
+                {role === "Rider" ? (
+                  <>
+                    <Input
+                      w={"100%"}
+                      h={"77px"}
+                      borderRadius={20}
+                      borderColor={COLORS.secondary}
+                      mt={5}
+                      placeholder="Transport type"
+                      onChangeText={(value) => {
+                        setTransportType(value);
+                      }}
+                      style={{ ...FONTS.body3 }}
+                      color={COLORS.white}
+                    />
+                    <Input
+                      w={"100%"}
+                      h={"77px"}
+                      borderRadius={20}
+                      borderColor={COLORS.secondary}
+                      mt={5}
+                      placeholder="License plates"
+                      onChangeText={(value) => {
+                        setLicensePlates(value);
+                      }}
+                      style={{ ...FONTS.body3 }}
+                      color={COLORS.white}
+                    />
+                  </>
+                ) : (
+                  <></>
+                )}
                 <Input
                   w={"100%"}
                   h={"77px"}

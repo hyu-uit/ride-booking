@@ -17,46 +17,55 @@ import {
   TouchableWithoutFeedback,
   LayoutAnimation,
   PixelRatio,
+  Alert,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { useEffect } from "react";
-import { AsyncStorage } from "react-native"; 
+import { AsyncStorage } from "react-native";
 import { db, storage } from "../../config/config";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { doc, updateDoc } from "firebase/firestore";
+import {
+  getFromAsyncStorage,
+  saveToAsyncStorage,
+} from "../../helper/asyncStorage";
 const UploadID = ({ navigation }) => {
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [role, setRole] = useState("");
-  const [email, setEmail] = useState("");
-  const [id, setStudentID] = useState("");
-  const [school, setSchool] = useState("");
-  const [name, setDisplayName] = useState("");
-  const [finalDate, setFinalDate] = useState("null");
+  // const [phoneNumber, setPhoneNumber] = useState("");
+  // const [role, setRole] = useState("");
+  // const [email, setEmail] = useState("");
+  // const [id, setStudentID] = useState("");
+  // const [school, setSchool] = useState("");
+  // const [name, setDisplayName] = useState("");
+  // const [licensePlates, setLicensePlates] = useState("");
+  // const [transportType, setTransportType] = useState("");
 
-  useEffect(()=>{
-    AsyncStorage.getItem('phoneNumber').then(result => {
-      setPhoneNumber(result);
-    });
-    AsyncStorage.getItem('role').then(result => {
-      setRole(result);
-    });
-    AsyncStorage.getItem('email').then(result => {
-      setEmail(result);
-    });
-    AsyncStorage.getItem('studentID').then(result => {
-      setStudentID(result);
-    });
-    AsyncStorage.getItem('school').then(result => {
-      setSchool(result);
-    });
-    AsyncStorage.getItem('displayName').then(result => {
-      setDisplayName(result);
-    });
-    AsyncStorage.getItem('dob').then(result => {
-      setFinalDate(result);
-    })
-  }, [])
-  
+  // useEffect(() => {
+  //   getFromAsyncStorage("phoneNumber").then((result) => {
+  //     setPhoneNumber(result);
+  //   });
+  //   getFromAsyncStorage("role").then((result) => {
+  //     setRole(result);
+  //   });
+  //   getFromAsyncStorage("email").then((result) => {
+  //     setEmail(result);
+  //   });
+  //   getFromAsyncStorage("studentID").then((result) => {
+  //     setStudentID(result);
+  //   });
+  //   getFromAsyncStorage("school").then((result) => {
+  //     setSchool(result);
+  //   });
+  //   getFromAsyncStorage("displayName").then((result) => {
+  //     setDisplayName(result);
+  //   });
+  //   getFromAsyncStorage("transportType").then((result) => {
+  //     setTransportType(result);
+  //   });
+  //   getFromAsyncStorage("licensePlates").then((result) => {
+  //     setLicensePlates(result);
+  //   });
+  // }, []);
+
   const [width, setWidth] = useState(
     PixelRatio.roundToNearestPixel(SIZES.width - 20)
   );
@@ -64,19 +73,20 @@ const UploadID = ({ navigation }) => {
   const [imageFront, setImageFront] = useState(null);
   const [imageBack, setImageBack] = useState(null);
 
-  const uploadImage = async ()=>{
-    
-    AsyncStorage.setItem('phoneNumber',phoneNumber);
-    AsyncStorage.setItem('role',role);
-    AsyncStorage.setItem('cardFront',imageFront);
-    AsyncStorage.setItem('cardBack',imageBack);
-    AsyncStorage.setItem('email',email);
-    AsyncStorage.setItem('displayName',name);
-    AsyncStorage.setItem('studentID',id);
-    AsyncStorage.setItem('school',school);
-    AsyncStorage.setItem('dob',finalDate);
-    navigation.navigate("UploadFace"); 
-  }
+  //upload image to firebase storage
+  const uploadImage = async () => {
+    if (imageFront === null || imageBack === null) {
+      Alert.alert("Please update your ID card", "", [
+        {
+          text: "OK",
+        },
+      ]);
+    } else {
+      saveToAsyncStorage("cardFront", imageFront);
+      saveToAsyncStorage("cardBack", imageBack);
+      navigation.navigate("UploadFace");
+    }
+  };
 
   const pickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -89,8 +99,7 @@ const UploadID = ({ navigation }) => {
     if (!result.canceled) {
       setImageFront(result.assets[0].uri);
     }
-    console.log(result.assets[0].uri);
-
+    //console.log(result.assets[0].uri);
   };
 
   const pickImageBack = async () => {
@@ -127,7 +136,11 @@ const UploadID = ({ navigation }) => {
         onLayout={handleLayout}
       >
         <SafeAreaView style={{ width: "100%", height: "100%" }}>
-          <ButtonBack></ButtonBack>
+          <ButtonBack
+            onPress={() => {
+              navigation.goBack();
+            }}
+          ></ButtonBack>
           <Button
             mt={50}
             w={"100%"}
@@ -149,8 +162,7 @@ const UploadID = ({ navigation }) => {
                   alt="ID front"
                   // resizeMode="cover"
                   bg={COLORS.white}
-                >
-                </Image>
+                ></Image>
               </>
             ) : (
               <>
