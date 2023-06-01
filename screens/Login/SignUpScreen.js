@@ -122,7 +122,7 @@ const SignUpScreen = ({ navigation }) => {
           saveToAsyncStorage("email", email);
           saveToAsyncStorage("licensePlates", licensePlates);
           saveToAsyncStorage("transportType", transportType);
-          AsyncStorage.setItem("dob", finalDate);
+          saveToAsyncStorage("dob", finalDate);
           navigation.navigate("UploadID");
         } else {
           Alert.alert(
