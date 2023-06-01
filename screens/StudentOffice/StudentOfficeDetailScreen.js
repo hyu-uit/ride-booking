@@ -120,7 +120,7 @@ const StudentOfficeDetailScreen = ({ navigation, route }) => {
                   h={height + "px"}
                   alt="portrait"
                   source={{
-                    uri: "https://firebasestorage.googleapis.com/v0/b/ride-booking-8d9af.appspot.com/o/0848867679face?alt=media&token=d3af0a62-3a38-4bf2-9345-a4e61c4d656f",
+                    uri: portrait,
                   }}
                 ></Image>
               </View>
@@ -180,7 +180,7 @@ const StudentOfficeDetailScreen = ({ navigation, route }) => {
                   w={IDWidth + "px"}
                   alt="cardFront"
                   source={{
-                    uri: "https://firebasestorage.googleapis.com/v0/b/ride-booking-8d9af.appspot.com/o/0848867679front?alt=media&token=ee7995d9-a538-44a1-b98a-ff8d7f674a59",
+                    uri: cardFront,
                   }}
                 ></Image>
               </View>
@@ -196,7 +196,7 @@ const StudentOfficeDetailScreen = ({ navigation, route }) => {
                   w={IDWidth + "px"}
                   alt="cardBack"
                   source={{
-                    uri: "https://firebasestorage.googleapis.com/v0/b/ride-booking-8d9af.appspot.com/o/0848867679back?alt=media&token=2ef403f8-ec7a-4296-83bf-5f381514d7af",
+                    uri: cardBack,
                   }}
                 ></Image>
               </View>

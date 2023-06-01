@@ -26,39 +26,40 @@ function StudentListCard(props, navigation) {
       borderRadius={20}
       shadow={3}
       marginBottom={5}
-      onTouchEnd={onPress}
     >
-      <HStack w={"full"}>
-        <Avatar source={{ uri: portrait }} margin={"10px 0 0 10px"} />
-        <VStack margin={"10px 0 0 10px"}>
-          <Text bold fontSize={SIZES.h4} color={"white"}>
-            {displayName}
-          </Text>
-          <Text fontSize={SIZES.font} color={"#808080"}>
-            {studentID}
-          </Text>
-        </VStack>
-      </HStack>
-      <HStack space={10} marginLeft={"10px"} marginBottom={"10px"}>
-        <VStack>
-          <Text bold fontSize={10} color={"#808080"}>
-            Birthday
-          </Text>
-          <Text bold fontSize={10} color={"white"}>
-            23/03/2002
-          </Text>
-        </VStack>
-        <VStack>
-          <Text bold fontSize={10} color={"#808080"}>
-            Trip
-          </Text>
-          <Text bold fontSize={10} color={"white"}>
-            20
-          </Text>
-        </VStack>
+      <TouchableOpacity onPress={onPress}>
+        <HStack w={"full"}>
+          <Avatar source={{ uri: portrait }} margin={"10px 0 0 10px"} />
+          <VStack margin={"10px 0 0 10px"}>
+            <Text bold fontSize={SIZES.h4} color={"white"}>
+              {displayName}
+            </Text>
+            <Text fontSize={SIZES.font} color={"#808080"}>
+              {studentID}
+            </Text>
+          </VStack>
+        </HStack>
+        <HStack space={10} marginLeft={"10px"} marginBottom={"10px"}>
+          <VStack>
+            <Text bold fontSize={10} color={"#808080"}>
+              Birthday
+            </Text>
+            <Text bold fontSize={10} color={"white"}>
+              23/03/2002
+            </Text>
+          </VStack>
+          <VStack>
+            <Text bold fontSize={10} color={"#808080"}>
+              Trip
+            </Text>
+            <Text bold fontSize={10} color={"white"}>
+              20
+            </Text>
+          </VStack>
 
-        {/* <Image source={CarImg} alt="car" marginLeft={"auto"} /> */}
-      </HStack>
+          {/* <Image source={CarImg} alt="car" marginLeft={"auto"} /> */}
+        </HStack>
+      </TouchableOpacity>
     </View>
   );
 }

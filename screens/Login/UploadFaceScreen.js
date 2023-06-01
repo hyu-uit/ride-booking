@@ -28,6 +28,7 @@ import { db, storage } from "../../config/config";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { doc, updateDoc, setDoc } from "firebase/firestore";
 import { async } from "q";
+import { getFromAsyncStorage } from "../../helper/asyncStorage";
 
 const UploadFaceScreen = ({ navigation }) => {
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -38,31 +39,39 @@ const UploadFaceScreen = ({ navigation }) => {
   const [name, setDisplayName] = useState("");
   const [imageFront, setImageFront] = useState("");
   const [imageBack, setImageBack] = useState("");
+  const [licensePlates, setLicensePlates] = useState("");
+  const [transportType, setTransportType] = useState("");
 
   useEffect(() => {
-    AsyncStorage.getItem("phoneNumber").then((result) => {
+    getFromAsyncStorage("phoneNumber").then((result) => {
       setPhoneNumber(result);
     });
-    AsyncStorage.getItem("role").then((result) => {
+    getFromAsyncStorage("role").then((result) => {
       setRole(result);
     });
-    AsyncStorage.getItem("email").then((result) => {
+    getFromAsyncStorage("email").then((result) => {
       setEmail(result);
     });
-    AsyncStorage.getItem("studentID").then((result) => {
+    getFromAsyncStorage("studentID").then((result) => {
       setStudentID(result);
     });
-    AsyncStorage.getItem("school").then((result) => {
+    getFromAsyncStorage("school").then((result) => {
       setSchool(result);
     });
-    AsyncStorage.getItem("displayName").then((result) => {
+    getFromAsyncStorage("displayName").then((result) => {
       setDisplayName(result);
     });
-    AsyncStorage.getItem("cardFront").then((result) => {
+    getFromAsyncStorage("cardFront").then((result) => {
       setImageFront(result);
     });
-    AsyncStorage.getItem("cardBack").then((result) => {
+    getFromAsyncStorage("cardBack").then((result) => {
       setImageBack(result);
+    });
+    getFromAsyncStorage("licensePlates").then((result) => {
+      setLicensePlates(result);
+    });
+    getFromAsyncStorage("transportType").then((result) => {
+      setTransportType(result);
     });
   }, []);
   const [width, setWidth] = useState(
@@ -72,20 +81,28 @@ const UploadFaceScreen = ({ navigation }) => {
 
   const createAccount = async () => {
     //load account to dtb
-    setDoc(doc(db, role, phoneNumber), {
-      displayName: name,
-      email: email,
-      school: school,
-      studentID: id,
-      status: "pending",
-    });
-    //upload image to firebase storage
-    uploadImage();
-    AsyncStorage.setItem("role", role);
-    AsyncStorage.setItem("phoneNumber", phoneNumber);
-    navigation.navigate("AuthenticationStack", {
-      screen: "Login",
-    });
+    if (image === null) {
+      Alert.alert("Please update your portrait picture", "", [
+        {
+          text: "OK",
+        },
+      ]);
+    } else {
+      setDoc(doc(db, role, phoneNumber), {
+        displayName: name,
+        email: email,
+        school: school,
+        studentID: id,
+        status: "pending",
+        licensePlates: licensePlates,
+        transportType: transportType,
+      });
+      //upload image to firebase storage
+      uploadImage();
+      navigation.navigate("AuthenticationStack", {
+        screen: "Login",
+      });
+    }
   };
 
   const uploadImage = async () => {
