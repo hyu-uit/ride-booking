@@ -14,7 +14,7 @@ import { COLORS, SIZES } from "../../constants/theme";
 import { TouchableOpacity } from "react-native";
 
 function StudentListCard(props, navigation) {
-  let { role, phoneNumber, school, displayName, email, studentID, portrait } =
+  let { role, phoneNumber, school, displayName, email, studentID, portrait,birthday } =
     props.list;
   const { onPress } = props;
   //const [status, setStatus] = useState(0);
@@ -45,7 +45,7 @@ function StudentListCard(props, navigation) {
               Birthday
             </Text>
             <Text bold fontSize={10} color={"white"}>
-              23/03/2002
+              {birthday}
             </Text>
           </VStack>
           <VStack>

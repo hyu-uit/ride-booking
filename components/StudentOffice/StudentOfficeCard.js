@@ -24,6 +24,7 @@ function StudentOfficeCard(props, onPressDelete) {
     phoneNumber,
     school,
     displayName,
+    birthday,
     email,
     studentID,
     portrait,
@@ -32,13 +33,13 @@ function StudentOfficeCard(props, onPressDelete) {
   } = props.user;
   const { onPress } = props;
   const acceptAccount = () => {
-    props.onPressDelete(phoneNumber)
+    // props.onPressDelete(phoneNumber)
     updateDoc(doc(db, role, phoneNumber), {
       status: "active",
     });
   };
   const rejectAccount = () => {
-    props.onPressDelete(phoneNumber)
+    // props.onPressDelete(phoneNumber)
     deleteDoc(doc(db, role, phoneNumber));
   };
   return (
@@ -76,7 +77,7 @@ function StudentOfficeCard(props, onPressDelete) {
                   Birthday
                 </Text>
                 <Text style={{ ...FONTS.h6, color: COLORS.white }}>
-                  23/03/2002
+                  {birthday}
                 </Text>
               </VStack>
               <VStack w={"20%"} alignItems={"center"} justifyContent={"center"}>

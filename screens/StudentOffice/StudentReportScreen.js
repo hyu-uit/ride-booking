@@ -22,26 +22,42 @@ import BookingCard from "../../components/BookingCard/BookingCard";
 import { Ionicons } from "@expo/vector-icons";
 import StudentListCard from "../../components/StudentOffice/StudentListCard";
 import StudentReportCard from "../../components/StudentOffice/StudentReportCard";
-import { query, collection, getDocs, where } from "firebase/firestore";
+import { query, collection, getDocs, where, onSnapshot } from "firebase/firestore";
 import { db } from "../../config/config";
+import { getFromAsyncStorage } from "../../helper/asyncStorage";
 const StudentReportScreen = ({ navigation }) => {
   const [usersRider, setUsersRider] = useState([]);
   const [usersCustomer, setUsersCustomer] = useState([]);
   const [usersLock, setUsersLock] = useState([]);
 
+  const [searchText, setSearchText] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState(null);
+
   useEffect(() => {
-    getUsersCustomer();
-    getUsersRider();
-    getUsersLock();
+    fetchDataAndPhoneNumber()
   }, []);
+  const fetchDataAndPhoneNumber = async () => {
+    try {
+      const phoneNumberValue = await getFromAsyncStorage("phoneNumber");
+      setPhoneNumber(phoneNumberValue);
+
+      if (phoneNumberValue) {
+        getUsersCustomer();
+        getUsersRider();
+        getUsersLock();
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   const getUsersRider = () => {
-    let usersRider = [];
-    getDocs(
-      query(collection(db, "Rider"), where("status", "==", "active"))
-    ).then((docSnap) => {
-      docSnap.forEach((doc) => {
-        usersRider.push({
+    const riderCollectionRef = collection(db, "Rider");
+    const riderQuery = query(riderCollectionRef, where("status", "==", "active"));
+    const unsubscribeRider = onSnapshot(riderQuery, (querySnapshot) => {
+      const updatedUsers = [];
+      querySnapshot.forEach((doc) => {
+        const user = {
           role: "Rider",
           phoneNumber: doc.id,
           school: doc.data().school,
@@ -51,19 +67,23 @@ const StudentReportScreen = ({ navigation }) => {
           portrait: doc.data().portrait,
           cardFront: doc.data().cardFront,
           cardBack: doc.data().cardBack,
-          cardBack: doc.data().status,
-        });
+          key: doc.id + "-Rider",
+        };
+        updatedUsers.push(user);
       });
-      setUsersRider(usersRider);
+      setUsersRider((prevUsers) => [...prevUsers.filter((user) => user.role !== "Rider"), ...updatedUsers]);
     });
+    return () => {
+      unsubscribeRider();
+    };
   };
   const getUsersCustomer = () => {
-    let usersCustomer = [];
-    getDocs(
-      query(collection(db, "Customer"), where("status", "==", "active"))
-    ).then((docSnap) => {
-      docSnap.forEach((doc) => {
-        usersCustomer.push({
+    const customerCollectionRef = collection(db, "Customer");
+    const customerQuery = query(customerCollectionRef, where("status", "==", "active"));
+    const unsubscribeCustomer = onSnapshot(customerQuery, (querySnapshot) => {
+      const updatedUsers = [];
+      querySnapshot.forEach((doc) => {
+        const user = {
           role: "Customer",
           phoneNumber: doc.id,
           school: doc.data().school,
@@ -73,20 +93,51 @@ const StudentReportScreen = ({ navigation }) => {
           portrait: doc.data().portrait,
           cardFront: doc.data().cardFront,
           cardBack: doc.data().cardBack,
-          status: doc.data().status,
-        });
+          key: doc.id + "-Customer",
+        };
+        updatedUsers.push(user);
       });
-      setUsersCustomer(usersCustomer);
+      setUsersCustomer((prevUsers) => [...prevUsers.filter((user) => user.role !== "Customer"), ...updatedUsers]);
     });
+    return () => {
+      unsubscribeCustomer();
+    };
   };
-
+  
+  const handleSearchTextChange = (text) => {
+    setSearchText(text);
+  };
+  
+  const filteredCustomerUsers = usersCustomer.filter((user) => {
+    const studentID = user.studentID.toLowerCase();
+    const searchQuery = searchText.toLowerCase();
+  
+    return studentID.includes(searchQuery);
+  });
+  const filteredRiderUsers = usersRider.filter((user) => {
+    const studentID = user.studentID.toLowerCase();
+    const searchQuery = searchText.toLowerCase();
+  
+    return studentID.includes(searchQuery);
+  });
+  const filteredLockedUsers = usersLock.filter((user) => {
+    const studentID = user.studentID.toLowerCase();
+    const searchQuery = searchText.toLowerCase();
+  
+    return studentID.includes(searchQuery);
+  });
   const getUsersLock = () => {
-    let usersLock = [];
-    getDocs(
-      query(collection(db, "Customer"), where("status", "==", "locked"))
-    ).then((docSnap) => {
-      docSnap.forEach((doc) => {
-        usersLock.push({
+    const customerCollectionRef = collection(db, "Customer");
+    const riderCollectionRef = collection(db, "Rider");
+
+    const customerQuery = query(customerCollectionRef, where("status", "==", "locked"));
+    const riderQuery = query(riderCollectionRef, where("status", "==", "locked"));
+
+    const unsubscribeCustomer = onSnapshot(customerQuery, (querySnapshot) => {
+      const updatedUsers = [];
+
+      querySnapshot.forEach((doc) => {
+        const user = {
           role: "Customer",
           phoneNumber: doc.id,
           school: doc.data().school,
@@ -96,15 +147,16 @@ const StudentReportScreen = ({ navigation }) => {
           portrait: doc.data().portrait,
           cardFront: doc.data().cardFront,
           cardBack: doc.data().cardBack,
-          status: doc.data().status,
-        });
+          key: doc.id + "-Customer",
+        };
+        updatedUsers.push(user);
       });
+      setUsersLock((prevUsers) => [...prevUsers.filter((user) => user.role !== "Customer"), ...updatedUsers]);
     });
-    getDocs(
-      query(collection(db, "Rider"), where("status", "==", "locked"))
-    ).then((docSnap) => {
-      docSnap.forEach((doc) => {
-        usersLock.push({
+    const unsubscribeRider = onSnapshot(riderQuery, (querySnapshot) => {
+      const updatedUsers = [];
+      querySnapshot.forEach((doc) => {
+        const user = {
           role: "Rider",
           phoneNumber: doc.id,
           school: doc.data().school,
@@ -114,11 +166,17 @@ const StudentReportScreen = ({ navigation }) => {
           portrait: doc.data().portrait,
           cardFront: doc.data().cardFront,
           cardBack: doc.data().cardBack,
-          status: doc.data().status,
-        });
+          key: doc.id + "-Rider",
+        };
+        updatedUsers.push(user);
       });
-      setUsersLock(usersLock);
+      setUsersLock((prevUsers) => [...prevUsers.filter((user) => user.role !== "Rider"), ...updatedUsers]);
     });
+
+    return () => {
+      unsubscribeCustomer();
+      unsubscribeRider();
+    };
   };
   const FirstRoute = () => (
     <VStack paddingX={"10px"}>
@@ -134,6 +192,8 @@ const StudentReportScreen = ({ navigation }) => {
         fontSize={SIZES.body3}
         color={COLORS.white}
         marginTop={4}
+        value={searchText}
+        onChangeText={handleSearchTextChange}
         InputLeftElement={
           <Icon
             ml="2"
@@ -146,7 +206,7 @@ const StudentReportScreen = ({ navigation }) => {
       <VStack justifyContent={"center"} alignItems={"center"}>
         <FlatList
           w={"100%"}
-          data={usersCustomer}
+          data={filteredCustomerUsers}
           keyExtractor={(item) => item.name}
           renderItem={({ item }) => (
             <StudentReportCard
@@ -179,6 +239,8 @@ const StudentReportScreen = ({ navigation }) => {
         fontSize={SIZES.body3}
         color={COLORS.white}
         marginTop={4}
+        value={searchText}
+        onChangeText={handleSearchTextChange}
         InputLeftElement={
           <Icon
             ml="2"
@@ -191,7 +253,7 @@ const StudentReportScreen = ({ navigation }) => {
       <VStack justifyContent={"center"} alignItems={"center"}>
         <ScrollView w={"100%"}>
           <FlatList
-            data={usersRider}
+            data={filteredRiderUsers}
             keyExtractor={(item) => item.name}
             renderItem={({ item }) => (
               <StudentReportCard
@@ -225,6 +287,8 @@ const StudentReportScreen = ({ navigation }) => {
         fontSize={SIZES.body3}
         color={COLORS.white}
         marginTop={4}
+        value={searchText}
+        onChangeText={handleSearchTextChange}
         InputLeftElement={
           <Icon
             ml="2"
@@ -247,7 +311,7 @@ const StudentReportScreen = ({ navigation }) => {
         <FlatList
           w={"100%"}
           h={"87%"}
-          data={usersLock}
+          data={filteredLockedUsers}
           keyExtractor={(item) => item.name}
           renderItem={({ item }) => (
             <StudentReportCard
