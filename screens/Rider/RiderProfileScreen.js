@@ -81,7 +81,7 @@ const RiderProfileScreen = ({ navigation }) => {
             bgColor={COLORS.primary}
             onPress={() => {
               navigation.navigate("AuthenticationStack", {
-                screen: "SignIn",
+                screen: "Login",
               });
             }}
           >

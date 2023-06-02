@@ -51,6 +51,7 @@ const StudentReportScreen = ({ navigation }) => {
           portrait: doc.data().portrait,
           cardFront: doc.data().cardFront,
           cardBack: doc.data().cardBack,
+          cardBack: doc.data().status,
         });
       });
       setUsersRider(usersRider);
@@ -72,11 +73,13 @@ const StudentReportScreen = ({ navigation }) => {
           portrait: doc.data().portrait,
           cardFront: doc.data().cardFront,
           cardBack: doc.data().cardBack,
+          status: doc.data().status,
         });
       });
       setUsersCustomer(usersCustomer);
     });
   };
+
   const getUsersLock = () => {
     let usersLock = [];
     getDocs(
@@ -93,6 +96,7 @@ const StudentReportScreen = ({ navigation }) => {
           portrait: doc.data().portrait,
           cardFront: doc.data().cardFront,
           cardBack: doc.data().cardBack,
+          status: doc.data().status,
         });
       });
     });
@@ -110,6 +114,7 @@ const StudentReportScreen = ({ navigation }) => {
           portrait: doc.data().portrait,
           cardFront: doc.data().cardFront,
           cardBack: doc.data().cardBack,
+          status: doc.data().status,
         });
       });
       setUsersLock(usersLock);
@@ -139,15 +144,23 @@ const StudentReportScreen = ({ navigation }) => {
         }
       />
       <VStack mt={"17px"} justifyContent={"center"} alignItems={"center"}>
-        <ScrollView w={"100%"}>
-          <FlatList
-            data={usersCustomer}
-            keyExtractor={(item) => item.name}
-            renderItem={({ item }) => (
-              <StudentReportCard listUser={item}></StudentReportCard>
-            )}
-          ></FlatList>
-        </ScrollView>
+        <FlatList
+          w={"100%"}
+          data={usersCustomer}
+          keyExtractor={(item) => item.name}
+          renderItem={({ item }) => (
+            <StudentReportCard
+              listUser={item}
+              onPress={() => {
+                const data = {
+                  phoneNumber: "" + item.phoneNumber,
+                  role: "" + item.role,
+                };
+                navigation.navigate("StudentReportDetail", data);
+              }}
+            ></StudentReportCard>
+          )}
+        ></FlatList>
       </VStack>
     </VStack>
   );
@@ -181,7 +194,16 @@ const StudentReportScreen = ({ navigation }) => {
             data={usersRider}
             keyExtractor={(item) => item.name}
             renderItem={({ item }) => (
-              <StudentReportCard listUser={item}></StudentReportCard>
+              <StudentReportCard
+                listUser={item}
+                onPress={() => {
+                  const data = {
+                    phoneNumber: "" + item.phoneNumber,
+                    role: "" + item.role,
+                  };
+                  navigation.navigate("StudentReportDetail", data);
+                }}
+              ></StudentReportCard>
             )}
           ></FlatList>
         </ScrollView>
@@ -189,62 +211,78 @@ const StudentReportScreen = ({ navigation }) => {
     </VStack>
   );
 
-  // const ThirdRoute = () => (
-  //   <VStack paddingX={"10px"}>
-  //     <Input
-  //       mb={5}
-  //       borderRadius={10}
-  //       h={"50px"}
-  //       placeholder="Search by Student ID"
-  //       width="100%"
-  //       variant={"filled"}
-  //       bgColor={COLORS.tertiary}
-  //       borderWidth={0}
-  //       fontSize={SIZES.body3}
-  //       color={COLORS.white}
-  //       marginTop={8}
-  //       InputLeftElement={
-  //         <Icon
-  //           ml="2"
-  //           size="4"
-  //           color={COLORS.white}
-  //           as={<Ionicons name="ios-search" />}
-  //         />
-  //       }
-  //     />
-  //     <VStack mt={"17px"} justifyContent={"center"} alignItems={"center"}>
-  //       <ScrollView w={"100%"}>
-  //         {/* <StudentListCard />
-  //         <StudentListCard /> */}
-  //         <FlatList
-  //           data={usersLock}
-  //           keyExtractor={(item) => item.name}
-  //           renderItem={({ item }) => (
-  //             <StudentListCard list={item}></StudentListCard>
-  //           )}
-  //         ></FlatList>
-  //       </ScrollView>
-  //     </VStack>
-  //   </VStack>
-  // );
+  const ThirdRoute = () => (
+    <VStack paddingX={"10px"}>
+      <Input
+        mb={4}
+        borderRadius={10}
+        h={"50px"}
+        placeholder="Search by Student ID"
+        width="100%"
+        variant={"filled"}
+        bgColor={COLORS.tertiary}
+        borderWidth={0}
+        fontSize={SIZES.body3}
+        color={COLORS.white}
+        marginTop={4}
+        InputLeftElement={
+          <Icon
+            ml="2"
+            size="4"
+            color={COLORS.white}
+            as={<Ionicons name="ios-search" />}
+          />
+        }
+      />
+      <VStack justifyContent={"center"} alignItems={"center"}>
+        {/* <StudentListCard />
+          <StudentListCard /> */}
+        {/* <FlatList
+            data={usersLock}
+            keyExtractor={(item) => item.name}
+            renderItem={({ item }) => (
+              <StudentListCard list={item}></StudentListCard>
+            )}
+          ></FlatList> */}
+        <FlatList
+          w={"100%"}
+          h={"87%"}
+          data={usersLock}
+          keyExtractor={(item) => item.name}
+          renderItem={({ item }) => (
+            <StudentReportCard
+              listUser={item}
+              onPress={() => {
+                const data = {
+                  phoneNumber: "" + item.phoneNumber,
+                  role: "" + item.role,
+                };
+                navigation.navigate("StudentReportDetail", data);
+              }}
+            ></StudentReportCard>
+          )}
+        ></FlatList>
+      </VStack>
+    </VStack>
+  );
 
   const renderScene = SceneMap({
     first: FirstRoute,
     second: SecondRoute,
-    // third: ThirdRoute,
+    third: ThirdRoute,
   });
 
   const [index, setIndex] = React.useState(0);
   const [routes] = React.useState([
     { key: "first", title: "Customer" },
     { key: "second", title: "Rider" },
-    // { key: "third", title: "Locked" },
+    { key: "third", title: "Locked" },
   ]);
 
   return (
     <VStack h={"100%"} bgColor={COLORS.background}>
       <SafeAreaView>
-        <VStack h={"100%"} mt={"17px"}>
+        <VStack h={"full"} mt={"17px"}>
           <TabView
             navigationState={{ index, routes }}
             renderScene={renderScene}
