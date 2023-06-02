@@ -67,7 +67,7 @@ const SignUpScreen = ({ navigation }) => {
     } else {
       setShowDatePicker(false);
       setSelectedDate(date);
-      setShowDatePicker(false);
+      setShowDatePicker(true);
       setFinalDate(moment(selectedDate).format("DD-MM-YYYY"));
     }
   };
@@ -102,11 +102,14 @@ const SignUpScreen = ({ navigation }) => {
       ]);
     } else {
       let count = 0;
+      let rejected = false;
       getDocs(collection(db, role)).then((docSnap) => {
         docSnap.forEach((doc) => {
           if (doc.id == phoneNumber) count++;
+          if (doc.data().status === "rejected" && doc.id === phoneNumber)
+            rejected = true;
         });
-        if (count == 0) {
+        if (count == 0 || rejected) {
           // setDoc(doc(db, role, phoneNumber), {
           //   displayName: name,
           //   email: email,

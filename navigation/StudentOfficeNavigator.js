@@ -10,6 +10,7 @@ import StudentOfficeListScreen from "../screens/StudentOffice/StudentOfficeListS
 import { StudentListStackScreen } from "./StudentOfficeListNavigator";
 import StudentReportScreen from "../screens/StudentOffice/StudentReportScreen";
 import StudentOfficeProfileScreen from "../screens/StudentOffice/StudentOfficeProfileScreen";
+import { StudentReportStackScreen } from "./StudentOfficeReportNavigator";
 
 const StudentOfficeStack = createNativeStackNavigator();
 
@@ -31,7 +32,7 @@ export function StudentOfficeStackScreen() {
             iconName = "home";
           } else if (route.name === "StudentListStack") {
             iconName = "list";
-          } else if (route.name === "Report") {
+          } else if (route.name === "StudentReportStack") {
             iconName = "shield";
           } else if (route.name === "Profile") {
             iconName = "person";
@@ -49,7 +50,10 @@ export function StudentOfficeStackScreen() {
         name="StudentListStack"
         component={StudentListStackScreen}
       />
-      <MainTab.Screen name="Report" component={StudentReportScreen} />
+      <MainTab.Screen
+        name="StudentReportStack"
+        component={StudentReportStackScreen}
+      />
       <MainTab.Screen name="Profile" component={StudentOfficeProfileScreen} />
     </MainTab.Navigator>
 

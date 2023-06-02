@@ -26,6 +26,7 @@ import {
 } from "firebase/firestore";
 import { db } from "../../config/config";
 import { Alert } from "react-native";
+import ConfirmModal from "../../components/Modal/ConfirmModal";
 
 const StudentOfficeDetailScreen = ({ navigation, route }) => {
   // const [phoneNumber, setPhoneNumber] = useState("");
@@ -38,13 +39,15 @@ const StudentOfficeDetailScreen = ({ navigation, route }) => {
   const [email, setEmail] = useState("");
   const [displayName, setDisplayName] = useState("");
 
+  const [modal, setModal] = useState(false);
+
   const { phoneNumber, role } = route.params;
   useEffect(() => {
     getUserByPhoneNumber();
   }, []);
 
   const getUserByPhoneNumber = () => {
-   getDoc(doc(db, role, phoneNumber)).then((docSnap) => {
+    getDoc(doc(db, role, phoneNumber)).then((docSnap) => {
       if (docSnap.exists()) {
         //setRole(role)r
         setCardBack(docSnap.data().cardBack);
@@ -53,7 +56,7 @@ const StudentOfficeDetailScreen = ({ navigation, route }) => {
         setEmail(docSnap.data().email);
         setSchool(docSnap.data().school);
         setStudentID(docSnap.data().studentID);
-        setPortrait(docSnap.data().portrait)
+        setPortrait(docSnap.data().portrait);
       } else {
         console.log("No such data");
       }
@@ -74,16 +77,33 @@ const StudentOfficeDetailScreen = ({ navigation, route }) => {
   };
 
   const rejectRequest = () => {
-    deleteDoc(doc(db, role, phoneNumber));
-    navigation.navigate("StudentOffice");
+    setModal(true);
+    // deleteDoc(doc(db, role, phoneNumber));
+    // navigation.navigate("StudentOffice");
   };
+
+  const onClose = () => {
+    setModal(false);
+  };
+
   return (
     <VStack h={"100%"} bgColor={COLORS.background}>
       <SafeAreaView>
+        <RejectModal
+          isShow={modal}
+          onClose={onClose}
+          phoneNumber={phoneNumber}
+          role={role}
+          navigation={navigation}
+        ></RejectModal>
         <VStack h={"100%"} mt={"17px"} paddingX={"10px"}>
           <HStack mb={2} alignItems={"center"} justifyContent={"center"}>
             <View style={{ position: "absolute", left: 0 }}>
-              <ButtonBack></ButtonBack>
+              <ButtonBack
+                onPress={() => {
+                  navigation.goBack();
+                }}
+              ></ButtonBack>
             </View>
             <Text style={{ ...FONTS.h2, color: COLORS.white }} ml={4}>
               Student Information

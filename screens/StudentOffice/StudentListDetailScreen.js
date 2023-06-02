@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Button,
   HStack,
@@ -18,9 +18,15 @@ import LoveIcon from "../../assets/icons8-smiling-face-with-heart-eyes-96.png";
 import SmileIcon from "../../assets/icons8-slightly-smiling-face-96.png";
 import DisappointedIcon from "../../assets/icons8-frowning-face-96.png";
 import SelectedButton from "../../components/Button/SelectedButton";
-import { collection, deleteDoc, doc, getDoc, updateDoc } from "firebase/firestore";
+import {
+  collection,
+  deleteDoc,
+  doc,
+  getDoc,
+  updateDoc,
+} from "firebase/firestore";
 import { db } from "../../config/config";
-const StudentListDetailScreen = ({route, navigation}) => {
+const StudentListDetailScreen = ({ route, navigation }) => {
   const [school, setSchool] = useState("");
   const [portrait, setPortrait] = useState(null);
   const [cardBack, setCardBack] = useState(null);
@@ -28,30 +34,32 @@ const StudentListDetailScreen = ({route, navigation}) => {
   const [studentID, setStudentID] = useState("");
   const [email, setEmail] = useState("");
   const [displayName, setDisplayName] = useState("");
-  const {phoneNumber,role} = route.params;
+  const [status, setStatus] = useState("");
+  const { phoneNumber, role } = route.params;
   useEffect(() => {
     getUserByPhoneNumber();
-  }, [])
- 
+  }, []);
+
   const getUserByPhoneNumber = () => {
     // setRole("Customer")
     // setPhoneNumber("0393751403")
     //getDoc(doc(db,"Customer" , "0393751403"))
-    getDoc(doc(db,role, phoneNumber))
-      .then(docSnap => {
-        if (docSnap.exists()) {
-          //setRole(role)
-          setCardBack(docSnap.data().cardBack)
-          setCardFront(docSnap.data().cardFront)
-          setDisplayName(docSnap.data().displayName)
-          setEmail(docSnap.data().email)
-          //setPhoneNumber(docSnap.id)
-          setSchool(docSnap.data().school)
-          setPortrait(docSnap.data().portrait)
-          setStudentID(docSnap.data().studentID)
-        } else {
-          console.log("No such data")}
-      }) 
+    getDoc(doc(db, role, phoneNumber)).then((docSnap) => {
+      if (docSnap.exists()) {
+        //setRole(role)
+        setCardBack(docSnap.data().cardBack);
+        setCardFront(docSnap.data().cardFront);
+        setDisplayName(docSnap.data().displayName);
+        setEmail(docSnap.data().email);
+        //setPhoneNumber(docSnap.id)
+        setSchool(docSnap.data().school);
+        setPortrait(docSnap.data().portrait);
+        setStudentID(docSnap.data().studentID);
+        setStatus(docSnap.data().status);
+      } else {
+        console.log("No such data");
+      }
+    });
   };
   const width = 224;
   const height = width * 1.5;
@@ -62,7 +70,13 @@ const StudentListDetailScreen = ({route, navigation}) => {
     updateDoc(doc(db, role, phoneNumber), {
       status: "locked",
     });
-    navigation.navigate("StudentList");  
+    navigation.goBack();
+  };
+  const unlockAccount = () => {
+    updateDoc(doc(db, role, phoneNumber), {
+      status: "active",
+    });
+    navigation.goBack();
   };
   return (
     <VStack h={"100%"} bgColor={COLORS.background}>
@@ -70,7 +84,11 @@ const StudentListDetailScreen = ({route, navigation}) => {
         <VStack h={"100%"} mt={"17px"} paddingX={"10px"}>
           <HStack mb={2} alignItems={"center"} justifyContent={"center"}>
             <View style={{ position: "absolute", left: 0 }}>
-              <ButtonBack></ButtonBack>
+              <ButtonBack
+                onPress={() => {
+                  navigation.goBack();
+                }}
+              ></ButtonBack>
             </View>
             <Text style={{ ...FONTS.h2, color: COLORS.white }} ml={4}>
               Student Information
@@ -90,8 +108,13 @@ const StudentListDetailScreen = ({route, navigation}) => {
                 h={height + "px"}
                 bgColor={COLORS.fifthary}
                 alignSelf={"center"}
-              >                
-                <Image w={width + "px"} h={height + "px"} alt="portrait" source={{ uri:portrait }}></Image>
+              >
+                <Image
+                  w={width + "px"}
+                  h={height + "px"}
+                  alt="portrait"
+                  source={{ uri: portrait }}
+                ></Image>
               </View>
 
               <Text style={{ ...FONTS.h4, color: COLORS.fifthary }} mt={10}>
@@ -143,8 +166,13 @@ const StudentListDetailScreen = ({route, navigation}) => {
                 bgColor={COLORS.fifthary}
                 borderRadius={10}
                 mt={10}
-              >               
-                 <Image h={IDHeight + "px"} w={IDWidth + "px"} alt="cardFront" source={{ uri: cardFront }}></Image>
+              >
+                <Image
+                  h={IDHeight + "px"}
+                  w={IDWidth + "px"}
+                  alt="cardFront"
+                  source={{ uri: cardFront }}
+                ></Image>
               </View>
               <View
                 h={IDHeight + "px"}
@@ -153,8 +181,12 @@ const StudentListDetailScreen = ({route, navigation}) => {
                 borderRadius={10}
                 mt={10}
               >
-                  <Image h={IDHeight + "px"} w={IDWidth + "px"} alt="cardBack" source={{ uri: cardBack }}></Image>
-
+                <Image
+                  h={IDHeight + "px"}
+                  w={IDWidth + "px"}
+                  alt="cardBack"
+                  source={{ uri: cardBack }}
+                ></Image>
               </View>
 
               <Text style={{ ...FONTS.h4, color: COLORS.fifthary }} mt={10}>
@@ -164,56 +196,90 @@ const StudentListDetailScreen = ({route, navigation}) => {
                 20
               </Text>
               <Text style={{ ...FONTS.h4, color: COLORS.fifthary }} mt={10}>
-                Rating
+                Cancel
               </Text>
-              <HStack mt={2} justifyContent={"space-between"}>
-                <VStack justifyContent={"center"} alignItems={"center"}>
-                  <Image size={70} source={LoveIcon} alt="Love" />
-                  <Text style={{ ...FONTS.h3, color: COLORS.white }} mt={2}>
-                    20
-                  </Text>
-                </VStack>
-                <VStack justifyContent={"center"} alignItems={"center"}>
-                  <Image size={70} source={SmileIcon} alt="Smile" />
-                  <Text style={{ ...FONTS.h3, color: COLORS.white }} mt={2}>
-                    20
-                  </Text>
-                </VStack>
-                <VStack justifyContent={"center"} alignItems={"center"}>
-                  <Image size={70} source={DisappointedIcon} alt="Dissa" />
-                  <Text style={{ ...FONTS.h3, color: COLORS.white }} mt={2}>
-                    20
-                  </Text>
-                </VStack>
-              </HStack>
+              <Text style={{ ...FONTS.h3, color: COLORS.red }} mt={2}>
+                20
+              </Text>
 
-              <HStack justifyContent={"space-between"} space={2}>
-                <SelectedButton
-                  text={"Friendly (5)"}
-                  isSelected={false}
-                ></SelectedButton>
-                <SelectedButton
-                  text={"Friendly (5)"}
-                  isSelected={false}
-                ></SelectedButton>
-                <SelectedButton
-                  text={"Friendly (5)"}
-                  isSelected={false}
-                ></SelectedButton>
-              </HStack>
+              {role === "Rider" ? (
+                <>
+                  <Text style={{ ...FONTS.h4, color: COLORS.fifthary }} mt={10}>
+                    Rating
+                  </Text>
+                  <HStack mt={2} justifyContent={"space-between"}>
+                    <VStack justifyContent={"center"} alignItems={"center"}>
+                      <Image size={70} source={LoveIcon} alt="Love" />
+                      <Text style={{ ...FONTS.h3, color: COLORS.white }} mt={2}>
+                        20
+                      </Text>
+                    </VStack>
+                    <VStack justifyContent={"center"} alignItems={"center"}>
+                      <Image size={70} source={SmileIcon} alt="Smile" />
+                      <Text style={{ ...FONTS.h3, color: COLORS.white }} mt={2}>
+                        20
+                      </Text>
+                    </VStack>
+                    <VStack justifyContent={"center"} alignItems={"center"}>
+                      <Image size={70} source={DisappointedIcon} alt="Dissa" />
+                      <Text style={{ ...FONTS.h3, color: COLORS.white }} mt={2}>
+                        20
+                      </Text>
+                    </VStack>
+                  </HStack>
 
-              <Button
-                w={"100%"}
-                variant={"outline"}
-                borderRadius={20}
-                borderColor={COLORS.red}
-                onPress={lockAccount}
-                mt={10}
-              >
-                <Text style={{ ...FONTS.h2 }} color={COLORS.red} >
-                  Lock account
-                </Text>
-              </Button>
+                  <HStack justifyContent={"space-between"} space={2}>
+                    <SelectedButton
+                      text={"Friendly (5)"}
+                      isSelected={false}
+                    ></SelectedButton>
+                    <SelectedButton
+                      text={"Friendly (5)"}
+                      isSelected={false}
+                    ></SelectedButton>
+                    <SelectedButton
+                      text={"Friendly (5)"}
+                      isSelected={false}
+                    ></SelectedButton>
+                  </HStack>
+                </>
+              ) : (
+                <></>
+              )}
+
+              {status !== "locked" ? (
+                <>
+                  <Button
+                    w={"100%"}
+                    variant={"solid"}
+                    borderRadius={20}
+                    style={{ backgroundColor: COLORS.red }}
+                    borderColor={COLORS.red}
+                    onPress={lockAccount}
+                    mt={10}
+                  >
+                    <Text style={{ ...FONTS.h2 }} color={COLORS.white}>
+                      Lock account
+                    </Text>
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Button
+                    w={"100%"}
+                    variant={"solid"}
+                    borderRadius={20}
+                    style={{ backgroundColor: COLORS.primary }}
+                    borderColor={COLORS.primary}
+                    onPress={unlockAccount}
+                    mt={10}
+                  >
+                    <Text style={{ ...FONTS.h2 }} color={COLORS.white}>
+                      Unlock account
+                    </Text>
+                  </Button>
+                </>
+              )}
             </VStack>
           </ScrollView>
         </VStack>

@@ -62,42 +62,50 @@ const SignInScreen = ({ navigation }) => {
           : (getRole = "StudentOffice");
       }
 
-      if (getRole === "StudentOffice") {
-        getDoc(doc(db, getRole, phoneNumber))
-          .then((docData) => {
-            if (docData.exists()) {
-              // AsyncStorage.setItem("phoneNumber", phoneNumber);
-              // AsyncStorage.setItem("role", getRole);
-              saveToAsyncStorage("phoneNumber", phoneNumber);
-              saveToAsyncStorage("role", getRole);
-              navigation.navigate("StudentOfficeNavigator", {
-                screen: "StudentOffice",
-              });
-            } else {
-              Alert.alert("Wrong phone number!");
-              console.log("no such data");
-            }
-          })
-          .catch((error) => {});
-      } else {
-        getDoc(doc(db, getRole, phoneNumber))
-          .then((docData) => {
-            if (docData.exists() && docData.data().status === "active") {
-              console.log(phoneNumber + getRole);
-              // AsyncStorage.setItem("phoneNumber", phoneNumber);
-              // AsyncStorage.setItem("role", getRole);
-              saveToAsyncStorage("phoneNumber", phoneNumber);
-              saveToAsyncStorage("role", getRole);
-              navigation.navigate("Verify");
-            } else if (docData.exists() && docData.data().status === "pending") {
-              navigation.navigate("Pending");
-            } else {
-              Alert.alert("Phone number has not been registered!");
-              console.log("no such data");
-            }
-          })
-          .catch((error) => {});
-      }
+    if (getRole === "StudentOffice") {
+      getDoc(doc(db, getRole, phoneNumber))
+        .then((docData) => {
+          if (docData.exists()) {
+            // AsyncStorage.setItem("phoneNumber", phoneNumber);
+            // AsyncStorage.setItem("role", getRole);
+            saveToAsyncStorage("phoneNumber", phoneNumber);
+            saveToAsyncStorage("role", getRole);
+            navigation.navigate("StudentOfficeNavigator", {
+              screen: "StudentOffice",
+            });
+          } else {
+            Alert.alert("Wrong phone number!");
+            console.log("no such data");
+          }
+        })
+        .catch((error) => {});
+    } else {
+      getDoc(doc(db, getRole, phoneNumber))
+        .then((docData) => {
+          if (docData.exists() && docData.data().status === "active") {
+            console.log(phoneNumber + getRole);
+            // AsyncStorage.setItem("phoneNumber", phoneNumber);
+            // AsyncStorage.setItem("role", getRole);
+            saveToAsyncStorage("phoneNumber", phoneNumber);
+            saveToAsyncStorage("role", getRole);
+            navigation.navigate("Verify");
+          } else if (
+            docData.exists() &&
+            (docData.data().status === "pending" ||
+              docData.data().status === "rejected")
+          ) {
+            navigation.navigate("Pending");
+            saveToAsyncStorage("phoneNumber", phoneNumber);
+            saveToAsyncStorage("role", getRole);
+          } else if (docData.data().status === "locked") {
+            Alert.alert(
+              "This account has been locked, please contact to your Student Office's school"
+            );
+          } else {
+            Alert.alert("Phone number has not been registered!");
+          }
+        })
+        .catch((error) => {});
     }
   };
 

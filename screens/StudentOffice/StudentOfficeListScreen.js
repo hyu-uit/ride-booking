@@ -116,7 +116,7 @@ const StudentOfficeListScreen = ({ navigation }) => {
   const FirstRoute = () => (
     <VStack paddingX={"10px"} w={"100%"}>
       <Input
-        mb={5}
+        mb={4}
         borderRadius={10}
         h={"50px"}
         placeholder="Search by Student ID"
@@ -126,7 +126,7 @@ const StudentOfficeListScreen = ({ navigation }) => {
         borderWidth={0}
         fontSize={SIZES.body3}
         color={COLORS.white}
-        marginTop={8}
+        marginTop={4}
         InputLeftElement={
           <Icon
             ml="2"
@@ -136,7 +136,7 @@ const StudentOfficeListScreen = ({ navigation }) => {
           />
         }
       />
-      <VStack mt={"17px"} justifyContent={"end"} alignItems={"center"}>
+      <VStack h={"100%"} pb={5} justifyContent={"end"} alignItems={"center"}>
         {/* <StudentListCard
             onPress={() => {
               navigation.navigate("StudentListDetail");
@@ -166,7 +166,7 @@ const StudentOfficeListScreen = ({ navigation }) => {
   const SecondRoute = () => (
     <VStack paddingX={"10px"}>
       <Input
-        mb={5}
+        mb={4}
         borderRadius={10}
         h={"50px"}
         placeholder="Search by Student ID"
@@ -176,7 +176,7 @@ const StudentOfficeListScreen = ({ navigation }) => {
         borderWidth={0}
         fontSize={SIZES.body3}
         color={COLORS.white}
-        marginTop={8}
+        marginTop={4}
         InputLeftElement={
           <Icon
             ml="2"
@@ -186,7 +186,7 @@ const StudentOfficeListScreen = ({ navigation }) => {
           />
         }
       />
-      <VStack mt={"17px"} justifyContent={"center"} alignItems={"center"}>
+      <VStack justifyContent={"center"} alignItems={"center"}>
         <FlatList
           w={"100%"}
           data={usersRider}
@@ -208,62 +208,62 @@ const StudentOfficeListScreen = ({ navigation }) => {
     </VStack>
   );
 
-  const ThirdRoute = () => (
-    <VStack paddingX={"10px"}>
-      <Input
-        mb={5}
-        borderRadius={10}
-        h={"50px"}
-        placeholder="Search by Student ID"
-        width="100%"
-        variant={"filled"}
-        bgColor={COLORS.tertiary}
-        borderWidth={0}
-        fontSize={SIZES.body3}
-        color={COLORS.white}
-        marginTop={8}
-        InputLeftElement={
-          <Icon
-            ml="2"
-            size="4"
-            color={COLORS.white}
-            as={<Ionicons name="ios-search" />}
-          />
-        }
-      />
-      <VStack mt={"17px"} justifyContent={"center"} alignItems={"center"}>
-        <FlatList
-          w={"100%"}
-          data={usersLock}
-          keyExtractor={(item) => item.name}
-          renderItem={({ item }) => (
-            <StudentListCard
-              onPress={() => {
-                const data = {
-                  phoneNumber: "" + item.phoneNumber,
-                  role: "" + item.role,
-                };
-                navigation.navigate("StudentListDetail", data);
-              }}
-              list={item}
-            ></StudentListCard>
-          )}
-        ></FlatList>
-      </VStack>
-    </VStack>
-  );
+  // const ThirdRoute = () => (
+  //   <VStack paddingX={"10px"}>
+  //     <Input
+  //       mb={5}
+  //       borderRadius={10}
+  //       h={"50px"}
+  //       placeholder="Search by Student ID"
+  //       width="100%"
+  //       variant={"filled"}
+  //       bgColor={COLORS.tertiary}
+  //       borderWidth={0}
+  //       fontSize={SIZES.body3}
+  //       color={COLORS.white}
+  //       marginTop={8}
+  //       InputLeftElement={
+  //         <Icon
+  //           ml="2"
+  //           size="4"
+  //           color={COLORS.white}
+  //           as={<Ionicons name="ios-search" />}
+  //         />
+  //       }
+  //     />
+  //     <VStack mt={"17px"} justifyContent={"center"} alignItems={"center"}>
+  //       <FlatList
+  //         w={"100%"}
+  //         data={usersLock}
+  //         keyExtractor={(item) => item.name}
+  //         renderItem={({ item }) => (
+  //           <StudentListCard
+  //             onPress={() => {
+  //               const data = {
+  //                 phoneNumber: "" + item.phoneNumber,
+  //                 role: "" + item.role,
+  //               };
+  //               navigation.navigate("StudentListDetail", data);
+  //             }}
+  //             list={item}
+  //           ></StudentListCard>
+  //         )}
+  //       ></FlatList>
+  //     </VStack>
+  //   </VStack>
+  // );
 
   const renderScene = SceneMap({
     first: FirstRoute,
     second: SecondRoute,
-    third: ThirdRoute,
+    // third: ThirdRoute,
   });
 
   const [index, setIndex] = React.useState(0);
   const [routes] = React.useState([
     { key: "first", title: "Customer" },
     { key: "second", title: "Rider" },
-    { key: "third", title: "Bad" },
+    // { key: "third", title: "Bad" },
   ]);
 
   return (
