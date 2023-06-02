@@ -86,9 +86,12 @@ const SignInScreen = ({ navigation }) => {
             navigation.navigate("Pending");
             saveToAsyncStorage("phoneNumber", phoneNumber);
             saveToAsyncStorage("role", getRole);
+          } else if (docData.data().status === "locked") {
+            Alert.alert(
+              "This account has been locked, please contact to your Student Office's school"
+            );
           } else {
             Alert.alert("Phone number has not been registered!");
-            console.log("no such data");
           }
         })
         .catch((error) => {});

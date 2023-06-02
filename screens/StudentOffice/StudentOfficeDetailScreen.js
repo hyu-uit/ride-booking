@@ -106,7 +106,11 @@ const StudentOfficeDetailScreen = ({ navigation, route }) => {
         <VStack h={"100%"} mt={"17px"} paddingX={"10px"}>
           <HStack mb={2} alignItems={"center"} justifyContent={"center"}>
             <View style={{ position: "absolute", left: 0 }}>
-              <ButtonBack></ButtonBack>
+              <ButtonBack
+                onPress={() => {
+                  navigation.goBack();
+                }}
+              ></ButtonBack>
             </View>
             <Text style={{ ...FONTS.h2, color: COLORS.white }} ml={4}>
               Student Information

@@ -93,7 +93,7 @@ const PendingScreen = ({ navigation }) => {
     <VStack h={"100%"} bgColor={COLORS.background}>
       <SafeAreaView>
         <VStack h={"100%"} mt={"17px"} paddingX={"10px"} alignItems={"center"}>
-          <ScrollView>
+          <ScrollView h={"100%"}>
             <Image
               h={"40%"}
               resizeMode="contain"
