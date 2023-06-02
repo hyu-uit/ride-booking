@@ -1,54 +1,38 @@
-import {
-  Button,
-  HStack,
-  Input,
-  NativeBaseProvider,
-  Text,
-  VStack,
-  View,
-  Image,
-  Avatar,
-  Switch,
-  ScrollView,
-} from "native-base";
-import DefaultAvt from "../../../assets/image6.png";
+import { VStack, View } from "native-base";
 import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { COLORS, FONTS, SIZES } from "../../../constants/theme";
 import ButtonBack from "../../../components/Global/ButtonBack/ButtonBack";
-import MapView, { Marker } from "react-native-maps";
-import Icon from "react-native-vector-icons/FontAwesome";
-import { Ionicons } from "@expo/vector-icons";
 import PopUpRequestCard from "../../../components/Driver/PopUpRequestCard";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../../../config/config";
 
 const TripDetailScreen = ({ navigation, route }) => {
-  const {idTrip} = route.params;
+  const { idTrip } = route.params;
   const [tripData, setTrip] = useState({});
-  useEffect(()=>{
-    getTrip()
+  useEffect(() => {
+    getTrip();
   }, []);
-  const getTrip = () =>{
-    let data={}
-    getDoc(doc(db,"ListTrip", idTrip)).then((doc)=>{
-      if(doc.exists()){
-        data={
-          idCustomer:doc.data().idCustomer,
-          idTrip:doc.id,
-          pickUpLat:doc.data().pickUpLat,
-          pickUpLong:doc.data().pickUpLong,
-          destLat:doc.data().destLat,
-          destLong:doc.data().destLong,
-          date:doc.data().date,
-          time:doc.data().time,
-          totalPrice:doc.data().totalPrice,
-          distance:doc.data().distance,
+  const getTrip = () => {
+    let data = {};
+    getDoc(doc(db, "ListTrip", idTrip)).then((doc) => {
+      if (doc.exists()) {
+        data = {
+          idCustomer: doc.data().idCustomer,
+          idTrip: doc.id,
+          pickUpLat: doc.data().pickUpLat,
+          pickUpLong: doc.data().pickUpLong,
+          destLat: doc.data().destLat,
+          destLong: doc.data().destLong,
+          date: doc.data().date,
+          time: doc.data().time,
+          totalPrice: doc.data().totalPrice,
+          distance: doc.data().distance,
         };
       }
       setTrip(data);
-    })
-  }
+    });
+  };
   return (
     <VStack h={"100%"} bgColor={COLORS.background}>
       <SafeAreaView>
@@ -59,7 +43,7 @@ const TripDetailScreen = ({ navigation, route }) => {
             }}
           />
         </View>
-        <MapView
+        {/* <MapView
           provider="google"
           style={{
             width: "100%",
@@ -70,8 +54,11 @@ const TripDetailScreen = ({ navigation, route }) => {
           <Marker
             coordinate={{ latitude: 9.90761, longitude: 105.31181 }}
           ></Marker>
-        </MapView>
-        <PopUpRequestCard trip={tripData} navigation={navigation}></PopUpRequestCard>
+        </MapView> */}
+        <PopUpRequestCard
+          trip={tripData}
+          navigation={navigation}
+        ></PopUpRequestCard>
         {/* <HStack justifyContent={"center"} mb={"20px"}>
           <View style={{ position: "absolute", left: 0 }}>
             <ButtonBack></ButtonBack>

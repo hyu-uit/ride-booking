@@ -42,13 +42,6 @@
     },
     "plugins": [
       [
-        "@rnmapbox/maps",
-        {
-          "RNMapboxMapsImpl": "mapbox",
-          "RNMapboxMapsDownloadToken": "sk.eyJ1IjoiZHVjbmd1eWVudHJpIiwiYSI6ImNsZjNkdGY0czAwZnkzdHIwMmpydWJpOTgifQ.SoQYVlwvSEhFn1tehWqPrA"
-        }
-      ],
-      [
         "expo-location",
           {
             "locationWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location."

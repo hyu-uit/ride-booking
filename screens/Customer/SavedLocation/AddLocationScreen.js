@@ -3,7 +3,6 @@ import { Button, HStack, Image, Input, Text, VStack, View } from "native-base";
 import { COLORS, FONTS } from "../../../constants/theme";
 import { SafeAreaView } from "react-native-safe-area-context";
 import ButtonBack from "../../../components/Global/ButtonBack/ButtonBack";
-import MapView, { Marker } from "react-native-maps";
 import { Keyboard, TouchableWithoutFeedback } from "react-native";
 
 const AddLocationScreen = ({ navigation }) => {
@@ -58,14 +57,14 @@ const AddLocationScreen = ({ navigation }) => {
             />
 
             <VStack>
-              <MapView
+              {/* <MapView
                 provider="google"
                 style={{ width: "100%", height: "100%", borderRadius: 20 }}
               >
                 <Marker
                   coordinate={{ latitude: 9.90761, longitude: 105.31181 }}
                 ></Marker>
-              </MapView>
+              </MapView> */}
               <Button
                 w={"100%"}
                 position={"absolute"}

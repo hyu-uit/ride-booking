@@ -3,7 +3,6 @@ import { useReducer } from "react";
 import RatingPopup from "../../components/RatingPopup";
 import styled from "styled-components";
 import { SafeAreaView } from "react-native-safe-area-context";
-import MapView from "react-native-maps";
 
 const NotYetRated = {
   isGroupButtonShow: false,
@@ -64,7 +63,6 @@ const BookingRatingScreen = () => {
       case 1:
         return (
           <>
-            <MapView style={{ flex: 1 }} provider="google"></MapView>
             <RatingPopup
               onPress={handleStep1Button}
               buttonText={NotYetRated.buttonText}
@@ -75,7 +73,6 @@ const BookingRatingScreen = () => {
       case 2:
         return (
           <>
-            <MapView style={{ flex: 1 }} provider="google"></MapView>
             <RatingPopup
               onPress={handleStep2Button}
               buttonText={IsRating.buttonText}
@@ -86,7 +83,6 @@ const BookingRatingScreen = () => {
       case 3:
         return (
           <>
-            <MapView style={{ flex: 1 }} provider="google"></MapView>
             <RatingPopup
               onPress={handleStep3Button}
               buttonText={Rated.buttonText}

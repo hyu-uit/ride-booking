@@ -1,9 +1,9 @@
-import React, { useReducer } from "react";
+import React, { useReducer, useState } from "react";
 import styled from "styled-components";
 import { COLORS, SIZES } from "../../constants/theme";
 import { Button, Center, HStack, Image, Text, VStack, View } from "native-base";
 import { SafeAreaView } from "react-native-safe-area-context";
-import MapView from "react-native-maps";
+// import MapView, { Marker } from "react-native-maps";
 import { Keyboard, TouchableWithoutFeedback } from "react-native";
 import LocationCardWithChange from "../../components/LocationCard/LocationCardWithChange";
 import SelectedButton from "../../components/Button/SelectedButton";
@@ -20,6 +20,10 @@ import { db } from "../../config/config";
 import { fetchCurrentUserLocation } from "../../helper/location";
 import { getFromAsyncStorage } from "../../helper/asyncStorage";
 import Geocoder from "react-native-geocoding";
+import { UniversityMarks } from "../../constants/location";
+import Icon from "../../assets/icons/arrowRight.png";
+import { getAddressFromCoordinate } from "../../api/locationAPI";
+import { LeafletView } from "react-native-leaflet-view";
 
 const initialState = {
   step: 1,
@@ -53,8 +57,6 @@ const stateReducer = (state, action) => {
       return { ...state, step: state.step };
     case "SET_SHOW_MODAL_CANCEL":
       return { ...state, isModalCancelShow: action.payload };
-    case "SET_LOCATION":
-      return { ...state, location: action.payload };
     case "SET_BOOKING_DETAILS":
       return { ...state, bookingDetails: action.payload };
     case "SET_PRICE":
@@ -63,6 +65,31 @@ const stateReducer = (state, action) => {
       return { ...state, note: action.payload };
     case "SET_PAYMENT_METHOD":
       return { ...state, paymentMethod: action.payload };
+    case "SET_DESTINATION_LOCATION":
+      return {
+        ...state,
+        destinationLocation: {
+          latitude: action.payload.latitude,
+          longitude: action.payload.longitude,
+        },
+      };
+    case "SET_PICK_UP_LOCATION":
+      return {
+        ...state,
+        pickUpLocation: {
+          latitude: action.payload.latitude,
+          longitude: action.payload.longitude,
+        },
+      };
+    case "SET_INITIAL_LOCATION":
+      return {
+        ...state,
+        region: {
+          ...state.region,
+          latitude: action.payload.latitude,
+          longitude: action.payload.longitude,
+        },
+      };
     default:
       throw new Error();
   }
@@ -70,6 +97,10 @@ const stateReducer = (state, action) => {
 
 export default function BookingScreen({ navigation }) {
   const [state, dispatch] = useReducer(stateReducer, initialState);
+  const [markerPosition, setMarkerPosition] = useState({
+    latitude: 0,
+    longitude: 0,
+  });
 
   const chooseFromMapHandler = () => {
     // Geocoder.from(41.89, 12.49).then((json) => {
@@ -81,7 +112,15 @@ export default function BookingScreen({ navigation }) {
     fetchCurrentUserLocation()
       .then(({ latitude, longitude }) => {
         console.log(latitude + " " + longitude);
-        dispatch({ type: "SET_LOCATION", payload: { latitude, longitude } });
+        dispatch({
+          type: "SET_INITIAL_LOCATION",
+          payload: { latitude, longitude },
+        });
+        dispatch({
+          type: "SET_PICK_UP_LOCATION",
+          payload: { latitude, longitude },
+        });
+        setMarkerPosition({ latitude, longitude });
         dispatch({ type: "SET_STEP", payload: 2 });
       })
       .catch((err) => console.log(err));
@@ -133,11 +172,6 @@ export default function BookingScreen({ navigation }) {
     dispatch({ type: "SET_STEP", payload: 7 });
   };
 
-  const handleClickCancel = () => {
-    // Do any necessary form validation or error checking here
-    dispatch({ type: "SET_SHOW_MODAL_CANCEL", payload: true });
-  };
-
   const handleCloseModal = () => {
     // Do any necessary form validation or error checking here
     dispatch({ type: "SET_SHOW_MODAL_CANCEL", payload: false });
@@ -145,6 +179,11 @@ export default function BookingScreen({ navigation }) {
 
   const handleBackStep = () => {
     dispatch({ type: "BACK_STEP" });
+  };
+
+  const handleMarkerDrag = (e) => {
+    const { latitude, longitude } = e.nativeEvent.coordinate;
+    setMarkerPosition({ latitude, longitude });
   };
 
   const renderStepContent = () => {
@@ -196,11 +235,36 @@ export default function BookingScreen({ navigation }) {
         return (
           <>
             <LocationCardWithChange />
-            <MapView
+            {/* <MapView
               style={{ flex: 1, borderRadius: 10, marginTop: 10 }}
               provider="google"
-              onPress={(event) => console.log(event.nativeEvent)}
-            ></MapView>
+              initialRegion={state.region}
+              onPress={(e) =>
+                getAddressFromCoordinate(
+                  e.nativeEvent.coordinate.latitude,
+                  e.nativeEvent.coordinate.longitude
+                )
+              }
+            >
+              {UniversityMarks.map((uni) => (
+                <Marker
+                  onPress={(event) => console.log(uni)}
+                  key={uni.title}
+                  coordinate={uni.coordinate}
+                  title={uni.title}
+                />
+              ))}
+              <Marker
+                key={"your-location"}
+                coordinate={markerPosition}
+                title="Your location"
+                draggable={true}
+                onPress={(e) => e.stopPropagation()}
+                onDragEnd={handleMarkerDrag}
+                isPreselected={true}
+              />
+            </MapView> */}
+            <LeafletView />
             <Center
               w={"100%"}
               marginTop={"auto"}
@@ -225,10 +289,6 @@ export default function BookingScreen({ navigation }) {
       case 3:
         return (
           <>
-            <MapView
-              style={{ flex: 1, borderRadius: 10, marginTop: 10 }}
-              provider="google"
-            ></MapView>
             <LocationCardTime
               onClickContinue={handleStep3Submit}
               onPressBack={handleBackStep}
@@ -238,10 +298,6 @@ export default function BookingScreen({ navigation }) {
       case 4:
         return (
           <>
-            <MapView
-              style={{ flex: 1, borderRadius: 10, marginTop: 10 }}
-              provider="google"
-            ></MapView>
             <LocationCardCost
               onClickContinue={handleStep4Submit}
               onPressBack={handleBackStep}
@@ -251,10 +307,6 @@ export default function BookingScreen({ navigation }) {
       case 5:
         return (
           <>
-            <MapView
-              style={{ flex: 1, borderRadius: 10, marginTop: 10 }}
-              provider="google"
-            ></MapView>
             <LocationCardNote
               onClickContinue={handleStep5Submit}
               onPressBack={handleBackStep}
@@ -264,10 +316,6 @@ export default function BookingScreen({ navigation }) {
       case 6:
         return (
           <>
-            <MapView
-              style={{ flex: 1, borderRadius: 10, marginTop: 10 }}
-              provider="google"
-            ></MapView>
             <LocationCardPayment
               onClickContinue={handleStep6Submit}
               onPressBack={handleBackStep}
@@ -277,10 +325,6 @@ export default function BookingScreen({ navigation }) {
       case 7:
         return (
           <>
-            <MapView
-              style={{ flex: 1, borderRadius: 10, marginTop: 10 }}
-              provider="google"
-            ></MapView>
             <LocationCardFinder
               onPressCancel={() => navigation.navigate("BookingDriver")}
             />

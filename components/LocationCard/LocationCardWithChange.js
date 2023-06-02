@@ -15,27 +15,8 @@ import LocationIcon from "../../assets/icons/icons8-location-48.png";
 import ChangeIcon from "../../assets/icons/icons8-change-48.png";
 import { useRef } from "react";
 import { useEffect } from "react";
-import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 
-const homePlace = {
-  description: "Home",
-  geometry: { location: { lat: 48.8152937, lng: 2.4597668 } },
-};
-const workPlace = {
-  description: "Work",
-  geometry: { location: { lat: 48.8496818, lng: 2.2940881 } },
-};
-
-const preDefined = [
-  {
-    description: "Đại học Công nghệ thông tin",
-    geometry: { location: { lat: 10.8719125, lng: 106.8020985 } },
-  },
-  {
-    description: "Ký túc xá khu A",
-    geometry: { location: { lat: 10.8782444, lng: 106.8062906 } },
-  },
-];
+//
 
 const LocationCardWithChange = () => {
   // const inputRef = useRef(null);
@@ -60,20 +41,16 @@ const LocationCardWithChange = () => {
               Pick-up
             </Text>
 
-            <GooglePlacesAutocomplete
-              query={{
-                key: GOOGLE_PLACES_API_KEY,
-                language: "vi", // language of the results
-                components: "country:vn",
-              }}
-              onPress={(data, details) => console.log(data, details)}
-              predefinedPlaces={preDefined}
-              predefinedPlacesAlwaysVisible={true}
-              currentLocation={true}
-              currentLocationLabel="Current location"
+            <Input
+              variant="unstyled"
+              placeholder="Your location"
+              bold
+              fontSize={SIZES.h6}
+              color={"white"}
+              padding={1}
             />
           </VStack>
-          {/* <Divider />
+          <Divider />
           <VStack>
             <Text bold fontSize={SIZES.h6} color={"#8CC3FF"}>
               Drop off
@@ -86,9 +63,9 @@ const LocationCardWithChange = () => {
               color={"white"}
               padding={1}
             />
-          </VStack> */}
+          </VStack>
         </VStack>
-        {/* <Center marginLeft={"auto"} flex={1}>
+        <Center marginLeft={"auto"} flex={1}>
           <Divider
             bgColor={COLORS.fourthary}
             height={10}
@@ -147,10 +124,43 @@ const LocationCardWithChange = () => {
               alt=""
             />
           </Center>
-        </Center> */}
+        </Center>
       </HStack>
     </Flex>
   );
 };
+
+//const homePlace = {
+//   description: "Home",
+//   geometry: { location: { lat: 48.8152937, lng: 2.4597668 } },
+// };
+// const workPlace = {
+//   description: "Work",
+//   geometry: { location: { lat: 48.8496818, lng: 2.2940881 } },
+// };
+
+// const preDefined = [
+//   {
+//     description: "Đại học Công nghệ thông tin",
+//     geometry: { location: { lat: 10.8719125, lng: 106.8020985 } },
+//   },
+//   {
+//     description: "Ký túc xá khu A",
+//     geometry: { location: { lat: 10.8782444, lng: 106.8062906 } },
+//   },
+// ];
+
+// <GooglePlacesAutocomplete
+//   query={{
+//     key: GOOGLE_PLACES_API_KEY,
+//     language: "vi", // language of the results
+//     components: "country:vn",
+//   }}
+//   onPress={(data, details) => console.log(data, details)}
+//   predefinedPlaces={preDefined}
+//   predefinedPlacesAlwaysVisible={true}
+//   currentLocation={true}
+//   currentLocationLabel="Current location"
+// />;
 
 export default LocationCardWithChange;
