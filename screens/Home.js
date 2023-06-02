@@ -90,6 +90,7 @@ export default function Home({ navigation, route }) {
         setHistoryTrips(historyTrips);
     });
   };
+  console.log(historyTrips)
   return (
     <TouchableWithoutFeedback
       onPress={() => {

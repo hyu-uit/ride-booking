@@ -46,10 +46,6 @@ const StudentOfficeDetailScreen = ({ navigation, route }) => {
   const getUserByPhoneNumber = () => {
    getDoc(doc(db, role, phoneNumber)).then((docSnap) => {
       if (docSnap.exists()) {
-        console.log(docSnap.data().portrait)
-        console.log(docSnap.data().cardBack)
-        console.log(docSnap.data().cardFront)
-
         //setRole(role)r
         setCardBack(docSnap.data().cardBack);
         setCardFront(docSnap.data().cardFront);

@@ -52,6 +52,7 @@ function HistoryCard(props) {
       }
     });
   }
+
   return (
     <View
       bgColor={"#101744"}

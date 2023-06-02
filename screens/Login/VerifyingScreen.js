@@ -15,6 +15,10 @@ import { TouchableWithoutFeedback } from "react-native";
 import { Keyboard } from "react-native";
 import { AsyncStorage } from "react-native";
 import { getFromAsyncStorage } from "../../helper/asyncStorage";
+import { doc, getDoc, setDoc } from "firebase/firestore";
+import { getToken } from "firebase/app-check";
+import { signInWithPhoneNumber } from "@firebase/auth";
+
 
 const VerifyingScreen = ({ navigation }) => {
   const firstInput = useRef();
@@ -24,13 +28,8 @@ const VerifyingScreen = ({ navigation }) => {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [role, setRole] = useState("");
 
+  
   useEffect(() => {
-    // AsyncStorage.getItem("phoneNumber").then((result) => {
-    //   setPhoneNumber(result);
-    // });
-    // AsyncStorage.getItem("role").then((result) => {
-    //   setRole(result);
-    // });
     getFromAsyncStorage("phoneNumber")
       .then((value) => setPhoneNumber(value))
       .catch((err) => console.log(err));
@@ -39,6 +38,7 @@ const VerifyingScreen = ({ navigation }) => {
       .then((value) => setRole(value))
       .catch((err) => console.log(err));
   }, []);
+  
   // navigation.navigate("StudentOfficeNavigator", {
   //   screen: "StudentOffice",
   // });
@@ -92,7 +92,7 @@ const VerifyingScreen = ({ navigation }) => {
                 Code sent to{" (+84) "}
               </Text>
               <Text style={{ ...FONTS.body3 }} color={COLORS.white}>
-                0848867679
+                {phoneNumber}
               </Text>
             </HStack>
             <HStack mt={10}>

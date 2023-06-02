@@ -16,9 +16,9 @@ import DefaultAvt from "../../assets/image6.png";
 import { COLORS, FONTS, SIZES } from "../../constants/theme";
 import { deleteDoc, updateDoc, doc } from "@firebase/firestore";
 import { db } from "../../config/config";
-import { TouchableOpacity } from "react-native";
+import { Alert, TouchableOpacity } from "react-native";
 
-function StudentOfficeCard(props, navigation) {
+function StudentOfficeCard(props, onPressDelete) {
   let {
     role,
     phoneNumber,
@@ -32,11 +32,13 @@ function StudentOfficeCard(props, navigation) {
   } = props.user;
   const { onPress } = props;
   const acceptAccount = () => {
+    props.onPressDelete(phoneNumber)
     updateDoc(doc(db, role, phoneNumber), {
       status: "active",
     });
   };
   const rejectAccount = () => {
+    props.onPressDelete(phoneNumber)
     deleteDoc(doc(db, role, phoneNumber));
   };
   return (

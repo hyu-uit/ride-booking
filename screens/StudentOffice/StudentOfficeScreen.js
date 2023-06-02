@@ -38,6 +38,7 @@ const StudentOfficeScreen = ({ navigation }) => {
   const [uniName, setUniName] = useState(null);
   const [acronym, setAcronym] = useState(null);
   const [logo, setLogo] = useState(null);
+  const [refresh, setRefresh] = useState(false);
 
   useEffect(() => {
     fetchDataAndPhoneNumber();
@@ -67,7 +68,11 @@ const StudentOfficeScreen = ({ navigation }) => {
       console.error(error);
     }
   };
-
+  const handleDeleteStudent = (item) => {
+    // Xóa mục khỏi danh sách sinh viên
+    const updatedList = users.filter((user) => {user.phoneNumber !== item});
+    setUsers(updatedList);
+  };
   const getUsers = async () => {
     let users = [];
     getDocs(
@@ -148,26 +153,29 @@ const StudentOfficeScreen = ({ navigation }) => {
               />
             }
           />
-          <FlatList
-            data={users}
-            keyExtractor={(item) => item.name}
-            renderItem={({ item }) => (
-              <StudentOfficeCard
-                onPress={() => {
-                  // AsyncStorage.setItem('phoneNumber',item.phoneNumber),
-                  // AsyncStorage.setItem('role',item.role),
-
-                  const data = {
-                    phoneNumber: "" + item.phoneNumber,
-                    role: "" + item.role,
-                  };
-                  navigation.navigate("StudentOfficeDetail", data);
-                }}
-                user={item}
-                key={item.name}
-              ></StudentOfficeCard>
-            )}
-          ></FlatList>
+          <ScrollView>
+            <FlatList
+              data={users}
+              keyExtractor={(item) => item.phoneNumber }
+              renderItem={({ item }) => (
+                <StudentOfficeCard
+                  
+                  onPress={() => {
+                    // AsyncStorage.setItem('phoneNumber',item.phoneNumber),
+                    // AsyncStorage.setItem('role',item.role),
+                    const data = {
+                      phoneNumber: "" + item.phoneNumber,
+                      role: "" + item.role,
+                    };
+                    navigation.navigate("StudentOfficeDetail", data);
+                  }}
+                  user={item}
+                  key={item.name}
+                  onPressDelete={handleDeleteStudent}
+                ></StudentOfficeCard>
+              )}
+            ></FlatList>
+          </ScrollView>
         </VStack>
       </SafeAreaView>
     </VStack>
