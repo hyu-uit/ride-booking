@@ -26,6 +26,7 @@ import {
 } from "firebase/firestore";
 import { db } from "../../config/config";
 import { Alert } from "react-native";
+import ConfirmModal from "../../components/Modal/ConfirmModal";
 
 const StudentOfficeDetailScreen = ({ navigation, route }) => {
   // const [phoneNumber, setPhoneNumber] = useState("");
@@ -37,6 +38,8 @@ const StudentOfficeDetailScreen = ({ navigation, route }) => {
   const [studentID, setStudentID] = useState("");
   const [email, setEmail] = useState("");
   const [displayName, setDisplayName] = useState("");
+
+  const [modal, setModal] = useState(false);
 
   const { phoneNumber, role } = route.params;
   useEffect(() => {
@@ -57,7 +60,7 @@ const StudentOfficeDetailScreen = ({ navigation, route }) => {
         //setPhoneNumber(docSnap.id)
         setSchool(docSnap.data().school);
         setStudentID(docSnap.data().studentID);
-        setPortrait(docSnap.data().portrait)
+        setPortrait(docSnap.data().portrait);
         //console.log(docSnap.data().portrait)
         console.log(cardFront);
         console.log(cardBack);
@@ -66,7 +69,7 @@ const StudentOfficeDetailScreen = ({ navigation, route }) => {
       }
     });
   };
-  console.log(portrait)
+  console.log(portrait);
   const width = 224;
   const height = width * 1.5;
 
@@ -81,12 +84,25 @@ const StudentOfficeDetailScreen = ({ navigation, route }) => {
   };
 
   const rejectRequest = () => {
-    deleteDoc(doc(db, role, phoneNumber));
-    navigation.navigate("StudentOffice");
+    setModal(true);
+    // deleteDoc(doc(db, role, phoneNumber));
+    // navigation.navigate("StudentOffice");
   };
+
+  const onClose = () => {
+    setModal(false);
+  };
+
   return (
     <VStack h={"100%"} bgColor={COLORS.background}>
       <SafeAreaView>
+        <RejectModal
+          isShow={modal}
+          onClose={onClose}
+          phoneNumber={phoneNumber}
+          role={role}
+          navigation={navigation}
+        ></RejectModal>
         <VStack h={"100%"} mt={"17px"} paddingX={"10px"}>
           <HStack mb={2} alignItems={"center"} justifyContent={"center"}>
             <View style={{ position: "absolute", left: 0 }}>

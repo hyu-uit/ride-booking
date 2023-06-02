@@ -123,7 +123,7 @@ const StudentReportScreen = ({ navigation }) => {
   const FirstRoute = () => (
     <VStack paddingX={"10px"}>
       <Input
-        mb={5}
+        mb={4}
         borderRadius={10}
         h={"50px"}
         placeholder="Search by Student ID"
@@ -133,7 +133,7 @@ const StudentReportScreen = ({ navigation }) => {
         borderWidth={0}
         fontSize={SIZES.body3}
         color={COLORS.white}
-        marginTop={8}
+        marginTop={4}
         InputLeftElement={
           <Icon
             ml="2"
@@ -143,7 +143,7 @@ const StudentReportScreen = ({ navigation }) => {
           />
         }
       />
-      <VStack mt={"17px"} justifyContent={"center"} alignItems={"center"}>
+      <VStack justifyContent={"center"} alignItems={"center"}>
         <FlatList
           w={"100%"}
           data={usersCustomer}
@@ -168,7 +168,7 @@ const StudentReportScreen = ({ navigation }) => {
   const SecondRoute = () => (
     <VStack paddingX={"10px"}>
       <Input
-        mb={5}
+        mb={4}
         borderRadius={10}
         h={"50px"}
         placeholder="Search by Student ID"
@@ -178,7 +178,7 @@ const StudentReportScreen = ({ navigation }) => {
         borderWidth={0}
         fontSize={SIZES.body3}
         color={COLORS.white}
-        marginTop={8}
+        marginTop={4}
         InputLeftElement={
           <Icon
             ml="2"
@@ -188,7 +188,7 @@ const StudentReportScreen = ({ navigation }) => {
           />
         }
       />
-      <VStack mt={"17px"} justifyContent={"center"} alignItems={"center"}>
+      <VStack justifyContent={"center"} alignItems={"center"}>
         <ScrollView w={"100%"}>
           <FlatList
             data={usersRider}

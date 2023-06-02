@@ -78,8 +78,14 @@ const SignInScreen = ({ navigation }) => {
             saveToAsyncStorage("phoneNumber", phoneNumber);
             saveToAsyncStorage("role", getRole);
             navigation.navigate("Verify");
-          } else if (docData.exists() && docData.data().status === "pending") {
+          } else if (
+            docData.exists() &&
+            (docData.data().status === "pending" ||
+              docData.data().status === "rejected")
+          ) {
             navigation.navigate("Pending");
+            saveToAsyncStorage("phoneNumber", phoneNumber);
+            saveToAsyncStorage("role", getRole);
           } else {
             Alert.alert("Phone number has not been registered!");
             console.log("no such data");
