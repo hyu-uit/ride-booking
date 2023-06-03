@@ -24,7 +24,7 @@ export function StudentOfficeStackScreen() {
         tabBarInactiveTintColor: COLORS.lightGrey,
         tabBarStyle: { backgroundColor: COLORS.tertiary, height: 90 },
         headerShown: false,
-        tabBarShowLabel: false,
+        tabBarShowLabel: true,
         tabBarIcon: ({ color, size }) => {
           let iconName;
 
@@ -45,16 +45,23 @@ export function StudentOfficeStackScreen() {
       <MainTab.Screen
         name="StudentOfficeStack"
         component={StudentOfficeHomeStackScreen}
+        options={{ tabBarLabel: "Home" }}
       />
       <MainTab.Screen
         name="StudentListStack"
         component={StudentListStackScreen}
+        options={{ tabBarLabel: "Students" }}
       />
       <MainTab.Screen
         name="StudentReportStack"
         component={StudentReportStackScreen}
+        options={{ tabBarLabel: "Restriction" }}
       />
-      <MainTab.Screen name="Profile" component={StudentOfficeProfileScreen} />
+      <MainTab.Screen
+        name="Profile"
+        component={StudentOfficeProfileScreen}
+        options={{ tabBarLabel: "Profile" }}
+      />
     </MainTab.Navigator>
 
     // <StudentOfficeStack.Navigator screenOptions={{ headerShown: false }}>

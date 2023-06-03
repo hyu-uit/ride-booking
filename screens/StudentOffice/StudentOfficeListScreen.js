@@ -19,19 +19,59 @@ import { PixelRatio } from "react-native";
 import { TabView, TabBar, SceneMap } from "react-native-tab-view";
 import { Ionicons } from "@expo/vector-icons";
 import StudentListCard from "../../components/StudentOffice/StudentListCard";
-import { query, collection, getDocs, where } from "firebase/firestore";
+import {
+  query,
+  collection,
+  getDocs,
+  where,
+  getDoc,
+  doc,
+} from "firebase/firestore";
 import { db } from "../../config/config";
+import { getFromAsyncStorage } from "../../helper/asyncStorage";
 
 const StudentOfficeListScreen = ({ navigation }) => {
   const [usersRider, setUsersRider] = useState([]);
   const [usersCustomer, setUsersCustomer] = useState([]);
   const [usersLock, setUsersLock] = useState([]);
+  const [acronym, setAcronym] = useState();
+  const [phoneNumber, setPhoneNumber] = useState(null);
 
   useEffect(() => {
-    getUsersCustomer();
-    getUsersRider();
-    getUsersLock();
+    fetchDataAndPhoneNumber();
   }, []);
+
+  const fetchDataAndPhoneNumber = async () => {
+    try {
+      const phoneNumberValue = await getFromAsyncStorage("phoneNumber");
+      setPhoneNumber(phoneNumberValue);
+
+      if (phoneNumberValue) {
+        await fetchData(phoneNumberValue);
+        await getUsersCustomer();
+        await getUsersRider();
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const fetchData = async (phoneNumber) => {
+    try {
+      console.log(phoneNumber);
+      const docData = await getDoc(doc(db, "StudentOffice", phoneNumber));
+      setAcronym(docData.data().acronym);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  // useEffect(() => {
+  //   getUsersCustomer();
+  //   getUsersRider();
+  //   // getUsersLock();
+  //   setAcronym(getFromAsyncStorage("acronym"));
+  // }, []);
 
   const getUsersRider = () => {
     let usersRider = [];
@@ -39,17 +79,19 @@ const StudentOfficeListScreen = ({ navigation }) => {
       query(collection(db, "Rider"), where("status", "==", "active"))
     ).then((docSnap) => {
       docSnap.forEach((doc) => {
-        usersRider.push({
-          role: "Rider",
-          phoneNumber: doc.id,
-          school: doc.data().school,
-          displayName: doc.data().displayName,
-          email: doc.data().email,
-          studentID: doc.data().studentID,
-          portrait: doc.data().portrait,
-          cardFront: doc.data().cardFront,
-          cardBack: doc.data().cardBack,
-        });
+        if (doc.data().school === acronym) {
+          usersRider.push({
+            role: "Rider",
+            phoneNumber: doc.id,
+            school: doc.data().school,
+            displayName: doc.data().displayName,
+            email: doc.data().email,
+            studentID: doc.data().studentID,
+            portrait: doc.data().portrait,
+            cardFront: doc.data().cardFront,
+            cardBack: doc.data().cardBack,
+          });
+        }
       });
       setUsersRider(usersRider);
     });
@@ -60,59 +102,65 @@ const StudentOfficeListScreen = ({ navigation }) => {
       query(collection(db, "Customer"), where("status", "==", "active"))
     ).then((docSnap) => {
       docSnap.forEach((doc) => {
-        usersCustomer.push({
-          role: "Customer",
-          phoneNumber: doc.id,
-          school: doc.data().school,
-          displayName: doc.data().displayName,
-          email: doc.data().email,
-          studentID: doc.data().studentID,
-          portrait: doc.data().portrait,
-          cardFront: doc.data().cardFront,
-          cardBack: doc.data().cardBack,
-        });
+        if (doc.data().school === acronym) {
+          usersCustomer.push({
+            role: "Customer",
+            phoneNumber: doc.id,
+            school: doc.data().school,
+            displayName: doc.data().displayName,
+            email: doc.data().email,
+            studentID: doc.data().studentID,
+            portrait: doc.data().portrait,
+            cardFront: doc.data().cardFront,
+            cardBack: doc.data().cardBack,
+          });
+        }
       });
       setUsersCustomer(usersCustomer);
     });
   };
-  const getUsersLock = () => {
-    let usersLock = [];
-    getDocs(
-      query(collection(db, "Customer"), where("status", "==", "locked"))
-    ).then((docSnap) => {
-      docSnap.forEach((doc) => {
-        usersLock.push({
-          role: "Customer",
-          phoneNumber: doc.id,
-          school: doc.data().school,
-          displayName: doc.data().displayName,
-          email: doc.data().email,
-          studentID: doc.data().studentID,
-          portrait: doc.data().portrait,
-          cardFront: doc.data().cardFront,
-          cardBack: doc.data().cardBack,
-        });
-      });
-    });
-    getDocs(
-      query(collection(db, "Rider"), where("status", "==", "locked"))
-    ).then((docSnap) => {
-      docSnap.forEach((doc) => {
-        usersLock.push({
-          role: "Rider",
-          phoneNumber: doc.id,
-          school: doc.data().school,
-          displayName: doc.data().displayName,
-          email: doc.data().email,
-          studentID: doc.data().studentID,
-          portrait: doc.data().portrait,
-          cardFront: doc.data().cardFront,
-          cardBack: doc.data().cardBack,
-        });
-      });
-      setUsersLock(usersLock);
-    });
-  };
+  // const getUsersLock = () => {
+  //   let usersLock = [];
+  //   getDocs(
+  //     query(collection(db, "Customer"), where("status", "==", "locked"))
+  //   ).then((docSnap) => {
+  //     docSnap.forEach((doc) => {
+  //       if (doc.data().school === acronym) {
+  //         usersLock.push({
+  //           role: "Customer",
+  //           phoneNumber: doc.id,
+  //           school: doc.data().school,
+  //           displayName: doc.data().displayName,
+  //           email: doc.data().email,
+  //           studentID: doc.data().studentID,
+  //           portrait: doc.data().portrait,
+  //           cardFront: doc.data().cardFront,
+  //           cardBack: doc.data().cardBack,
+  //         });
+  //       }
+  //     });
+  //   });
+  //   getDocs(
+  //     query(collection(db, "Rider"), where("status", "==", "locked"))
+  //   ).then((docSnap) => {
+  //     docSnap.forEach((doc) => {
+  //       if (doc.data().school === acronym) {
+  //         usersLock.push({
+  //           role: "Rider",
+  //           phoneNumber: doc.id,
+  //           school: doc.data().school,
+  //           displayName: doc.data().displayName,
+  //           email: doc.data().email,
+  //           studentID: doc.data().studentID,
+  //           portrait: doc.data().portrait,
+  //           cardFront: doc.data().cardFront,
+  //           cardBack: doc.data().cardBack,
+  //         });
+  //       }
+  //     });
+  //     setUsersLock(usersLock);
+  //   });
+  // };
   const FirstRoute = () => (
     <VStack paddingX={"10px"} w={"100%"}>
       <Input

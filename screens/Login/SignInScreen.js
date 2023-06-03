@@ -82,8 +82,11 @@ const SignInScreen = ({ navigation }) => {
       } else {
         getDoc(doc(db, getRole, phoneNumber))
           .then((docData) => {
+            if (!docData.exists()) {
+              Alert.alert("Phone number has not been registered!");
+            }
+
             if (docData.exists() && docData.data().status === "active") {
-              console.log(phoneNumber + getRole);
               // AsyncStorage.setItem("phoneNumber", phoneNumber);
               // AsyncStorage.setItem("role", getRole);
               saveToAsyncStorage("phoneNumber", phoneNumber);

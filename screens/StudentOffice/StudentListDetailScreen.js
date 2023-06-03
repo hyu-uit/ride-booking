@@ -13,7 +13,7 @@ import {
 import { COLORS, FONTS, SIZES } from "../../constants/theme";
 import { SafeAreaView } from "react-native-safe-area-context";
 import ButtonBack from "../../components/Global/ButtonBack/ButtonBack";
-import { PixelRatio } from "react-native";
+import { Alert, PixelRatio } from "react-native";
 import LoveIcon from "../../assets/icons8-smiling-face-with-heart-eyes-96.png";
 import SmileIcon from "../../assets/icons8-slightly-smiling-face-96.png";
 import DisappointedIcon from "../../assets/icons8-frowning-face-96.png";
@@ -67,16 +67,38 @@ const StudentListDetailScreen = ({ route, navigation }) => {
   const IDWidth = PixelRatio.roundToNearestPixel(SIZES.width - 20);
   const IDHeight = IDWidth * (2 / 3);
   const lockAccount = () => {
-    updateDoc(doc(db, role, phoneNumber), {
-      status: "locked",
-    });
-    navigation.goBack();
+    Alert.alert("Are you sure you want to lock this account?", "", [
+      {
+        text: "Cancel",
+        onPress: () => {},
+      },
+      {
+        text: "OK",
+        onPress: () => {
+          updateDoc(doc(db, role, phoneNumber), {
+            status: "locked",
+          });
+          navigation.goBack();
+        },
+      },
+    ]);
   };
   const unlockAccount = () => {
-    updateDoc(doc(db, role, phoneNumber), {
-      status: "active",
-    });
-    navigation.goBack();
+    Alert.alert("Are you sure you want to unlock this account?", "", [
+      {
+        text: "Cancel",
+        onPress: () => {},
+      },
+      {
+        text: "OK",
+        onPress: () => {
+          updateDoc(doc(db, role, phoneNumber), {
+            status: "active",
+          });
+          navigation.goBack();
+        },
+      },
+    ]);
   };
   return (
     <VStack h={"100%"} bgColor={COLORS.background}>

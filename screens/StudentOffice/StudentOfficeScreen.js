@@ -28,7 +28,10 @@ import {
 } from "firebase/firestore";
 import { db } from "../../config/config";
 import { useEffect } from "react";
-import { getFromAsyncStorage } from "../../helper/asyncStorage";
+import {
+  getFromAsyncStorage,
+  saveToAsyncStorage,
+} from "../../helper/asyncStorage";
 
 const StudentOfficeScreen = ({ navigation }) => {
   const [service, setService] = useState(0);
@@ -42,7 +45,7 @@ const StudentOfficeScreen = ({ navigation }) => {
 
   useEffect(() => {
     fetchDataAndPhoneNumber();
-  }, [navigation]);
+  }, []);
 
   const fetchDataAndPhoneNumber = async () => {
     try {
@@ -50,7 +53,7 @@ const StudentOfficeScreen = ({ navigation }) => {
       setPhoneNumber(phoneNumberValue);
 
       if (phoneNumberValue) {
-        fetchData(phoneNumberValue);
+        await fetchData(phoneNumberValue);
         await getUsers();
       }
     } catch (err) {
@@ -64,13 +67,16 @@ const StudentOfficeScreen = ({ navigation }) => {
       setUniName(docData.data().name);
       setAcronym(docData.data().acronym);
       setLogo(docData.data().logo);
+      saveToAsyncStorage("acronym", docData.data().acronym);
     } catch (error) {
       console.error(error);
     }
   };
   const handleDeleteStudent = (item) => {
     // Xóa mục khỏi danh sách sinh viên
-    const updatedList = users.filter((user) => {user.phoneNumber !== item});
+    const updatedList = users.filter((user) => {
+      user.phoneNumber !== item;
+    });
     setUsers(updatedList);
   };
   const getUsers = async () => {
@@ -79,34 +85,38 @@ const StudentOfficeScreen = ({ navigation }) => {
       query(collection(db, "Customer"), where("status", "==", "pending"))
     ).then((docSnap) => {
       docSnap.forEach((doc) => {
-        users.push({
-          role: "Customer",
-          phoneNumber: doc.id,
-          school: doc.data().school,
-          displayName: doc.data().displayName,
-          email: doc.data().email,
-          studentID: doc.data().studentID,
-          portrait: doc.data().portrait,
-          cardFront: doc.data().cardFront,
-          cardBack: doc.data().cardBack,
-        });
+        if (doc.data().school === acronym) {
+          users.push({
+            role: "Customer",
+            phoneNumber: doc.id,
+            school: doc.data().school,
+            displayName: doc.data().displayName,
+            email: doc.data().email,
+            studentID: doc.data().studentID,
+            portrait: doc.data().portrait,
+            cardFront: doc.data().cardFront,
+            cardBack: doc.data().cardBack,
+          });
+        }
       });
     });
     getDocs(
       query(collection(db, "Rider"), where("status", "==", "pending"))
     ).then((docSnap) => {
       docSnap.forEach((doc) => {
-        users.push({
-          role: "Rider",
-          phoneNumber: doc.id,
-          school: doc.data().school,
-          displayName: doc.data().displayName,
-          email: doc.data().email,
-          studentID: doc.data().studentID,
-          portrait: doc.data().portrait,
-          cardFront: doc.data().cardFront,
-          cardBack: doc.data().cardBack,
-        });
+        if (doc.data().school === acronym) {
+          users.push({
+            role: "Rider",
+            phoneNumber: doc.id,
+            school: doc.data().school,
+            displayName: doc.data().displayName,
+            email: doc.data().email,
+            studentID: doc.data().studentID,
+            portrait: doc.data().portrait,
+            cardFront: doc.data().cardFront,
+            cardBack: doc.data().cardBack,
+          });
+        }
       });
       setUsers(users);
     });
@@ -156,10 +166,9 @@ const StudentOfficeScreen = ({ navigation }) => {
           <ScrollView>
             <FlatList
               data={users}
-              keyExtractor={(item) => item.phoneNumber }
+              keyExtractor={(item) => item.phoneNumber}
               renderItem={({ item }) => (
                 <StudentOfficeCard
-                  
                   onPress={() => {
                     // AsyncStorage.setItem('phoneNumber',item.phoneNumber),
                     // AsyncStorage.setItem('role',item.role),

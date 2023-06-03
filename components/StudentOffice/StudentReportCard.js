@@ -32,14 +32,36 @@ function StudentReportCard(props) {
   const [locked, setLocked] = useState();
 
   const lockAccount = () => {
-    updateDoc(doc(db, role, phoneNumber), {
-      status: "locked",
-    });
+    Alert.alert("Are you sure you want to lock this account?", "", [
+      {
+        text: "Cancel",
+        onPress: () => {},
+      },
+      {
+        text: "OK",
+        onPress: () => {
+          updateDoc(doc(db, role, phoneNumber), {
+            status: "locked",
+          });
+        },
+      },
+    ]);
   };
   const unlockAccount = () => {
-    updateDoc(doc(db, role, phoneNumber), {
-      status: "active",
-    });
+    Alert.alert("Are you sure you want to lock this account?", "", [
+      {
+        text: "Cancel",
+        onPress: () => {},
+      },
+      {
+        text: "OK",
+        onPress: () => {
+          updateDoc(doc(db, role, phoneNumber), {
+            status: "active",
+          });
+        },
+      },
+    ]);
   };
 
   return (

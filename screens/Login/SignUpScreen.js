@@ -108,8 +108,9 @@ const SignUpScreen = ({ navigation }) => {
           if (doc.id == phoneNumber) count++;
           if (doc.data().status === "rejected" && doc.id === phoneNumber)
             rejected = true;
+          console.log(doc.id);
         });
-        if (count == 0 || rejected) {
+        if (count == 0 || rejected === true) {
           // setDoc(doc(db, role, phoneNumber), {
           //   displayName: name,
           //   email: email,

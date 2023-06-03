@@ -8,7 +8,6 @@ import {
   View,
   Image,
   Avatar,
-  Switch,
   ScrollView,
   Icon,
   FlatList,
@@ -23,9 +22,22 @@ import HistoryCard from "../../../components/HistoryCard";
 import * as ImagePicker from "expo-image-picker";
 import HistoryPickUpCard from "../../../components/Driver/HistoryPickUpCard";
 import { Ionicons } from "@expo/vector-icons";
-import { collection, getDocs, query, where } from "@firebase/firestore";
+import {
+  collection,
+  getDocs,
+  query,
+  where,
+  updateDoc,
+  doc,
+  getDoc,
+} from "@firebase/firestore";
 import { db } from "../../../config/config";
 import moment from "moment/moment";
+import {
+  getFromAsyncStorage,
+  saveToAsyncStorage,
+} from "../../../helper/asyncStorage";
+import { Switch } from "react-native";
 
 const RiderHomeScreen = ({ navigation, route }) => {
   const [service, setService] = useState(0);
@@ -36,16 +48,59 @@ const RiderHomeScreen = ({ navigation, route }) => {
   // useEffect(() => {
   //   console.log(phoneNumber)
   // }, []);
+  const [open, setOpen] = useState();
   const [waitingTrips, setWaitingTrips] = useState([]);
   const [finishedTrips, setFinishedTrips] = useState([]);
   const [canceledTrips, setCanceledTrips] = useState([]);
+  const [phoneNumber, setPhoneNumber] = useState([]);
   const currentDate = moment().format("DD/M/YYYY");
 
   useEffect(() => {
-    getWaitingTrips();
-    getFinishedTrips();
-    getCanceledTrips();
+    fetchDataAndPhoneNumber();
   }, [navigation]);
+
+  const fetchDataAndPhoneNumber = async () => {
+    try {
+      const phoneNumberValue = await getFromAsyncStorage("phoneNumber");
+      setPhoneNumber(phoneNumberValue);
+
+      if (phoneNumberValue) {
+        fetchData(phoneNumberValue);
+        await getWaitingTrips();
+        await getFinishedTrips();
+        await getCanceledTrips();
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const fetchData = async (phoneNumber) => {
+    try {
+      const docData = await getDoc(doc(db, "Rider", phoneNumber));
+      setOpen(docData.data().open);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  // useEffect(() => {
+  //   getWaitingTrips();
+  //   getFinishedTrips();
+  //   getCanceledTrips();
+  //   getFromAsyncStorage("phoneNumber").then((result) => {
+  //     setPhoneNumber(result);
+  //   });
+  // }, [navigation]);
+
+  const handleSwitchChange = () => {
+    console.log(open);
+    setOpen((pre) => !pre);
+    console.log(open);
+    updateDoc(doc(db, "Rider", phoneNumber), {
+      open: !open,
+    });
+  };
 
   const getWaitingTrips = () => {
     let waitingTrips = [];
@@ -231,7 +286,11 @@ const RiderHomeScreen = ({ navigation, route }) => {
                       w={"30px"}
                     ></Image>
                   </Button>
-                  <Switch defaultIsChecked></Switch>
+                  <Switch
+                    value={open}
+                    onValueChange={handleSwitchChange}
+                    trackColor={{ true: COLORS.fourthary }}
+                  ></Switch>
                 </HStack>
               </HStack>
 

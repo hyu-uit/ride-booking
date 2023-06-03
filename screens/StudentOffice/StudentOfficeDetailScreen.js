@@ -70,10 +70,21 @@ const StudentOfficeDetailScreen = ({ navigation, route }) => {
   const IDHeight = IDWidth * (2 / 3);
 
   const acceptRequest = () => {
-    updateDoc(doc(db, role, phoneNumber), {
-      status: "active",
-    });
-    navigation.navigate("StudentOffice");
+    Alert.alert("Are you sure you want to accept this account?", "", [
+      {
+        text: "Cancel",
+        onPress: () => {},
+      },
+      {
+        text: "OK",
+        onPress: () => {
+          updateDoc(doc(db, role, phoneNumber), {
+            status: "active",
+          });
+          navigation.navigate("StudentOffice");
+        },
+      },
+    ]);
   };
 
   const rejectRequest = () => {

@@ -18,7 +18,7 @@ const MainRiderNavigator = ({ navigation }) => {
         tabBarInactiveTintColor: COLORS.lightGrey,
         tabBarStyle: { backgroundColor: COLORS.tertiary, height: operator },
         headerShown: false,
-        tabBarShowLabel: false,
+        tabBarShowLabel: true,
         tabBarIcon: ({ color, size }) => {
           let iconName;
 
@@ -39,13 +39,23 @@ const MainRiderNavigator = ({ navigation }) => {
       <MainRiderTab.Screen
         name="RiderHomeStack"
         component={RiderHomeStackScreen}
+        options={{ tabBarLabel: "Home" }}
       />
       <MainRiderTab.Screen
         name="RiderScheduled"
         component={RiderScheduleScreen}
+        options={{ tabBarLabel: "Scheduled" }}
       />
-      <MainRiderTab.Screen name="Income" component={IncomeScreen} />
-      <MainRiderTab.Screen name="RiderProfile" component={RiderProfileScreen} />
+      <MainRiderTab.Screen
+        name="Income"
+        component={IncomeScreen}
+        options={{ tabBarLabel: "Income" }}
+      />
+      <MainRiderTab.Screen
+        name="RiderProfile"
+        component={RiderProfileScreen}
+        options={{ tabBarLabel: "Profile" }}
+      />
     </MainRiderTab.Navigator>
   );
 };

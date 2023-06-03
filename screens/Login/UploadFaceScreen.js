@@ -72,10 +72,10 @@ const UploadFaceScreen = ({ navigation }) => {
       setFinalDate(result);
     });
     getFromAsyncStorage("licensePlates").then((result) => {
-      setFinalDate(result);
+      setLicensePlates(result);
     });
     getFromAsyncStorage("transportType").then((result) => {
-      setFinalDate(result);
+      setTransportType(result);
     });
   }, []);
   const [width, setWidth] = useState(
@@ -101,6 +101,7 @@ const UploadFaceScreen = ({ navigation }) => {
         status: "pending",
         licensePlates: licensePlates,
         transportType: transportType,
+        open: false,
       });
       //upload image to firebase storage
       uploadImage();

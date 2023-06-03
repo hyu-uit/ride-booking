@@ -18,7 +18,7 @@ const MainNavigator = ({ navigation }) => {
         tabBarInactiveTintColor: COLORS.lightGrey,
         tabBarStyle: { backgroundColor: COLORS.tertiary, height: operator },
         headerShown: false,
-        tabBarShowLabel: false,
+        tabBarShowLabel: true,
         tabBarIcon: ({ color, size }) => {
           let iconName;
 
@@ -36,10 +36,26 @@ const MainNavigator = ({ navigation }) => {
         },
       })}
     >
-      <MainTab.Screen name="HomeStack" component={HomeStackScreen} />
-      <MainTab.Screen name="ActivityStack" component={ActivityStackScreen} />
-      <MainTab.Screen name="PromotionStack" component={PromotionStackScreen} />
-      <MainTab.Screen name="Profile" component={CustomerProfile} />
+      <MainTab.Screen
+        name="HomeStack"
+        component={HomeStackScreen}
+        options={{ tabBarLabel: "Home" }}
+      />
+      <MainTab.Screen
+        name="ActivityStack"
+        component={ActivityStackScreen}
+        options={{ tabBarLabel: "Activity" }}
+      />
+      <MainTab.Screen
+        name="PromotionStack"
+        component={PromotionStackScreen}
+        options={{ tabBarLabel: "Promotion" }}
+      />
+      <MainTab.Screen
+        name="Profile"
+        component={CustomerProfile}
+        options={{ tabBarLabel: "Profile" }}
+      />
     </MainTab.Navigator>
   );
 };

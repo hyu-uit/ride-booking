@@ -17,6 +17,7 @@ import { COLORS, FONTS, SIZES } from "../../constants/theme";
 import { deleteDoc, updateDoc, doc } from "@firebase/firestore";
 import { db } from "../../config/config";
 import { Alert, TouchableOpacity } from "react-native";
+import RejectModal from "../Modal/RejectModal";
 
 function StudentOfficeCard(props, onPressDelete) {
   let {
@@ -31,27 +32,58 @@ function StudentOfficeCard(props, onPressDelete) {
     cardBack,
   } = props.user;
   const { onPress } = props;
+
+  const [modal, setModal] = useState(false);
+
   const acceptAccount = () => {
-    props.onPressDelete(phoneNumber)
-    updateDoc(doc(db, role, phoneNumber), {
-      status: "active",
-    });
+    Alert.alert("Are you sure you want to accept this account?", "", [
+      {
+        text: "Cancel",
+        onPress: () => {},
+      },
+      {
+        text: "OK",
+        onPress: () => {
+          props.onPressDelete(phoneNumber);
+          updateDoc(doc(db, role, phoneNumber), {
+            status: "active",
+          });
+        },
+      },
+    ]);
   };
-  const rejectAccount = () => {
-    props.onPressDelete(phoneNumber)
-    deleteDoc(doc(db, role, phoneNumber));
+
+  const rejectRequest = () => {
+    setModal(true);
+    // deleteDoc(doc(db, role, phoneNumber));
+    // navigation.navigate("StudentOffice");
   };
+
+  const onClose = () => {
+    setModal(false);
+  };
+
+  // const rejectAccount = () => {
+  //   props.onPressDelete(phoneNumber);
+  //   deleteDoc(doc(db, role, phoneNumber));
+  // };
   return (
     <VStack
       w={"100%"}
       bgColor={COLORS.tertiary}
       pb={3}
       borderRadius={"20px"}
-      h={"130px"}
+      // h={"130px"}
       mb={5}
 
       //  onTouchEnd={onPress}
     >
+      <RejectModal
+        isShow={modal}
+        onClose={onClose}
+        phoneNumber={phoneNumber}
+        role={role}
+      ></RejectModal>
       <TouchableOpacity onPress={onPress}>
         <HStack>
           <VStack w={"75%"}>
@@ -102,7 +134,7 @@ function StudentOfficeCard(props, onPressDelete) {
               justifyContent={"center"}
               alignItems={"center"}
               borderRadius={"10px"}
-              onPress={rejectAccount}
+              onPress={rejectRequest}
             >
               <Text style={{ ...FONTS.h5, color: COLORS.red }}>Reject</Text>
             </Button>

@@ -22,18 +22,58 @@ import BookingCard from "../../components/BookingCard/BookingCard";
 import { Ionicons } from "@expo/vector-icons";
 import StudentListCard from "../../components/StudentOffice/StudentListCard";
 import StudentReportCard from "../../components/StudentOffice/StudentReportCard";
-import { query, collection, getDocs, where } from "firebase/firestore";
+import {
+  query,
+  collection,
+  getDocs,
+  where,
+  getDoc,
+  doc,
+} from "firebase/firestore";
 import { db } from "../../config/config";
+import { getFromAsyncStorage } from "../../helper/asyncStorage";
 const StudentReportScreen = ({ navigation }) => {
   const [usersRider, setUsersRider] = useState([]);
   const [usersCustomer, setUsersCustomer] = useState([]);
   const [usersLock, setUsersLock] = useState([]);
+  const [acronym, setAcronym] = useState();
+  const [phoneNumber, setPhoneNumber] = useState(null);
 
   useEffect(() => {
-    getUsersCustomer();
-    getUsersRider();
-    getUsersLock();
+    fetchDataAndPhoneNumber();
   }, []);
+
+  const fetchDataAndPhoneNumber = async () => {
+    try {
+      const phoneNumberValue = await getFromAsyncStorage("phoneNumber");
+      setPhoneNumber(phoneNumberValue);
+
+      if (phoneNumberValue) {
+        fetchData(phoneNumberValue);
+        await getUsersCustomer();
+        await getUsersRider();
+        await getUsersLock();
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const fetchData = async (phoneNumber) => {
+    try {
+      console.log(phoneNumber);
+      const docData = await getDoc(doc(db, "StudentOffice", phoneNumber));
+      setAcronym(docData.data().acronym);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  // useEffect(() => {
+  //   getUsersCustomer();
+  //   getUsersRider();
+  //   getUsersLock();
+  // }, []);
 
   const getUsersRider = () => {
     let usersRider = [];
@@ -41,18 +81,21 @@ const StudentReportScreen = ({ navigation }) => {
       query(collection(db, "Rider"), where("status", "==", "active"))
     ).then((docSnap) => {
       docSnap.forEach((doc) => {
-        usersRider.push({
-          role: "Rider",
-          phoneNumber: doc.id,
-          school: doc.data().school,
-          displayName: doc.data().displayName,
-          email: doc.data().email,
-          studentID: doc.data().studentID,
-          portrait: doc.data().portrait,
-          cardFront: doc.data().cardFront,
-          cardBack: doc.data().cardBack,
-          cardBack: doc.data().status,
-        });
+        console.log(doc.data().status);
+        if (doc.data().school === acronym) {
+          usersRider.push({
+            role: "Rider",
+            phoneNumber: doc.id,
+            school: doc.data().school,
+            displayName: doc.data().displayName,
+            email: doc.data().email,
+            studentID: doc.data().studentID,
+            portrait: doc.data().portrait,
+            cardFront: doc.data().cardFront,
+            cardBack: doc.data().cardBack,
+            cardBack: doc.data().status,
+          });
+        }
       });
       setUsersRider(usersRider);
     });
@@ -63,18 +106,20 @@ const StudentReportScreen = ({ navigation }) => {
       query(collection(db, "Customer"), where("status", "==", "active"))
     ).then((docSnap) => {
       docSnap.forEach((doc) => {
-        usersCustomer.push({
-          role: "Customer",
-          phoneNumber: doc.id,
-          school: doc.data().school,
-          displayName: doc.data().displayName,
-          email: doc.data().email,
-          studentID: doc.data().studentID,
-          portrait: doc.data().portrait,
-          cardFront: doc.data().cardFront,
-          cardBack: doc.data().cardBack,
-          status: doc.data().status,
-        });
+        if (doc.data().school === acronym) {
+          usersCustomer.push({
+            role: "Customer",
+            phoneNumber: doc.id,
+            school: doc.data().school,
+            displayName: doc.data().displayName,
+            email: doc.data().email,
+            studentID: doc.data().studentID,
+            portrait: doc.data().portrait,
+            cardFront: doc.data().cardFront,
+            cardBack: doc.data().cardBack,
+            status: doc.data().status,
+          });
+        }
       });
       setUsersCustomer(usersCustomer);
     });
@@ -86,36 +131,40 @@ const StudentReportScreen = ({ navigation }) => {
       query(collection(db, "Customer"), where("status", "==", "locked"))
     ).then((docSnap) => {
       docSnap.forEach((doc) => {
-        usersLock.push({
-          role: "Customer",
-          phoneNumber: doc.id,
-          school: doc.data().school,
-          displayName: doc.data().displayName,
-          email: doc.data().email,
-          studentID: doc.data().studentID,
-          portrait: doc.data().portrait,
-          cardFront: doc.data().cardFront,
-          cardBack: doc.data().cardBack,
-          status: doc.data().status,
-        });
+        if (doc.data().school === acronym) {
+          usersLock.push({
+            role: "Customer",
+            phoneNumber: doc.id,
+            school: doc.data().school,
+            displayName: doc.data().displayName,
+            email: doc.data().email,
+            studentID: doc.data().studentID,
+            portrait: doc.data().portrait,
+            cardFront: doc.data().cardFront,
+            cardBack: doc.data().cardBack,
+            status: doc.data().status,
+          });
+        }
       });
     });
     getDocs(
       query(collection(db, "Rider"), where("status", "==", "locked"))
     ).then((docSnap) => {
       docSnap.forEach((doc) => {
-        usersLock.push({
-          role: "Rider",
-          phoneNumber: doc.id,
-          school: doc.data().school,
-          displayName: doc.data().displayName,
-          email: doc.data().email,
-          studentID: doc.data().studentID,
-          portrait: doc.data().portrait,
-          cardFront: doc.data().cardFront,
-          cardBack: doc.data().cardBack,
-          status: doc.data().status,
-        });
+        if (doc.data().school === acronym) {
+          usersLock.push({
+            role: "Rider",
+            phoneNumber: doc.id,
+            school: doc.data().school,
+            displayName: doc.data().displayName,
+            email: doc.data().email,
+            studentID: doc.data().studentID,
+            portrait: doc.data().portrait,
+            cardFront: doc.data().cardFront,
+            cardBack: doc.data().cardBack,
+            status: doc.data().status,
+          });
+        }
       });
       setUsersLock(usersLock);
     });
