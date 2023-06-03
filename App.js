@@ -22,9 +22,7 @@ async function loadFonts() {
 }
 export default function App() {
   loadFonts().then(() => {});
-  // Geocoder.init("", {
-  //   language: "vi",
-  // });
+
   return (
     <AppProvider>
       <Navigation></Navigation>

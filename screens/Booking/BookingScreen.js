@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { COLORS, SIZES } from "../../constants/theme";
 import { Button, Center, HStack, Image, Text, VStack, View } from "native-base";
 import { SafeAreaView } from "react-native-safe-area-context";
-// import MapView, { Marker } from "react-native-maps";
+import MapView, { Marker } from "react-native-maps";
 import { Keyboard, TouchableWithoutFeedback } from "react-native";
 import LocationCardWithChange from "../../components/LocationCard/LocationCardWithChange";
 import SelectedButton from "../../components/Button/SelectedButton";
@@ -23,7 +23,6 @@ import Geocoder from "react-native-geocoding";
 import { UniversityMarks } from "../../constants/location";
 import Icon from "../../assets/icons/arrowRight.png";
 import { getAddressFromCoordinate } from "../../api/locationAPI";
-import { LeafletView } from "react-native-leaflet-view";
 
 const initialState = {
   step: 1,
@@ -235,7 +234,7 @@ export default function BookingScreen({ navigation }) {
         return (
           <>
             <LocationCardWithChange />
-            {/* <MapView
+            <MapView
               style={{ flex: 1, borderRadius: 10, marginTop: 10 }}
               provider="google"
               initialRegion={state.region}
@@ -263,8 +262,7 @@ export default function BookingScreen({ navigation }) {
                 onDragEnd={handleMarkerDrag}
                 isPreselected={true}
               />
-            </MapView> */}
-            <LeafletView />
+            </MapView>
             <Center
               w={"100%"}
               marginTop={"auto"}
