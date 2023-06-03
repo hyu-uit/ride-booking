@@ -38,7 +38,7 @@ const StudentOfficeDetailScreen = ({ navigation, route }) => {
   const [studentID, setStudentID] = useState("");
   const [email, setEmail] = useState("");
   const [displayName, setDisplayName] = useState("");
-
+  const [birthday,setBirthday]=useState("");
   const [modal, setModal] = useState(false);
 
   const { phoneNumber, role } = route.params;
@@ -54,6 +54,7 @@ const StudentOfficeDetailScreen = ({ navigation, route }) => {
         setCardFront(docSnap.data().cardFront);
         setDisplayName(docSnap.data().displayName);
         setEmail(docSnap.data().email);
+        setBirthday(docSnap.data().birthday);
         setSchool(docSnap.data().school);
         setStudentID(docSnap.data().studentID);
         setPortrait(docSnap.data().portrait);
@@ -162,7 +163,7 @@ const StudentOfficeDetailScreen = ({ navigation, route }) => {
                 Birthday
               </Text>
               <Text style={{ ...FONTS.h3, color: COLORS.white }} mt={2}>
-                23/03/2002
+                {birthday}
               </Text>
               <Text style={{ ...FONTS.h4, color: COLORS.fifthary }} mt={10}>
                 Student ID

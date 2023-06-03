@@ -33,38 +33,36 @@ import { getFromAsyncStorage } from "../../helper/asyncStorage";
 const StudentOfficeListScreen = ({ navigation }) => {
   const [usersRider, setUsersRider] = useState([]);
   const [usersCustomer, setUsersCustomer] = useState([]);
-  const [usersLock, setUsersLock] = useState([]);
-  const [acronym, setAcronym] = useState();
+  const [searchText, setSearchText] = useState("");
   const [phoneNumber, setPhoneNumber] = useState(null);
+  const [acronym, setAcronym] = useState();
 
   useEffect(() => {
     fetchDataAndPhoneNumber();
   }, []);
-
   const fetchDataAndPhoneNumber = async () => {
     try {
       const phoneNumberValue = await getFromAsyncStorage("phoneNumber");
       setPhoneNumber(phoneNumberValue);
 
       if (phoneNumberValue) {
-        await fetchData(phoneNumberValue);
-        await getUsersCustomer();
-        await getUsersRider();
+        getUsersCustomer();
+        getUsersRider();
       }
     } catch (err) {
       console.log(err);
     }
   };
 
-  const fetchData = async (phoneNumber) => {
-    try {
-      console.log(phoneNumber);
-      const docData = await getDoc(doc(db, "StudentOffice", phoneNumber));
-      setAcronym(docData.data().acronym);
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  // const fetchData = async (phoneNumber) => {
+  //   try {
+  //     console.log(phoneNumber);
+  //     const docData = await getDoc(doc(db, "StudentOffice", phoneNumber));
+  //     setAcronym(docData.data().acronym);
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
 
   // useEffect(() => {
   //   getUsersCustomer();
@@ -74,93 +72,89 @@ const StudentOfficeListScreen = ({ navigation }) => {
   // }, []);
 
   const getUsersRider = () => {
-    let usersRider = [];
-    getDocs(
-      query(collection(db, "Rider"), where("status", "==", "active"))
-    ).then((docSnap) => {
-      docSnap.forEach((doc) => {
-        if (doc.data().school === acronym) {
-          usersRider.push({
-            role: "Rider",
-            phoneNumber: doc.id,
-            school: doc.data().school,
-            displayName: doc.data().displayName,
-            email: doc.data().email,
-            studentID: doc.data().studentID,
-            portrait: doc.data().portrait,
-            cardFront: doc.data().cardFront,
-            cardBack: doc.data().cardBack,
-          });
-        }
+    const riderCollectionRef = collection(db, "Rider");
+    const riderQuery = query(
+      riderCollectionRef,
+      where("status", "==", "active")
+    );
+    const unsubscribeRider = onSnapshot(riderQuery, (querySnapshot) => {
+      const updatedUsers = [];
+      querySnapshot.forEach((doc) => {
+        const user = {
+          role: "Rider",
+          phoneNumber: doc.id,
+          school: doc.data().school,
+          displayName: doc.data().displayName,
+          email: doc.data().email,
+          studentID: doc.data().studentID,
+          portrait: doc.data().portrait,
+          birthday: doc.data().birthday,
+          cardFront: doc.data().cardFront,
+          cardBack: doc.data().cardBack,
+          key: doc.id + "-Rider",
+        };
+        updatedUsers.push(user);
       });
-      setUsersRider(usersRider);
+      setUsersRider((prevUsers) => [
+        ...prevUsers.filter((user) => user.role !== "Rider"),
+        ...updatedUsers,
+      ]);
     });
+    return () => {
+      unsubscribeRider();
+    };
   };
   const getUsersCustomer = () => {
-    let usersCustomer = [];
-    getDocs(
-      query(collection(db, "Customer"), where("status", "==", "active"))
-    ).then((docSnap) => {
-      docSnap.forEach((doc) => {
-        if (doc.data().school === acronym) {
-          usersCustomer.push({
-            role: "Customer",
-            phoneNumber: doc.id,
-            school: doc.data().school,
-            displayName: doc.data().displayName,
-            email: doc.data().email,
-            studentID: doc.data().studentID,
-            portrait: doc.data().portrait,
-            cardFront: doc.data().cardFront,
-            cardBack: doc.data().cardBack,
-          });
-        }
+    const customerCollectionRef = collection(db, "Customer");
+    const customerQuery = query(
+      customerCollectionRef,
+      where("status", "==", "active")
+    );
+    const unsubscribeCustomer = onSnapshot(customerQuery, (querySnapshot) => {
+      const updatedUsers = [];
+      querySnapshot.forEach((doc) => {
+        const user = {
+          role: "Customer",
+          phoneNumber: doc.id,
+          school: doc.data().school,
+          displayName: doc.data().displayName,
+          email: doc.data().email,
+          studentID: doc.data().studentID,
+          portrait: doc.data().portrait,
+          cardFront: doc.data().cardFront,
+          birthday: doc.data().birthday,
+          cardBack: doc.data().cardBack,
+          key: doc.id + "-Rider",
+        };
+        updatedUsers.push(user);
       });
-      setUsersCustomer(usersCustomer);
+      setUsersCustomer((prevUsers) => [
+        ...prevUsers.filter((user) => user.role !== "Rider"),
+        ...updatedUsers,
+      ]);
     });
+    return () => {
+      unsubscribeCustomer();
+    };
   };
-  // const getUsersLock = () => {
-  //   let usersLock = [];
-  //   getDocs(
-  //     query(collection(db, "Customer"), where("status", "==", "locked"))
-  //   ).then((docSnap) => {
-  //     docSnap.forEach((doc) => {
-  //       if (doc.data().school === acronym) {
-  //         usersLock.push({
-  //           role: "Customer",
-  //           phoneNumber: doc.id,
-  //           school: doc.data().school,
-  //           displayName: doc.data().displayName,
-  //           email: doc.data().email,
-  //           studentID: doc.data().studentID,
-  //           portrait: doc.data().portrait,
-  //           cardFront: doc.data().cardFront,
-  //           cardBack: doc.data().cardBack,
-  //         });
-  //       }
-  //     });
-  //   });
-  //   getDocs(
-  //     query(collection(db, "Rider"), where("status", "==", "locked"))
-  //   ).then((docSnap) => {
-  //     docSnap.forEach((doc) => {
-  //       if (doc.data().school === acronym) {
-  //         usersLock.push({
-  //           role: "Rider",
-  //           phoneNumber: doc.id,
-  //           school: doc.data().school,
-  //           displayName: doc.data().displayName,
-  //           email: doc.data().email,
-  //           studentID: doc.data().studentID,
-  //           portrait: doc.data().portrait,
-  //           cardFront: doc.data().cardFront,
-  //           cardBack: doc.data().cardBack,
-  //         });
-  //       }
-  //     });
-  //     setUsersLock(usersLock);
-  //   });
-  // };
+
+  const handleSearchTextChange = (text) => {
+    setSearchText(text);
+  };
+
+  const filteredCustomerUsers = usersCustomer.filter((user) => {
+    const studentID = user.studentID.toLowerCase();
+    const searchQuery = searchText.toLowerCase();
+
+    return studentID.includes(searchQuery);
+  });
+  const filteredRiderUsers = usersRider.filter((user) => {
+    const studentID = user.studentID.toLowerCase();
+    const searchQuery = searchText.toLowerCase();
+
+    return studentID.includes(searchQuery);
+  });
+
   const FirstRoute = () => (
     <VStack paddingX={"10px"} w={"100%"}>
       <Input
@@ -172,9 +166,11 @@ const StudentOfficeListScreen = ({ navigation }) => {
         variant={"filled"}
         bgColor={COLORS.tertiary}
         borderWidth={0}
+        value={searchText}
         fontSize={SIZES.body3}
         color={COLORS.white}
         marginTop={4}
+        onChangeText={handleSearchTextChange}
         InputLeftElement={
           <Icon
             ml="2"
@@ -184,30 +180,27 @@ const StudentOfficeListScreen = ({ navigation }) => {
           />
         }
       />
-      <VStack h={"100%"} pb={5} justifyContent={"end"} alignItems={"center"}>
-        {/* <StudentListCard
+      {/* <StudentListCard
             onPress={() => {
               navigation.navigate("StudentListDetail");
             }}
           /> */}
-        <FlatList
-          w={"100%"}
-          data={usersCustomer}
-          keyExtractor={(item) => item.name}
-          renderItem={({ item }) => (
-            <StudentListCard
-              onPress={() => {
-                const data = {
-                  phoneNumber: "" + item.phoneNumber,
-                  role: "" + item.role,
-                };
-                navigation.navigate("StudentListDetail", data);
-              }}
-              list={item}
-            ></StudentListCard>
-          )}
-        ></FlatList>
-      </VStack>
+      <FlatList
+        data={filteredCustomerUsers}
+        keyExtractor={(item) => item.key}
+        renderItem={({ item }) => (
+          <StudentListCard
+            onPress={() => {
+              const data = {
+                phoneNumber: "" + item.phoneNumber,
+                role: "" + item.role,
+              };
+              navigation.navigate("StudentListDetail", data);
+            }}
+            list={item}
+          ></StudentListCard>
+        )}
+      ></FlatList>
     </VStack>
   );
 
@@ -225,6 +218,8 @@ const StudentOfficeListScreen = ({ navigation }) => {
         fontSize={SIZES.body3}
         color={COLORS.white}
         marginTop={4}
+        value={searchText}
+        onChangeText={handleSearchTextChange}
         InputLeftElement={
           <Icon
             ml="2"
@@ -234,72 +229,24 @@ const StudentOfficeListScreen = ({ navigation }) => {
           />
         }
       />
-      <VStack justifyContent={"center"} alignItems={"center"}>
-        <FlatList
-          w={"100%"}
-          data={usersRider}
-          keyExtractor={(item) => item.name}
-          renderItem={({ item }) => (
-            <StudentListCard
-              onPress={() => {
-                const data = {
-                  phoneNumber: "" + item.phoneNumber,
-                  role: "" + item.role,
-                };
-                navigation.navigate("StudentListDetail", data);
-              }}
-              list={item}
-            ></StudentListCard>
-          )}
-        ></FlatList>
-      </VStack>
+      <FlatList
+        data={filteredRiderUsers}
+        keyExtractor={(item) => item.key}
+        renderItem={({ item }) => (
+          <StudentListCard
+            onPress={() => {
+              const data = {
+                phoneNumber: "" + item.phoneNumber,
+                role: "" + item.role,
+              };
+              navigation.navigate("StudentListDetail", data);
+            }}
+            list={item}
+          ></StudentListCard>
+        )}
+      ></FlatList>
     </VStack>
   );
-
-  // const ThirdRoute = () => (
-  //   <VStack paddingX={"10px"}>
-  //     <Input
-  //       mb={5}
-  //       borderRadius={10}
-  //       h={"50px"}
-  //       placeholder="Search by Student ID"
-  //       width="100%"
-  //       variant={"filled"}
-  //       bgColor={COLORS.tertiary}
-  //       borderWidth={0}
-  //       fontSize={SIZES.body3}
-  //       color={COLORS.white}
-  //       marginTop={8}
-  //       InputLeftElement={
-  //         <Icon
-  //           ml="2"
-  //           size="4"
-  //           color={COLORS.white}
-  //           as={<Ionicons name="ios-search" />}
-  //         />
-  //       }
-  //     />
-  //     <VStack mt={"17px"} justifyContent={"center"} alignItems={"center"}>
-  //       <FlatList
-  //         w={"100%"}
-  //         data={usersLock}
-  //         keyExtractor={(item) => item.name}
-  //         renderItem={({ item }) => (
-  //           <StudentListCard
-  //             onPress={() => {
-  //               const data = {
-  //                 phoneNumber: "" + item.phoneNumber,
-  //                 role: "" + item.role,
-  //               };
-  //               navigation.navigate("StudentListDetail", data);
-  //             }}
-  //             list={item}
-  //           ></StudentListCard>
-  //         )}
-  //       ></FlatList>
-  //     </VStack>
-  //   </VStack>
-  // );
 
   const renderScene = SceneMap({
     first: FirstRoute,

@@ -35,6 +35,7 @@ const StudentListDetailScreen = ({ route, navigation }) => {
   const [email, setEmail] = useState("");
   const [displayName, setDisplayName] = useState("");
   const [status, setStatus] = useState("");
+  const [birthday, setBirthday] = useState("");
   const { phoneNumber, role } = route.params;
   useEffect(() => {
     getUserByPhoneNumber();
@@ -51,6 +52,7 @@ const StudentListDetailScreen = ({ route, navigation }) => {
         setCardFront(docSnap.data().cardFront);
         setDisplayName(docSnap.data().displayName);
         setEmail(docSnap.data().email);
+        setBirthday(docSnap.data().birthday);
         //setPhoneNumber(docSnap.id)
         setSchool(docSnap.data().school);
         setPortrait(docSnap.data().portrait);
@@ -155,7 +157,7 @@ const StudentListDetailScreen = ({ route, navigation }) => {
                 Birthday
               </Text>
               <Text style={{ ...FONTS.h3, color: COLORS.white }} mt={2}>
-                23/03/2002
+                {birthday}
               </Text>
               <Text style={{ ...FONTS.h4, color: COLORS.fifthary }} mt={10}>
                 Student ID
