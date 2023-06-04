@@ -12,17 +12,25 @@ import { SIZES, COLORS, FONTS } from "../../constants/theme";
 import BlueBg from "../../assets/images/Login/blueBg.png";
 import { SafeAreaView } from "react-native-safe-area-context";
 import LottieView from "lottie-react-native";
-import { AsyncStorage, BackHandler } from "react-native";
+import {
+  AsyncStorage,
+  BackHandler,
+  Platform,
+  ToastAndroid,
+  TouchableOpacity,
+} from "react-native";
 import {
   getFromAsyncStorage,
   saveToAsyncStorage,
 } from "../../helper/asyncStorage";
 import { IS_FIRST_USE } from "../../constants/asyncStorageKey";
+import { useFocusEffect } from "@react-navigation/native";
 
 const LoginScreen = ({ navigation }) => {
   const animation = useRef(null);
   const [phoneNumber, setPhoneNumber] = useState("");
   const [role, setRole] = useState("");
+  let backButtonPressedOnce = false;
   useEffect(() => {
     // You can control the ref programmatically, rather than using autoPlay
     // animation.current?.play();
@@ -35,7 +43,49 @@ const LoginScreen = ({ navigation }) => {
     // AsyncStorage.getItem("role").then((result) => {
     //   setRole(result);
     // });
+    // const backAction = () => {
+    //   if (backButtonPressedOnce) {
+    //     BackHandler.exitApp();
+    //   } else {
+    //     backButtonPressedOnce = true;
+    //     ToastAndroid.show("Press back again to exit", ToastAndroid.SHORT);
+    //     setTimeout(() => {
+    //       backButtonPressedOnce = false;
+    //     }, 2000); // Reset the variable after 2 seconds
+    //   }
+    //   return true;
+    // };
+
+    // const backHandler = BackHandler.addEventListener(
+    //   "hardwareBackPress",
+    //   backAction
+    // );
+
+    // return () => backHandler.remove();
   }, []);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      const onBackPress = () => {
+        if (backButtonPressedOnce) {
+          BackHandler.exitApp();
+        } else {
+          backButtonPressedOnce = true;
+          ToastAndroid.show("Press back again to exit", ToastAndroid.SHORT);
+          setTimeout(() => {
+            backButtonPressedOnce = false;
+          }, 2000); // Reset the variable after 2 seconds
+        }
+        return true;
+      };
+
+      BackHandler.addEventListener("hardwareBackPress", onBackPress);
+
+      return () =>
+        BackHandler.removeEventListener("hardwareBackPress", onBackPress);
+    }, [])
+  );
+
   return (
     <VStack bgColor={COLORS.background}>
       <VStack w={"100%"} h={"40%"}>
@@ -88,11 +138,11 @@ const LoginScreen = ({ navigation }) => {
           bgColor={COLORS.tertiary}
           h={"77px"}
           position={"absolute"}
-          bottom={20}
+          bottom={Platform.OS === "ios" ? 20 : 5}
           borderRadius={20}
           alignSelf={"center"}
         >
-          <Button
+          {/* <Button
             w={"50%"}
             borderRadius={20}
             bgColor={COLORS.primary}
@@ -103,19 +153,47 @@ const LoginScreen = ({ navigation }) => {
             <Text style={{ ...FONTS.h2 }} color={COLORS.white}>
               Register
             </Text>
-          </Button>
-          <Button
+          </Button> */}
+          <TouchableOpacity
             w={"50%"}
-            borderRadius={20}
-            bgColor={"transparent"}
+            style={{
+              borderRadius: 20,
+              backgroundColor: COLORS.primary,
+              alignContent: "center",
+              justifyContent: "center",
+              width: "50%",
+            }}
+            onPress={() => {
+              navigation.navigate("SignUp");
+            }}
+          >
+            <Text
+              style={{ ...FONTS.h2, textAlign: "center" }}
+              color={COLORS.white}
+            >
+              Register
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            w={"50%"}
+            style={{
+              borderRadius: 20,
+              backgroundColor: "transparent",
+              alignContent: "center",
+              justifyContent: "center",
+              width: "50%",
+            }}
             onPress={() => {
               navigation.navigate("SignIn");
             }}
           >
-            <Text style={{ ...FONTS.h2 }} color={COLORS.white}>
+            <Text
+              style={{ ...FONTS.h2, textAlign: "center" }}
+              color={COLORS.white}
+            >
               Sign in
             </Text>
-          </Button>
+          </TouchableOpacity>
         </HStack>
       </VStack>
     </VStack>

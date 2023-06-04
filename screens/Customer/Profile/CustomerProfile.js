@@ -24,13 +24,13 @@ import { db, storage } from "../../../config/config";
 import { getFromAsyncStorage } from "../../../helper/asyncStorage";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 
-const CustomerProfile = ({ navigation, route}) => {
+const CustomerProfile = ({ navigation, route }) => {
   const [profileImg, setProfileImg] = useState(null);
   const [phone, setPhone] = useState("");
 
   const [users, setUsers] = useState({});
   useEffect(() => {
-    fetchDataAndPhoneNumber()    
+    fetchDataAndPhoneNumber();
   }, [navigation]);
   const fetchDataAndPhoneNumber = async () => {
     try {
@@ -46,18 +46,17 @@ const CustomerProfile = ({ navigation, route}) => {
   };
   const getUsers = async (phoneNumber) => {
     try {
-      let users={}
-      const docData = await getDoc(doc(db, "Customer", phoneNumber))
-        users ={
-          school: docData.data().school,
-          displayName: docData.data().displayName,
-          email: docData.data().email,
-          studentID: docData.data().studentID,
-          portrait: docData.data().portrait,
-          birthday: docData.data().birthday,
-        }
-        setUsers(users)
-    
+      let users = {};
+      const docData = await getDoc(doc(db, "Customer", phoneNumber));
+      users = {
+        school: docData.data().school,
+        displayName: docData.data().displayName,
+        email: docData.data().email,
+        studentID: docData.data().studentID,
+        portrait: docData.data().portrait,
+        birthday: docData.data().birthday,
+      };
+      setUsers(users);
     } catch (error) {
       console.error(error);
     }
@@ -69,13 +68,13 @@ const CustomerProfile = ({ navigation, route}) => {
       aspect: [3, 4],
       quality: 1,
     });
-  
+
     if (!result.canceled) {
       setProfileImg(result.assets[0].uri);
       uploadImage(result.assets[0].uri);
     }
   };
-  
+
   const uploadImage = async (imageUri) => {
     // convert image into blob image
     const blobImage = await new Promise((resolve, reject) => {
@@ -90,15 +89,15 @@ const CustomerProfile = ({ navigation, route}) => {
       xhr.open("GET", imageUri, true);
       xhr.send(null);
     });
-  
+
     // type of file
     const metadata = {
       contentType: "image/jpeg",
     };
-  
+
     const name = phone + "face";
     const storageRef = ref(storage, name);
-  
+
     const uploadTask = uploadBytesResumable(storageRef, blobImage, metadata);
     uploadTask.on(
       "state_changed",
@@ -110,7 +109,7 @@ const CustomerProfile = ({ navigation, route}) => {
       },
       () => {
         getDownloadURL(storageRef)
-          .then((url) => {  
+          .then((url) => {
             updateDoc(doc(db, "Customer", phone), {
               portrait: url,
             });
@@ -135,7 +134,9 @@ const CustomerProfile = ({ navigation, route}) => {
             <VStack mt={5} alignItems={"center"}>
               <HStack w={"118px"}>
                 <Avatar
-                  source={!profileImg ? {uri:users.portrait} : { uri: profileImg }}
+                  source={
+                    !profileImg ? { uri: users.portrait } : { uri: profileImg }
+                  }
                   h={"118px"}
                   w={"118px"}
                 />
@@ -160,19 +161,19 @@ const CustomerProfile = ({ navigation, route}) => {
                 Birthday
               </Text>
               <Text style={{ ...FONTS.h3, color: COLORS.white }} mt={2}>
-              {users.birthday}
+                {users.birthday}
               </Text>
               <Text style={{ ...FONTS.h4, color: COLORS.fifthary }} mt={10}>
                 Student ID
               </Text>
               <Text style={{ ...FONTS.h3, color: COLORS.white }} mt={2}>
-              {users.studentID}
+                {users.studentID}
               </Text>
               <Text style={{ ...FONTS.h4, color: COLORS.fifthary }} mt={10}>
                 School
               </Text>
               <Text style={{ ...FONTS.h3, color: COLORS.white }} mt={2}>
-              {users.school}
+                {users.school}
               </Text>
               <Text style={{ ...FONTS.h4, color: COLORS.fifthary }} mt={10}>
                 Phone number
@@ -184,8 +185,7 @@ const CustomerProfile = ({ navigation, route}) => {
                 Email Address
               </Text>
               <Text style={{ ...FONTS.h3, color: COLORS.white }} mt={2}>
-                 {users.email}
-
+                {users.email}
               </Text>
             </VStack>
 

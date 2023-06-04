@@ -23,6 +23,7 @@ import { db } from "../../../config/config";
 const ActivityDetailScreen = ({ navigation, route }) => {
   const { idTrip } = route.params;
   const [tripData, setTrip] = useState([]);
+  const contentHeight = Dimensions.get("window").height;
 
   // const API_KEY = "AIzaSyDEokOCthVrnmMPiI_fLEZKQtV1SjFvjxQ";
   // const API_KEY = "AIzaSyA_suPUj4xs62VSz5pbRPQ1R-9Bk9Nh6dY";
@@ -45,7 +46,7 @@ const ActivityDetailScreen = ({ navigation, route }) => {
               destLat: tripData.data().destLat,
               destLong: tripData.data().destLong,
               date: tripData.data().date,
-              portrait:docData.data().portrait,
+              portrait: docData.data().portrait,
               time: tripData.data().time,
               totalPrice: tripData.data().totalPrice,
               distance: tripData.data().distance,
@@ -70,7 +71,7 @@ const ActivityDetailScreen = ({ navigation, route }) => {
         paddingX={"10px"}
       >
         <SafeAreaView>
-          <VStack>
+          <VStack h={contentHeight}>
             <HStack justifyContent={"center"} mb={"20px"}>
               <View style={{ position: "absolute", left: 0 }}>
                 <ButtonBack
@@ -191,7 +192,7 @@ const ActivityDetailScreen = ({ navigation, route }) => {
                 </Text>
                 <HStack mt={"5px"}>
                   <Image
-                    source={{uri:tripData.portrait}}
+                    source={{ uri: tripData.portrait }}
                     alt="Avatar"
                     style={{
                       borderRadius: SIZES.radius50,

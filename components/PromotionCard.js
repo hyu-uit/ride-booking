@@ -117,7 +117,7 @@ function PromotionCard(props) {
                 }}
               >
                 <TouchableOpacity
-                  onPress={navigate}
+                  onPress={onPress}
                   style={{
                     marginTop: 6,
                     borderColor: COLORS.fourthary,

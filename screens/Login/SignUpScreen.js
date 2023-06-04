@@ -149,7 +149,9 @@ const SignUpScreen = ({ navigation }) => {
         Keyboard.dismiss();
       }}
     >
-      <KeyboardAvoidingView behavior="position">
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+      >
         <VStack
           paddingX={"10px"}
           bgColor={COLORS.background}

@@ -28,6 +28,7 @@ import ButtonBack from "../../components/Global/ButtonBack/ButtonBack";
 import FlagIcon from "../../assets/icons/icons8-flag-filled-48.png";
 import { addDoc, collection, doc, setDoc } from "@firebase/firestore";
 import { db } from "../../config/config";
+import { Dimensions } from "react-native";
 
 const initialState = {
   step: 1,
@@ -62,9 +63,11 @@ const stateReducer = (state, action) => {
   }
 };
 
+const contentHeight = Dimensions.get("window").height;
+
 export default function BookingScreen({ navigation, route }) {
-  const {idPromotion} = route.params;
-  console.log(idPromotion)
+  const { idPromotion } = route.params;
+  console.log(idPromotion);
 
   const [state, dispatch] = useReducer(stateReducer, initialState);
 
@@ -302,7 +305,7 @@ export default function BookingScreen({ navigation, route }) {
 
 const BookingContainer = styled(SafeAreaView)`
   width: 100%;
-  height: 100%;
+  height: ${contentHeight};
   background-color: ${(props) => props.bgColor};
   display: flex;
   padding: 0;

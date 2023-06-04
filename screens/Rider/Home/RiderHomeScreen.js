@@ -37,7 +37,8 @@ import {
   getFromAsyncStorage,
   saveToAsyncStorage,
 } from "../../../helper/asyncStorage";
-import { Switch } from "react-native";
+import { BackHandler, Switch, ToastAndroid } from "react-native";
+import { useFocusEffect } from "@react-navigation/native";
 
 const RiderHomeScreen = ({ navigation, route }) => {
   const [service, setService] = useState(0);
@@ -54,6 +55,30 @@ const RiderHomeScreen = ({ navigation, route }) => {
   const [canceledTrips, setCanceledTrips] = useState([]);
   const [phoneNumber, setPhoneNumber] = useState([]);
   const currentDate = moment().format("DD/M/YYYY");
+
+  let backButtonPressedOnce = false;
+
+  useFocusEffect(
+    React.useCallback(() => {
+      const onBackPress = () => {
+        if (backButtonPressedOnce) {
+          BackHandler.exitApp();
+        } else {
+          backButtonPressedOnce = true;
+          ToastAndroid.show("Press back again to exit", ToastAndroid.SHORT);
+          setTimeout(() => {
+            backButtonPressedOnce = false;
+          }, 2000); // Reset the variable after 2 seconds
+        }
+        return true;
+      };
+
+      BackHandler.addEventListener("hardwareBackPress", onBackPress);
+
+      return () =>
+        BackHandler.removeEventListener("hardwareBackPress", onBackPress);
+    }, [])
+  );
 
   useEffect(() => {
     fetchDataAndPhoneNumber();
@@ -225,7 +250,16 @@ const RiderHomeScreen = ({ navigation, route }) => {
       data={finishedTrips}
       keyExtractor={(item) => item.idTrip}
       renderItem={({ item }) => (
-        <HistoryPickUpCard trip={item} key={item.idTrip}></HistoryPickUpCard>
+        <HistoryPickUpCard
+          trip={item}
+          key={item.idTrip}
+          onPress={() => {
+            const data = {
+              idTrip: "" + item.idTrip,
+            };
+            navigation.navigate("TripDetail", data);
+          }}
+        ></HistoryPickUpCard>
       )}
     ></FlatList>
   );
@@ -238,7 +272,16 @@ const RiderHomeScreen = ({ navigation, route }) => {
       data={canceledTrips}
       keyExtractor={(item) => item.idTrip}
       renderItem={({ item }) => (
-        <HistoryPickUpCard trip={item} key={item.idTrip}></HistoryPickUpCard>
+        <HistoryPickUpCard
+          trip={item}
+          key={item.idTrip}
+          onPress={() => {
+            const data = {
+              idTrip: "" + item.idTrip,
+            };
+            navigation.navigate("TripDetail", data);
+          }}
+        ></HistoryPickUpCard>
       )}
     ></FlatList>
   );
@@ -287,6 +330,7 @@ const RiderHomeScreen = ({ navigation, route }) => {
                     ></Image>
                   </Button>
                   <Switch
+                    thumbColor={open ? COLORS.fifthary : COLORS.grey}
                     value={open}
                     onValueChange={handleSwitchChange}
                     trackColor={{ true: COLORS.fourthary }}

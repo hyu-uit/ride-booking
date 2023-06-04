@@ -15,10 +15,12 @@ import ButtonBack from "../../../components/Global/ButtonBack/ButtonBack";
 import { useEffect } from "react";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../../../config/config";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { Dimensions } from "react-native";
 
 const PromotionDetailScreen = ({ navigation, route }) => {
-  const {idPromotion}=route.params
-  const[promotion, setPromotion]=useState({})
+  const { idPromotion } = route.params;
+  const [promotion, setPromotion] = useState({});
   useEffect(() => {
     getPromotion();
   }, []);
@@ -26,19 +28,25 @@ const PromotionDetailScreen = ({ navigation, route }) => {
     let data = {};
     getDoc(doc(db, "Promotion", idPromotion)).then((proData) => {
       if (proData.exists()) {
-            data = {
-              idPromotion:proData.id,
-              name:proData.data().name,
-              value:proData.data().value,
-              expiryDate:proData.data().expiryDate,
-              description:proData.data().description
-            };
-            setPromotion(data);
+        data = {
+          idPromotion: proData.id,
+          name: proData.data().name,
+          value: proData.data().value,
+          expiryDate: proData.data().expiryDate,
+          description: proData.data().description,
+        };
+        setPromotion(data);
       }
     });
   };
+
+  const insets = useSafeAreaInsets();
+
+  // Calculate the content height by subtracting the safe area insets
+  const contentHeight = Dimensions.get("window").height;
+
   return (
-    <VStack h={"100%"} paddingY={"20px"} bgColor={COLORS.background}>
+    <VStack h={contentHeight} paddingY={"20px"} bgColor={COLORS.background}>
       <SafeAreaView>
         <VStack paddingX={"10px"} h={"100%"}>
           <ButtonBack
@@ -73,11 +81,13 @@ const PromotionDetailScreen = ({ navigation, route }) => {
             bgColor={COLORS.primary}
             position={"absolute"}
             bottom={0}
-            onPress={() => { const data = {
-              idPromotion: "" + idPromotion,
-            };
-            navigation.navigate("Booking", data);
-          }}
+            alignSelf={"center"}
+            onPress={() => {
+              const data = {
+                idPromotion: "" + idPromotion,
+              };
+              navigation.navigate("Booking", data);
+            }}
           >
             <Text style={{ ...FONTS.h2 }} color={COLORS.white}>
               Book now

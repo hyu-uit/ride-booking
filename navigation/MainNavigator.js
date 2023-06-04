@@ -16,7 +16,7 @@ const MainNavigator = ({ navigation }) => {
     <MainTab.Navigator
       screenOptions={({ route }) => ({
         tabBarActiveTintColor: COLORS.fifthary,
-        tabBarInactiveTintColor: COLORS.lightGrey,
+        tabBarInactiveTintColor: COLORS.grey,
         tabBarStyle: { backgroundColor: COLORS.tertiary, height: operator },
         headerShown: false,
         tabBarShowLabel: true,

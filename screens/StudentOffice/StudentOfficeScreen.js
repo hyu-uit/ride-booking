@@ -33,6 +33,8 @@ import {
   getFromAsyncStorage,
   saveToAsyncStorage,
 } from "../../helper/asyncStorage";
+import { useFocusEffect } from "@react-navigation/native";
+import { BackHandler, ToastAndroid } from "react-native";
 
 const StudentOfficeScreen = ({ navigation }) => {
   const [service, setService] = useState(0);
@@ -42,6 +44,30 @@ const StudentOfficeScreen = ({ navigation }) => {
   const [uniName, setUniName] = useState(null);
   const [acronym, setAcronym] = useState(null);
   const [logo, setLogo] = useState(null);
+
+  let backButtonPressedOnce = false;
+
+  useFocusEffect(
+    React.useCallback(() => {
+      const onBackPress = () => {
+        if (backButtonPressedOnce) {
+          BackHandler.exitApp();
+        } else {
+          backButtonPressedOnce = true;
+          ToastAndroid.show("Press back again to exit", ToastAndroid.SHORT);
+          setTimeout(() => {
+            backButtonPressedOnce = false;
+          }, 2000); // Reset the variable after 2 seconds
+        }
+        return true;
+      };
+
+      BackHandler.addEventListener("hardwareBackPress", onBackPress);
+
+      return () =>
+        BackHandler.removeEventListener("hardwareBackPress", onBackPress);
+    }, [])
+  );
 
   useEffect(() => {
     fetchDataAndPhoneNumber();

@@ -16,7 +16,7 @@ import {
 import DefaultAvt from "../assets/image6.png";
 import { SafeAreaView } from "react-native-safe-area-context";
 import MenuIcon from "../assets/icons/icons8-menu-48.png";
-import { TouchableOpacity } from "react-native";
+import { TouchableOpacity, BackHandler, ToastAndroid } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import SelectedButton from "../components/Button/SelectedButton";
 import HistoryCard from "../components/HistoryCard";
@@ -28,17 +28,50 @@ import LottieView from "lottie-react-native";
 import { useEffect } from "react";
 import { getFromAsyncStorage } from "../helper/asyncStorage";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useState } from "react";
-import { collection, doc, getDoc, getDocs, query, where } from "firebase/firestore";
+import React, { useState } from "react";
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  query,
+  where,
+} from "firebase/firestore";
 import { db } from "../config/config";
+import { useFocusEffect } from "@react-navigation/native";
 
 export default function Home({ navigation, route }) {
   const [phone, setPhone] = useState("");
   const [historyTrips, setHistoryTrips] = useState([]);
   const [name, SetName] = useState(null);
   const [avt, SetAvatar] = useState(null);
+
+  let backButtonPressedOnce = false;
+
+  useFocusEffect(
+    React.useCallback(() => {
+      const onBackPress = () => {
+        if (backButtonPressedOnce) {
+          BackHandler.exitApp();
+        } else {
+          backButtonPressedOnce = true;
+          ToastAndroid.show("Press back again to exit", ToastAndroid.SHORT);
+          setTimeout(() => {
+            backButtonPressedOnce = false;
+          }, 2000); // Reset the variable after 2 seconds
+        }
+        return true;
+      };
+
+      BackHandler.addEventListener("hardwareBackPress", onBackPress);
+
+      return () =>
+        BackHandler.removeEventListener("hardwareBackPress", onBackPress);
+    }, [])
+  );
+
   useEffect(() => {
-    fetchDataAndPhoneNumber()    
+    fetchDataAndPhoneNumber();
   }, [navigation]);
 
   const fetchDataAndPhoneNumber = async () => {
@@ -48,7 +81,7 @@ export default function Home({ navigation, route }) {
 
       if (phoneNumberValue) {
         fetchData(phoneNumberValue);
-        getHistoryTrips(phoneNumberValue)
+        getHistoryTrips(phoneNumberValue);
       }
     } catch (err) {
       console.log(err);
@@ -64,33 +97,33 @@ export default function Home({ navigation, route }) {
     }
   };
   //const {phoneNumber, role} = route.params;
-  const getHistoryTrips =async (phoneNumber) => {
+  const getHistoryTrips = async (phoneNumber) => {
     let historyTrips = [];
     getDocs(
       query(collection(db, "ListTrip"), where("idCustomer", "==", phoneNumber))
     ).then((docSnap) => {
-        docSnap.forEach((doc) => {
-          if(doc.data().status==="done"){
-            historyTrips.push({
-              idCustomer: doc.data().idCustomer,
-              idTrip: doc.id,
-              pickUpLat: doc.data().pickUpLat,
-              pickUpLong: doc.data().pickUpLong,
-              destLat: doc.data().destLat,
-              destLong: doc.data().destLong,
-              date: doc.data().date,
-              time: doc.data().time,
-              datePickUp: doc.data().datePickUp,
-              timePickUp: doc.data().timePickUp,
-              totalPrice: doc.data().totalPrice,
-              distance: doc.data().distance,
-            });
-          }
-        });
-        setHistoryTrips(historyTrips);
+      docSnap.forEach((doc) => {
+        if (doc.data().status === "done") {
+          historyTrips.push({
+            idCustomer: doc.data().idCustomer,
+            idTrip: doc.id,
+            pickUpLat: doc.data().pickUpLat,
+            pickUpLong: doc.data().pickUpLong,
+            destLat: doc.data().destLat,
+            destLong: doc.data().destLong,
+            date: doc.data().date,
+            time: doc.data().time,
+            datePickUp: doc.data().datePickUp,
+            timePickUp: doc.data().timePickUp,
+            totalPrice: doc.data().totalPrice,
+            distance: doc.data().distance,
+          });
+        }
+      });
+      setHistoryTrips(historyTrips);
     });
   };
-  console.log(historyTrips)
+  console.log(historyTrips);
   return (
     <TouchableWithoutFeedback
       onPress={() => {
@@ -99,7 +132,7 @@ export default function Home({ navigation, route }) {
     >
       <HomeContainer>
         <HStack w={"full"} alignContent={"center"}>
-          <Avatar source={{uri:avt}} margin={"10px 0 0 10px"} />
+          <Avatar source={{ uri: avt }} margin={"10px 0 0 10px"} />
           <VStack margin={"10px 0 0 10px"}>
             <Text fontSize={10} color={COLORS.grey}>
               Welcome back

@@ -18,14 +18,16 @@ const StudentOfficeStack = createNativeStackNavigator();
 const MainTab = createBottomTabNavigator();
 
 export function StudentOfficeStackScreen() {
+  const operator = Platform.OS === "ios" ? 90 : 60;
   return (
     <MainTab.Navigator
       screenOptions={({ route }) => ({
         tabBarActiveTintColor: COLORS.fifthary,
-        tabBarInactiveTintColor: COLORS.lightGrey,
+        tabBarInactiveTintColor: COLORS.grey,
         tabBarStyle: { backgroundColor: COLORS.tertiary, height: 90 },
         headerShown: false,
         tabBarShowLabel: true,
+        height: operator,
         tabBarIcon: ({ color, size }) => {
           let iconName;
 

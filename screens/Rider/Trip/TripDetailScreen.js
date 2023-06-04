@@ -22,35 +22,37 @@ import { Ionicons } from "@expo/vector-icons";
 import PopUpRequestCard from "../../../components/Driver/PopUpRequestCard";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../../../config/config";
+import { Dimensions } from "react-native";
 
 const TripDetailScreen = ({ navigation, route }) => {
-  const {idTrip} = route.params;
+  const contentHeight = Dimensions.get("window").height;
+  const { idTrip } = route.params;
   const [tripData, setTrip] = useState({});
-  useEffect(()=>{
-    getTrip()
+  useEffect(() => {
+    getTrip();
   }, []);
-  const getTrip = () =>{
-    let data={}
-    getDoc(doc(db,"ListTrip", idTrip)).then((doc)=>{
-      if(doc.exists()){
-        data={
-          idCustomer:doc.data().idCustomer,
-          idTrip:doc.id,
-          pickUpLat:doc.data().pickUpLat,
-          pickUpLong:doc.data().pickUpLong,
-          destLat:doc.data().destLat,
-          destLong:doc.data().destLong,
-          date:doc.data().date,
-          time:doc.data().time,
-          totalPrice:doc.data().totalPrice,
-          distance:doc.data().distance,
+  const getTrip = () => {
+    let data = {};
+    getDoc(doc(db, "ListTrip", idTrip)).then((doc) => {
+      if (doc.exists()) {
+        data = {
+          idCustomer: doc.data().idCustomer,
+          idTrip: doc.id,
+          pickUpLat: doc.data().pickUpLat,
+          pickUpLong: doc.data().pickUpLong,
+          destLat: doc.data().destLat,
+          destLong: doc.data().destLong,
+          date: doc.data().date,
+          time: doc.data().time,
+          totalPrice: doc.data().totalPrice,
+          distance: doc.data().distance,
         };
       }
       setTrip(data);
-    })
-  }
+    });
+  };
   return (
-    <VStack h={"100%"} bgColor={COLORS.background}>
+    <VStack h={contentHeight} bgColor={COLORS.background}>
       <SafeAreaView>
         <View position={"absolute"} top={50} left={2} zIndex={1}>
           <ButtonBack
@@ -71,7 +73,10 @@ const TripDetailScreen = ({ navigation, route }) => {
             coordinate={{ latitude: 9.90761, longitude: 105.31181 }}
           ></Marker>
         </MapView>
-        <PopUpRequestCard trip={tripData} navigation={navigation}></PopUpRequestCard>
+        <PopUpRequestCard
+          trip={tripData}
+          navigation={navigation}
+        ></PopUpRequestCard>
         {/* <HStack justifyContent={"center"} mb={"20px"}>
           <View style={{ position: "absolute", left: 0 }}>
             <ButtonBack></ButtonBack>

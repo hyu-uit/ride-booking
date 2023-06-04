@@ -3,6 +3,7 @@ import {
   HStack,
   Input,
   NativeBaseProvider,
+  ScrollView,
   Text,
   VStack,
 } from "native-base";
@@ -143,56 +144,61 @@ const SignInScreen = ({ navigation }) => {
             Let's sign you in
           </Text>
           <HStack mt={7} w={"100%"}>
-            <Button
-              variant={"outline"}
-              w={"27%"}
-              borderRadius={10}
-              bgColor={role === 0 ? COLORS.fourthary : "transparent"}
-              borderColor={COLORS.fifthary}
-              onPress={() => {
-                setRole(0);
-              }}
-            >
-              <Text color={COLORS.white} style={{ ...FONTS.h5 }}>
-                Customer
-              </Text>
-            </Button>
-            <Button
-              variant={"outline"}
-              w={"18%"}
-              borderRadius={10}
-              borderColor={COLORS.fifthary}
-              bgColor={role === 1 ? COLORS.fourthary : "transparent"}
-              onPress={() => {
-                setRole(1);
-                // navigation.navigate("MainRiderNavigator", {
-                //   screen: "HomeRider",
-                // });
-              }}
-              ml={4}
-            >
-              <Text color={COLORS.white} style={{ ...FONTS.h5 }}>
-                Rider
-              </Text>
-            </Button>
-            <Button
-              variant={"outline"}
-              w={"40%"}
-              borderRadius={10}
-              borderColor={COLORS.fifthary}
-              bgColor={role === 2 ? COLORS.fourthary : "transparent"}
-              onPress={() => {
-                setRole(2);
-                // navigation.navigate("StudentOfficeNavigator", {
-                //   screen: "StudentOffice",
-                // });
-              }}
-              ml={4}
-            >
-              <Text color={COLORS.white} style={{ ...FONTS.h5 }}>
-                Office of Student
-              </Text>
-            </Button>
+            <ScrollView horizontal>
+              <Button
+                full
+                variant={"outline"}
+                // w={"27%"}
+                borderRadius={10}
+                bgColor={role === 0 ? COLORS.fourthary : "transparent"}
+                borderColor={COLORS.fifthary}
+                onPress={() => {
+                  setRole(0);
+                }}
+              >
+                <Text color={COLORS.white} style={{ ...FONTS.h5 }}>
+                  Customer
+                </Text>
+              </Button>
+              <Button
+                variant={"outline"}
+                // w={"18%"}
+                full
+                borderRadius={10}
+                borderColor={COLORS.fifthary}
+                bgColor={role === 1 ? COLORS.fourthary : "transparent"}
+                onPress={() => {
+                  setRole(1);
+                  // navigation.navigate("MainRiderNavigator", {
+                  //   screen: "HomeRider",
+                  // });
+                }}
+                ml={4}
+              >
+                <Text color={COLORS.white} style={{ ...FONTS.h5 }}>
+                  Rider
+                </Text>
+              </Button>
+              <Button
+                variant={"outline"}
+                // w={"40%"}
+                full
+                borderRadius={10}
+                borderColor={COLORS.fifthary}
+                bgColor={role === 2 ? COLORS.fourthary : "transparent"}
+                onPress={() => {
+                  setRole(2);
+                  // navigation.navigate("StudentOfficeNavigator", {
+                  //   screen: "StudentOffice",
+                  // });
+                }}
+                ml={4}
+              >
+                <Text color={COLORS.white} style={{ ...FONTS.h5 }}>
+                  Office of Student
+                </Text>
+              </Button>
+            </ScrollView>
           </HStack>
 
           <Input

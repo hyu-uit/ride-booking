@@ -37,6 +37,7 @@ const StudentListDetailScreen = ({ route, navigation }) => {
   const [status, setStatus] = useState("");
   const [birthday, setBirthday] = useState("");
   const { phoneNumber, role } = route.params;
+  const contentHeight = Dimensions.get("window").height;
   useEffect(() => {
     getUserByPhoneNumber();
   }, []);
@@ -103,7 +104,7 @@ const StudentListDetailScreen = ({ route, navigation }) => {
     ]);
   };
   return (
-    <VStack h={"100%"} bgColor={COLORS.background}>
+    <VStack h={contentHeight} bgColor={COLORS.background}>
       <SafeAreaView>
         <VStack h={"100%"} mt={"17px"} paddingX={"10px"}>
           <HStack mb={2} alignItems={"center"} justifyContent={"center"}>

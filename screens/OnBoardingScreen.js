@@ -7,6 +7,7 @@ import {
   Image,
   ScrollView,
   Text,
+  VStack,
   View,
 } from "native-base";
 import { TouchableOpacity, StyleSheet, ScrollViewBase } from "react-native";
@@ -45,7 +46,7 @@ const slides = [
 
 const Slide = ({ item }) => {
   return (
-    <View
+    <VStack
       style={{
         alignItems: "center",
       }}
@@ -55,14 +56,14 @@ const Slide = ({ item }) => {
         source={item.image}
         style={{
           resizeMode: "contain",
-          height: "80%",
+          height: item.id === "1" ? "90%" : "65%",
           width,
           marginBottom: 10,
         }}
       ></Image>
       <Text style={styles.title}>{item.title}</Text>
       <Text style={styles.subtitle}>{item.subtitle}</Text>
-    </View>
+    </VStack>
   );
 };
 const OnBoardingScreen = ({ navigation }) => {
@@ -213,15 +214,15 @@ const styles = StyleSheet.create({
   title: {
     color: COLORS.white,
     ...FONTS.h1,
-    marginTop: -100,
+    // marginTop: -100,
     fontWeight: "bold",
     textAlign: "center",
   },
   subtitle: {
     color: COLORS.grey,
     ...FONTS.body4,
-    marginTop: 20,
-    marginBottom: 40,
+    // marginTop: 20,
+    // marginBottom: 40,
     fontWeight: "bold",
     textAlign: "center",
   },

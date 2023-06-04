@@ -18,10 +18,12 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { useEffect } from "react";
+import { Dimensions } from "react-native";
 
 const MenuScreen = ({ navigation }) => {
+  const contentHeight = Dimensions.get("window").height;
   return (
-    <VStack h={"100%"} paddingY={"20px"} bgColor={COLORS.background}>
+    <VStack h={contentHeight} paddingY={"20px"} bgColor={COLORS.background}>
       <SafeAreaView>
         <VStack paddingX={"10px"} h={"100%"}>
           <HStack justifyContent={"center"} mb={"20px"}>
