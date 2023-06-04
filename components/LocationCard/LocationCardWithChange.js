@@ -21,7 +21,7 @@ import {
 const LocationCardWithChange = ({
   pickUpInput,
   setPickUpInput,
-  pickDesInput,
+  desInput,
   setDesInput,
   setFocusInput,
 }) => {
@@ -42,14 +42,16 @@ const LocationCardWithChange = ({
               Pick-up
             </Text>
             <Input
-              onFocus={() => setFocusInput(PICK_UP_INPUT)}
+              onFocus={() => {
+                setFocusInput(PICK_UP_INPUT);
+              }}
               variant="unstyled"
               placeholder="Your location"
               bold
               fontSize={SIZES.h6}
               color={"white"}
               padding={1}
-              disabled
+              value={pickUpInput}
             />
           </VStack>
           <Divider />
@@ -65,6 +67,8 @@ const LocationCardWithChange = ({
               fontSize={SIZES.h6}
               color={"white"}
               padding={1}
+              value={desInput}
+              onChangeText={(text) => setDesInput(text)}
             />
           </VStack>
         </VStack>

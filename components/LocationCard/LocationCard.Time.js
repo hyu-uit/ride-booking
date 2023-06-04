@@ -24,14 +24,23 @@ import {
   convertToTime,
 } from "../../helper/moment";
 import DateTimePicker from "@react-native-community/datetimepicker";
+import { BookingContext } from "../../context/BookingContext";
+import { isNullOrEmpty } from "../../helper/helper";
+import { useContext } from "react";
+import { useEffect } from "react";
 
 const LocationCardTime = ({ onClickContinue, onPressBack }) => {
+  const { booking, dispatch } = useContext(BookingContext);
   const [isNowSelected, setIsNowSelected] = useState(true);
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedTime, setSelectedTime] = useState(new Date());
   const [finalDate, setFinalDate] = useState(null);
+
+  useEffect(() => {
+    console.log(booking);
+  });
 
   const handleDateChange = (_event, date) => {
     setShowDatePicker(false);
@@ -69,7 +78,9 @@ const LocationCardTime = ({ onClickContinue, onPressBack }) => {
                 Pick-up
               </Text>
               <Text bold fontSize={SIZES.h6} color={"white"}>
-                Long An
+                {isNullOrEmpty(booking.pickUpLocation.address)
+                  ? booking.pickUpLocation.address
+                  : booking.pickUpLocation.name}
               </Text>
             </VStack>
             <Divider />
@@ -78,7 +89,9 @@ const LocationCardTime = ({ onClickContinue, onPressBack }) => {
                 Destination
               </Text>
               <Text bold fontSize={SIZES.h6} color={"white"}>
-                University of Information Technology
+                {isNullOrEmpty(booking.destinationLocation.address)
+                  ? booking.destinationLocation.address
+                  : booking.destinationLocation.name}
               </Text>
             </VStack>
           </VStack>

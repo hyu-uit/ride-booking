@@ -12,11 +12,13 @@ const initialState = {
   },
   pickUpLocation: {
     name: "",
+    address: "",
     latitude: 0, // Initial latitude
     longitude: 0, // Initial longitude
   }, // Initial user location
   destinationLocation: {
     name: "",
+    address: "",
     latitude: 0, // Initial latitude
     longitude: 0, // Initial longitude
   }, // Initial user location
@@ -54,6 +56,7 @@ const stateReducer = (state, action) => {
       return {
         ...state,
         destinationLocation: {
+          address: action.payload.address,
           name: action.payload.name,
           latitude: action.payload.latitude,
           longitude: action.payload.longitude,
@@ -63,12 +66,14 @@ const stateReducer = (state, action) => {
       return {
         ...state,
         pickUpLocation: {
+          address: action.payload.address,
           name: action.payload.name,
           latitude: action.payload.latitude,
           longitude: action.payload.longitude,
         },
       };
     case SET_INITIAL_LOCATION:
+      console.log(action.payload);
       return {
         ...state,
         region: {
