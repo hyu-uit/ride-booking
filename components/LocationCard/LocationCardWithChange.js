@@ -9,21 +9,22 @@ import {
   VStack,
   View,
 } from "native-base";
-import { COLORS, GOOGLE_PLACES_API_KEY, SIZES } from "../../constants";
+import { COLORS, GEOAPIFY_KEY, SIZES } from "../../constants";
 import ArrowDownIcon from "../../assets/icons/icons8-down-arrow-48.png";
 import LocationIcon from "../../assets/icons/icons8-location-48.png";
 import ChangeIcon from "../../assets/icons/icons8-change-48.png";
-import { useRef } from "react";
-import { useEffect } from "react";
+import {
+  DESTINATION_INPUT,
+  PICK_UP_INPUT,
+} from "../../screens/Booking/BookingScreen";
 
-//
-
-const LocationCardWithChange = () => {
-  // const inputRef = useRef(null);
-
-  // useEffect(() => {
-  //   inputRef.current.focus();
-  // }, []);
+const LocationCardWithChange = ({
+  pickUpInput,
+  setPickUpInput,
+  pickDesInput,
+  setDesInput,
+  setFocusInput,
+}) => {
   return (
     <Flex marginTop={3} marginLeft={3} marginRight={3}>
       <HStack
@@ -40,14 +41,15 @@ const LocationCardWithChange = () => {
             <Text bold fontSize={SIZES.h6} color={"#8CC3FF"}>
               Pick-up
             </Text>
-
             <Input
+              onFocus={() => setFocusInput(PICK_UP_INPUT)}
               variant="unstyled"
               placeholder="Your location"
               bold
               fontSize={SIZES.h6}
               color={"white"}
               padding={1}
+              disabled
             />
           </VStack>
           <Divider />
@@ -56,6 +58,7 @@ const LocationCardWithChange = () => {
               Drop off
             </Text>
             <Input
+              onFocus={() => setFocusInput(DESTINATION_INPUT)}
               variant="unstyled"
               placeholder="Enter destination"
               bold

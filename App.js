@@ -2,7 +2,6 @@ import { NativeBaseProvider } from "native-base";
 import Navigation from "./navigation";
 import * as Font from "expo-font";
 import { AppProvider } from "./context/AppContext";
-import Geocoder from "react-native-geocoding";
 
 async function loadFonts() {
   await Font.loadAsync({

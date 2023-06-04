@@ -1,4 +1,4 @@
-import React, { useReducer, useState } from "react";
+import React, { useReducer, usebooking } from "react";
 import styled from "styled-components";
 import { COLORS, SIZES } from "../../constants/theme";
 import { Button, Center, HStack, Image, Text, VStack, View } from "native-base";
@@ -19,125 +19,90 @@ import { addDoc, collection, doc, setDoc } from "@firebase/firestore";
 import { db } from "../../config/config";
 import { fetchCurrentUserLocation } from "../../helper/location";
 import { getFromAsyncStorage } from "../../helper/asyncStorage";
-import Geocoder from "react-native-geocoding";
 import { UniversityMarks } from "../../constants/location";
 import Icon from "../../assets/icons/arrowRight.png";
 import { getAddressFromCoordinate } from "../../api/locationAPI";
+import {
+  BACK_STEP,
+  BookingContext,
+  SET_DESTINATION_LOCATION,
+  SET_INITIAL_LOCATION,
+  SET_PICK_UP_LOCATION,
+  SET_SHOW_MODAL_CANCEL,
+  SET_STEP,
+} from "../../context/BookingContext";
+import { useContext } from "react";
+import { useState } from "react";
+import { useEffect } from "react";
 
-const initialState = {
-  step: 1,
-  region: {
-    latitude: 0, // Initial latitude
-    longitude: 0, // Initial longitude
-    latitudeDelta: 0.005, //zoom
-    longitudeDelta: 0.005, //zoom
-  },
-  pickUpLocation: {
-    latitude: 0, // Initial latitude
-    longitude: 0, // Initial longitude
-  }, // Initial user location
-  destinationLocation: {
-    latitude: 0, // Initial latitude
-    longitude: 0, // Initial longitude
-  }, // Initial user location
-  bookingDetails: "",
-  price: "",
-  note: "",
-  paymentMethod: "",
-  isModalCancelShow: false,
-};
-
-const stateReducer = (state, action) => {
-  switch (action.type) {
-    case "SET_STEP":
-      return { ...state, step: action.payload };
-    case "BACK_STEP":
-      if (state.step > 1) return { ...state, step: state.step - 1 };
-      return { ...state, step: state.step };
-    case "SET_SHOW_MODAL_CANCEL":
-      return { ...state, isModalCancelShow: action.payload };
-    case "SET_BOOKING_DETAILS":
-      return { ...state, bookingDetails: action.payload };
-    case "SET_PRICE":
-      return { ...state, price: action.payload };
-    case "SET_NOTE":
-      return { ...state, note: action.payload };
-    case "SET_PAYMENT_METHOD":
-      return { ...state, paymentMethod: action.payload };
-    case "SET_DESTINATION_LOCATION":
-      return {
-        ...state,
-        destinationLocation: {
-          latitude: action.payload.latitude,
-          longitude: action.payload.longitude,
-        },
-      };
-    case "SET_PICK_UP_LOCATION":
-      return {
-        ...state,
-        pickUpLocation: {
-          latitude: action.payload.latitude,
-          longitude: action.payload.longitude,
-        },
-      };
-    case "SET_INITIAL_LOCATION":
-      return {
-        ...state,
-        region: {
-          ...state.region,
-          latitude: action.payload.latitude,
-          longitude: action.payload.longitude,
-        },
-      };
-    default:
-      throw new Error();
-  }
-};
+export const PICK_UP_INPUT = "PICK_UP_INPUT";
+export const DESTINATION_INPUT = "DESTINATION_INPUT";
 
 export default function BookingScreen({ navigation }) {
-  const [state, dispatch] = useReducer(stateReducer, initialState);
+  const { booking, dispatch } = useContext(BookingContext);
+  const [focusInput, setFocusInput] = useState(DESTINATION_INPUT);
   const [markerPosition, setMarkerPosition] = useState({
     latitude: 0,
     longitude: 0,
   });
+  const [step, setStep] = useState(1);
 
-  const chooseFromMapHandler = () => {
-    // Geocoder.from(41.89, 12.49).then((json) => {
-    //   console.log(json);
-    //   var addressComponent = json.results[0].address_components[0];
-    //   console.log(addressComponent);
-    // });
-    //   .catch((error) => console.warn(error));
+  useEffect(() => {
     fetchCurrentUserLocation()
       .then(({ latitude, longitude }) => {
-        console.log(latitude + " " + longitude);
         dispatch({
-          type: "SET_INITIAL_LOCATION",
+          type: SET_INITIAL_LOCATION,
           payload: { latitude, longitude },
         });
         dispatch({
-          type: "SET_PICK_UP_LOCATION",
+          type: SET_PICK_UP_LOCATION,
           payload: { latitude, longitude },
         });
         setMarkerPosition({ latitude, longitude });
-        dispatch({ type: "SET_STEP", payload: 2 });
       })
       .catch((err) => console.log(err));
+  }, []);
+
+  const chooseFromMapHandler = () => {
+    setStep(2);
+  };
+
+  const hanldeConfirmFromMap = () => {
+    // console.log("pick up" + JSON.stringify(booking.pickUpLocation));
+    // console.log("destination" + JSON.stringify(booking.destinationLocation));
+
+    if (focusInput === DESTINATION_INPUT) {
+      //pick up is already set from useEffect on first render
+      if (checkLocationIsSet(markerPosition)) {
+        dispatch({
+          type: SET_DESTINATION_LOCATION,
+          payload: { ...markerPosition },
+        });
+        return setStep(3);
+      }
+    }
+    if (focusInput === PICK_UP_INPUT)
+      dispatch({
+        type: SET_PICK_UP_LOCATION,
+        payload: { ...markerPosition },
+      });
+    console.log(markerPosition);
+    setStep(1);
   };
 
   const handleStep3Submit = () => {
     // Do any necessary form validation or error checking here
-    dispatch({ type: "SET_STEP", payload: 4 });
+    setStep(4);
   };
 
   const handleStep4Submit = () => {
     // Do any necessary form validation or error checking here
-    dispatch({ type: "SET_STEP", payload: 5 });
+    setStep(5);
   };
 
   const handleStep5Submit = () => {
     // Do any necessary form validation or error checking here
-    dispatch({ type: "SET_STEP", payload: 6 });
+    setStep(6);
   };
   const createOrder = async () => {
     const currentDate = new Date();
@@ -168,25 +133,22 @@ export default function BookingScreen({ navigation }) {
   const handleStep6Submit = () => {
     // Do any necessary form validation or error checking here
     createOrder();
-    dispatch({ type: "SET_STEP", payload: 7 });
+    dispatch({ type: SET_STEP, payload: 7 });
   };
 
   const handleCloseModal = () => {
     // Do any necessary form validation or error checking here
-    dispatch({ type: "SET_SHOW_MODAL_CANCEL", payload: false });
-  };
-
-  const handleBackStep = () => {
-    dispatch({ type: "BACK_STEP" });
+    dispatch({ type: SET_SHOW_MODAL_CANCEL, payload: false });
   };
 
   const handleMarkerDrag = (e) => {
+    console.log("end call");
     const { latitude, longitude } = e.nativeEvent.coordinate;
     setMarkerPosition({ latitude, longitude });
   };
 
   const renderStepContent = () => {
-    switch (state.step) {
+    switch (step) {
       case 1:
         return (
           <>
@@ -197,7 +159,7 @@ export default function BookingScreen({ navigation }) {
               style={{ display: "flex" }}
             >
               <VStack flex={1}>
-                <LocationCardWithChange />
+                <LocationCardWithChange setFocusInput={setFocusInput} />
                 <HStack space={2} marginTop={3} marginLeft={3} marginRight={3}>
                   <Image
                     width={"25px"}
@@ -222,7 +184,9 @@ export default function BookingScreen({ navigation }) {
                     onTouchEnd={chooseFromMapHandler}
                   >
                     <Text fontSize={SIZES.h5} bold color={"white"}>
-                      Choose from map
+                      {focusInput === PICK_UP_INPUT
+                        ? "Choose pick up from map "
+                        : "Choose destination from map "}
                     </Text>
                   </Button>
                 </Center>
@@ -233,21 +197,14 @@ export default function BookingScreen({ navigation }) {
       case 2:
         return (
           <>
-            <LocationCardWithChange />
             <MapView
               style={{ flex: 1, borderRadius: 10, marginTop: 10 }}
               provider="google"
-              initialRegion={state.region}
-              onPress={(e) =>
-                getAddressFromCoordinate(
-                  e.nativeEvent.coordinate.latitude,
-                  e.nativeEvent.coordinate.longitude
-                )
-              }
+              initialRegion={booking.region}
             >
               {UniversityMarks.map((uni) => (
                 <Marker
-                  onPress={(event) => console.log(uni)}
+                  onPress={(event) => setMarkerPosition(uni.coordinate)}
                   key={uni.title}
                   coordinate={uni.coordinate}
                   title={uni.title}
@@ -273,12 +230,12 @@ export default function BookingScreen({ navigation }) {
                 w={"90%"}
                 borderRadius={10}
                 bgColor={COLORS.primary}
-                onTouchEnd={(value) =>
-                  dispatch({ type: "SET_STEP", payload: 3 })
-                }
+                onPress={hanldeConfirmFromMap}
               >
                 <Text fontSize={SIZES.h5} bold color={"white"}>
-                  Confirm
+                  {focusInput === PICK_UP_INPUT
+                    ? "Confirm pick up"
+                    : "Confirm destination"}
                 </Text>
               </Button>
             </Center>
@@ -335,28 +292,30 @@ export default function BookingScreen({ navigation }) {
   };
 
   return (
-    <TouchableWithoutFeedback
-      onPress={() => {
-        Keyboard.dismiss();
-      }}
-    >
-      <BookingContainer bgColor={COLORS.background}>
-        {state.step === 1 || state.step === 2 ? (
-          <View paddingX={"10px"}>
-            <ButtonBack onPress={handleBackStep} />
-          </View>
-        ) : null}
-        {renderStepContent()}
-        <ConfirmModal
-          isShow={state.isModalCancelShow}
-          title={"Cancel booking"}
-          content={"Are you sure that you want to cancel this booking?"}
-          onClose={handleCloseModal}
-          onPressOK={handleCloseModal}
-        />
-      </BookingContainer>
-    </TouchableWithoutFeedback>
+    <BookingContainer bgColor={COLORS.background}>
+      {booking.step === 1 || booking.step === 2 ? (
+        <View paddingX={"10px"}>
+          <ButtonBack onPress={handleBackStep} />
+        </View>
+      ) : null}
+      {renderStepContent()}
+      <ConfirmModal
+        isShow={booking.isModalCancelShow}
+        title={"Cancel booking"}
+        content={"Are you sure that you want to cancel this booking?"}
+        onClose={handleCloseModal}
+        onPressOK={handleCloseModal}
+      />
+    </BookingContainer>
   );
+
+  function handleBackStep() {
+    setStep((prev) => prev - 1);
+  }
+}
+
+function checkLocationIsSet({ latitude, longitude }) {
+  return latitude && longitude && latitude !== 0 && longitude !== 0;
 }
 
 const BookingContainer = styled(SafeAreaView)`

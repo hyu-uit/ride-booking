@@ -31,7 +31,7 @@
     "lottie-react-native": "5.1.4",
     "moment": "^2.29.4",
     "native-base": "^3.4.28",
-    "react": "18.1.0",
+    "react": "^18.1.0",
     "react-dom": "18.1.0",
     "react-native": "0.70.8",
     "react-native-confirmation-code-field": "^7.3.1",

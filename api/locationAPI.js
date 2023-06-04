@@ -10,6 +10,6 @@ export const getAddressFromCoordinate = (latitude, longitude) => {
     requestOptions
   )
     .then((response) => response.json())
-    .then((result) => console.log(result.features[0].properties.formatted))
+    .then((result) => console.log(result.features[0].properties))
     .catch((error) => console.log("error", error));
 };
