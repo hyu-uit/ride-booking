@@ -16,6 +16,8 @@ import { SIZES, COLORS, FONTS } from "../../../constants/theme";
 import ButtonBack from "../../../components/Global/ButtonBack/ButtonBack";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { Ionicons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
+import { useEffect } from "react";
 
 const MenuScreen = ({ navigation }) => {
   return (

@@ -6,6 +6,7 @@ import { HomeStackScreen } from "./HomeNavigator";
 import { ActivityStackScreen } from "./ActivityNavigator";
 import { PromotionStackScreen } from "./PromotionNavigator";
 import CustomerProfile from "../screens/Customer/Profile/CustomerProfile";
+import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
 
 const MainTab = createBottomTabNavigator();
 
@@ -39,17 +40,38 @@ const MainNavigator = ({ navigation }) => {
       <MainTab.Screen
         name="HomeStack"
         component={HomeStackScreen}
-        options={{ tabBarLabel: "Home" }}
+        options={({ route }) => ({
+          tabBarStyle: {
+            display: getTabBarVisibility(route),
+            backgroundColor: COLORS.tertiary,
+            height: operator,
+          },
+          tabBarLabel: "Home",
+        })}
       />
       <MainTab.Screen
         name="ActivityStack"
         component={ActivityStackScreen}
-        options={{ tabBarLabel: "Activity" }}
+        options={({ route }) => ({
+          tabBarStyle: {
+            display: getTabbarActivity(route),
+            backgroundColor: COLORS.tertiary,
+            height: operator,
+          },
+          tabBarLabel: "Activity",
+        })}
       />
       <MainTab.Screen
         name="PromotionStack"
         component={PromotionStackScreen}
-        options={{ tabBarLabel: "Promotion" }}
+        options={({ route }) => ({
+          tabBarStyle: {
+            display: getTabbarPromotion(route),
+            backgroundColor: COLORS.tertiary,
+            height: operator,
+          },
+          tabBarLabel: "Promotion",
+        })}
       />
       <MainTab.Screen
         name="Profile"
@@ -58,6 +80,47 @@ const MainNavigator = ({ navigation }) => {
       />
     </MainTab.Navigator>
   );
+};
+
+const getTabBarVisibility = (route) => {
+  // console.log(route);
+  const routeName = getFocusedRouteNameFromRoute(route) ?? "Feed";
+  // console.log(routeName);
+  if (
+    routeName === "Menu" ||
+    routeName === "Scheduled" ||
+    routeName === "Payment" ||
+    routeName === "SavedLocation" ||
+    routeName === "AddLocation" ||
+    routeName === "ConfirmLocation" ||
+    routeName === "Booking" ||
+    routeName === "BookingDriver" ||
+    routeName === "BookingRating"
+  ) {
+    return "none";
+  }
+  return "flex";
+};
+
+const getTabbarActivity = (route) => {
+  // console.log(route.name);
+  const routeName = getFocusedRouteNameFromRoute(route) ?? "Feed";
+  if (routeName === "ActivityDetail") {
+    return "none";
+  }
+  return "flex";
+  // console.log(routeName);
+};
+const getTabbarPromotion = (route) => {
+  console.log(route);
+  const routeName = getFocusedRouteNameFromRoute(route) ?? "Feed";
+  console.log(routeName);
+  if (routeName === "PromotionDetail") {
+    return "none";
+  }
+  return "flex";
+  // return "none";
+  // console.log(routeName);
 };
 
 export default MainNavigator;

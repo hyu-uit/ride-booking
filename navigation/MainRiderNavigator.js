@@ -6,6 +6,7 @@ import RiderProfileScreen from "../screens/Rider/RiderProfileScreen";
 import IncomeScreen from "../screens/Rider/IncomeScreen";
 import RiderScheduleScreen from "../screens/Rider/RiderSchedule";
 import { RiderHomeStackScreen } from "./RiderHomeNavigator";
+import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
 
 const MainRiderTab = createBottomTabNavigator();
 
@@ -39,12 +40,28 @@ const MainRiderNavigator = ({ navigation }) => {
       <MainRiderTab.Screen
         name="RiderHomeStack"
         component={RiderHomeStackScreen}
-        options={{ tabBarLabel: "Home" }}
+        // options={{ tabBarLabel: "Home" }}
+        options={({ route }) => ({
+          tabBarStyle: {
+            display: getTabBarVisibility(route),
+            backgroundColor: COLORS.tertiary,
+            height: operator,
+          },
+          tabBarLabel: "Home",
+        })}
       />
       <MainRiderTab.Screen
         name="RiderScheduled"
         component={RiderScheduleScreen}
-        options={{ tabBarLabel: "Scheduled" }}
+        // options={{ tabBarLabel: "Scheduled" }}
+        options={({ route }) => ({
+          tabBarStyle: {
+            display: getTabBarScheduled(route),
+            backgroundColor: COLORS.tertiary,
+            height: operator,
+          },
+          tabBarLabel: "Scheduled",
+        })}
       />
       <MainRiderTab.Screen
         name="Income"
@@ -58,6 +75,25 @@ const MainRiderNavigator = ({ navigation }) => {
       />
     </MainRiderTab.Navigator>
   );
+};
+
+const getTabBarVisibility = (route) => {
+  // console.log(route);
+  const routeName = getFocusedRouteNameFromRoute(route) ?? "Feed";
+  // console.log(routeName);
+  if (routeName === "TripDetail") {
+    return "none";
+  }
+  return "flex";
+};
+const getTabBarScheduled = (route) => {
+  // console.log(route);
+  const routeName = getFocusedRouteNameFromRoute(route) ?? "Feed";
+  // console.log(routeName);
+  if (routeName === "TripDetail") {
+    return "none";
+  }
+  return "flex";
 };
 
 export default MainRiderNavigator;

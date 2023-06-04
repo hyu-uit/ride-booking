@@ -11,6 +11,7 @@ import { StudentListStackScreen } from "./StudentOfficeListNavigator";
 import StudentReportScreen from "../screens/StudentOffice/StudentReportScreen";
 import StudentOfficeProfileScreen from "../screens/StudentOffice/StudentOfficeProfileScreen";
 import { StudentReportStackScreen } from "./StudentOfficeReportNavigator";
+import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
 
 const StudentOfficeStack = createNativeStackNavigator();
 
@@ -45,17 +46,41 @@ export function StudentOfficeStackScreen() {
       <MainTab.Screen
         name="StudentOfficeStack"
         component={StudentOfficeHomeStackScreen}
-        options={{ tabBarLabel: "Home" }}
+        // options={{ tabBarLabel: "Home" }}
+        options={({ route }) => ({
+          tabBarStyle: {
+            display: getTabBarVisibility(route),
+            backgroundColor: COLORS.tertiary,
+            height: operator,
+          },
+          tabBarLabel: "Home",
+        })}
       />
       <MainTab.Screen
         name="StudentListStack"
         component={StudentListStackScreen}
-        options={{ tabBarLabel: "Students" }}
+        // options={{ tabBarLabel: "Students" }}
+        options={({ route }) => ({
+          tabBarStyle: {
+            display: getTabBarVisibility(route),
+            backgroundColor: COLORS.tertiary,
+            height: operator,
+          },
+          tabBarLabel: "Students",
+        })}
       />
       <MainTab.Screen
         name="StudentReportStack"
         component={StudentReportStackScreen}
-        options={{ tabBarLabel: "Restriction" }}
+        // options={{ tabBarLabel: "Restriction" }}
+        options={({ route }) => ({
+          tabBarStyle: {
+            display: getTabBarVisibility(route),
+            backgroundColor: COLORS.tertiary,
+            height: operator,
+          },
+          tabBarLabel: "Restriction",
+        })}
       />
       <MainTab.Screen
         name="Profile"
@@ -76,3 +101,33 @@ export function StudentOfficeStackScreen() {
     // </StudentOfficeStack.Navigator>
   );
 }
+
+const getTabBarVisibility = (route) => {
+  // console.log(route);
+  const routeName = getFocusedRouteNameFromRoute(route) ?? "Feed";
+  // console.log(routeName);
+  if (routeName === "StudentOfficeDetail") {
+    return "none";
+  }
+  return "flex";
+};
+
+const getTabBarStudent = (route) => {
+  // console.log(route);
+  const routeName = getFocusedRouteNameFromRoute(route) ?? "Feed";
+  // console.log(routeName);
+  if (routeName === "StudentListDetail") {
+    return "none";
+  }
+  return "flex";
+};
+
+const getTabBarReport = (route) => {
+  // console.log(route);
+  const routeName = getFocusedRouteNameFromRoute(route) ?? "Feed";
+  // console.log(routeName);
+  if (routeName === "StudentReportDetail") {
+    return "none";
+  }
+  return "flex";
+};
