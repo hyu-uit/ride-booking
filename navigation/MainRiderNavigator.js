@@ -7,6 +7,7 @@ import IncomeScreen from "../screens/Rider/IncomeScreen";
 import RiderScheduleScreen from "../screens/Rider/RiderSchedule";
 import { RiderHomeStackScreen } from "./RiderHomeNavigator";
 import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
+import { RiderScheduledStackScreen } from "./RiderScheduledNavigator";
 
 const MainRiderTab = createBottomTabNavigator();
 
@@ -52,7 +53,7 @@ const MainRiderNavigator = ({ navigation }) => {
       />
       <MainRiderTab.Screen
         name="RiderScheduled"
-        component={RiderScheduleScreen}
+        component={RiderScheduledStackScreen}
         // options={{ tabBarLabel: "Scheduled" }}
         options={({ route }) => ({
           tabBarStyle: {

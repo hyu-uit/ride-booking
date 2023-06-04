@@ -95,7 +95,8 @@ const getTabBarVisibility = (route) => {
     routeName === "ConfirmLocation" ||
     routeName === "Booking" ||
     routeName === "BookingDriver" ||
-    routeName === "BookingRating"
+    routeName === "BookingRating" ||
+    routeName === "ActivityDetail"
   ) {
     return "none";
   }
@@ -103,18 +104,18 @@ const getTabBarVisibility = (route) => {
 };
 
 const getTabbarActivity = (route) => {
-  // console.log(route.name);
+  console.log(route.name);
   const routeName = getFocusedRouteNameFromRoute(route) ?? "Feed";
+  console.log(routeName);
   if (routeName === "ActivityDetail") {
     return "none";
   }
   return "flex";
-  // console.log(routeName);
 };
 const getTabbarPromotion = (route) => {
-  console.log(route);
+  // console.log(route);
   const routeName = getFocusedRouteNameFromRoute(route) ?? "Feed";
-  console.log(routeName);
+  // console.log(routeName);
   if (routeName === "PromotionDetail") {
     return "none";
   }

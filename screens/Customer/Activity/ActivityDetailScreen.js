@@ -1,4 +1,4 @@
-import { View, Text } from "react-native";
+import { View, Text, Dimensions } from "react-native";
 import React from "react";
 import {
   Button,
@@ -65,13 +65,13 @@ const ActivityDetailScreen = ({ navigation, route }) => {
   return (
     <NativeBaseProvider>
       <VStack
-        h={"100%"}
+        h={contentHeight}
         paddingY={"20px"}
         bgColor={COLORS.background}
         paddingX={"10px"}
       >
         <SafeAreaView>
-          <VStack h={contentHeight}>
+          <VStack>
             <HStack justifyContent={"center"} mb={"20px"}>
               <View style={{ position: "absolute", left: 0 }}>
                 <ButtonBack

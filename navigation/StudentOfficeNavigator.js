@@ -105,9 +105,9 @@ export function StudentOfficeStackScreen() {
 }
 
 const getTabBarVisibility = (route) => {
-  // console.log(route);
+  console.log(route);
   const routeName = getFocusedRouteNameFromRoute(route) ?? "Feed";
-  // console.log(routeName);
+  console.log(routeName);
   if (routeName === "StudentOfficeDetail") {
     return "none";
   }

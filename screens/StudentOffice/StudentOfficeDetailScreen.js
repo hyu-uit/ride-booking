@@ -14,7 +14,7 @@ import {
 import { COLORS, FONTS, SIZES } from "../../constants/theme";
 import { SafeAreaView } from "react-native-safe-area-context";
 import ButtonBack from "../../components/Global/ButtonBack/ButtonBack";
-import { PixelRatio } from "react-native";
+import { Dimensions, PixelRatio } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import RejectModal from "../../components/Modal/RejectModal";
 import {
@@ -29,6 +29,7 @@ import { Alert } from "react-native";
 import ConfirmModal from "../../components/Modal/ConfirmModal";
 
 const StudentOfficeDetailScreen = ({ navigation, route }) => {
+  const contentHeight = Dimensions.get("window").height;
   // const [phoneNumber, setPhoneNumber] = useState("");
   // const [role, setRole] = useState("");
   const [school, setSchool] = useState("");
@@ -38,7 +39,7 @@ const StudentOfficeDetailScreen = ({ navigation, route }) => {
   const [studentID, setStudentID] = useState("");
   const [email, setEmail] = useState("");
   const [displayName, setDisplayName] = useState("");
-  const [birthday,setBirthday]=useState("");
+  const [birthday, setBirthday] = useState("");
   const [modal, setModal] = useState(false);
 
   const { phoneNumber, role } = route.params;
@@ -99,7 +100,7 @@ const StudentOfficeDetailScreen = ({ navigation, route }) => {
   };
 
   return (
-    <VStack h={"100%"} bgColor={COLORS.background}>
+    <VStack h={contentHeight} bgColor={COLORS.background}>
       <SafeAreaView>
         <RejectModal
           isShow={modal}
