@@ -103,7 +103,8 @@ const SignInScreen = ({ navigation }) => {
               saveToAsyncStorage("role", getRole);
             } else if (docData.data().status === "locked") {
               Alert.alert(
-                "This account has been locked, please contact to your Student Office's school"
+                "This account has been locked",
+                "please contact to your Student Office's school"
               );
             } else {
               Alert.alert("Phone number has not been registered!");

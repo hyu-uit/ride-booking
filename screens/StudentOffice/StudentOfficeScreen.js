@@ -223,26 +223,24 @@ const StudentOfficeScreen = ({ navigation }) => {
               />
             }
           />
-          <ScrollView>
-            <FlatList
-              data={filteredUsers}
-              keyExtractor={(item) => item.key}
-              renderItem={({ item }) => (
-                <StudentOfficeCard
-                  onPress={() => {
-                    const data = {
-                      phoneNumber: "" + item.phoneNumber,
-                      role: "" + item.role,
-                    };
-                    navigation.navigate("StudentOfficeDetail", data);
-                  }}
-                  user={item}
-                  key={item.name}
-                  // onPressDelete={handleDeleteStudent}
-                ></StudentOfficeCard>
-              )}
-            ></FlatList>
-          </ScrollView>
+          <FlatList
+            data={filteredUsers}
+            keyExtractor={(item) => item.key}
+            renderItem={({ item }) => (
+              <StudentOfficeCard
+                onPress={() => {
+                  const data = {
+                    phoneNumber: "" + item.phoneNumber,
+                    role: "" + item.role,
+                  };
+                  navigation.navigate("StudentOfficeDetail", data);
+                }}
+                user={item}
+                key={item.name}
+                // onPressDelete={handleDeleteStudent}
+              ></StudentOfficeCard>
+            )}
+          ></FlatList>
         </VStack>
       </SafeAreaView>
     </VStack>

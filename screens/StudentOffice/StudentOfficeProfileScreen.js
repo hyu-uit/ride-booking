@@ -60,49 +60,49 @@ const StudentOfficeProfileScreen = ({ navigation }) => {
             <Text style={{ ...FONTS.h2, color: COLORS.white }}>Profile</Text>
           </HStack>
 
-          <ScrollView showsVerticalScrollIndicator={false}>
-            <VStack mt={5} alignItems={"center"}>
-              <HStack w={"118px"}>
-                <Image
-                  source={{ uri: logo }}
-                  h={"118px"}
-                  w={"118px"}
-                  resizeMode="contain"
-                ></Image>
-              </HStack>
-            </VStack>
+          {/* <ScrollView showsVerticalScrollIndicator={false}> */}
+          <VStack mt={5} alignItems={"center"}>
+            <HStack w={"118px"}>
+              <Image
+                source={{ uri: logo }}
+                h={"118px"}
+                w={"118px"}
+                resizeMode="contain"
+              ></Image>
+            </HStack>
+          </VStack>
 
-            <VStack>
-              <Text style={{ ...FONTS.h4, color: COLORS.fifthary }} mt={10}>
-                Name
-              </Text>
-              <Text style={{ ...FONTS.h4, color: COLORS.white }} mt={2}>
-                {uniName}
-              </Text>
-              <Text style={{ ...FONTS.h4, color: COLORS.fifthary }} mt={10}>
-                Address
-              </Text>
-              <Text style={{ ...FONTS.h4, color: COLORS.white }} mt={2}>
-                {address}
-              </Text>
-            </VStack>
+          <VStack>
+            <Text style={{ ...FONTS.h4, color: COLORS.fifthary }} mt={10}>
+              Name
+            </Text>
+            <Text style={{ ...FONTS.h4, color: COLORS.white }} mt={2}>
+              {uniName}
+            </Text>
+            <Text style={{ ...FONTS.h4, color: COLORS.fifthary }} mt={10}>
+              Address
+            </Text>
+            <Text style={{ ...FONTS.h4, color: COLORS.white }} mt={2}>
+              {address}
+            </Text>
+          </VStack>
 
-            <Button
-              w={"100%"}
-              mt={20}
-              borderRadius={20}
-              bgColor={COLORS.primary}
-              onPress={() => {
-                navigation.navigate("AuthenticationStack", {
-                  screen: "Login",
-                });
-              }}
-            >
-              <Text style={{ ...FONTS.h2 }} color={COLORS.white}>
-                Log out
-              </Text>
-            </Button>
-          </ScrollView>
+          <Button
+            w={"100%"}
+            mt={20}
+            borderRadius={20}
+            bgColor={COLORS.primary}
+            onPress={() => {
+              navigation.navigate("AuthenticationStack", {
+                screen: "Login",
+              });
+            }}
+          >
+            <Text style={{ ...FONTS.h2 }} color={COLORS.white}>
+              Log out
+            </Text>
+          </Button>
+          {/* </ScrollView> */}
         </VStack>
       </SafeAreaView>
     </VStack>

@@ -71,11 +71,13 @@ function StudentOfficeCard(props, onPressDelete) {
   return (
     <VStack
       w={"100%"}
+      h={"135px"}
+      mb={3}
       bgColor={COLORS.tertiary}
       pb={3}
       borderRadius={"20px"}
       // h={"130px"}
-      mb={5}
+      // mb={5}
 
       //  onTouchEnd={onPress}
     >
@@ -126,7 +128,7 @@ function StudentOfficeCard(props, onPressDelete) {
               </VStack>
             </HStack>
           </VStack>
-          <VStack w={"25%"} justifyContent={"flex-end"} alignItems={"center"}>
+          {/* <VStack w={"25%"} justifyContent={"flex-end"} alignItems={"center"}>
             <Button
               variant={"outline"}
               borderColor={COLORS.red}
@@ -151,7 +153,7 @@ function StudentOfficeCard(props, onPressDelete) {
             >
               <Text style={{ ...FONTS.h5, color: COLORS.white }}>Accept</Text>
             </Button>
-          </VStack>
+          </VStack> */}
         </HStack>
       </TouchableOpacity>
     </VStack>

@@ -46,6 +46,7 @@ const TripDetailScreen = ({ navigation, route }) => {
           time: doc.data().time,
           totalPrice: doc.data().totalPrice,
           distance: doc.data().distance,
+          status: doc.data().status,
         };
       }
       setTrip(data);

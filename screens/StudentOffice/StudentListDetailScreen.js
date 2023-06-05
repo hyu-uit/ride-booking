@@ -13,7 +13,7 @@ import {
 import { COLORS, FONTS, SIZES } from "../../constants/theme";
 import { SafeAreaView } from "react-native-safe-area-context";
 import ButtonBack from "../../components/Global/ButtonBack/ButtonBack";
-import { Alert, PixelRatio } from "react-native";
+import { Alert, Dimensions, PixelRatio } from "react-native";
 import LoveIcon from "../../assets/icons8-smiling-face-with-heart-eyes-96.png";
 import SmileIcon from "../../assets/icons8-slightly-smiling-face-96.png";
 import DisappointedIcon from "../../assets/icons8-frowning-face-96.png";
@@ -120,7 +120,7 @@ const StudentListDetailScreen = ({ route, navigation }) => {
             </Text>
           </HStack>
 
-          <ScrollView showsVerticalScrollIndicator={false}>
+          <ScrollView showsVerticalScrollIndicator={false} mb={20}>
             <VStack mt={8} pb={10}>
               <Text style={{ ...FONTS.h4, color: COLORS.fifthary }}>
                 Portrait picture

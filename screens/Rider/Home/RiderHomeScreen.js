@@ -151,6 +151,7 @@ const RiderHomeScreen = ({ navigation, route }) => {
             timePickUp: doc.data().timePickUp,
             totalPrice: doc.data().totalPrice,
             distance: doc.data().distance,
+            status: doc.data().status,
           });
         }
       });
@@ -177,6 +178,7 @@ const RiderHomeScreen = ({ navigation, route }) => {
           timePickUp: doc.data().timePickUp,
           totalPrice: doc.data().totalPrice,
           distance: doc.data().distance,
+          status: doc.data().status,
         });
       });
       setFinishedTrips(finishedTrips);
@@ -202,6 +204,7 @@ const RiderHomeScreen = ({ navigation, route }) => {
           timePickUp: doc.data().timePickUp,
           totalPrice: doc.data().totalPrice,
           distance: doc.data().distance,
+          status: doc.data().status,
         });
       });
       setCanceledTrips(canceledTrips);
