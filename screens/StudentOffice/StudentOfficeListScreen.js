@@ -24,8 +24,7 @@ import {
   collection,
   getDocs,
   where,
-  getDoc,
-  doc,
+  onSnapshot,
 } from "firebase/firestore";
 import { db } from "../../config/config";
 import { getFromAsyncStorage } from "../../helper/asyncStorage";
@@ -35,7 +34,6 @@ const StudentOfficeListScreen = ({ navigation }) => {
   const [usersCustomer, setUsersCustomer] = useState([]);
   const [searchText, setSearchText] = useState("");
   const [phoneNumber, setPhoneNumber] = useState(null);
-  const [acronym, setAcronym] = useState();
 
   useEffect(() => {
     fetchDataAndPhoneNumber();
@@ -53,23 +51,6 @@ const StudentOfficeListScreen = ({ navigation }) => {
       console.log(err);
     }
   };
-
-  // const fetchData = async (phoneNumber) => {
-  //   try {
-  //     console.log(phoneNumber);
-  //     const docData = await getDoc(doc(db, "StudentOffice", phoneNumber));
-  //     setAcronym(docData.data().acronym);
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   getUsersCustomer();
-  //   getUsersRider();
-  //   // getUsersLock();
-  //   setAcronym(getFromAsyncStorage("acronym"));
-  // }, []);
 
   const getUsersRider = () => {
     const riderCollectionRef = collection(db, "Rider");
