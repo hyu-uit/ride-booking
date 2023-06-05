@@ -23,7 +23,10 @@ import {
   deleteDoc,
   doc,
   getDoc,
+  onSnapshot,
+  query,
   updateDoc,
+  where,
 } from "firebase/firestore";
 import { db } from "../../config/config";
 const StudentListDetailScreen = ({ route, navigation }) => {
@@ -36,11 +39,69 @@ const StudentListDetailScreen = ({ route, navigation }) => {
   const [displayName, setDisplayName] = useState("");
   const [status, setStatus] = useState("");
   const [birthday, setBirthday] = useState("");
+  const [doneTripCount, setDoneTripCount] = useState(0);
+  const [cancelTripCount, setCancelTripCount] = useState(0);
+  const [ratingList, setRatingList] = useState({});
+
   const { phoneNumber, role } = route.params;
   const contentHeight = Dimensions.get("window").height;
   useEffect(() => {
     getUserByPhoneNumber();
-  }, []);
+    const doneUnsubscribe = onSnapshot(
+      query(
+        collection(db, "ListTrip"),
+        where(role === "Customer" ? "idCustomer" : "idRider", "==", phoneNumber),
+        where("status", "in", ["done", "canceled"])
+      ),
+      (snapshot) => {
+        let doneCount = 0;
+        let cancelCount = 0;
+        snapshot.forEach((doc) => {
+          const status = doc.data().status;
+          if (status === "done") {
+            doneCount++;
+          } else if (status === "canceled") {
+            cancelCount++;
+          }
+        });
+        setCancelTripCount(cancelCount);
+        const totalCount = doneCount + cancelCount;
+        setDoneTripCount(totalCount);
+      }
+    );
+    const ratingUnsubscribe = onSnapshot(
+      query(
+        collection(db, "RatingList"),
+        where("idRider", "==", phoneNumber),
+        where("ratingType", "in", ["Good", "Normal","Bad"])
+      ),
+      (snapshot) => {
+        let badCount = 0;
+        let normalCount = 0;
+        let goodCount = 0;
+        snapshot.forEach((doc) => {
+          const status = doc.data().status;
+          if (status === "Good") {
+            goodCount++;
+          } else if (status === "Normal") {
+            normalCount++;
+          }else{
+            badCount++;
+          }
+        });
+        const rating = {
+          goodCount:goodCount,
+          normalCount:normalCount,
+          badCount:badCount
+        }
+        setRatingList(rating);
+      }
+    );
+    return () => {
+      doneUnsubscribe();
+      ratingUnsubscribe();
+    };
+  }, [phoneNumber, role]);
 
   const getUserByPhoneNumber = () => {
     // setRole("Customer")
@@ -63,7 +124,9 @@ const StudentListDetailScreen = ({ route, navigation }) => {
         console.log("No such data");
       }
     });
+   
   };
+
   const width = 224;
   const height = width * 1.5;
 
@@ -218,13 +281,13 @@ const StudentListDetailScreen = ({ route, navigation }) => {
                 Trip
               </Text>
               <Text style={{ ...FONTS.h3, color: COLORS.white }} mt={2}>
-                20
+                {doneTripCount}
               </Text>
               <Text style={{ ...FONTS.h4, color: COLORS.fifthary }} mt={10}>
                 Cancel
               </Text>
               <Text style={{ ...FONTS.h3, color: COLORS.red }} mt={2}>
-                20
+                {cancelTripCount}
               </Text>
 
               {role === "Rider" ? (
@@ -236,19 +299,19 @@ const StudentListDetailScreen = ({ route, navigation }) => {
                     <VStack justifyContent={"center"} alignItems={"center"}>
                       <Image size={70} source={LoveIcon} alt="Love" />
                       <Text style={{ ...FONTS.h3, color: COLORS.white }} mt={2}>
-                        20
+                        {ratingList.goodCount}
                       </Text>
                     </VStack>
                     <VStack justifyContent={"center"} alignItems={"center"}>
                       <Image size={70} source={SmileIcon} alt="Smile" />
                       <Text style={{ ...FONTS.h3, color: COLORS.white }} mt={2}>
-                        20
+                      {ratingList.normalCount}
                       </Text>
                     </VStack>
                     <VStack justifyContent={"center"} alignItems={"center"}>
                       <Image size={70} source={DisappointedIcon} alt="Dissa" />
                       <Text style={{ ...FONTS.h3, color: COLORS.white }} mt={2}>
-                        20
+                      {ratingList.badCount}
                       </Text>
                     </VStack>
                   </HStack>

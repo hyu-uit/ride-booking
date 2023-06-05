@@ -37,21 +37,21 @@ const StudentOfficeListScreen = ({ navigation }) => {
 
   useEffect(() => {
     fetchDataAndPhoneNumber();
+
   }, []);
   const fetchDataAndPhoneNumber = async () => {
     try {
       const phoneNumberValue = await getFromAsyncStorage("phoneNumber");
       setPhoneNumber(phoneNumberValue);
-
       if (phoneNumberValue) {
-        getUsersCustomer();
-        getUsersRider();
+        getUsersCustomer()
+        getUsersRider()
       }
     } catch (err) {
       console.log(err);
     }
   };
-
+  
   const getUsersRider = () => {
     const riderCollectionRef = collection(db, "Rider");
     const riderQuery = query(
@@ -72,10 +72,11 @@ const StudentOfficeListScreen = ({ navigation }) => {
           birthday: doc.data().birthday,
           cardFront: doc.data().cardFront,
           cardBack: doc.data().cardBack,
-          key: doc.id + "-Rider",
+          key: doc.id + "Rider",
         };
         updatedUsers.push(user);
       });
+      setUsersRider([])
       setUsersRider((prevUsers) => [
         ...prevUsers.filter((user) => user.role !== "Rider"),
         ...updatedUsers,
@@ -85,6 +86,7 @@ const StudentOfficeListScreen = ({ navigation }) => {
       unsubscribeRider();
     };
   };
+  
   const getUsersCustomer = () => {
     const customerCollectionRef = collection(db, "Customer");
     const customerQuery = query(
@@ -101,16 +103,16 @@ const StudentOfficeListScreen = ({ navigation }) => {
           displayName: doc.data().displayName,
           email: doc.data().email,
           studentID: doc.data().studentID,
+          birthday: doc.data().birthday,
           portrait: doc.data().portrait,
           cardFront: doc.data().cardFront,
-          birthday: doc.data().birthday,
           cardBack: doc.data().cardBack,
-          key: doc.id + "-Rider",
+          key: doc.id + "-Customer",
         };
         updatedUsers.push(user);
       });
       setUsersCustomer((prevUsers) => [
-        ...prevUsers.filter((user) => user.role !== "Rider"),
+        ...prevUsers.filter((user) => user.role !== "Customer"),
         ...updatedUsers,
       ]);
     });
@@ -118,7 +120,7 @@ const StudentOfficeListScreen = ({ navigation }) => {
       unsubscribeCustomer();
     };
   };
-
+  
   const handleSearchTextChange = (text) => {
     setSearchText(text);
   };
@@ -136,98 +138,51 @@ const StudentOfficeListScreen = ({ navigation }) => {
     return studentID.includes(searchQuery);
   });
 
-  const FirstRoute = () => (
-    <VStack paddingX={"10px"} w={"100%"}>
-      <Input
-        mb={4}
-        borderRadius={10}
-        h={"50px"}
-        placeholder="Search by Student ID"
-        width="100%"
-        variant={"filled"}
-        bgColor={COLORS.tertiary}
-        borderWidth={0}
-        value={searchText}
-        fontSize={SIZES.body3}
-        color={COLORS.white}
-        marginTop={4}
-        onChangeText={handleSearchTextChange}
-        InputLeftElement={
-          <Icon
-            ml="2"
-            size="4"
-            color={COLORS.white}
-            as={<Ionicons name="ios-search" />}
-          />
-        }
-      />
-      {/* <StudentListCard
-            onPress={() => {
-              navigation.navigate("StudentListDetail");
-            }}
-          /> */}
-      <FlatList
-        data={filteredCustomerUsers}
-        keyExtractor={(item) => item.key}
-        renderItem={({ item }) => (
-          <StudentListCard
-            onPress={() => {
-              const data = {
-                phoneNumber: "" + item.phoneNumber,
-                role: "" + item.role,
-              };
-              navigation.navigate("StudentListDetail", data);
-            }}
-            list={item}
-          ></StudentListCard>
-        )}
-      ></FlatList>
-    </VStack>
-  );
-
-  const SecondRoute = () => (
-    <VStack paddingX={"10px"}>
-      <Input
-        mb={4}
-        borderRadius={10}
-        h={"50px"}
-        placeholder="Search by Student ID"
-        width="100%"
-        variant={"filled"}
-        bgColor={COLORS.tertiary}
-        borderWidth={0}
-        fontSize={SIZES.body3}
-        color={COLORS.white}
-        marginTop={4}
-        value={searchText}
-        onChangeText={handleSearchTextChange}
-        InputLeftElement={
-          <Icon
-            ml="2"
-            size="4"
-            color={COLORS.white}
-            as={<Ionicons name="ios-search" />}
-          />
-        }
-      />
-      <FlatList
-        data={filteredRiderUsers}
-        keyExtractor={(item) => item.key}
-        renderItem={({ item }) => (
-          <StudentListCard
-            onPress={() => {
-              const data = {
-                phoneNumber: "" + item.phoneNumber,
-                role: "" + item.role,
-              };
-              navigation.navigate("StudentListDetail", data);
-            }}
-            list={item}
-          ></StudentListCard>
-        )}
-      ></FlatList>
-    </VStack>
-  );
+  const FirstRoute = () => {
+    return (
+      <VStack paddingX={"10px"} w={"100%"}>
+        <FlatList
+          data={filteredCustomerUsers}
+          keyExtractor={(item) => item.key}
+          renderItem={({ item }) => (
+            <StudentListCard
+              onPress={() => {
+                const data = {
+                  phoneNumber: "" + item.phoneNumber,
+                  role: "" + item.role,
+                };
+                navigation.navigate("StudentListDetail", data);
+              }}
+              list={item}
+            ></StudentListCard>
+          )}
+        ></FlatList>
+      </VStack>
+    );
+  };
+  
+  const SecondRoute = () => {
+    return (
+      <VStack paddingX={"10px"}>
+        <FlatList
+          data={filteredRiderUsers}
+          keyExtractor={(item) => item.key}
+          renderItem={({ item }) => (
+            <StudentListCard
+              onPress={() => {
+                const data = {
+                  phoneNumber: "" + item.phoneNumber,
+                  role: "" + item.role,
+                };
+                navigation.navigate("StudentListDetail", data);
+              }}
+              list={item}
+            ></StudentListCard>
+          )}
+        ></FlatList>
+      </VStack>
+    );
+  };
 
   const renderScene = SceneMap({
     first: FirstRoute,
@@ -252,13 +207,41 @@ const StudentOfficeListScreen = ({ navigation }) => {
             onIndexChange={setIndex}
             initialLayout={{ width: SIZES.width }}
             renderTabBar={(props) => (
-              <TabBar
-                {...props}
-                style={{ backgroundColor: COLORS.tertiary }}
-                inactiveColor={COLORS.fourthary}
-                indicatorStyle={{ backgroundColor: COLORS.fourthary }}
-                labelStyle={{ ...FONTS.h5 }}
-              />
+              <VStack>
+                <TabBar
+                  {...props}
+                  style={{ backgroundColor: COLORS.tertiary, marginBottom: 2 }}
+                  inactiveColor={COLORS.fourthary}
+                  indicatorStyle={{ backgroundColor: COLORS.fourthary }}
+                  labelStyle={{ ...FONTS.h5 }}
+                />
+                <VStack paddingX={"10px"}>
+                  <Input
+                    mb={4}
+                    borderRadius={10}
+                    h={"50px"}
+                    placeholder="Search by Student ID"
+                    width="100%"
+                    variant={"filled"}
+                    bgColor={COLORS.tertiary}
+                    borderWidth={0}
+                    fontSize={SIZES.body3}
+                    color={COLORS.white}
+                    marginTop={4}
+                    value={searchText}
+                    onChangeText={handleSearchTextChange}
+                    InputLeftElement={
+                      <Icon
+                        ml="2"
+                        size="4"
+                        color={COLORS.white}
+                        as={<Ionicons name="ios-search" />}
+                      />
+                    }
+                  />
+                </VStack>
+
+              </VStack>
             )}
           />
         </VStack>

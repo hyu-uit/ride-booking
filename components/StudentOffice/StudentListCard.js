@@ -12,11 +12,44 @@ import React, { useState } from "react";
 import DefaultAvt from "../../assets/image6.png";
 import { COLORS, SIZES } from "../../constants/theme";
 import { TouchableOpacity } from "react-native";
+import { collection, doc, getDocs, onSnapshot, query, where } from "firebase/firestore";
+import { db } from "../../config/config";
+import { useEffect } from "react";
 
 function StudentListCard(props, navigation) {
   let { role, phoneNumber, school, displayName, email, studentID, portrait,birthday } =
     props.list;
   const { onPress } = props;
+  const [tripCount, setTripCount] = useState("");
+
+  useEffect(() => {
+    const unsubscribe = onSnapshot(
+      query(
+        collection(db, "ListTrip"),
+        where(role === "Customer" ? "idCustomer" : "idRider", "==", phoneNumber),
+        where("status", "in", ["done", "canceled"])
+      ),
+      (snapshot) => {
+        let doneCount = 0;
+        let cancelCount = 0;
+        snapshot.forEach((doc) => {
+          const status = doc.data().status;
+          if (status === "done") {
+            doneCount++;
+          } else if (status === "canceled") {
+            cancelCount++;
+          }
+        });
+
+        const totalCount = doneCount + cancelCount;
+        setTripCount(totalCount);
+      }
+    );
+
+    return () => {
+      unsubscribe();
+    };
+  }, [phoneNumber, role]);
   //const [status, setStatus] = useState(0);
   return (
     <View
@@ -53,7 +86,7 @@ function StudentListCard(props, navigation) {
               Trip
             </Text>
             <Text bold fontSize={10} color={"white"}>
-              20
+              {tripCount}
             </Text>
           </VStack>
 

@@ -46,7 +46,6 @@ const StudentReportScreen = ({ navigation }) => {
     try {
       const phoneNumberValue = await getFromAsyncStorage("phoneNumber");
       setPhoneNumber(phoneNumberValue);
-
       if (phoneNumberValue) {
         getUsersCustomer();
         getUsersRider();
@@ -210,29 +209,6 @@ const StudentReportScreen = ({ navigation }) => {
   };
   const FirstRoute = () => (
     <VStack paddingX={"10px"}>
-      <Input
-        mb={4}
-        borderRadius={10}
-        h={"50px"}
-        placeholder="Search by Student ID"
-        width="100%"
-        variant={"filled"}
-        bgColor={COLORS.tertiary}
-        borderWidth={0}
-        fontSize={SIZES.body3}
-        color={COLORS.white}
-        marginTop={4}
-        value={searchText}
-        onChangeText={handleSearchTextChange}
-        InputLeftElement={
-          <Icon
-            ml="2"
-            size="4"
-            color={COLORS.white}
-            as={<Ionicons name="ios-search" />}
-          />
-        }
-      />
       <VStack justifyContent={"center"} alignItems={"center"}>
         <FlatList
           w={"100%"}
@@ -257,30 +233,7 @@ const StudentReportScreen = ({ navigation }) => {
 
   const SecondRoute = () => (
     <VStack paddingX={"10px"}>
-      <Input
-        mb={4}
-        borderRadius={10}
-        h={"50px"}
-        placeholder="Search by Student ID"
-        width="100%"
-        variant={"filled"}
-        bgColor={COLORS.tertiary}
-        borderWidth={0}
-        fontSize={SIZES.body3}
-        color={COLORS.white}
-        marginTop={4}
-        value={searchText}
-        onChangeText={handleSearchTextChange}
-        InputLeftElement={
-          <Icon
-            ml="2"
-            size="4"
-            color={COLORS.white}
-            as={<Ionicons name="ios-search" />}
-          />
-        }
-      />
-      <VStack justifyContent={"center"} alignItems={"center"}>
+     <VStack justifyContent={"center"} alignItems={"center"}>
         <ScrollView w={"100%"}>
           <FlatList
             data={filteredRiderUsers}
@@ -305,39 +258,7 @@ const StudentReportScreen = ({ navigation }) => {
 
   const ThirdRoute = () => (
     <VStack paddingX={"10px"}>
-      <Input
-        mb={4}
-        borderRadius={10}
-        h={"50px"}
-        placeholder="Search by Student ID"
-        width="100%"
-        variant={"filled"}
-        bgColor={COLORS.tertiary}
-        borderWidth={0}
-        fontSize={SIZES.body3}
-        color={COLORS.white}
-        marginTop={4}
-        value={searchText}
-        onChangeText={handleSearchTextChange}
-        InputLeftElement={
-          <Icon
-            ml="2"
-            size="4"
-            color={COLORS.white}
-            as={<Ionicons name="ios-search" />}
-          />
-        }
-      />
       <VStack justifyContent={"center"} alignItems={"center"}>
-        {/* <StudentListCard />
-          <StudentListCard /> */}
-        {/* <FlatList
-            data={usersLock}
-            keyExtractor={(item) => item.name}
-            renderItem={({ item }) => (
-              <StudentListCard list={item}></StudentListCard>
-            )}
-          ></FlatList> */}
         <FlatList
           w={"100%"}
           h={"87%"}
@@ -383,13 +304,41 @@ const StudentReportScreen = ({ navigation }) => {
             onIndexChange={setIndex}
             initialLayout={{ width: SIZES.width }}
             renderTabBar={(props) => (
-              <TabBar
+              <VStack>
+                
+                <TabBar
                 {...props}
                 style={{ backgroundColor: COLORS.tertiary }}
                 inactiveColor={COLORS.fourthary}
                 indicatorStyle={{ backgroundColor: COLORS.fourthary }}
                 labelStyle={{ ...FONTS.h5 }}
               />
+           <VStack paddingX={"10px"}>
+              <Input
+                  mb={4}
+                  borderRadius={10}
+                  h={"50px"}
+                  placeholder="Search by Student ID"
+                  width="100%"
+                  variant={"filled"}
+                  bgColor={COLORS.tertiary}
+                  borderWidth={0}
+                  fontSize={SIZES.body3}
+                  color={COLORS.white}
+                  marginTop={4}
+                  value={searchText}
+                  onChangeText={handleSearchTextChange}
+                  InputLeftElement={
+                    <Icon
+                      ml="2"
+                      size="4"
+                      color={COLORS.white}
+                      as={<Ionicons name="ios-search" />}
+                    />
+                  }
+                />
+                </VStack>
+              </VStack>
             )}
           />
         </VStack>

@@ -54,7 +54,7 @@ const RiderHomeScreen = ({ navigation, route }) => {
   const [finishedTrips, setFinishedTrips] = useState([]);
   const [canceledTrips, setCanceledTrips] = useState([]);
   const [phoneNumber, setPhoneNumber] = useState([]);
-  const currentDate = moment().format("DD/M/YYYY");
+  const currentDate = moment().format("D/M/YYYY");
 
   let backButtonPressedOnce = false;
 
