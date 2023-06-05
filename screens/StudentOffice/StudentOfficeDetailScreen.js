@@ -227,17 +227,6 @@ const StudentOfficeDetailScreen = ({ navigation, route }) => {
               <HStack justifyContent={"space-between"}>
                 <Button
                   w={"48%"}
-                  borderRadius={20}
-                  bgColor={COLORS.primary}
-                  onPress={acceptRequest}
-                  mt={10}
-                >
-                  <Text style={{ ...FONTS.h2 }} color={COLORS.white}>
-                    Accept
-                  </Text>
-                </Button>
-                <Button
-                  w={"48%"}
                   variant={"outline"}
                   borderRadius={20}
                   borderColor={COLORS.red}
@@ -246,6 +235,17 @@ const StudentOfficeDetailScreen = ({ navigation, route }) => {
                 >
                   <Text style={{ ...FONTS.h2 }} color={COLORS.red}>
                     Reject
+                  </Text>
+                </Button>
+                <Button
+                  w={"48%"}
+                  borderRadius={20}
+                  bgColor={COLORS.primary}
+                  onPress={acceptRequest}
+                  mt={10}
+                >
+                  <Text style={{ ...FONTS.h2 }} color={COLORS.white}>
+                    Accept
                   </Text>
                 </Button>
               </HStack>

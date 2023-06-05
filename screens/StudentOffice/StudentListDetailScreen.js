@@ -120,7 +120,7 @@ const StudentListDetailScreen = ({ route, navigation }) => {
             </Text>
           </HStack>
 
-          <ScrollView showsVerticalScrollIndicator={false} mb={20}>
+          <ScrollView showsVerticalScrollIndicator={false}>
             <VStack mt={8} pb={10}>
               <Text style={{ ...FONTS.h4, color: COLORS.fifthary }}>
                 Portrait picture

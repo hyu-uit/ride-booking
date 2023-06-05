@@ -116,7 +116,7 @@ const getTabbarPromotion = (route) => {
   // console.log(route);
   const routeName = getFocusedRouteNameFromRoute(route) ?? "Feed";
   // console.log(routeName);
-  if (routeName === "PromotionDetail") {
+  if (routeName === "PromotionDetail" || routeName === "Booking") {
     return "none";
   }
   return "flex";

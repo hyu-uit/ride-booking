@@ -64,7 +64,7 @@ export function StudentOfficeStackScreen() {
         // options={{ tabBarLabel: "Students" }}
         options={({ route }) => ({
           tabBarStyle: {
-            display: getTabBarVisibility(route),
+            display: getTabBarStudent(route),
             backgroundColor: COLORS.tertiary,
             height: operator,
           },
@@ -77,7 +77,7 @@ export function StudentOfficeStackScreen() {
         // options={{ tabBarLabel: "Restriction" }}
         options={({ route }) => ({
           tabBarStyle: {
-            display: getTabBarVisibility(route),
+            display: getTabBarReport(route),
             backgroundColor: COLORS.tertiary,
             height: operator,
           },
@@ -105,9 +105,9 @@ export function StudentOfficeStackScreen() {
 }
 
 const getTabBarVisibility = (route) => {
-  console.log(route);
+  // console.log(route);
   const routeName = getFocusedRouteNameFromRoute(route) ?? "Feed";
-  console.log(routeName);
+  // console.log(routeName);
   if (routeName === "StudentOfficeDetail") {
     return "none";
   }

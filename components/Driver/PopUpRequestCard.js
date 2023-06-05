@@ -134,7 +134,7 @@ function PopUpRequestCard(props) {
                 fontWeight: "bold",
               }}
             >
-              {name} {status}
+              {name}
             </Text>
           </HStack>
           <View>

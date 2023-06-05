@@ -104,7 +104,7 @@ function StudentOfficeCard(props, onPressDelete) {
             <HStack
               paddingLeft={2}
               paddingRight={3}
-              justifyContent={"space-between"}
+              // justifyContent={"space-between"}
             >
               <VStack w={"35%"} alignItems={"center"} justifyContent={"center"}>
                 <Text style={{ ...FONTS.body5, color: COLORS.grey }}>
@@ -114,15 +114,20 @@ function StudentOfficeCard(props, onPressDelete) {
                   {birthday}
                 </Text>
               </VStack>
-              <VStack w={"20%"} alignItems={"center"} justifyContent={"center"}>
+              {/* <VStack w={"20%"} alignItems={"center"} justifyContent={"center"}>
                 <Text style={{ ...FONTS.body5, color: COLORS.grey }}>
                   School
                 </Text>
                 <Text style={{ ...FONTS.h6, color: COLORS.white }}>
                   {school}
                 </Text>
-              </VStack>
-              <VStack w={"25%"} alignItems={"center"} justifyContent={"center"}>
+              </VStack> */}
+              <VStack
+                w={"25%"}
+                ml={4}
+                alignItems={"center"}
+                justifyContent={"center"}
+              >
                 <Text style={{ ...FONTS.body5, color: COLORS.grey }}>Role</Text>
                 <Text style={{ ...FONTS.h6, color: COLORS.white }}>{role}</Text>
               </VStack>

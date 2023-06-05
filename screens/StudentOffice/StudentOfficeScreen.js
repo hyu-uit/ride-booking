@@ -80,7 +80,7 @@ const StudentOfficeScreen = ({ navigation }) => {
 
       if (phoneNumberValue) {
         fetchData(phoneNumberValue);
-        subscribeToUserChanges();
+        // subscribeToUserChanges();
       }
     } catch (err) {
       console.log(err);
@@ -93,6 +93,7 @@ const StudentOfficeScreen = ({ navigation }) => {
       setUniName(docData.data().name);
       setAcronym(docData.data().acronym);
       setLogo(docData.data().logo);
+      subscribeToUserChanges(docData.data().acronym);
       saveToAsyncStorage("acronym", docData.data().acronym);
     } catch (error) {
       console.error(error);
@@ -104,17 +105,19 @@ const StudentOfficeScreen = ({ navigation }) => {
   //   });
   //   setUsers(updatedList);
   // };
-  const subscribeToUserChanges = () => {
+  const subscribeToUserChanges = (ac) => {
     const customerCollectionRef = collection(db, "Customer");
     const riderCollectionRef = collection(db, "Rider");
 
     const customerQuery = query(
       customerCollectionRef,
-      where("status", "==", "pending")
+      where("status", "==", "pending"),
+      where("school", "==", ac)
     );
     const riderQuery = query(
       riderCollectionRef,
-      where("status", "==", "pending")
+      where("status", "==", "pending"),
+      where("school", "==", ac)
     );
 
     const unsubscribeCustomer = onSnapshot(customerQuery, (querySnapshot) => {
