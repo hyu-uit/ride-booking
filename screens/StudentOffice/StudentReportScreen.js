@@ -49,22 +49,25 @@ const StudentReportScreen = ({ navigation }) => {
       const phoneNumberValue = await getFromAsyncStorage("phoneNumber");
       setPhoneNumber(phoneNumberValue);
       if (phoneNumberValue) {
-        const docData = await getDoc(doc(db, "StudentOffice", phoneNumber));
-        getUsersCustomer(docData.data().acronym);
-        getUsersRider(docData.data().acronym);
-        getUsersLock(docData.data().acronym);
+        const docData = await getDoc(
+          doc(db, "StudentOffice", phoneNumberValue)
+        );
+        getUsersRider();
+        // getUsersCustomer(docData.data().acronym);
+        // getUsersRider(docData.data().acronym);
+        // getUsersLock(docData.data().acronym);
       }
     } catch (err) {
       console.log(err);
     }
   };
 
-  const getUsersRider = (ac) => {
+  const getUsersRider = () => {
     const riderCollectionRef = collection(db, "Rider");
     const riderQuery = query(
       riderCollectionRef,
-      where("status", "==", "active"),
-      where("school", "==", ac)
+      where("status", "==", "active")
+      // where("school", "==", ac)
     );
     const unsubscribeRider = onSnapshot(riderQuery, (querySnapshot) => {
       const updatedUsers = [];

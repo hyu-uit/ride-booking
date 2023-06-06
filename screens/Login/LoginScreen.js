@@ -94,6 +94,7 @@ const LoginScreen = ({ navigation }) => {
           alt="car"
           marginLeft={"auto"}
           h={"90%"}
+          w={"100%"}
           resizeMode="stretch"
         />
         {/* <Image

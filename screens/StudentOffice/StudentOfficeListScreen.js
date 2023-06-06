@@ -45,7 +45,10 @@ const StudentOfficeListScreen = ({ navigation }) => {
       const phoneNumberValue = await getFromAsyncStorage("phoneNumber");
       setPhoneNumber(phoneNumberValue);
       if (phoneNumberValue) {
-        const docData = await getDoc(doc(db, "StudentOffice", phoneNumber));
+        const docData = await getDoc(
+          doc(db, "StudentOffice", phoneNumberValue)
+        );
+
         getUsersCustomer(docData.data().acronym);
         getUsersRider(docData.data().acronym);
       }
