@@ -91,6 +91,7 @@ const RiderHomeScreen = ({ navigation, route }) => {
 
       if (phoneNumberValue) {
         fetchData(phoneNumberValue);
+        // const docData = await getDoc(doc(db, "ListTrip", phoneNumberValue));
         await getWaitingTrips();
         await getFinishedTrips();
         await getCanceledTrips();

@@ -28,6 +28,8 @@ import {
   getDocs,
   where,
   onSnapshot,
+  getDoc,
+  doc,
 } from "firebase/firestore";
 import { db } from "../../config/config";
 import { getFromAsyncStorage } from "../../helper/asyncStorage";
@@ -47,20 +49,22 @@ const StudentReportScreen = ({ navigation }) => {
       const phoneNumberValue = await getFromAsyncStorage("phoneNumber");
       setPhoneNumber(phoneNumberValue);
       if (phoneNumberValue) {
-        getUsersCustomer();
-        getUsersRider();
-        getUsersLock();
+        const docData = await getDoc(doc(db, "StudentOffice", phoneNumber));
+        getUsersCustomer(docData.data().acronym);
+        getUsersRider(docData.data().acronym);
+        getUsersLock(docData.data().acronym);
       }
     } catch (err) {
       console.log(err);
     }
   };
 
-  const getUsersRider = () => {
+  const getUsersRider = (ac) => {
     const riderCollectionRef = collection(db, "Rider");
     const riderQuery = query(
       riderCollectionRef,
-      where("status", "==", "active")
+      where("status", "==", "active"),
+      where("school", "==", ac)
     );
     const unsubscribeRider = onSnapshot(riderQuery, (querySnapshot) => {
       const updatedUsers = [];
@@ -88,11 +92,12 @@ const StudentReportScreen = ({ navigation }) => {
       unsubscribeRider();
     };
   };
-  const getUsersCustomer = () => {
+  const getUsersCustomer = (ac) => {
     const customerCollectionRef = collection(db, "Customer");
     const customerQuery = query(
       customerCollectionRef,
-      where("status", "==", "active")
+      where("status", "==", "active"),
+      where("school", "==", ac)
     );
     const unsubscribeCustomer = onSnapshot(customerQuery, (querySnapshot) => {
       const updatedUsers = [];
@@ -143,17 +148,19 @@ const StudentReportScreen = ({ navigation }) => {
 
     return studentID.includes(searchQuery);
   });
-  const getUsersLock = () => {
+  const getUsersLock = (ac) => {
     const customerCollectionRef = collection(db, "Customer");
     const riderCollectionRef = collection(db, "Rider");
 
     const customerQuery = query(
       customerCollectionRef,
-      where("status", "==", "locked")
+      where("status", "==", "locked"),
+      where("school", "==", ac)
     );
     const riderQuery = query(
       riderCollectionRef,
-      where("status", "==", "locked")
+      where("status", "==", "locked"),
+      where("school", "==", ac)
     );
 
     const unsubscribeCustomer = onSnapshot(customerQuery, (querySnapshot) => {
@@ -233,7 +240,7 @@ const StudentReportScreen = ({ navigation }) => {
 
   const SecondRoute = () => (
     <VStack paddingX={"10px"}>
-     <VStack justifyContent={"center"} alignItems={"center"}>
+      <VStack justifyContent={"center"} alignItems={"center"}>
         <ScrollView w={"100%"}>
           <FlatList
             data={filteredRiderUsers}
@@ -305,38 +312,37 @@ const StudentReportScreen = ({ navigation }) => {
             initialLayout={{ width: SIZES.width }}
             renderTabBar={(props) => (
               <VStack>
-                
                 <TabBar
-                {...props}
-                style={{ backgroundColor: COLORS.tertiary }}
-                inactiveColor={COLORS.fourthary}
-                indicatorStyle={{ backgroundColor: COLORS.fourthary }}
-                labelStyle={{ ...FONTS.h5 }}
-              />
-           <VStack paddingX={"10px"}>
-              <Input
-                  mb={4}
-                  borderRadius={10}
-                  h={"50px"}
-                  placeholder="Search by Student ID"
-                  width="100%"
-                  variant={"filled"}
-                  bgColor={COLORS.tertiary}
-                  borderWidth={0}
-                  fontSize={SIZES.body3}
-                  color={COLORS.white}
-                  marginTop={4}
-                  value={searchText}
-                  onChangeText={handleSearchTextChange}
-                  InputLeftElement={
-                    <Icon
-                      ml="2"
-                      size="4"
-                      color={COLORS.white}
-                      as={<Ionicons name="ios-search" />}
-                    />
-                  }
+                  {...props}
+                  style={{ backgroundColor: COLORS.tertiary }}
+                  inactiveColor={COLORS.fourthary}
+                  indicatorStyle={{ backgroundColor: COLORS.fourthary }}
+                  labelStyle={{ ...FONTS.h5 }}
                 />
+                <VStack paddingX={"10px"}>
+                  <Input
+                    mb={4}
+                    borderRadius={10}
+                    h={"50px"}
+                    placeholder="Search by Student ID"
+                    width="100%"
+                    variant={"filled"}
+                    bgColor={COLORS.tertiary}
+                    borderWidth={0}
+                    fontSize={SIZES.body3}
+                    color={COLORS.white}
+                    marginTop={4}
+                    value={searchText}
+                    onChangeText={handleSearchTextChange}
+                    InputLeftElement={
+                      <Icon
+                        ml="2"
+                        size="4"
+                        color={COLORS.white}
+                        as={<Ionicons name="ios-search" />}
+                      />
+                    }
+                  />
                 </VStack>
               </VStack>
             )}

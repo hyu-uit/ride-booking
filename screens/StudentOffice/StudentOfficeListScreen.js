@@ -25,6 +25,8 @@ import {
   getDocs,
   where,
   onSnapshot,
+  getDoc,
+  doc,
 } from "firebase/firestore";
 import { db } from "../../config/config";
 import { getFromAsyncStorage } from "../../helper/asyncStorage";
@@ -37,26 +39,27 @@ const StudentOfficeListScreen = ({ navigation }) => {
 
   useEffect(() => {
     fetchDataAndPhoneNumber();
-
   }, []);
   const fetchDataAndPhoneNumber = async () => {
     try {
       const phoneNumberValue = await getFromAsyncStorage("phoneNumber");
       setPhoneNumber(phoneNumberValue);
       if (phoneNumberValue) {
-        getUsersCustomer()
-        getUsersRider()
+        const docData = await getDoc(doc(db, "StudentOffice", phoneNumber));
+        getUsersCustomer(docData.data().acronym);
+        getUsersRider(docData.data().acronym);
       }
     } catch (err) {
       console.log(err);
     }
   };
-  
-  const getUsersRider = () => {
+
+  const getUsersRider = (ac) => {
     const riderCollectionRef = collection(db, "Rider");
     const riderQuery = query(
       riderCollectionRef,
-      where("status", "==", "active")
+      where("status", "==", "active"),
+      where("school", "==", ac)
     );
     const unsubscribeRider = onSnapshot(riderQuery, (querySnapshot) => {
       const updatedUsers = [];
@@ -76,7 +79,7 @@ const StudentOfficeListScreen = ({ navigation }) => {
         };
         updatedUsers.push(user);
       });
-      setUsersRider([])
+      setUsersRider([]);
       setUsersRider((prevUsers) => [
         ...prevUsers.filter((user) => user.role !== "Rider"),
         ...updatedUsers,
@@ -86,12 +89,13 @@ const StudentOfficeListScreen = ({ navigation }) => {
       unsubscribeRider();
     };
   };
-  
-  const getUsersCustomer = () => {
+
+  const getUsersCustomer = (ac) => {
     const customerCollectionRef = collection(db, "Customer");
     const customerQuery = query(
       customerCollectionRef,
-      where("status", "==", "active")
+      where("status", "==", "active"),
+      where("school", "==", ac)
     );
     const unsubscribeCustomer = onSnapshot(customerQuery, (querySnapshot) => {
       const updatedUsers = [];
@@ -120,7 +124,7 @@ const StudentOfficeListScreen = ({ navigation }) => {
       unsubscribeCustomer();
     };
   };
-  
+
   const handleSearchTextChange = (text) => {
     setSearchText(text);
   };
@@ -160,7 +164,7 @@ const StudentOfficeListScreen = ({ navigation }) => {
       </VStack>
     );
   };
-  
+
   const SecondRoute = () => {
     return (
       <VStack paddingX={"10px"}>
@@ -240,7 +244,6 @@ const StudentOfficeListScreen = ({ navigation }) => {
                     }
                   />
                 </VStack>
-
               </VStack>
             )}
           />
