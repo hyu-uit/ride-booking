@@ -25,12 +25,15 @@ import {
 } from "../../helper/asyncStorage";
 import { IS_FIRST_USE } from "../../constants/asyncStorageKey";
 import { useFocusEffect } from "@react-navigation/native";
+import { useTranslation } from "react-i18next";
+import i18n from "../../i18n";
 
 const LoginScreen = ({ navigation }) => {
   const animation = useRef(null);
   const [phoneNumber, setPhoneNumber] = useState("");
   const [role, setRole] = useState("");
   let backButtonPressedOnce = false;
+  const { t } = useTranslation();
   useEffect(() => {
     // You can control the ref programmatically, rather than using autoPlay
     // animation.current?.play();

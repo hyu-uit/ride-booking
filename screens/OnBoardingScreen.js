@@ -18,6 +18,8 @@ import arrowNext from "../assets/images/OnBoarding/arrowNext.png";
 import { Dimensions } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
+import { useTranslation } from "react-i18next";
+import { useEffect } from "react";
 
 const { width, height } = Dimensions.get("window");
 
@@ -31,9 +33,11 @@ const slides = [
   {
     id: "2",
     image: require("../assets/images/OnBoarding/image-2.png"),
-    title: "VNU - HCM\nSTUDENTS",
-    subtitle:
-      "This app is used for Student of VNU-HCM only\nThey can be a rider to share their bike\nor earn some more money",
+    // title: "VNU - HCM\nSTUDENTS",
+    title: "",
+    // subtitle:
+    //   "This app is used for Student of VNU-HCM only\nThey can be a rider to share their bike\nor earn some more money",
+    subtitle: "",
   },
   {
     id: "3",
@@ -67,6 +71,11 @@ const Slide = ({ item }) => {
   );
 };
 const OnBoardingScreen = ({ navigation }) => {
+  const { t } = useTranslation();
+  useEffect(() => {
+    slides[1].title = t("VNU");
+    slides[1].subtitle = t("VNUContent");
+  });
   const [currentSlideIndex, setCurrentSlideIndex] = React.useState(0);
   const ref = React.useRef();
   const updateCurrentSlideIndex = (e) => {

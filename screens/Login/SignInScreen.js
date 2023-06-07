@@ -17,9 +17,11 @@ import { doc, getDoc } from "firebase/firestore";
 import { db } from "../../config/config";
 import { AsyncStorage } from "react-native";
 import { saveToAsyncStorage } from "../../helper/asyncStorage";
+import { useTranslation } from "react-i18next";
 
 const SignInScreen = ({ navigation }) => {
   const [role, setRole] = useState(0);
+  const { t } = useTranslation();
 
   const [phoneNumber, setPhoneNumber] = useState("");
   const [displayOTPInput, setDisplayOTPInput] = useState(false);
