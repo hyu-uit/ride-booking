@@ -12,3 +12,12 @@ export const getSingleAddressFromCoordinate = (latitude, longitude) => {
     .then((response) => response.json())
     .then((result) => result.features[0].properties);
 };
+
+export const getAutoCompleteResults = (input) => {
+  return fetch(
+    `https://api.geoapify.com/v1/geocode/autocomplete?text=${input}&lang=vi&limit=5&filter=circle:106.78993520934023,10.879049678627098,2500&bias=circle:106.78949432907052,10.877580243419757,2500|countrycode:none&format=json&apiKey=${API_KEY}`,
+    requestOptions
+  )
+    .then((response) => response.json())
+    .then(({ results }) => results);
+};

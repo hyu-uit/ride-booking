@@ -34,6 +34,7 @@
     "react": "^18.1.0",
     "react-dom": "18.1.0",
     "react-native": "0.70.8",
+    "react-native-autocomplete-dropdown": "^3.0.2",
     "react-native-confirmation-code-field": "^7.3.1",
     "react-native-confirmation-code-input": "^1.0.4",
     "react-native-geocoding": "^0.5.0",

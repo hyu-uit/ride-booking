@@ -34,6 +34,7 @@ import {
 import { useContext } from "react";
 import { useState } from "react";
 import { useEffect } from "react";
+import { AutocompleteDropdownContextProvider } from "react-native-autocomplete-dropdown";
 
 export const PICK_UP_INPUT = "PICK_UP_INPUT";
 export const DESTINATION_INPUT = "DESTINATION_INPUT";
@@ -87,16 +88,28 @@ export default function BookingScreen({ navigation }) {
   }, []);
 
   useEffect(() => {
-    if (booking.step > 2)
-      dispatch({
-        type: SET_INITIAL_LOCATION,
-        payload: {
-          latitude: booking.pickUpLocation.latitude,
-          longitude: booking.pickUpLocation.longitude,
-          latitudeDelta: 0.01, //zoom
-          longitudeDelta: 0.01, //zoom
-        },
-      });
+    if (booking.step > 2) {
+      if (focusInput === PICK_UP_INPUT)
+        dispatch({
+          type: SET_INITIAL_LOCATION,
+          payload: {
+            latitude: booking.pickUpLocation.latitude,
+            longitude: booking.pickUpLocation.longitude,
+            latitudeDelta: 0.01, //zoom
+            longitudeDelta: 0.01, //zoom
+          },
+        });
+      else
+        dispatch({
+          type: SET_INITIAL_LOCATION,
+          payload: {
+            latitude: booking.destinationLocation.latitude,
+            longitude: booking.destinationLocation.longitude,
+            latitudeDelta: 0.01, //zoom
+            longitudeDelta: 0.01, //zoom
+          },
+        });
+    }
   }, [booking.step]);
 
   const chooseFromMapHandler = () => {
@@ -219,6 +232,8 @@ export default function BookingScreen({ navigation }) {
                   setDestinationInput={setDestinationInput}
                   pickUpInput={pickUpInput}
                   desInput={destinationInput}
+                  setStep={setStep}
+                  setMarker={setMarkerPosition}
                 />
                 <HStack space={2} marginTop={3} marginLeft={3} marginRight={3}>
                   <Image
@@ -262,20 +277,6 @@ export default function BookingScreen({ navigation }) {
               provider="google"
               initialRegion={booking.region}
             >
-              {/* {UniversityMarks.map((uni) => (
-                <Marker
-                  onPress={(event) =>
-                    setMarkerPosition({
-                      name: uni.name,
-                      latitude: uni.coordinate.latitude,
-                      longitude: uni.coordinate.longitude,
-                    })
-                  }
-                  key={uni.name}
-                  coordinate={uni.coordinate}
-                  title={uni.name}
-                />
-              ))} */}
               <Marker
                 key={"your-location"}
                 coordinate={markerPosition}
@@ -389,21 +390,23 @@ export default function BookingScreen({ navigation }) {
   };
 
   return (
-    <BookingContainer bgColor={COLORS.background}>
-      {booking.step === 1 || booking.step === 2 ? (
-        <View paddingX={"10px"}>
-          <ButtonBack onPress={handleBackStep} />
-        </View>
-      ) : null}
-      {renderStepContent()}
-      <ConfirmModal
-        isShow={booking.isModalCancelShow}
-        title={"Cancel booking"}
-        content={"Are you sure that you want to cancel this booking?"}
-        onClose={handleCloseModal}
-        onPressOK={handleCloseModal}
-      />
-    </BookingContainer>
+    <AutocompleteDropdownContextProvider>
+      <BookingContainer bgColor={COLORS.background}>
+        {booking.step === 1 || booking.step === 2 ? (
+          <View paddingX={"10px"}>
+            <ButtonBack onPress={handleBackStep} />
+          </View>
+        ) : null}
+        {renderStepContent()}
+        <ConfirmModal
+          isShow={booking.isModalCancelShow}
+          title={"Cancel booking"}
+          content={"Are you sure that you want to cancel this booking?"}
+          onClose={handleCloseModal}
+          onPressOK={handleCloseModal}
+        />
+      </BookingContainer>
+    </AutocompleteDropdownContextProvider>
   );
 
   function handleBackStep() {
