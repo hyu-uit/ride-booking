@@ -91,7 +91,7 @@ const LoginScreen = ({ navigation }) => {
 
   return (
     <VStack bgColor={COLORS.background}>
-      <VStack w={"100%"} h={"40%"}>
+      <VStack w={"100%"} h={"40%"} position={"relative"}>
         <Image
           source={BlueBg}
           alt="car"
@@ -133,9 +133,7 @@ const LoginScreen = ({ navigation }) => {
           Get Your {"\n"}Drive
         </Text>
         <Text color={COLORS.fifthary} style={{ ...FONTS.body3 }} mt={10}>
-          Say goodbye to the hassle of finding reliable transportation as a
-          student - our app makes booking a ride simple, efficient, and
-          affordable
+          {t("login")}
         </Text>
         <HStack
           w={"100%"}
@@ -175,7 +173,7 @@ const LoginScreen = ({ navigation }) => {
               style={{ ...FONTS.h2, textAlign: "center" }}
               color={COLORS.white}
             >
-              Register
+              {t("register")}
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
@@ -195,7 +193,7 @@ const LoginScreen = ({ navigation }) => {
               style={{ ...FONTS.h2, textAlign: "center" }}
               color={COLORS.white}
             >
-              Sign in
+              {t("signin")}
             </Text>
           </TouchableOpacity>
         </HStack>

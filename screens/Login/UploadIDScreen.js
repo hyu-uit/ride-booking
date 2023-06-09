@@ -29,7 +29,9 @@ import {
   getFromAsyncStorage,
   saveToAsyncStorage,
 } from "../../helper/asyncStorage";
+import { useTranslation } from "react-i18next";
 const UploadID = ({ navigation }) => {
+  const { t } = useTranslation();
   // const [phoneNumber, setPhoneNumber] = useState("");
   // const [role, setRole] = useState("");
   // const [email, setEmail] = useState("");
@@ -76,7 +78,7 @@ const UploadID = ({ navigation }) => {
   //upload image to firebase storage
   const uploadImage = async () => {
     if (imageFront === null || imageBack === null) {
-      Alert.alert("Please update your ID card", "", [
+      Alert.alert(t("uploadID"), "", [
         {
           text: "OK",
         },
@@ -169,7 +171,7 @@ const UploadID = ({ navigation }) => {
                 <VStack justifyContent={"center"} alignItems={"center"}>
                   <Icon name="upload" size={50} color={COLORS.white} />
                   <Text style={{ ...FONTS.h4 }} color={COLORS.white} mt={5}>
-                    Upload your Student card (front)
+                    {t("uploadIDFront")}
                   </Text>
                 </VStack>
               </>
@@ -203,7 +205,7 @@ const UploadID = ({ navigation }) => {
                 <VStack justifyContent={"center"} alignItems={"center"}>
                   <Icon name="upload" size={50} color={COLORS.white} />
                   <Text style={{ ...FONTS.h4 }} color={COLORS.white} mt={5}>
-                    Upload your Student card (back)
+                    {t("uploadIDBack")}
                   </Text>
                 </VStack>
               </>
@@ -217,7 +219,7 @@ const UploadID = ({ navigation }) => {
             mt={10}
           >
             <Text style={{ ...FONTS.h2 }} color={COLORS.white}>
-              Continue
+              {t("continue")}
             </Text>
           </Button>
         </SafeAreaView>

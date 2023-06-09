@@ -29,6 +29,7 @@ import {
   where,
 } from "firebase/firestore";
 import { db } from "../../config/config";
+import { useTranslation } from "react-i18next";
 const StudentListDetailScreen = ({ route, navigation }) => {
   const [school, setSchool] = useState("");
   const [portrait, setPortrait] = useState(null);
@@ -45,12 +46,17 @@ const StudentListDetailScreen = ({ route, navigation }) => {
 
   const { phoneNumber, role } = route.params;
   const contentHeight = Dimensions.get("window").height;
+  const { t } = useTranslation();
   useEffect(() => {
     getUserByPhoneNumber();
     const doneUnsubscribe = onSnapshot(
       query(
         collection(db, "ListTrip"),
-        where(role === "Customer" ? "idCustomer" : "idRider", "==", phoneNumber),
+        where(
+          role === "Customer" ? "idCustomer" : "idRider",
+          "==",
+          phoneNumber
+        ),
         where("status", "in", ["done", "canceled"])
       ),
       (snapshot) => {
@@ -73,7 +79,7 @@ const StudentListDetailScreen = ({ route, navigation }) => {
       query(
         collection(db, "RatingList"),
         where("idRider", "==", phoneNumber),
-        where("ratingType", "in", ["Good", "Normal","Bad"])
+        where("ratingType", "in", ["Good", "Normal", "Bad"])
       ),
       (snapshot) => {
         let badCount = 0;
@@ -85,15 +91,15 @@ const StudentListDetailScreen = ({ route, navigation }) => {
             goodCount++;
           } else if (status === "Normal") {
             normalCount++;
-          }else{
+          } else {
             badCount++;
           }
         });
         const rating = {
-          goodCount:goodCount,
-          normalCount:normalCount,
-          badCount:badCount
-        }
+          goodCount: goodCount,
+          normalCount: normalCount,
+          badCount: badCount,
+        };
         setRatingList(rating);
       }
     );
@@ -124,7 +130,6 @@ const StudentListDetailScreen = ({ route, navigation }) => {
         console.log("No such data");
       }
     });
-   
   };
 
   const width = 224;
@@ -133,7 +138,7 @@ const StudentListDetailScreen = ({ route, navigation }) => {
   const IDWidth = PixelRatio.roundToNearestPixel(SIZES.width - 20);
   const IDHeight = IDWidth * (2 / 3);
   const lockAccount = () => {
-    Alert.alert("Are you sure you want to lock this account?", "", [
+    Alert.alert(t("sureLock"), "", [
       {
         text: "Cancel",
         onPress: () => {},
@@ -150,7 +155,7 @@ const StudentListDetailScreen = ({ route, navigation }) => {
     ]);
   };
   const unlockAccount = () => {
-    Alert.alert("Are you sure you want to unlock this account?", "", [
+    Alert.alert(t("sureUnLock"), "", [
       {
         text: "Cancel",
         onPress: () => {},
@@ -179,14 +184,14 @@ const StudentListDetailScreen = ({ route, navigation }) => {
               ></ButtonBack>
             </View>
             <Text style={{ ...FONTS.h2, color: COLORS.white }} ml={4}>
-              Student Information
+              {t("studentInfo")}
             </Text>
           </HStack>
 
           <ScrollView showsVerticalScrollIndicator={false}>
             <VStack mt={8} pb={10}>
               <Text style={{ ...FONTS.h4, color: COLORS.fifthary }}>
-                Portrait picture
+                {t("portrait")}
               </Text>
 
               <View
@@ -206,43 +211,43 @@ const StudentListDetailScreen = ({ route, navigation }) => {
               </View>
 
               <Text style={{ ...FONTS.h4, color: COLORS.fifthary }} mt={10}>
-                Role
+                {t("role")}
               </Text>
               <Text style={{ ...FONTS.h3, color: COLORS.white }} mt={2}>
                 {role}
               </Text>
               <Text style={{ ...FONTS.h4, color: COLORS.fifthary }} mt={10}>
-                Full name
+                {t("fullName")}
               </Text>
               <Text style={{ ...FONTS.h3, color: COLORS.white }} mt={2}>
                 {displayName}
               </Text>
               <Text style={{ ...FONTS.h4, color: COLORS.fifthary }} mt={10}>
-                Birthday
+                {t("birthday")}
               </Text>
               <Text style={{ ...FONTS.h3, color: COLORS.white }} mt={2}>
                 {birthday}
               </Text>
               <Text style={{ ...FONTS.h4, color: COLORS.fifthary }} mt={10}>
-                Student ID
+                {t("id")}
               </Text>
               <Text style={{ ...FONTS.h3, color: COLORS.white }} mt={2}>
                 {studentID}
               </Text>
               <Text style={{ ...FONTS.h4, color: COLORS.fifthary }} mt={10}>
-                School
+                {t("school")}
               </Text>
               <Text style={{ ...FONTS.h3, color: COLORS.white }} mt={2}>
                 {school}
               </Text>
               <Text style={{ ...FONTS.h4, color: COLORS.fifthary }} mt={10}>
-                Phone number
+                {t("phone")}
               </Text>
               <Text style={{ ...FONTS.h3, color: COLORS.white }} mt={2}>
                 {phoneNumber}
               </Text>
               <Text style={{ ...FONTS.h4, color: COLORS.fifthary }} mt={10}>
-                Email Address
+                {t("email")}
               </Text>
               <Text style={{ ...FONTS.h3, color: COLORS.white }} mt={2}>
                 {email}
@@ -278,13 +283,13 @@ const StudentListDetailScreen = ({ route, navigation }) => {
               </View>
 
               <Text style={{ ...FONTS.h4, color: COLORS.fifthary }} mt={10}>
-                Trip
+                {t("trip")}
               </Text>
               <Text style={{ ...FONTS.h3, color: COLORS.white }} mt={2}>
                 {doneTripCount}
               </Text>
               <Text style={{ ...FONTS.h4, color: COLORS.fifthary }} mt={10}>
-                Cancel
+                {t("canceled")}
               </Text>
               <Text style={{ ...FONTS.h3, color: COLORS.red }} mt={2}>
                 {cancelTripCount}
@@ -293,7 +298,7 @@ const StudentListDetailScreen = ({ route, navigation }) => {
               {role === "Rider" ? (
                 <>
                   <Text style={{ ...FONTS.h4, color: COLORS.fifthary }} mt={10}>
-                    Rating
+                    {t("rating")}
                   </Text>
                   <HStack mt={2} justifyContent={"space-between"}>
                     <VStack justifyContent={"center"} alignItems={"center"}>
@@ -305,13 +310,13 @@ const StudentListDetailScreen = ({ route, navigation }) => {
                     <VStack justifyContent={"center"} alignItems={"center"}>
                       <Image size={70} source={SmileIcon} alt="Smile" />
                       <Text style={{ ...FONTS.h3, color: COLORS.white }} mt={2}>
-                      {ratingList.normalCount}
+                        {ratingList.normalCount}
                       </Text>
                     </VStack>
                     <VStack justifyContent={"center"} alignItems={"center"}>
                       <Image size={70} source={DisappointedIcon} alt="Dissa" />
                       <Text style={{ ...FONTS.h3, color: COLORS.white }} mt={2}>
-                      {ratingList.badCount}
+                        {ratingList.badCount}
                       </Text>
                     </VStack>
                   </HStack>

@@ -144,7 +144,7 @@ const SignInScreen = ({ navigation }) => {
             }}
           ></ButtonBack>
           <Text style={{ ...FONTS.h2 }} mt={10} color={COLORS.white}>
-            Let's sign you in
+            {t("letSignIn")}
           </Text>
           <HStack mt={7} w={"100%"}>
             <ScrollView horizontal>
@@ -160,7 +160,7 @@ const SignInScreen = ({ navigation }) => {
                 }}
               >
                 <Text color={COLORS.white} style={{ ...FONTS.h5 }}>
-                  Customer
+                  {t("customer")}
                 </Text>
               </Button>
               <Button
@@ -179,7 +179,7 @@ const SignInScreen = ({ navigation }) => {
                 ml={4}
               >
                 <Text color={COLORS.white} style={{ ...FONTS.h5 }}>
-                  Rider
+                  {t("rider")}
                 </Text>
               </Button>
               <Button
@@ -198,7 +198,7 @@ const SignInScreen = ({ navigation }) => {
                 ml={4}
               >
                 <Text color={COLORS.white} style={{ ...FONTS.h5 }}>
-                  Office of Student
+                  {t("office")}
                 </Text>
               </Button>
             </ScrollView>
@@ -210,7 +210,7 @@ const SignInScreen = ({ navigation }) => {
             borderRadius={20}
             borderColor={COLORS.secondary}
             mt={10}
-            placeholder="Enter your phone number"
+            placeholder={t("enterPhone")}
             style={{ ...FONTS.body3 }}
             color={COLORS.white}
             keyboardType="numeric"
@@ -220,7 +220,7 @@ const SignInScreen = ({ navigation }) => {
           <VStack position={"absolute"} bottom={10} w={"100%"}>
             <HStack justifyContent={"center"} mb={5}>
               <Text color={COLORS.white} style={{ ...FONTS.body3 }}>
-                You don't have account?{" "}
+                {t("dontHaveAccount")}{" "}
               </Text>
               <Text
                 onPress={() => {
@@ -229,7 +229,7 @@ const SignInScreen = ({ navigation }) => {
                 color={COLORS.primary}
                 style={{ ...FONTS.body3, fontWeight: "bold" }}
               >
-                Register
+                {t("register")}
               </Text>
             </HStack>
             <Button
@@ -245,7 +245,7 @@ const SignInScreen = ({ navigation }) => {
               }
             >
               <Text style={{ ...FONTS.h2 }} color={COLORS.white}>
-                Continue
+                {t("continue")}
               </Text>
             </Button>
           </VStack>

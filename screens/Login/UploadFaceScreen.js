@@ -29,6 +29,7 @@ import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { doc, updateDoc, setDoc } from "firebase/firestore";
 import { async } from "q";
 import { getFromAsyncStorage } from "../../helper/asyncStorage";
+import { useTranslation } from "react-i18next";
 
 const UploadFaceScreen = ({ navigation }) => {
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -42,6 +43,7 @@ const UploadFaceScreen = ({ navigation }) => {
   const [licensePlates, setLicensePlates] = useState("");
   const [transportType, setTransportType] = useState("");
   const [finalDate, setFinalDate] = useState("null");
+  const { t } = useTranslation();
 
   useEffect(() => {
     getFromAsyncStorage("phoneNumber").then((result) => {
@@ -86,7 +88,7 @@ const UploadFaceScreen = ({ navigation }) => {
   const createAccount = async () => {
     //load account to dtb
     if (image === null) {
-      Alert.alert("Please update your portrait picture", "", [
+      Alert.alert(t("alertUploadPortrait"), "", [
         {
           text: "OK",
         },
@@ -221,7 +223,7 @@ const UploadFaceScreen = ({ navigation }) => {
   const openCamera = async () => {
     let permissionResult = await ImagePicker.requestCameraPermissionsAsync();
     if (permissionResult.granted === false) {
-      alert("Permission to access camera is required!");
+      alert(t("camera"));
       return;
     }
     let result = await ImagePicker.launchCameraAsync();
@@ -232,19 +234,19 @@ const UploadFaceScreen = ({ navigation }) => {
 
   const onPopup = () => {
     Alert.alert(
-      "Select a picture",
-      "Would you like to select a picture from the library or take a new one?",
+      t("selectPic"),
+      t("takePic"),
       [
         {
-          text: "Select from library",
+          text: t("select"),
           onPress: pickImage,
         },
         {
-          text: "Take a picture",
+          text: t("take"),
           onPress: openCamera,
         },
         {
-          text: "Cancel",
+          text: t("cancel"),
           style: "cancel",
         },
       ],
@@ -293,7 +295,7 @@ const UploadFaceScreen = ({ navigation }) => {
                 <VStack justifyContent={"center"} alignItems={"center"}>
                   <Icon name="upload" size={50} color={COLORS.white} />
                   <Text style={{ ...FONTS.h4 }} color={COLORS.white} mt={5}>
-                    Upload your Portrait
+                    {t("uploadPortrait")}
                   </Text>
                 </VStack>
               </>
@@ -307,7 +309,7 @@ const UploadFaceScreen = ({ navigation }) => {
             onPress={createAccount}
           >
             <Text style={{ ...FONTS.h2 }} color={COLORS.white}>
-              Continue
+              {t("continue")}
             </Text>
           </Button>
         </SafeAreaView>

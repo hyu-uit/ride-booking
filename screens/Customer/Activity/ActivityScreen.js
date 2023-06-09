@@ -28,10 +28,16 @@ const ActivityScreen = ({ navigation }) => {
   const [confirmedTrips, setConfirmedTrips] = useState({});
   const [canceledTrips, setCanceledTrips] = useState({});
   const [phoneNumber, setPhone] = useState(null);
+  const [imgUri, setImgUri] = useState(null);
 
   useEffect(() => {
-    fetchDataAndPhoneNumber()    
-  }, [navigation]);
+    fetchDataAndPhoneNumber();
+    if (service === 0) {
+      setImgUri("https://cdn-icons-png.flaticon.com/512/7695/7695161.png");
+    } else {
+      setImgUri("https://cdn-icons-png.flaticon.com/512/9134/9134661.png");
+    }
+  }, []);
 
   const fetchDataAndPhoneNumber = async () => {
     try {
@@ -47,13 +53,16 @@ const ActivityScreen = ({ navigation }) => {
       console.log(err);
     }
   };
-  const getWaitingTrips = async(phoneNumber) => {
+  const getWaitingTrips = async (phoneNumber) => {
     let waitingTrips = [];
     getDocs(
       query(collection(db, "ListTrip"), where("isScheduled", "==", "true"))
     ).then((docSnap) => {
       docSnap.forEach((doc) => {
-        if (doc.data().status == "waiting"&&doc.data().idCustomer==phoneNumber) {
+        if (
+          doc.data().status == "waiting" &&
+          doc.data().idCustomer == phoneNumber
+        ) {
           waitingTrips.push({
             idCustomer: doc.data().idCustomer,
             idTrip: doc.id,
@@ -74,13 +83,16 @@ const ActivityScreen = ({ navigation }) => {
       setWaitingTrips(waitingTrips);
     });
   };
-  const getConfirmedTrips = async(phoneNumber)  => {
+  const getConfirmedTrips = async (phoneNumber) => {
     let confirmedTrips = [];
     getDocs(
       query(collection(db, "ListTrip"), where("isScheduled", "==", "true"))
     ).then((docSnap) => {
       docSnap.forEach((doc) => {
-        if (doc.data().status == "confirmed"&&doc.data().idCustomer==phoneNumber) {
+        if (
+          doc.data().status == "confirmed" &&
+          doc.data().idCustomer == phoneNumber
+        ) {
           confirmedTrips.push({
             idCustomer: doc.data().idCustomer,
             idTrip: doc.id,
@@ -101,13 +113,16 @@ const ActivityScreen = ({ navigation }) => {
       setConfirmedTrips(confirmedTrips);
     });
   };
-  const getCanceledTrips = async(phoneNumber) => {
+  const getCanceledTrips = async (phoneNumber) => {
     let canceledTrips = [];
     getDocs(
       query(collection(db, "ListTrip"), where("isScheduled", "==", "true"))
     ).then((docSnap) => {
       docSnap.forEach((doc) => {
-        if (doc.data().status == "canceled"&&doc.data().idCustomer==phoneNumber) {
+        if (
+          doc.data().status == "canceled" &&
+          doc.data().idCustomer == phoneNumber
+        ) {
           canceledTrips.push({
             idCustomer: doc.data().idCustomer,
             idTrip: doc.id,

@@ -13,12 +13,18 @@ import DefaultAvt from "../../assets/image6.png";
 import { COLORS, SIZES, FONTS } from "../../constants/theme";
 import { Alert, TouchableOpacity } from "react-native";
 import DisappointedIcon from "../../assets/icons8-frowning-face-96.png";
-import { doc, updateDoc  ,query,
+import {
+  doc,
+  updateDoc,
+  query,
   collection,
   getDocs,
   where,
-  onSnapshot} from "@firebase/firestore";
+  onSnapshot,
+} from "@firebase/firestore";
 import { db } from "../../config/config";
+import { useTranslation } from "react-i18next";
+import { getFromAsyncStorage } from "../../helper/asyncStorage";
 
 function StudentReportCard(props) {
   let {
@@ -37,21 +43,27 @@ function StudentReportCard(props) {
   const [doneTripCount, setDoneTripCount] = useState(0);
   const [cancelTripCount, setCancelTripCount] = useState(0);
   const [ratingList, setRatingList] = useState("");
+  const { t } = useTranslation();
   useEffect(() => {
+    console.log(status);
     const doneUnsubscribe = onSnapshot(
       query(
         collection(db, "ListTrip"),
-        where(role === "Customer" ? "idCustomer" : "idRider", "==", phoneNumber),
+        where(
+          role === "Customer" ? "idCustomer" : "idRider",
+          "==",
+          phoneNumber
+        ),
         where("status", "in", ["done", "canceled"])
       ),
       (snapshot) => {
         let doneCount = 0;
         let cancelCount = 0;
         snapshot.forEach((doc) => {
-          const status = doc.data().status;
-          if (status === "done") {
+          const sta = doc.data().status;
+          if (sta === "done") {
             doneCount++;
-          } else if (status === "canceled") {
+          } else if (sta === "canceled") {
             cancelCount++;
           }
         });
@@ -64,14 +76,14 @@ function StudentReportCard(props) {
       query(
         collection(db, "RatingList"),
         where("idRider", "==", phoneNumber),
-        where("ratingType","==","Bad")
+        where("ratingType", "==", "Bad")
       ),
       (snapshot) => {
         let badCount = 0;
         snapshot.forEach((doc) => {
-            badCount++;
-      })
-      setRatingList(badCount)
+          badCount++;
+        });
+        setRatingList(badCount);
       }
     );
     return () => {
@@ -80,7 +92,7 @@ function StudentReportCard(props) {
     };
   }, [phoneNumber, role]);
   const lockAccount = () => {
-    Alert.alert("Are you sure you want to lock this account?", "", [
+    Alert.alert(t("sureLock"), "", [
       {
         text: "Cancel",
         onPress: () => {},
@@ -96,7 +108,7 @@ function StudentReportCard(props) {
     ]);
   };
   const unlockAccount = () => {
-    Alert.alert("Are you sure you want to lock this account?", "", [
+    Alert.alert(t("sureUnLock"), "", [
       {
         text: "Cancel",
         onPress: () => {},
@@ -143,7 +155,7 @@ function StudentReportCard(props) {
             >
               <VStack alignItems={"center"}>
                 <Text bold fontSize={10} color={"#808080"}>
-                  Trip
+                  {t("trip")}
                 </Text>
                 <Text bold fontSize={10} color={"white"}>
                   {doneTripCount}
@@ -151,7 +163,7 @@ function StudentReportCard(props) {
               </VStack>
               <VStack alignItems={"center"}>
                 <Text bold fontSize={10} color={"#808080"}>
-                  Cancel
+                  {t("canceled")}
                 </Text>
                 <Text bold fontSize={10} color={"white"}>
                   {cancelTripCount}

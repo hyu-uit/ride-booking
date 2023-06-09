@@ -30,12 +30,14 @@ import {
 } from "firebase/firestore";
 import { db } from "../../config/config";
 import { getFromAsyncStorage } from "../../helper/asyncStorage";
+import { useTranslation } from "react-i18next";
 
 const StudentOfficeListScreen = ({ navigation }) => {
   const [usersRider, setUsersRider] = useState([]);
   const [usersCustomer, setUsersCustomer] = useState([]);
   const [searchText, setSearchText] = useState("");
   const [phoneNumber, setPhoneNumber] = useState(null);
+  const { t } = useTranslation();
 
   useEffect(() => {
     fetchDataAndPhoneNumber();
@@ -199,8 +201,8 @@ const StudentOfficeListScreen = ({ navigation }) => {
 
   const [index, setIndex] = React.useState(0);
   const [routes] = React.useState([
-    { key: "first", title: "Customer" },
-    { key: "second", title: "Rider" },
+    { key: "first", title: t("customer") },
+    { key: "second", title: t("rider") },
     // { key: "third", title: "Bad" },
   ]);
 
@@ -227,7 +229,7 @@ const StudentOfficeListScreen = ({ navigation }) => {
                     mb={4}
                     borderRadius={10}
                     h={"50px"}
-                    placeholder="Search by Student ID"
+                    placeholder={t("search")}
                     width="100%"
                     variant={"filled"}
                     bgColor={COLORS.tertiary}

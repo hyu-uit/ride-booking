@@ -18,6 +18,7 @@ import { deleteDoc, updateDoc, doc } from "@firebase/firestore";
 import { db } from "../../config/config";
 import { Alert, TouchableOpacity } from "react-native";
 import RejectModal from "../Modal/RejectModal";
+import { useTranslation } from "react-i18next";
 
 function StudentOfficeCard(props, onPressDelete) {
   let {
@@ -35,6 +36,7 @@ function StudentOfficeCard(props, onPressDelete) {
   const { onPress } = props;
 
   const [modal, setModal] = useState(false);
+  const { t } = useTranslation();
 
   const acceptAccount = () => {
     Alert.alert("Are you sure you want to accept this account?", "", [
@@ -108,7 +110,7 @@ function StudentOfficeCard(props, onPressDelete) {
             >
               <VStack w={"35%"} alignItems={"center"} justifyContent={"center"}>
                 <Text style={{ ...FONTS.body5, color: COLORS.grey }}>
-                  Birthday
+                  {t("birthday")}
                 </Text>
                 <Text style={{ ...FONTS.h6, color: COLORS.white }}>
                   {birthday}
@@ -128,7 +130,9 @@ function StudentOfficeCard(props, onPressDelete) {
                 alignItems={"center"}
                 justifyContent={"center"}
               >
-                <Text style={{ ...FONTS.body5, color: COLORS.grey }}>Role</Text>
+                <Text style={{ ...FONTS.body5, color: COLORS.grey }}>
+                  {t("role")}
+                </Text>
                 <Text style={{ ...FONTS.h6, color: COLORS.white }}>{role}</Text>
               </VStack>
             </HStack>

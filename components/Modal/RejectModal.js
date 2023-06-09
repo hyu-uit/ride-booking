@@ -5,6 +5,7 @@ import { TouchableOpacity } from "react-native";
 import { useState } from "react";
 import { addDoc, collection, doc, updateDoc } from "firebase/firestore";
 import { db } from "../../config/config";
+import { useTranslation } from "react-i18next";
 
 const RejectModal = ({
   isShow,
@@ -26,6 +27,7 @@ const RejectModal = ({
   const [cardBack, setCardBack] = useState(false);
   const [portrait, setPortrait] = useState(false);
   const [moreInfo, setMoreInfo] = useState(null);
+  const { t } = useTranslation();
 
   const onPressOK = () => {
     addDoc(collection(db, "Reject"), {
@@ -53,7 +55,7 @@ const RejectModal = ({
           style={{ borderBottomWidth: 0 }}
         >
           <Text fontSize={SIZES.h3} textAlign={"center"} color={"white"} bold>
-            Reject Request
+            {t("rejectRequest")}
           </Text>
           <Text
             fontSize={SIZES.body5}
@@ -61,7 +63,7 @@ const RejectModal = ({
             color={COLORS.grey}
             bold
           >
-            Please choose reasons about this account?
+            {t("reason")}
           </Text>
         </Modal.Header>
         <Modal.Body>
@@ -78,7 +80,7 @@ const RejectModal = ({
                 setName(!name);
               }}
             >
-              Full name
+              {t("fullName")}
             </Button>
             <Button
               alignSelf={"flex-start"}
@@ -87,7 +89,7 @@ const RejectModal = ({
                 setBirthday(!birthday);
               }}
             >
-              Birthday
+              {t("birthday")}
             </Button>
             <Button
               alignSelf={"flex-start"}
@@ -96,7 +98,7 @@ const RejectModal = ({
                 setId(!id);
               }}
             >
-              Student ID Number
+              {t("id")}
             </Button>
             <Button
               alignSelf={"flex-start"}
@@ -105,7 +107,7 @@ const RejectModal = ({
                 setCardFront(!cardFront);
               }}
             >
-              ID card (front)
+              {t("cardFront")}
             </Button>
             <Button
               alignSelf={"flex-start"}
@@ -114,7 +116,7 @@ const RejectModal = ({
                 setCardBack(!cardBack);
               }}
             >
-              ID card (back)
+              {t("cardBack")}
             </Button>
             <Button
               alignSelf={"flex-start"}
@@ -123,7 +125,7 @@ const RejectModal = ({
                 setPortrait(!portrait);
               }}
             >
-              Portrait picture
+              {t("portrait")}
             </Button>
           </Wrap>
           <Input
@@ -134,7 +136,7 @@ const RejectModal = ({
             borderRadius={20}
             borderColor={COLORS.secondary}
             mt={5}
-            placeholder="More information"
+            placeholder={t("moreInfo")}
             style={{ ...FONTS.body4 }}
             color={COLORS.white}
             textAlignVertical="top"
@@ -166,7 +168,7 @@ const RejectModal = ({
             borderRadius={20}
           >
             <Text fontSize={SIZES.body3} textAlign={"center"} color={"black"}>
-              Cancel
+              {t("cancel")}
             </Text>
           </Button>
         </Modal.Footer>

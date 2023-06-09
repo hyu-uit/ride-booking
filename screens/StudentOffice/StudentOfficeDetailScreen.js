@@ -27,6 +27,7 @@ import {
 import { db } from "../../config/config";
 import { Alert } from "react-native";
 import ConfirmModal from "../../components/Modal/ConfirmModal";
+import { useTranslation } from "react-i18next";
 
 const StudentOfficeDetailScreen = ({ navigation, route }) => {
   const contentHeight = Dimensions.get("window").height;
@@ -41,6 +42,8 @@ const StudentOfficeDetailScreen = ({ navigation, route }) => {
   const [displayName, setDisplayName] = useState("");
   const [birthday, setBirthday] = useState("");
   const [modal, setModal] = useState(false);
+
+  const { t } = useTranslation();
 
   const { phoneNumber, role } = route.params;
   useEffect(() => {
@@ -72,9 +75,9 @@ const StudentOfficeDetailScreen = ({ navigation, route }) => {
   const IDHeight = IDWidth * (2 / 3);
 
   const acceptRequest = () => {
-    Alert.alert("Are you sure you want to accept this account?", "", [
+    Alert.alert(t("sure"), "", [
       {
-        text: "Cancel",
+        text: t("cancel"),
         onPress: () => {},
       },
       {
@@ -119,14 +122,14 @@ const StudentOfficeDetailScreen = ({ navigation, route }) => {
               ></ButtonBack>
             </View>
             <Text style={{ ...FONTS.h2, color: COLORS.white }} ml={4}>
-              Student Information
+              {t("studentInfo")}
             </Text>
           </HStack>
 
           <ScrollView showsVerticalScrollIndicator={false}>
             <VStack mt={8} pb={10}>
               <Text style={{ ...FONTS.h4, color: COLORS.fifthary }}>
-                Portrait picture
+                {t("portrait")}
               </Text>
 
               <View
@@ -149,54 +152,57 @@ const StudentOfficeDetailScreen = ({ navigation, route }) => {
               </View>
 
               <Text style={{ ...FONTS.h4, color: COLORS.fifthary }} mt={10}>
-                Role
+                {t("role")}
               </Text>
               <Text style={{ ...FONTS.h3, color: COLORS.white }} mt={2}>
                 {role}
               </Text>
               <Text style={{ ...FONTS.h4, color: COLORS.fifthary }} mt={10}>
-                Full name
+                {t("fullName")}
               </Text>
               <Text style={{ ...FONTS.h3, color: COLORS.white }} mt={2}>
                 {displayName}
               </Text>
               <Text style={{ ...FONTS.h4, color: COLORS.fifthary }} mt={10}>
-                Birthday
+                {t("birthday")}
               </Text>
               <Text style={{ ...FONTS.h3, color: COLORS.white }} mt={2}>
                 {birthday}
               </Text>
               <Text style={{ ...FONTS.h4, color: COLORS.fifthary }} mt={10}>
-                Student ID
+                {t("id")}
               </Text>
               <Text style={{ ...FONTS.h3, color: COLORS.white }} mt={2}>
                 {studentID}
               </Text>
               <Text style={{ ...FONTS.h4, color: COLORS.fifthary }} mt={10}>
-                School
+                {t("school")}
               </Text>
               <Text style={{ ...FONTS.h3, color: COLORS.white }} mt={2}>
                 {school}
               </Text>
               <Text style={{ ...FONTS.h4, color: COLORS.fifthary }} mt={10}>
-                Phone number
+                {t("phone")}
               </Text>
               <Text style={{ ...FONTS.h3, color: COLORS.white }} mt={2}>
                 {phoneNumber}
               </Text>
               <Text style={{ ...FONTS.h4, color: COLORS.fifthary }} mt={10}>
-                Email Address
+                {t("email")}
               </Text>
               <Text style={{ ...FONTS.h3, color: COLORS.white }} mt={2}>
                 {email}
               </Text>
 
+              <Text style={{ ...FONTS.h4, color: COLORS.fifthary }} mt={10}>
+                {t("idImages")}
+              </Text>
               <View
                 h={IDHeight + "px"}
                 w={IDWidth + "px"}
                 bgColor={COLORS.fifthary}
                 borderRadius={10}
-                mt={10}
+                mt={2}
               >
                 <Image
                   h={IDHeight + "px"}
@@ -234,7 +240,7 @@ const StudentOfficeDetailScreen = ({ navigation, route }) => {
                   mt={10}
                 >
                   <Text style={{ ...FONTS.h2 }} color={COLORS.red}>
-                    Reject
+                    {t("accept")}
                   </Text>
                 </Button>
                 <Button
@@ -245,7 +251,7 @@ const StudentOfficeDetailScreen = ({ navigation, route }) => {
                   mt={10}
                 >
                   <Text style={{ ...FONTS.h2 }} color={COLORS.white}>
-                    Accept
+                    {t("reject")}
                   </Text>
                 </Button>
               </HStack>

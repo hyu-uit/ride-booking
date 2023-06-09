@@ -17,12 +17,14 @@ import { useEffect } from "react";
 import { getFromAsyncStorage } from "../../helper/asyncStorage";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../../config/config";
+import { useTranslation } from "react-i18next";
 
 const StudentOfficeProfileScreen = ({ navigation }) => {
   const [phoneNumber, setPhoneNumber] = useState(null);
   const [uniName, setUniName] = useState(null);
   const [address, setAddress] = useState(null);
   const [logo, setLogo] = useState(null);
+  const { t } = useTranslation();
 
   useEffect(() => {
     fetchDataAndPhoneNumber();
@@ -57,7 +59,9 @@ const StudentOfficeProfileScreen = ({ navigation }) => {
         <VStack paddingX={"10px"} h={"100%"}>
           <HStack justifyContent={"center"}>
             <View style={{ position: "absolute", left: 0 }}></View>
-            <Text style={{ ...FONTS.h2, color: COLORS.white }}>Profile</Text>
+            <Text style={{ ...FONTS.h2, color: COLORS.white }}>
+              {t("profile")}
+            </Text>
           </HStack>
 
           {/* <ScrollView showsVerticalScrollIndicator={false}> */}
@@ -74,13 +78,13 @@ const StudentOfficeProfileScreen = ({ navigation }) => {
 
           <VStack>
             <Text style={{ ...FONTS.h4, color: COLORS.fifthary }} mt={10}>
-              Name
+              {t("name")}
             </Text>
             <Text style={{ ...FONTS.h4, color: COLORS.white }} mt={2}>
               {uniName}
             </Text>
             <Text style={{ ...FONTS.h4, color: COLORS.fifthary }} mt={10}>
-              Address
+              {t("address")}
             </Text>
             <Text style={{ ...FONTS.h4, color: COLORS.white }} mt={2}>
               {address}
@@ -99,7 +103,7 @@ const StudentOfficeProfileScreen = ({ navigation }) => {
             }}
           >
             <Text style={{ ...FONTS.h2 }} color={COLORS.white}>
-              Log out
+              {t("logout")}
             </Text>
           </Button>
           {/* </ScrollView> */}

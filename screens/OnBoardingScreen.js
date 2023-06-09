@@ -1,11 +1,13 @@
 import React from "react";
 import {
+  Button,
   Center,
   FlatList,
   Flex,
   HStack,
   Image,
   ScrollView,
+  Select,
   Text,
   VStack,
   View,
@@ -20,6 +22,10 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
 import { useEffect } from "react";
+import VietnamFlag from "../assets/images/Login/vietnamFlag.png";
+import UKFlag from "../assets/images/Login/ukFlag.png";
+import { useState } from "react";
+import i18next from "i18next";
 
 const { width, height } = Dimensions.get("window");
 
@@ -42,9 +48,8 @@ const slides = [
   {
     id: "3",
     image: require("../assets/images/OnBoarding/image-3.png"),
-    title: "SAFETY",
-    subtitle:
-      "All of riders and customer are accepted\nby Student Office for each school\n",
+    title: "",
+    subtitle: "",
   },
 ];
 
@@ -72,9 +77,22 @@ const Slide = ({ item }) => {
 };
 const OnBoardingScreen = ({ navigation }) => {
   const { t } = useTranslation();
+  const [language, setLanguage] = useState(i18next.language);
+  const [imgUri, setImgUri] = useState(null);
   useEffect(() => {
     slides[1].title = t("VNU");
     slides[1].subtitle = t("VNUContent");
+    slides[2].title = t("Safety");
+    slides[2].subtitle = t("SafetyContent");
+    if (language === "vi") {
+      setImgUri(
+        "https://upload.wikimedia.org/wikipedia/commons/thumb/2/21/Flag_of_Vietnam.svg/2000px-Flag_of_Vietnam.svg.png"
+      );
+    } else {
+      setImgUri(
+        "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Flag_of_the_United_Kingdom_%281-2%29.svg/1200px-Flag_of_the_United_Kingdom_%281-2%29.svg.png"
+      );
+    }
   });
   const [currentSlideIndex, setCurrentSlideIndex] = React.useState(0);
   const ref = React.useRef();
@@ -203,6 +221,35 @@ const OnBoardingScreen = ({ navigation }) => {
         flex: 1,
       }}
     >
+      <HStack justifyContent={"flex-end"} alignItems={"center"}>
+        <Image
+          source={{
+            uri: imgUri,
+          }}
+          alt="hi"
+          w={8}
+          h={5}
+        />
+        <Select
+          alignSelf={"flex-end"}
+          w={"150px"}
+          h={"50px"}
+          borderColor={"transparent"}
+          style={{ ...FONTS.body3 }}
+          color={COLORS.white}
+          onValueChange={(itemValue) => {
+            setLanguage(itemValue);
+            i18next.changeLanguage(itemValue);
+          }}
+          selectedValue={language}
+          _selectedItem={{
+            bg: COLORS.fifthary,
+          }}
+        >
+          <Select.Item label={t("en")} value="en" />
+          <Select.Item label={t("vi")} value="vi" />
+        </Select>
+      </HStack>
       {/* <ScrollView pagingEnabled> */}
       <FlatList
         height={height}

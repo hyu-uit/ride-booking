@@ -12,6 +12,7 @@ import StudentReportScreen from "../screens/StudentOffice/StudentReportScreen";
 import StudentOfficeProfileScreen from "../screens/StudentOffice/StudentOfficeProfileScreen";
 import { StudentReportStackScreen } from "./StudentOfficeReportNavigator";
 import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
+import { useTranslation } from "react-i18next";
 
 const StudentOfficeStack = createNativeStackNavigator();
 
@@ -19,6 +20,7 @@ const MainTab = createBottomTabNavigator();
 
 export function StudentOfficeStackScreen() {
   const operator = Platform.OS === "ios" ? 90 : 60;
+  const { t } = useTranslation();
   return (
     <MainTab.Navigator
       screenOptions={({ route }) => ({
@@ -55,7 +57,7 @@ export function StudentOfficeStackScreen() {
             backgroundColor: COLORS.tertiary,
             height: operator,
           },
-          tabBarLabel: "Home",
+          tabBarLabel: t("home"),
         })}
       />
       <MainTab.Screen
@@ -68,7 +70,7 @@ export function StudentOfficeStackScreen() {
             backgroundColor: COLORS.tertiary,
             height: operator,
           },
-          tabBarLabel: "Students",
+          tabBarLabel: t("students"),
         })}
       />
       <MainTab.Screen
@@ -81,13 +83,13 @@ export function StudentOfficeStackScreen() {
             backgroundColor: COLORS.tertiary,
             height: operator,
           },
-          tabBarLabel: "Restriction",
+          tabBarLabel: t("restriction"),
         })}
       />
       <MainTab.Screen
         name="Profile"
         component={StudentOfficeProfileScreen}
-        options={{ tabBarLabel: "Profile" }}
+        options={{ tabBarLabel: t("profile") }}
       />
     </MainTab.Navigator>
 

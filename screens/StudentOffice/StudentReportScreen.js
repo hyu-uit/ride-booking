@@ -33,6 +33,7 @@ import {
 } from "firebase/firestore";
 import { db } from "../../config/config";
 import { getFromAsyncStorage } from "../../helper/asyncStorage";
+import { useTranslation } from "react-i18next";
 const StudentReportScreen = ({ navigation }) => {
   const [usersRider, setUsersRider] = useState([]);
   const [usersCustomer, setUsersCustomer] = useState([]);
@@ -41,18 +42,25 @@ const StudentReportScreen = ({ navigation }) => {
   const [searchText, setSearchText] = useState("");
   const [phoneNumber, setPhoneNumber] = useState(null);
 
+  const { t } = useTranslation();
+
   useEffect(() => {
     fetchDataAndPhoneNumber();
   }, []);
   const fetchDataAndPhoneNumber = async () => {
     try {
-      const phoneNumberValue = await getFromAsyncStorage("phoneNumber");
+      const phoneNumberValue = "";
+      getFromAsyncStorage("phoneNumber")
+        .then((value) => (phoneNumberValue = value))
+        .catch((err) => console.log(err));
       setPhoneNumber(phoneNumberValue);
       if (phoneNumberValue) {
         const docData = await getDoc(
           doc(db, "StudentOffice", phoneNumberValue)
         );
         getUsersRider();
+        getUsersCustomer();
+        getUsersLock();
         // getUsersCustomer(docData.data().acronym);
         // getUsersRider(docData.data().acronym);
         // getUsersLock(docData.data().acronym);
@@ -82,6 +90,7 @@ const StudentReportScreen = ({ navigation }) => {
           portrait: doc.data().portrait,
           cardFront: doc.data().cardFront,
           cardBack: doc.data().cardBack,
+          status: doc.data().status,
           key: doc.id + "-Rider",
         };
         updatedUsers.push(user);
@@ -95,12 +104,12 @@ const StudentReportScreen = ({ navigation }) => {
       unsubscribeRider();
     };
   };
-  const getUsersCustomer = (ac) => {
+  const getUsersCustomer = () => {
     const customerCollectionRef = collection(db, "Customer");
     const customerQuery = query(
       customerCollectionRef,
-      where("status", "==", "active"),
-      where("school", "==", ac)
+      where("status", "==", "active")
+      // where("school", "==", ac)
     );
     const unsubscribeCustomer = onSnapshot(customerQuery, (querySnapshot) => {
       const updatedUsers = [];
@@ -115,6 +124,7 @@ const StudentReportScreen = ({ navigation }) => {
           portrait: doc.data().portrait,
           cardFront: doc.data().cardFront,
           cardBack: doc.data().cardBack,
+          status: doc.data().status,
           key: doc.id + "-Customer",
         };
         updatedUsers.push(user);
@@ -151,23 +161,25 @@ const StudentReportScreen = ({ navigation }) => {
 
     return studentID.includes(searchQuery);
   });
-  const getUsersLock = (ac) => {
+
+  const getUsersLock = () => {
     const customerCollectionRef = collection(db, "Customer");
     const riderCollectionRef = collection(db, "Rider");
 
     const customerQuery = query(
       customerCollectionRef,
-      where("status", "==", "locked"),
-      where("school", "==", ac)
+      where("status", "==", "locked")
+      // where("school", "==", ac)
     );
     const riderQuery = query(
       riderCollectionRef,
-      where("status", "==", "locked"),
-      where("school", "==", ac)
+      where("status", "==", "locked")
+      // where("school", "==", ac)
     );
 
     const unsubscribeCustomer = onSnapshot(customerQuery, (querySnapshot) => {
       const updatedUsers = [];
+      console.log("aaa");
 
       querySnapshot.forEach((doc) => {
         const user = {
@@ -180,6 +192,7 @@ const StudentReportScreen = ({ navigation }) => {
           portrait: doc.data().portrait,
           cardFront: doc.data().cardFront,
           cardBack: doc.data().cardBack,
+          status: doc.data().status,
           key: doc.id + "-Customer",
         };
         updatedUsers.push(user);
@@ -202,6 +215,7 @@ const StudentReportScreen = ({ navigation }) => {
           portrait: doc.data().portrait,
           cardFront: doc.data().cardFront,
           cardBack: doc.data().cardBack,
+          status: doc.data().status,
           key: doc.id + "-Rider",
         };
         updatedUsers.push(user);
@@ -244,24 +258,23 @@ const StudentReportScreen = ({ navigation }) => {
   const SecondRoute = () => (
     <VStack paddingX={"10px"}>
       <VStack justifyContent={"center"} alignItems={"center"}>
-        <ScrollView w={"100%"}>
-          <FlatList
-            data={filteredRiderUsers}
-            keyExtractor={(item) => item.name}
-            renderItem={({ item }) => (
-              <StudentReportCard
-                listUser={item}
-                onPress={() => {
-                  const data = {
-                    phoneNumber: "" + item.phoneNumber,
-                    role: "" + item.role,
-                  };
-                  navigation.navigate("StudentReportDetail", data);
-                }}
-              ></StudentReportCard>
-            )}
-          ></FlatList>
-        </ScrollView>
+        <FlatList
+          w={"100%"}
+          data={filteredRiderUsers}
+          keyExtractor={(item) => item.name}
+          renderItem={({ item }) => (
+            <StudentReportCard
+              listUser={item}
+              onPress={() => {
+                const data = {
+                  phoneNumber: "" + item.phoneNumber,
+                  role: "" + item.role,
+                };
+                navigation.navigate("StudentReportDetail", data);
+              }}
+            ></StudentReportCard>
+          )}
+        ></FlatList>
       </VStack>
     </VStack>
   );
@@ -299,9 +312,9 @@ const StudentReportScreen = ({ navigation }) => {
 
   const [index, setIndex] = React.useState(0);
   const [routes] = React.useState([
-    { key: "first", title: "Customer" },
-    { key: "second", title: "Rider" },
-    { key: "third", title: "Locked" },
+    { key: "first", title: t("customer") },
+    { key: "second", title: t("rider") },
+    { key: "third", title: t("locked") },
   ]);
 
   return (

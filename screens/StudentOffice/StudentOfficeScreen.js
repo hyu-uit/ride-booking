@@ -35,6 +35,7 @@ import {
 } from "../../helper/asyncStorage";
 import { useFocusEffect } from "@react-navigation/native";
 import { BackHandler, ToastAndroid } from "react-native";
+import { useTranslation } from "react-i18next";
 
 const StudentOfficeScreen = ({ navigation }) => {
   const [service, setService] = useState(0);
@@ -44,6 +45,7 @@ const StudentOfficeScreen = ({ navigation }) => {
   const [uniName, setUniName] = useState(null);
   const [acronym, setAcronym] = useState(null);
   const [logo, setLogo] = useState(null);
+  const { t } = useTranslation();
 
   let backButtonPressedOnce = false;
 
@@ -54,7 +56,7 @@ const StudentOfficeScreen = ({ navigation }) => {
           BackHandler.exitApp();
         } else {
           backButtonPressedOnce = true;
-          ToastAndroid.show("Press back again to exit", ToastAndroid.SHORT);
+          ToastAndroid.show(t("pressBack"), ToastAndroid.SHORT);
           setTimeout(() => {
             backButtonPressedOnce = false;
           }, 2000); // Reset the variable after 2 seconds
@@ -208,7 +210,7 @@ const StudentOfficeScreen = ({ navigation }) => {
             mb={5}
             borderRadius={10}
             h={"50px"}
-            placeholder="Search"
+            placeholder={t("search")}
             width="100%"
             variant={"filled"}
             bgColor={COLORS.tertiary}

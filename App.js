@@ -14,7 +14,7 @@ i18n.use(initReactI18next).init({
     en: { translation: en },
     vi: { translation: vi },
   },
-  fallbackLng: "en", // Default language fallback
+  fallbackLng: "vi", // Default language fallback
   debug: false, // Set to true for development
   interpolation: {
     escapeValue: false, // React already escapes by default

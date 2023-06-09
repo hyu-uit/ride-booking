@@ -12,21 +12,42 @@ import React, { useState } from "react";
 import DefaultAvt from "../../assets/image6.png";
 import { COLORS, SIZES } from "../../constants/theme";
 import { TouchableOpacity } from "react-native";
-import { collection, doc, getDocs, onSnapshot, query, where } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDocs,
+  onSnapshot,
+  query,
+  where,
+} from "firebase/firestore";
 import { db } from "../../config/config";
 import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 
 function StudentListCard(props, navigation) {
-  let { role, phoneNumber, school, displayName, email, studentID, portrait,birthday } =
-    props.list;
+  let {
+    role,
+    phoneNumber,
+    school,
+    displayName,
+    email,
+    studentID,
+    portrait,
+    birthday,
+  } = props.list;
   const { onPress } = props;
   const [tripCount, setTripCount] = useState("");
+  const { t } = useTranslation();
 
   useEffect(() => {
     const unsubscribe = onSnapshot(
       query(
         collection(db, "ListTrip"),
-        where(role === "Customer" ? "idCustomer" : "idRider", "==", phoneNumber),
+        where(
+          role === "Customer" ? "idCustomer" : "idRider",
+          "==",
+          phoneNumber
+        ),
         where("status", "in", ["done", "canceled"])
       ),
       (snapshot) => {
@@ -75,7 +96,7 @@ function StudentListCard(props, navigation) {
         <HStack space={10} marginLeft={"10px"} marginBottom={"10px"}>
           <VStack>
             <Text bold fontSize={10} color={"#808080"}>
-              Birthday
+              {t("birthday")}
             </Text>
             <Text bold fontSize={10} color={"white"}>
               {birthday}
@@ -83,7 +104,7 @@ function StudentListCard(props, navigation) {
           </VStack>
           <VStack>
             <Text bold fontSize={10} color={"#808080"}>
-              Trip
+              {t("trip")}
             </Text>
             <Text bold fontSize={10} color={"white"}>
               {tripCount}
