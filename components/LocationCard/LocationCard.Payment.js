@@ -20,7 +20,6 @@ const LocationCardPayment = ({ onClickContinue, onPressBack }) => {
     <View
       bgColor={"#0B0F2F"}
       w={"100%"}
-      h={450}
       borderTopRadius={20}
       shadow={3}
       position={"absolute"}

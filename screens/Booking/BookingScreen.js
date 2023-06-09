@@ -135,7 +135,7 @@ export default function BookingScreen({ navigation }) {
           },
         ];
         mapRef.current.fitToCoordinates(coordinates, {
-          edgePadding: { top: 50, right: 50, bottom: 50, left: 50 },
+          edgePadding: { top: 200, right: 200, bottom: 200, left: 200 },
           animated: true,
         });
       }
@@ -349,7 +349,7 @@ export default function BookingScreen({ navigation }) {
           <>
             <MapView
               ref={mapRef}
-              style={{ height: "50%", borderRadius: 10, marginTop: 10 }}
+              style={{ height: "45%", borderRadius: 10 }}
               provider="google"
               region={booking.region}
             >
@@ -383,7 +383,34 @@ export default function BookingScreen({ navigation }) {
       case 4:
         return (
           <>
-            <LocationCardCost
+            <MapView
+              ref={mapRef}
+              style={{ height: "45%", borderRadius: 10 }}
+              provider="google"
+              region={booking.region}
+            >
+              <Marker
+                key={"pickUp"}
+                coordinate={booking.pickUpLocation}
+                title={"Pick up"}
+                description={
+                  booking.pickUpLocation.address
+                    ? booking.pickUpLocation.address
+                    : null
+                }
+              ></Marker>
+              <Marker
+                key={"destination"}
+                coordinate={booking.destinationLocation}
+                title={"Destination"}
+                description={
+                  booking.destinationLocation.address
+                    ? booking.destinationLocation.address
+                    : null
+                }
+              />
+            </MapView>
+            <LocationCardPayment
               onClickContinue={handleStep4Submit}
               onPressBack={handleBackStep}
             />
@@ -392,7 +419,34 @@ export default function BookingScreen({ navigation }) {
       case 5:
         return (
           <>
-            <LocationCardNote
+            <MapView
+              ref={mapRef}
+              style={{ height: "45%", borderRadius: 10 }}
+              provider="google"
+              region={booking.region}
+            >
+              <Marker
+                key={"pickUp"}
+                coordinate={booking.pickUpLocation}
+                title={"Pick up"}
+                description={
+                  booking.pickUpLocation.address
+                    ? booking.pickUpLocation.address
+                    : null
+                }
+              ></Marker>
+              <Marker
+                key={"destination"}
+                coordinate={booking.destinationLocation}
+                title={"Destination"}
+                description={
+                  booking.destinationLocation.address
+                    ? booking.destinationLocation.address
+                    : null
+                }
+              />
+            </MapView>
+            <LocationCardCost
               onClickContinue={handleStep5Submit}
               onPressBack={handleBackStep}
             />
@@ -401,12 +455,13 @@ export default function BookingScreen({ navigation }) {
       case 6:
         return (
           <>
-            <LocationCardPayment
+            <LocationCardNote
               onClickContinue={handleStep6Submit}
               onPressBack={handleBackStep}
             />
           </>
         );
+
       case 7:
         return (
           <>

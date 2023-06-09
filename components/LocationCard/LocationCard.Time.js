@@ -15,7 +15,7 @@ import LocationIcon from "../../assets/icons/icons8-location-48.png";
 import ArrowDownIcon from "../../assets/icons/icons8-down-arrow-48.png";
 import ClockIcon from "../../assets/clock_96px.png";
 import BackIcon from "../../assets/back_icon.png";
-import { COLORS, SIZES } from "../../constants/theme";
+import { COLORS, SIZES, FONTS } from "../../constants/theme";
 import { useState } from "react";
 import { TouchableOpacity } from "react-native";
 import {
@@ -30,17 +30,13 @@ import { useContext } from "react";
 import { useEffect } from "react";
 
 const LocationCardTime = ({ onClickContinue, onPressBack }) => {
-  const { booking, dispatch } = useContext(BookingContext);
+  const { booking } = useContext(BookingContext);
   const [isNowSelected, setIsNowSelected] = useState(true);
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedTime, setSelectedTime] = useState(new Date());
   const [finalDate, setFinalDate] = useState(null);
-
-  useEffect(() => {
-    console.log(booking);
-  });
 
   const handleDateChange = (_event, date) => {
     setShowDatePicker(false);
@@ -63,7 +59,6 @@ const LocationCardTime = ({ onClickContinue, onPressBack }) => {
     <View
       bgColor={"#0B0F2F"}
       w={"100%"}
-      h={330}
       borderTopRadius={20}
       shadow={3}
       position={"absolute"}
@@ -72,7 +67,7 @@ const LocationCardTime = ({ onClickContinue, onPressBack }) => {
     >
       <VStack space={4}>
         <HStack w={"100%"}>
-          <VStack space={2}>
+          <VStack space={2} width={"90%"}>
             <VStack space={1}>
               <Text bold fontSize={SIZES.h6} color={"#8CC3FF"}>
                 Pick-up
@@ -138,7 +133,7 @@ const LocationCardTime = ({ onClickContinue, onPressBack }) => {
             marginLeft={"auto"}
             onPress={() => setIsNowSelected(true)}
           >
-            <Text fontSize={SIZES.base} color={"white"}>
+            <Text style={{ ...FONTS.body6 }} color={"white"}>
               Now
             </Text>
           </Button>
@@ -164,7 +159,11 @@ const LocationCardTime = ({ onClickContinue, onPressBack }) => {
                 alignSelf={"center"}
                 alt=""
               />
-              <Text fontSize={SIZES.base} color={"white"} alignSelf={"center"}>
+              <Text
+                style={{ ...FONTS.body6 }}
+                color={"white"}
+                alignSelf={"center"}
+              >
                 {isNowSelected && finalDate ? null : finalDate}
               </Text>
             </HStack>

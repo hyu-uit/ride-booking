@@ -17,13 +17,16 @@ import ClockIcon from "../../assets/clock_96px.png";
 import MapIcon from "../../assets/map_marker_96px.png";
 import BackIcon from "../../assets/back_icon.png";
 import { COLORS, SIZES } from "../../constants/theme";
+import { BookingContext } from "../../context/BookingContext";
+import { useContext } from "react";
+import { isNullOrEmpty } from "../../helper/helper";
 
 const LocationCardCost = ({ onClickContinue, onPressBack }) => {
+  const { booking } = useContext(BookingContext);
   return (
     <View
       bgColor={COLORS.background}
       w={"100%"}
-      h={370}
       borderTopRadius={20}
       shadow={3}
       position={"absolute"}
@@ -32,13 +35,15 @@ const LocationCardCost = ({ onClickContinue, onPressBack }) => {
     >
       <VStack space={4}>
         <HStack w={"100%"}>
-          <VStack space={2}>
+          <VStack space={2} width={"90%"}>
             <VStack space={1}>
               <Text bold fontSize={SIZES.h6} color={"#8CC3FF"}>
                 Pick-up
               </Text>
               <Text bold fontSize={SIZES.h6} color={"white"}>
-                Long An
+                {isNullOrEmpty(booking.pickUpLocation.address)
+                  ? booking.pickUpLocation.address
+                  : booking.pickUpLocation.name}
               </Text>
             </VStack>
             <Divider />
@@ -47,7 +52,9 @@ const LocationCardCost = ({ onClickContinue, onPressBack }) => {
                 Destination
               </Text>
               <Text bold fontSize={SIZES.h6} color={"white"}>
-                University of Information Technology
+                {isNullOrEmpty(booking.destinationLocation.address)
+                  ? booking.destinationLocation.address
+                  : booking.destinationLocation.name}
               </Text>
             </VStack>
           </VStack>

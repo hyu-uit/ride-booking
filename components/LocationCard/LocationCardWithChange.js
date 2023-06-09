@@ -124,10 +124,6 @@ const LocationCardWithChange = ({
               onSelectItem={(item) => {
                 originalResult.map((result) => {
                   if (result.place_id == item.id) {
-                    console.log(
-                      "🚀 ~ file: LocationCardWithChange.js:121 ~ originalResult.map ~ result:",
-                      result
-                    );
                     dispatch({
                       type: SET_INITIAL_LOCATION,
                       payload: {
