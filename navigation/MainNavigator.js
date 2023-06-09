@@ -7,11 +7,13 @@ import { ActivityStackScreen } from "./ActivityNavigator";
 import { PromotionStackScreen } from "./PromotionNavigator";
 import CustomerProfile from "../screens/Customer/Profile/CustomerProfile";
 import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
+import { useTranslation } from "react-i18next";
 
 const MainTab = createBottomTabNavigator();
 
 const MainNavigator = ({ navigation }) => {
   const operator = Platform.OS === "ios" ? 90 : 60;
+  const { t } = useTranslation();
   return (
     <MainTab.Navigator
       screenOptions={({ route }) => ({
@@ -46,7 +48,7 @@ const MainNavigator = ({ navigation }) => {
             backgroundColor: COLORS.tertiary,
             height: operator,
           },
-          tabBarLabel: "Home",
+          tabBarLabel: t("home"),
         })}
       />
       <MainTab.Screen
@@ -58,7 +60,7 @@ const MainNavigator = ({ navigation }) => {
             backgroundColor: COLORS.tertiary,
             height: operator,
           },
-          tabBarLabel: "Activity",
+          tabBarLabel: t("activity"),
         })}
       />
       <MainTab.Screen
@@ -70,13 +72,13 @@ const MainNavigator = ({ navigation }) => {
             backgroundColor: COLORS.tertiary,
             height: operator,
           },
-          tabBarLabel: "Promotion",
+          tabBarLabel: t("promotion"),
         })}
       />
       <MainTab.Screen
         name="Profile"
         component={CustomerProfile}
-        options={{ tabBarLabel: "Profile" }}
+        options={{ tabBarLabel: t("profile") }}
       />
     </MainTab.Navigator>
   );

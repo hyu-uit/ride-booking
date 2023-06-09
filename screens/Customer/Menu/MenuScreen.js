@@ -67,7 +67,7 @@ const MenuScreen = ({ navigation }) => {
               <HStack>
                 <Icon name="calendar" size={20} color={COLORS.fifthary} />
                 <Text style={{ ...FONTS.h3, color: COLORS.white }} ml={5}>
-                  Schedule
+                  {t("scheduled")}
                 </Text>
               </HStack>
             </Button>
@@ -83,7 +83,7 @@ const MenuScreen = ({ navigation }) => {
               <HStack>
                 <Icon name="credit-card" size={20} color={COLORS.fifthary} />
                 <Text style={{ ...FONTS.h3, color: COLORS.white }} ml={5}>
-                  Payment methods
+                  {t("payment")}
                 </Text>
               </HStack>
             </Button>
@@ -99,7 +99,7 @@ const MenuScreen = ({ navigation }) => {
               <HStack>
                 <Ionicons name="location" size={20} color={COLORS.fifthary} />
                 <Text style={{ ...FONTS.h3, color: COLORS.white }} ml={5}>
-                  Address
+                  {t("address")}
                 </Text>
               </HStack>
             </Button>
@@ -140,7 +140,7 @@ const MenuScreen = ({ navigation }) => {
             justifyContent={"center"}
           >
             <Text style={{ ...FONTS.h5, color: COLORS.white }} mr={5}>
-              Light
+              {t("light")}
             </Text>
             <Switch
               alignSelf={"center"}
@@ -148,7 +148,7 @@ const MenuScreen = ({ navigation }) => {
               defaultIsChecked
             />
             <Text style={{ ...FONTS.h5, color: COLORS.fifthary }} ml={5}>
-              Dark
+              {t("dark")}
             </Text>
           </HStack>
         </VStack>

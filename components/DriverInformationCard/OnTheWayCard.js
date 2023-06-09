@@ -15,8 +15,10 @@ import ClockIcon from "../../assets/clock-icon.png";
 import MapIcon from "../../assets/map_marker_96px.png";
 import barCodeIcon from "../../assets/barcode.png";
 import avatarIcon from "../../assets/avatar.png";
+import { useTranslation } from "react-i18next";
 
 const OnTheWayCard = ({ onPressCancel, onPressInfo }) => {
+  const { t } = useTranslation();
   return (
     <View
       bgColor={COLORS.background}
@@ -39,7 +41,7 @@ const OnTheWayCard = ({ onPressCancel, onPressInfo }) => {
               flex: 1,
             }}
           >
-            Rider is on the way
+            {t("onTheWay")}
           </Text>
           <TouchableOpacity onPress={onPressInfo}>
             <Image
@@ -114,7 +116,7 @@ const OnTheWayCard = ({ onPressCancel, onPressInfo }) => {
                   ...FONTS.body6,
                 }}
               >
-                Bike type
+                {t("inputLicense")}
               </Text>
               <Text
                 style={{
@@ -122,7 +124,7 @@ const OnTheWayCard = ({ onPressCancel, onPressInfo }) => {
                   ...FONTS.body6,
                 }}
               >
-                Bike number
+                {t("inputType")}
               </Text>
             </VStack>
             <VStack space={1}>
@@ -189,7 +191,7 @@ const OnTheWayCard = ({ onPressCancel, onPressInfo }) => {
                 fontWeight: "bold",
               }}
             >
-              5 mins
+              5 {t("minutes")}
             </Text>
           </HStack>
         </VStack>
@@ -247,7 +249,7 @@ const OnTheWayCard = ({ onPressCancel, onPressInfo }) => {
                 fontWeight: "bold",
               }}
             >
-              Cancel
+              {t("cancel")}
             </Text>
           </TouchableOpacity>
         </Flex>

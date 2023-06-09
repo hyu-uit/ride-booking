@@ -16,8 +16,10 @@ import MapIcon from "../../assets/map_marker_96px.png";
 import barCodeIcon from "../../assets/barcode.png";
 import avatarIcon from "../../assets/avatar.png";
 import callIcon from "../../assets/call-icon.png";
+import { useTranslation } from "react-i18next";
 
 const WaitingRiderCard = ({ onPressInfo, onPressCancel }) => {
+  const { t } = useTranslation();
   return (
     <View
       bgColor={COLORS.background}
@@ -41,7 +43,7 @@ const WaitingRiderCard = ({ onPressInfo, onPressCancel }) => {
               flex: 1,
             }}
           >
-            Rider is on the way
+            {t("onTheWay")}
           </Text>
           <TouchableOpacity onPress={onPressInfo}>
             <Image
@@ -134,7 +136,7 @@ const WaitingRiderCard = ({ onPressInfo, onPressCancel }) => {
                   ...FONTS.body6,
                 }}
               >
-                Bike type
+                {t("inputLicense")}
               </Text>
               <Text
                 style={{
@@ -143,7 +145,7 @@ const WaitingRiderCard = ({ onPressInfo, onPressCancel }) => {
                   ...FONTS.body6,
                 }}
               >
-                Bike number
+                {t("inputType")}
               </Text>
             </VStack>
             <VStack space={1}>
@@ -214,7 +216,7 @@ const WaitingRiderCard = ({ onPressInfo, onPressCancel }) => {
                 fontWeight: "bold",
               }}
             >
-              5 mins
+              5 {t("minutes")}
             </Text>
           </HStack>
         </VStack>
@@ -301,7 +303,7 @@ const WaitingRiderCard = ({ onPressInfo, onPressCancel }) => {
                 fontWeight: "bold",
               }}
             >
-              Cancel
+              {t("cancel")}
             </Text>
           </TouchableOpacity>
         </HStack>

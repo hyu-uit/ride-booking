@@ -15,8 +15,10 @@ import LocationIcon from "../../assets/icons/icons8-location-48.png";
 import ChangeIcon from "../../assets/icons/icons8-change-48.png";
 import { useRef } from "react";
 import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 
 const LocationCardWithChange = () => {
+  const { t } = useTranslation();
   // const inputRef = useRef(null);
 
   // useEffect(() => {
@@ -36,12 +38,12 @@ const LocationCardWithChange = () => {
         <VStack space={2} flex={5}>
           <VStack>
             <Text bold fontSize={SIZES.h6} color={"#8CC3FF"}>
-              Pick-up
+              {t("pickUp")}
             </Text>
             <Input
               // ref={inputRef}
               variant="unstyled"
-              placeholder="Enter your location"
+              placeholder={t("enterPickUp")}
               bold
               fontSize={SIZES.h6}
               color={"white"}
@@ -51,11 +53,11 @@ const LocationCardWithChange = () => {
           <Divider />
           <VStack>
             <Text bold fontSize={SIZES.h6} color={"#8CC3FF"}>
-              Drop off
+              {t("des")}
             </Text>
             <Input
               variant="unstyled"
-              placeholder="Enter destination"
+              placeholder={t("enterDestination")}
               bold
               fontSize={SIZES.h6}
               color={"white"}

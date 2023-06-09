@@ -14,8 +14,10 @@ import BackIcon from "../../assets/back_icon.png";
 import VisaIcon from "../../assets/visa_96px.png";
 import MomoIcon from "../../assets/momo_icon.png";
 import { SIZES } from "../../constants/theme";
+import { useTranslation } from "react-i18next";
 
 const LocationCardPayment = ({ onClickContinue, onPressBack }) => {
+  const { t } = useTranslation();
   return (
     <View
       bgColor={"#0B0F2F"}
@@ -29,7 +31,7 @@ const LocationCardPayment = ({ onClickContinue, onPressBack }) => {
     >
       <VStack space={3}>
         <Text fontSize={SIZES.h3} bold color={"white"}>
-          Payment
+          {t("payment")}
         </Text>
         <VStack space={2}>
           <HStack
@@ -43,7 +45,7 @@ const LocationCardPayment = ({ onClickContinue, onPressBack }) => {
               <Image w={"35px"} h={"35px"} source={VisaIcon} alt="" />
             </Center>
             <Text bold fontSize={SIZES.h3} color={"white"} alignSelf={"center"}>
-              Cash
+              {t("cash")}
             </Text>
           </HStack>
           <HStack
@@ -63,7 +65,7 @@ const LocationCardPayment = ({ onClickContinue, onPressBack }) => {
         </VStack>
         <Divider />
         <Text fontSize={SIZES.h3} bold color={"white"}>
-          Promotion
+          {t("promotion")}
         </Text>
         <Center
           borderWidth={1}
@@ -73,7 +75,7 @@ const LocationCardPayment = ({ onClickContinue, onPressBack }) => {
           bgColor={"#101744"}
           h={"65px"}
         >
-          <Text color={"white"}>Add promotion code</Text>
+          <Text color={"white"}>{t("addPromo")}</Text>
         </Center>
         <HStack>
           <Button
@@ -94,7 +96,7 @@ const LocationCardPayment = ({ onClickContinue, onPressBack }) => {
             onTouchEnd={onClickContinue}
           >
             <Text color={"white"} bold fontSize={SIZES.small}>
-              Continue
+              {t("continue")}
             </Text>
           </Button>
         </HStack>

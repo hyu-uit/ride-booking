@@ -1,6 +1,8 @@
 {
   "vi": "Tiếng Việt",
   "en": "Tiếng Anh",
+  "getStarted": "Bắt đầu",
+  "getRide": "Đi Ngay\nNào",
 
   "VNU": "Sinh viên\nĐHQG-HCM",
   "VNUContent": "Ứng dụng này dành riêng cho Sinh viên ĐHQG-HCM\nTrở thành tài xế để kiếm thêm thu nhập\nchia sẻ yên sau",
@@ -35,10 +37,13 @@
   "already": "Bạn đã có tài khoản?",
   "alertBirthday": "Vui lòng kiểm tra lại ngày sinh",
   "alertInvalid": "Số điện thoại không đúng",
+  "alertNotExist": "Tài khoản chưa được tạo",
   "alertInfo": "Vui lòng nhập đầy đủ thông tin",
   "alertReEnter": "Vui lòng nhập lại số điện thoại",
   "alertEmail": "Vui lòng kiểm tra lại email",
   "alertExisted": "Tài khoản đã tồn tại!",
+  "alertLocked": "Tài khoản đã bị khóa",
+  "contactOffice": "Liên hệ phòng CTSV để được hỗ trợ",
 
   "UIT": "Đại học Công nghệ Thông tin",
   "USSH": "Đại học Khoa học Xã hội và Nhân văn",
@@ -95,5 +100,49 @@
 
   "name": "Tên",
   "address": "Địa chỉ",
-  "logout": "Đăng xuất"
+  "logout": "Đăng xuất",
+
+  "activity": "Lịch sử",
+  "promotion": "Khuyến mãi",
+
+  "welcome": "Xin chào",
+  "enterDes": "Bạn muốn đi đến đâu?",
+  "delivery": "GIAO HÀNG",
+  "lastBooking": "Gần đây",
+  "pickUp": "Điểm đón",
+  "des": "Điểm đến",
+  "reBooking": "Đặt lại",
+  "time": "Thời gian",
+
+  "detail": "Chi tiết",
+  "orderID": "Mã vận đơn",
+  "riderInfo": "Thông tin tài xế",
+  "price": "Giá",
+  "minutes": "phút",
+
+  "enterPickUp": "Nhập điểm đón",
+  "enterDestination": "Nhập điểm đến",
+  "savedLocations": "Đã lưu",
+  "chooseFromMap": "Chọn từ bản đồ",
+  "confirm": "Xác nhận",
+  "scheduleTime": "Lên lịch",
+  "now": "Đi ngay",
+  "note": "Ghi chú",
+  "noteforRider": "Ghi chú dành cho tài xế",
+  "payment": "Phương thức thanh toán",
+  "cash": "Tiền mặt",
+  "addPromo": "Thêm khuyến mãi",
+  "findingRider": "Đang tìm tài xế...",
+  "onTheWay": "Đang đi...",
+  "complete": "Chuyến đi hoàn thành",
+  "rateForRider": "Đánh giá",
+  "how": "Bạn cảm thấy thế nào?",
+  "improve": "Cảm ơn những ý kiến của bạn",
+  "skip": "Bỏ qua",
+  "send": "Gửi",
+  "back": "Trở lại",
+
+  "scheduled": "Đã lên lịch",
+  "light": "Sáng",
+  "dark": "Tối"
 }

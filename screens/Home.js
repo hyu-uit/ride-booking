@@ -39,12 +39,14 @@ import {
 } from "firebase/firestore";
 import { db } from "../config/config";
 import { useFocusEffect } from "@react-navigation/native";
+import { useTranslation } from "react-i18next";
 
 export default function Home({ navigation, route }) {
   const [phone, setPhone] = useState("");
   const [historyTrips, setHistoryTrips] = useState([]);
   const [name, SetName] = useState(null);
   const [avt, SetAvatar] = useState(null);
+  const { t } = useTranslation();
 
   let backButtonPressedOnce = false;
 
@@ -135,7 +137,7 @@ export default function Home({ navigation, route }) {
           <Avatar source={{ uri: avt }} margin={"10px 0 0 10px"} />
           <VStack margin={"10px 0 0 10px"}>
             <Text fontSize={10} color={COLORS.grey}>
-              Welcome back
+              {t("welcome")}
             </Text>
             <Text fontSize={SIZES.h4} color={COLORS.white} bold>
               {name}
@@ -175,7 +177,7 @@ export default function Home({ navigation, route }) {
               <Text
                 style={{ ...FONTS.body3, color: COLORS.grey, marginLeft: 10 }}
               >
-                Enter your destination
+                {t("enterDes")}
               </Text>
             </HStack>
             {/* <HStack
@@ -235,7 +237,7 @@ export default function Home({ navigation, route }) {
                   </Center>
                   <Center h={50}>
                     <Text fontSize={SIZES.h4} bold color={"white"}>
-                      DELIVERY
+                      SEND
                     </Text>
                   </Center>
                 </VStack>
@@ -248,7 +250,7 @@ export default function Home({ navigation, route }) {
               alignSelf={"flex-start"}
               marginBottom={3}
             >
-              Last booking
+              {t("lastBooking")}
             </Text>
             <VStack w={"100%"}>
               {/* <HistoryCard

@@ -46,15 +46,11 @@ const SignInScreen = ({ navigation }) => {
 
   const checkPhoneNumber = () => {
     if (phoneNumber.length !== 10) {
-      Alert.alert(
-        "Invalid phone number",
-        "Please re-enter your phone number.",
-        [
-          {
-            text: "OK",
-          },
-        ]
-      );
+      Alert.alert(t("alertInvalid"), t("alertReEnter"), [
+        {
+          text: "OK",
+        },
+      ]);
     } else {
       let getRole = "";
       {
@@ -86,7 +82,7 @@ const SignInScreen = ({ navigation }) => {
         getDoc(doc(db, getRole, phoneNumber))
           .then((docData) => {
             if (!docData.exists()) {
-              Alert.alert("Phone number has not been registered!");
+              Alert.alert(t("alertNotExist"));
             }
 
             if (docData.exists() && docData.data().status === "active") {
@@ -104,12 +100,9 @@ const SignInScreen = ({ navigation }) => {
               saveToAsyncStorage("phoneNumber", phoneNumber);
               saveToAsyncStorage("role", getRole);
             } else if (docData.data().status === "locked") {
-              Alert.alert(
-                "This account has been locked",
-                "please contact to your Student Office's school"
-              );
+              Alert.alert(t("alertLocked"), t("contactOffice"));
             } else {
-              Alert.alert("Phone number has not been registered!");
+              Alert.alert(t("alertExisted"));
             }
           })
           .catch((error) => {});

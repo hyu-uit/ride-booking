@@ -29,6 +29,7 @@ import FlagIcon from "../../assets/icons/icons8-flag-filled-48.png";
 import { addDoc, collection, doc, setDoc } from "@firebase/firestore";
 import { db } from "../../config/config";
 import { Dimensions } from "react-native";
+import { useTranslation } from "react-i18next";
 
 const initialState = {
   step: 1,
@@ -152,7 +153,7 @@ export default function BookingScreen({ navigation, route }) {
                     alt="flag-icon"
                   />
                   <Text bold fontSize={SIZES.h5} color={"white"}>
-                    Saved location
+                    {t("savedLocations")}
                   </Text>
                 </HStack>
                 <HStack space={2} marginTop={2} marginLeft={3} marginRight={3}>
@@ -165,13 +166,14 @@ export default function BookingScreen({ navigation, route }) {
                     w={"90%"}
                     borderRadius={10}
                     bgColor={COLORS.primary}
-                    onTouchEnd={
+                    mb={10}
+                    onPress={
                       (value) => dispatch({ type: "SET_STEP", payload: 2 })
                       // console.log(navigation.getParent())
                     }
                   >
                     <Text fontSize={SIZES.h5} bold color={"white"}>
-                      Choose from map
+                      {t("chooseFromMap")}
                     </Text>
                   </Button>
                 </Center>
@@ -197,12 +199,11 @@ export default function BookingScreen({ navigation, route }) {
                 w={"90%"}
                 borderRadius={10}
                 bgColor={COLORS.primary}
-                onTouchEnd={(value) =>
-                  dispatch({ type: "SET_STEP", payload: 3 })
-                }
+                mb={10}
+                onPress={(value) => dispatch({ type: "SET_STEP", payload: 3 })}
               >
                 <Text fontSize={SIZES.h5} bold color={"white"}>
-                  Confirm
+                  {t("confirm")}
                 </Text>
               </Button>
             </Center>
@@ -277,6 +278,8 @@ export default function BookingScreen({ navigation, route }) {
         return null;
     }
   };
+
+  const { t } = useTranslation();
 
   return (
     <TouchableWithoutFeedback

@@ -17,8 +17,10 @@ import ClockIcon from "../../assets/clock_96px.png";
 import MapIcon from "../../assets/map_marker_96px.png";
 import BackIcon from "../../assets/back_icon.png";
 import { COLORS, SIZES } from "../../constants/theme";
+import { useTranslation } from "react-i18next";
 
 const LocationCardCost = ({ onClickContinue, onPressBack }) => {
+  const { t } = useTranslation();
   return (
     <View
       bgColor={COLORS.background}
@@ -35,7 +37,7 @@ const LocationCardCost = ({ onClickContinue, onPressBack }) => {
           <VStack space={2}>
             <VStack space={1}>
               <Text bold fontSize={SIZES.h6} color={"#8CC3FF"}>
-                Pick-up
+                {t("pickUp")}
               </Text>
               <Text bold fontSize={SIZES.h6} color={"white"}>
                 Long An
@@ -44,7 +46,7 @@ const LocationCardCost = ({ onClickContinue, onPressBack }) => {
             <Divider />
             <VStack space={1}>
               <Text bold fontSize={SIZES.h6} color={"#8CC3FF"}>
-                Destination
+                {t("des")}
               </Text>
               <Text bold fontSize={SIZES.h6} color={"white"}>
                 University of Information Technology
@@ -99,7 +101,7 @@ const LocationCardCost = ({ onClickContinue, onPressBack }) => {
                 alignSelf={"center"}
               />
               <Text fontSize={SIZES.h4} color={"white"} bold>
-                5mins
+                5 {t("minutes")}
               </Text>
             </HStack>
           </VStack>
@@ -136,7 +138,7 @@ const LocationCardCost = ({ onClickContinue, onPressBack }) => {
             onTouchEnd={onClickContinue}
           >
             <Text color={"white"} bold fontSize={SIZES.small}>
-              Continue
+              {t("continue")}
             </Text>
           </Button>
         </HStack>

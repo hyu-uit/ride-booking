@@ -130,7 +130,7 @@ const LoginScreen = ({ navigation }) => {
       </VStack>
       <VStack w={"100%"} h={"60%"} paddingX={"10px"}>
         <Text bold fontSize={60} color={COLORS.white} lineHeight={70}>
-          Get Your {"\n"}Drive
+          {t("getRide")}
         </Text>
         <Text color={COLORS.fifthary} style={{ ...FONTS.body3 }} mt={10}>
           {t("login")}

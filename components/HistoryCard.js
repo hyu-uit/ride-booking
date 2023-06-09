@@ -16,6 +16,7 @@ import { TouchableOpacity } from "react-native";
 import { useState } from "react";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../config/config";
+import { useTranslation } from "react-i18next";
 
 function HistoryCard(props) {
   let {
@@ -38,6 +39,7 @@ function HistoryCard(props) {
   const [name, setName] = useState("");
   const [licensePlates, setLicensePlates] = useState("");
   const [avt, setAvatar] = useState(null);
+  const { t } = useTranslation();
 
   if (idTrip !== undefined) {
     getDoc(doc(db, "ListTrip", idTrip)).then((tripData) => {
@@ -80,13 +82,13 @@ function HistoryCard(props) {
             borderTopRightRadius={20}
             bgColor={COLORS.white}
           >
-            <Text color={COLORS.fourthary}>Book again</Text>
+            <Text color={COLORS.fourthary}>{t("reBooking")}</Text>
           </Button>
         </HStack>
         <HStack space={6} marginLeft={"10px"} marginBottom={"10px"}>
           <VStack>
             <Text bold fontSize={10} color={"#808080"}>
-              Pick-up
+              {t("pickUp")}
             </Text>
             <Text bold fontSize={10} color={"white"}>
               Long An
@@ -94,7 +96,7 @@ function HistoryCard(props) {
           </VStack>
           <VStack>
             <Text bold fontSize={10} color={"#808080"}>
-              Destination
+              {t("des")}
             </Text>
             <Text bold fontSize={10} color={"white"}>
               DH CNTT
@@ -102,7 +104,7 @@ function HistoryCard(props) {
           </VStack>
           <VStack>
             <Text bold fontSize={10} color={"#808080"}>
-              Time
+              {t("time")}
             </Text>
             <Text bold fontSize={10} color={"white"}>
               {timePickUp}, {datePickUp}

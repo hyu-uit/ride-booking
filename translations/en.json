@@ -1,6 +1,8 @@
 {
   "vi": "Vietnamese",
   "en": "English",
+  "getStarted": "Get started",
+  "getRide": "Get Your\nRide",
 
   "VNU": "VNU - HCM\nSTUDENTS",
   "VNUContent": "This app is used for Student of VNU-HCM only\nThey can be a rider to share their bike\nor earn some more money",
@@ -36,9 +38,12 @@
   "alertBirthday": "Please check your birthday",
   "alertInvalid": "Invalid phone number",
   "alertInfo": "Please enter your information",
+  "alertNotExist": "Phone number has not been registered!",
   "alertReEnter": "Please re-enter your phone number",
   "alertEmail": "Please check your email address",
   "alertExisted": "Phone number has been existed!",
+  "alertLocked": "This account has been locked",
+  "contactOffice": "Please contact to your Student Office's school",
 
   "UIT": "University of Information Technology",
   "USSH": "University of Social Sciences and Humanities",
@@ -96,5 +101,49 @@
 
   "name": "Name",
   "address": "Address",
-  "logout": "Log out"
+  "logout": "Log out",
+
+  "activity": "Activity",
+  "promotion": "Promotion",
+
+  "welcome": "Welcome back",
+  "enterDes": "Enter your destination",
+  "delivery": "DELIVERY",
+  "lastBooking": "Last bookings",
+  "pickUp": "Pick up",
+  "des": "Destination",
+  "reBooking": "Re-booking",
+  "time": "Time",
+
+  "detail": "Detail",
+  "orderID": "ID",
+  "riderInfo": "Rider information",
+  "price": "Price",
+  "minutes": "minutes",
+
+  "enterPickUp": "Enter your pick up location",
+  "enterDestination": "Enter your destination",
+  "savedLocations": "Saved locations",
+  "chooseFromMap": "Choose from map",
+  "confirm": "Confirm",
+  "scheduleTime": "Schedule time",
+  "now": "Now",
+  "note": "Note",
+  "noteforRider": "Note for rider",
+  "payment": "Payment",
+  "cash": "Cash",
+  "addPromo": "Add promotion",
+  "findingRider": "Finding your rider...",
+  "onTheWay": "Rider is on the way",
+  "complete": "Trip Completed",
+  "rateForRider": "Rate for rider",
+  "how": "How was your rider",
+  "improve": "Your rating helps us improve",
+  "skip": "Skip",
+  "send": "Send",
+  "back": "Go back",
+
+  "scheduled": "Scheduled",
+  "light": "Light",
+  "dark": "Dark"
 }

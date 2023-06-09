@@ -4,19 +4,23 @@ import RatingPopup from "../../components/RatingPopup";
 import styled from "styled-components";
 import { SafeAreaView } from "react-native-safe-area-context";
 import MapView from "react-native-maps";
+import { useTranslation } from "react-i18next";
+import { useEffect } from "react";
+import { VStack } from "native-base";
+import { COLORS } from "../../constants";
 
 const NotYetRated = {
   isGroupButtonShow: false,
-  buttonText: "Skip",
+  buttonText: "",
 };
 
 const IsRating = {
   isGroupButtonShow: true,
-  buttonText: "Send",
+  buttonText: "",
 };
 const Rated = {
   isGroupButtonShow: false,
-  buttonText: "Go back",
+  buttonText: "",
 };
 
 const initialState = {
@@ -44,6 +48,12 @@ const stateReducer = (state, action) => {
 };
 
 const BookingRatingScreen = () => {
+  useEffect(() => {
+    NotYetRated.buttonText = t("skip");
+    IsRating.buttonText = t("send");
+    Rated.buttonText = t("back");
+  });
+  const { t } = useTranslation();
   const [state, dispatch] = useReducer(stateReducer, initialState);
 
   const handleStep1Button = () => {
@@ -99,8 +109,11 @@ const BookingRatingScreen = () => {
         return null;
     }
   };
-
-  return <BookingContainer>{renderStepContent()}</BookingContainer>;
+  return (
+    <VStack h={"100%"} w={"100%"} bgColor={COLORS.background}>
+      <BookingContainer>{renderStepContent()}</BookingContainer>
+    </VStack>
+  );
 };
 
 const BookingContainer = styled(SafeAreaView)`

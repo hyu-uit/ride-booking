@@ -157,7 +157,7 @@ const OnBoardingScreen = ({ navigation }) => {
                     color: COLORS.white,
                   }}
                 >
-                  Get Started
+                  {t("getStarted")}
                 </Text>
               </TouchableOpacity>
             </View>
