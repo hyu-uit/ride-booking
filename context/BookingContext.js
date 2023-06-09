@@ -73,7 +73,6 @@ const stateReducer = (state, action) => {
         },
       };
     case SET_INITIAL_LOCATION:
-      console.log(action.payload);
       return {
         ...state,
         region: {

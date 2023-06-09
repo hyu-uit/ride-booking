@@ -9,7 +9,7 @@ import {
   VStack,
   View,
 } from "native-base";
-import { COLORS, FONTS, GEOAPIFY_KEY, SIZES } from "../../constants";
+import { COLORS, FONTS, SIZES } from "../../constants";
 import ArrowDownIcon from "../../assets/icons/icons8-down-arrow-48.png";
 import LocationIcon from "../../assets/icons/icons8-location-48.png";
 import ChangeIcon from "../../assets/icons/icons8-change-48.png";
@@ -18,7 +18,11 @@ import {
   PICK_UP_INPUT,
 } from "../../screens/Booking/BookingScreen";
 import { AutocompleteDropdown } from "react-native-autocomplete-dropdown";
-import { Dimensions } from "react-native";
+import {
+  Dimensions,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+} from "react-native";
 import { Platform } from "react-native";
 import { useContext, useState } from "react";
 import { useEffect } from "react";
@@ -26,8 +30,8 @@ import { getAutoCompleteResults } from "../../api/locationAPI";
 import {
   BookingContext,
   SET_DESTINATION_LOCATION,
+  SET_INITIAL_LOCATION,
 } from "../../context/BookingContext";
-import { TouchableWithoutFeedback } from "react-native-web";
 
 const LocationCardWithChange = ({
   pickUpInput,
@@ -42,11 +46,14 @@ const LocationCardWithChange = ({
   const [suggestionsList, setSuggestionsList] = useState([]);
   // save result to find long lat on click select item auto complete
   const [originalResult, setOriginalResult] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [showDropdown, setShowDropdown] = useState(false);
 
   useEffect(() => {
     const searchTimeout = setTimeout(() => {
       // empty input will lead to error
-      if (desInput.length > 1)
+      if (desInput.length > 1) {
+        setLoading(true);
         getAutoCompleteResults(desInput)
           .then((results) => {
             setOriginalResult(results);
@@ -57,7 +64,15 @@ const LocationCardWithChange = ({
               }))
             );
           })
-          .catch((err) => console.log(err));
+          .catch((err) => {
+            console.log(
+              "🚀 ~ file: LocationCardWithChange.js:66 ~ searchTimeout ~ err:",
+              err
+            );
+            return;
+          })
+          .finally(() => setLoading(false));
+      }
     }, 2000);
 
     return () => {
@@ -69,7 +84,7 @@ const LocationCardWithChange = ({
     <Flex marginTop={3} marginLeft={3} marginRight={3}>
       <HStack
         w={"100%"}
-        h={160}
+        h={"auto"}
         bgColor={COLORS.tertiary}
         borderColor={COLORS.fourthary}
         borderRadius={10}
@@ -81,55 +96,44 @@ const LocationCardWithChange = ({
             <Text bold fontSize={SIZES.h6} color={"#8CC3FF"}>
               Pick-up
             </Text>
-            <TouchableWithoutFeedback>
-              <Input
-                onFocus={() => {
-                  setFocusInput(PICK_UP_INPUT);
-                }}
-                editable={false}
-                variant="unstyled"
-                placeholder="Your location"
-                bold
-                color={"white"}
-                padding={1}
-                value={pickUpInput}
-                onChange={(e) => {
-                  e.preventDefault();
-                }}
-                style={{ ...FONTS.body6 }}
-              />
-            </TouchableWithoutFeedback>
+            <TouchableOpacity
+              onPress={(e) => {
+                setFocusInput(PICK_UP_INPUT);
+                setShowDropdown(false);
+              }}
+            >
+              <Text color={"white"} padding={1} style={{ ...FONTS.body5 }} bold>
+                {pickUpInput}
+              </Text>
+            </TouchableOpacity>
           </VStack>
           <Divider />
           <VStack>
             <Text bold fontSize={SIZES.h6} color={"#8CC3FF"}>
               Drop off
             </Text>
-            {/* <Input
-              onFocus={() => setFocusInput(DESTINATION_INPUT)}
-              variant="unstyled"
-              placeholder="Enter destination"
-              bold
-              fontSize={SIZES.h6}
-              color={"white"}
-              padding={1}
-              value={desInput}
-              onChangeText={(text) => setDesInput(text)}
-            /> */}
             <AutocompleteDropdown
-              onFocus={() => setFocusInput(DESTINATION_INPUT)}
+              onFocus={() => {
+                setShowDropdown(true);
+                setFocusInput(DESTINATION_INPUT);
+              }}
               direction={Platform.select({ ios: "down" })}
               showChevron={false}
               dataSet={suggestionsList}
-              onOpenSuggestionsList={}
+              onBlur={() => setShowDropdown(false)}
               onSelectItem={(item) => {
                 originalResult.map((result) => {
                   if (result.place_id == item.id) {
-                    console.log({
-                      address: result.formatted,
-                      name: result.name,
-                      latitude: result.lat,
-                      longitude: result.lon,
+                    console.log(
+                      "🚀 ~ file: LocationCardWithChange.js:121 ~ originalResult.map ~ result:",
+                      result
+                    );
+                    dispatch({
+                      type: SET_INITIAL_LOCATION,
+                      payload: {
+                        latitude: result.lat,
+                        longitude: result.lon,
+                      },
                     });
                     dispatch({
                       type: SET_DESTINATION_LOCATION,
@@ -158,10 +162,11 @@ const LocationCardWithChange = ({
                 style: {
                   color: "white",
                   paddingLeft: 0,
-                  ...FONTS.body6,
+                  ...FONTS.body5,
                 },
                 onChangeText: (text) => setDestinationInput(text),
               }}
+              loading={loading}
               inputContainerStyle={{
                 backgroundColor: "transparent",
                 borderRadius: 25,
@@ -169,6 +174,7 @@ const LocationCardWithChange = ({
                 marginLeft: 0,
               }}
               suggestionsListContainerStyle={{
+                display: showDropdown ? "flex" : "none",
                 backgroundColor: COLORS.tertiary,
                 paddingHorizontal: 5,
                 width: "105%",
@@ -177,11 +183,13 @@ const LocationCardWithChange = ({
                 borderTopWidth: 0,
                 borderTopLeftRadius: 0,
                 borderTopRightRadius: 0,
+                marginTop: 0,
+                color: "white",
               }}
               renderItem={(item, text) => (
                 <Text
                   color={"white"}
-                  style={{ ...FONTS.body6, marginVertical: 5 }}
+                  style={{ ...FONTS.body5, marginVertical: 5 }}
                 >
                   {item.title}
                 </Text>

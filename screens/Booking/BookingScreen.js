@@ -1,4 +1,4 @@
-import React, { useReducer, usebooking } from "react";
+import React, { useReducer, useRef, usebooking } from "react";
 import styled from "styled-components";
 import { COLORS, SIZES } from "../../constants/theme";
 import { Button, Center, HStack, Image, Text, VStack, View } from "native-base";
@@ -42,6 +42,7 @@ export const DESTINATION_INPUT = "DESTINATION_INPUT";
 export default function BookingScreen({ navigation }) {
   const { booking, dispatch } = useContext(BookingContext);
   const [focusInput, setFocusInput] = useState(DESTINATION_INPUT);
+  const mapRef = useRef(null);
   // sometimes name is unavailable in respond body so using address instead
   const [markerPosition, setMarkerPosition] = useState({
     name: null,
@@ -56,6 +57,12 @@ export default function BookingScreen({ navigation }) {
   useEffect(() => {
     fetchCurrentUserLocation()
       .then(({ latitude, longitude }) => {
+        console.log(
+          "🚀 ~ file: BookingScreen.js:60 ~ .then ~ latitude, longitude:",
+          latitude,
+          longitude
+        );
+
         dispatch({
           type: SET_INITIAL_LOCATION,
           payload: { latitude, longitude },
@@ -63,7 +70,10 @@ export default function BookingScreen({ navigation }) {
 
         getSingleAddressFromCoordinate(latitude, longitude)
           .then((value) => {
-            console.log(value.formatted);
+            console.log(
+              "🚀 ~ file: BookingScreen.js:68 ~ .then ~ value.formatted:",
+              value.formatted
+            );
             dispatch({
               type: SET_PICK_UP_LOCATION,
               payload: {
@@ -80,11 +90,14 @@ export default function BookingScreen({ navigation }) {
               longitude,
             });
           })
-          .catch((err) =>
-            console.log("set address on first render fail" + err)
-          );
+          .catch((err) => {
+            console.log("🚀 ~ file: BookingScreen.js:88 ~ .then ~ err:", err);
+          });
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        console.log("🚀 ~ file: BookingScreen.js:90 ~ useEffect ~ err:", err);
+        return;
+      });
   }, []);
 
   useEffect(() => {
@@ -109,24 +122,37 @@ export default function BookingScreen({ navigation }) {
             longitudeDelta: 0.01, //zoom
           },
         });
+    } else if (step === 3) {
+      if (mapRef.current) {
+        const coordinates = [
+          {
+            latitude: booking.pickUpLocation.latitude,
+            longitude: booking.pickUpLocation.longitude,
+          },
+          {
+            latitude: booking.destinationLocation.latitude,
+            longitude: booking.destinationLocation.longitude,
+          },
+        ];
+        mapRef.current.fitToCoordinates(coordinates, {
+          edgePadding: { top: 50, right: 50, bottom: 50, left: 50 },
+          animated: true,
+        });
+      }
     }
-  }, [booking.step]);
+  }, [step]);
 
   const chooseFromMapHandler = () => {
     setStep(2);
   };
 
   const hanldeConfirmFromMap = () => {
-    // console.log("pick up" + JSON.stringify(booking.pickUpLocation));
-    // console.log("destination" + JSON.stringify(booking.destinationLocation));
-
     if (focusInput === DESTINATION_INPUT) {
       //pick up is already set from useEffect on first render
       if (checkLocationIsSet(markerPosition)) {
         setDestinationInput(
           markerPosition.address ? markerPosition.address : markerPosition.name
         );
-        console.log(markerPosition);
         dispatch({
           type: SET_DESTINATION_LOCATION,
           payload: { ...markerPosition },
@@ -202,8 +228,6 @@ export default function BookingScreen({ navigation }) {
     const { latitude, longitude } = e.nativeEvent.coordinate;
     getSingleAddressFromCoordinate(latitude, longitude)
       .then((value) => {
-        console.log(value.formatted);
-        console.log(value.name);
         setMarkerPosition({
           latitude,
           longitude,
@@ -211,7 +235,13 @@ export default function BookingScreen({ navigation }) {
           address: value.formatted,
         });
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        console.log(
+          "🚀 ~ file: BookingScreen.js:240 ~ handleMarkerDragEnd ~ err:",
+          err
+        );
+        return;
+      });
   };
 
   const renderStepContent = () => {
@@ -273,9 +303,10 @@ export default function BookingScreen({ navigation }) {
         return (
           <>
             <MapView
+              ref={mapRef}
               style={{ flex: 1, borderRadius: 10, marginTop: 10 }}
               provider="google"
-              initialRegion={booking.region}
+              region={booking.region}
             >
               <Marker
                 key={"your-location"}
@@ -317,9 +348,10 @@ export default function BookingScreen({ navigation }) {
         return (
           <>
             <MapView
-              style={{ flex: 1, borderRadius: 10, marginTop: 10 }}
+              ref={mapRef}
+              style={{ height: "50%", borderRadius: 10, marginTop: 10 }}
               provider="google"
-              initialRegion={booking.region}
+              region={booking.region}
             >
               <Marker
                 key={"pickUp"}
