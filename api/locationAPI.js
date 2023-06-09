@@ -21,3 +21,12 @@ export const getAutoCompleteResults = (input) => {
     .then((response) => response.json())
     .then(({ results }) => results);
 };
+
+export const getRoutingFromCoordinates = (pickupLoc, destinationLoc) => {
+  return fetch(
+    `https://api.geoapify.com/v1/routing?waypoints=${pickupLoc.latitude},${pickupLoc.longitude}|${destinationLoc.latitude},${destinationLoc.longitude}&mode=motorcycle&lang=en&details=route_details&apiKey=${API_KEY}`,
+    requestOptions
+  )
+    .then((response) => response.json())
+    .then((result) => result.features[0]);
+};

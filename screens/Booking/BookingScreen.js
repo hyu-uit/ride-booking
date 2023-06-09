@@ -3,7 +3,12 @@ import styled from "styled-components";
 import { COLORS, SIZES } from "../../constants/theme";
 import { Button, Center, HStack, Image, Text, VStack, View } from "native-base";
 import { SafeAreaView } from "react-native-safe-area-context";
-import MapView, { Callout, MapCallout, Marker } from "react-native-maps";
+import MapView, {
+  Callout,
+  MapCallout,
+  Marker,
+  Polyline,
+} from "react-native-maps";
 import { Keyboard, TouchableWithoutFeedback } from "react-native";
 import LocationCardWithChange from "../../components/LocationCard/LocationCardWithChange";
 import SelectedButton from "../../components/Button/SelectedButton";
@@ -21,7 +26,10 @@ import { fetchCurrentUserLocation } from "../../helper/location";
 import { getFromAsyncStorage } from "../../helper/asyncStorage";
 import { UniversityMarks } from "../../constants/location";
 import Icon from "../../assets/icons/arrowRight.png";
-import { getSingleAddressFromCoordinate } from "../../api/locationAPI";
+import {
+  getRoutingFromCoordinates,
+  getSingleAddressFromCoordinate,
+} from "../../api/locationAPI";
 import {
   BACK_STEP,
   BookingContext,
@@ -53,6 +61,7 @@ export default function BookingScreen({ navigation }) {
   const [step, setStep] = useState(1);
   const [pickUpInput, setPickUpInput] = useState("Your location");
   const [destinationInput, setDestinationInput] = useState("");
+  const [routing, setRouting] = useState([]);
 
   useEffect(() => {
     fetchCurrentUserLocation()
@@ -157,7 +166,33 @@ export default function BookingScreen({ navigation }) {
           type: SET_DESTINATION_LOCATION,
           payload: { ...markerPosition },
         });
-        return setStep(3);
+        console.log(
+          "🚀 ~ file: BookingScreen.js:170 ~ hanldeConfirmFromMap ~ booking.pickUpLocation:",
+          booking.pickUpLocation
+        );
+        console.log(
+          "🚀 ~ file: BookingScreen.js:174 ~ hanldeConfirmFromMap ~ markerPosition:",
+          markerPosition
+        );
+        getRoutingFromCoordinates(booking.pickUpLocation, markerPosition)
+          .then((routing) => {
+            const { coordinates } = routing.geometry;
+
+            setRouting(
+              coordinates[0].map(([longitude, latitude]) => ({
+                latitude,
+                longitude,
+              }))
+            );
+            setStep(3);
+          })
+          .catch((err) =>
+            console.log(
+              "🚀 ~ file: BookingScreen.js:156 ~ useEffect ~ err:",
+              err
+            )
+          );
+        return;
       }
     }
     if (focusInput === PICK_UP_INPUT) {
@@ -373,6 +408,13 @@ export default function BookingScreen({ navigation }) {
                     : null
                 }
               />
+              {routing ? (
+                <Polyline
+                  coordinates={routing}
+                  strokeWidth={5}
+                  strokeColor="blue"
+                />
+              ) : null}
             </MapView>
             <LocationCardTime
               onClickContinue={handleStep3Submit}
@@ -409,6 +451,13 @@ export default function BookingScreen({ navigation }) {
                     : null
                 }
               />
+              {routing ? (
+                <Polyline
+                  coordinates={routing}
+                  strokeWidth={5}
+                  strokeColor="blue"
+                />
+              ) : null}
             </MapView>
             <LocationCardPayment
               onClickContinue={handleStep4Submit}
@@ -445,6 +494,13 @@ export default function BookingScreen({ navigation }) {
                     : null
                 }
               />
+              {routing ? (
+                <Polyline
+                  coordinates={routing}
+                  strokeWidth={5}
+                  strokeColor="blue"
+                />
+              ) : null}
             </MapView>
             <LocationCardCost
               onClickContinue={handleStep5Submit}
@@ -455,6 +511,40 @@ export default function BookingScreen({ navigation }) {
       case 6:
         return (
           <>
+            <MapView
+              ref={mapRef}
+              style={{ height: "45%", borderRadius: 10 }}
+              provider="google"
+              region={booking.region}
+            >
+              <Marker
+                key={"pickUp"}
+                coordinate={booking.pickUpLocation}
+                title={"Pick up"}
+                description={
+                  booking.pickUpLocation.address
+                    ? booking.pickUpLocation.address
+                    : null
+                }
+              ></Marker>
+              <Marker
+                key={"destination"}
+                coordinate={booking.destinationLocation}
+                title={"Destination"}
+                description={
+                  booking.destinationLocation.address
+                    ? booking.destinationLocation.address
+                    : null
+                }
+              />
+              {routing ? (
+                <Polyline
+                  coordinates={routing}
+                  strokeWidth={5}
+                  strokeColor="blue"
+                />
+              ) : null}
+            </MapView>
             <LocationCardNote
               onClickContinue={handleStep6Submit}
               onPressBack={handleBackStep}
@@ -465,6 +555,40 @@ export default function BookingScreen({ navigation }) {
       case 7:
         return (
           <>
+            <MapView
+              ref={mapRef}
+              style={{ height: "45%", borderRadius: 10 }}
+              provider="google"
+              region={booking.region}
+            >
+              <Marker
+                key={"pickUp"}
+                coordinate={booking.pickUpLocation}
+                title={"Pick up"}
+                description={
+                  booking.pickUpLocation.address
+                    ? booking.pickUpLocation.address
+                    : null
+                }
+              ></Marker>
+              <Marker
+                key={"destination"}
+                coordinate={booking.destinationLocation}
+                title={"Destination"}
+                description={
+                  booking.destinationLocation.address
+                    ? booking.destinationLocation.address
+                    : null
+                }
+              />
+              {routing ? (
+                <Polyline
+                  coordinates={routing}
+                  strokeWidth={5}
+                  strokeColor="blue"
+                />
+              ) : null}
+            </MapView>
             <LocationCardFinder
               onPressCancel={() => navigation.navigate("BookingDriver")}
             />
