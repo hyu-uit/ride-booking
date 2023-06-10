@@ -27,6 +27,7 @@ import { IS_FIRST_USE } from "../../constants/asyncStorageKey";
 import { useFocusEffect } from "@react-navigation/native";
 import { useTranslation } from "react-i18next";
 import i18n from "../../i18n";
+import PromotionModal from "../../components/Modal/PromotionModal";
 
 const LoginScreen = ({ navigation }) => {
   const animation = useRef(null);

@@ -240,7 +240,7 @@ const StudentOfficeDetailScreen = ({ navigation, route }) => {
                   mt={10}
                 >
                   <Text style={{ ...FONTS.h2 }} color={COLORS.red}>
-                    {t("accept")}
+                    {t("reject")}
                   </Text>
                 </Button>
                 <Button
@@ -251,7 +251,7 @@ const StudentOfficeDetailScreen = ({ navigation, route }) => {
                   mt={10}
                 >
                   <Text style={{ ...FONTS.h2 }} color={COLORS.white}>
-                    {t("reject")}
+                    {t("accept")}
                   </Text>
                 </Button>
               </HStack>

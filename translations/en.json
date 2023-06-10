@@ -163,5 +163,8 @@
   "selectDay": "Select date",
   "yourIncome": "Your total income is",
 
-  "language": "Language"
+  "language": "Language",
+
+  "choosePromo": "Choose a promotion",
+  "choosePromoContent": "Get your trip cheaper with our promotions"
 }

@@ -163,5 +163,8 @@
   "selectDay": "Chọn ngày",
   "yourIncome": "Tổng doanh thu của bạn là",
 
-  "language": "Ngôn ngữ"
+  "language": "Ngôn ngữ",
+
+  "choosePromo": "Áp dụng mã giảm giá ngay",
+  "choosePromoContent": "Giá cả không còn là vấn đề khi có mã này"
 }
