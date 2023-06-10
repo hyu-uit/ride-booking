@@ -5,7 +5,6 @@ import {
   HStack,
   Image,
   Text,
-  TextArea,
   VStack,
   View,
 } from "native-base";

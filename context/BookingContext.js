@@ -1,5 +1,5 @@
 import { useReducer } from "react";
-import { createContext, ReactNode, useEffect, useState } from "react";
+import { createContext } from "react";
 import { ceilingKilometer } from "../helper/converter";
 
 export const BookingContext = createContext(null);
@@ -8,8 +8,8 @@ const initialState = {
   region: {
     latitude: 0, // Initial latitude
     longitude: 0, // Initial longitude
-    latitudeDelta: 0.005, //zoom
-    longitudeDelta: 0.005, //zoom
+    latitudeDelta: 0.01, //zoom
+    longitudeDelta: 0.01, //zoom
   },
   pickUpLocation: {
     name: "",
@@ -29,6 +29,7 @@ const initialState = {
     distance: 0, // km
     time: 0, // minute (travel time from a to b)
     date: "", // date booking format 15:00 12/05/2002
+    note: "",
   },
   isModalCancelShow: false,
 };

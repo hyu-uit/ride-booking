@@ -1,4 +1,4 @@
-import React, { useReducer, useRef, usebooking } from "react";
+import React, { useRef } from "react";
 import styled from "styled-components";
 import { COLORS, SIZES } from "../../constants/theme";
 import { Button, Center, HStack, Image, Text, VStack, View } from "native-base";
@@ -15,12 +15,9 @@ import LocationCardFinder from "../../components/LocationCard/LocationCard.Finde
 import ConfirmModal from "../../components/Modal/ConfirmModal";
 import ButtonBack from "../../components/Global/ButtonBack/ButtonBack";
 import FlagIcon from "../../assets/icons/icons8-flag-filled-48.png";
-import { addDoc, collection, doc, setDoc } from "@firebase/firestore";
+import { addDoc, collection } from "@firebase/firestore";
 import { db } from "../../config/config";
 import { fetchCurrentUserLocation } from "../../helper/location";
-import { getFromAsyncStorage } from "../../helper/asyncStorage";
-import { UniversityMarks } from "../../constants/location";
-import Icon from "../../assets/icons/arrowRight.png";
 import {
   getRoutingFromCoordinates,
   getSingleAddressFromCoordinate,
@@ -102,12 +99,12 @@ export default function BookingScreen({ navigation }) {
       })
       .catch((err) => {
         console.log("🚀 ~ file: BookingScreen.js:90 ~ useEffect ~ err:", err);
-        return;
       });
   }, []);
 
   useEffect(() => {
-    if (booking.step > 2) {
+    // in map step 2 zoom to the pick up or destination according to the input
+    if (booking.step === 2) {
       if (focusInput === PICK_UP_INPUT)
         dispatch({
           type: SET_INITIAL_LOCATION,
@@ -128,26 +125,20 @@ export default function BookingScreen({ navigation }) {
             longitudeDelta: 0.01, //zoom
           },
         });
-    } else if (step === 3) {
-      // zoom map center to see both markers
-      if (mapRef.current) {
-        const coordinates = [
-          {
-            latitude: booking.pickUpLocation.latitude,
-            longitude: booking.pickUpLocation.longitude,
-          },
-          {
-            latitude: booking.destinationLocation.latitude,
-            longitude: booking.destinationLocation.longitude,
-          },
-        ];
-        mapRef.current.fitToCoordinates(coordinates, {
-          edgePadding: { top: 50, right: 50, bottom: 100, left: 50 },
-          animated: true,
-        });
-      }
     }
   }, [step]);
+
+  useEffect(() => {
+    // set marker according to which input is focus.
+    if (focusInput === PICK_UP_INPUT) {
+      checkLocationIsSet(booking.pickUpLocation) &&
+        setMarkerPosition(booking.pickUpLocation);
+    }
+    if (focusInput === DESTINATION_INPUT) {
+      checkLocationIsSet(booking.destinationLocation) &&
+        setMarkerPosition(booking.destinationLocation);
+    }
+  }, [focusInput]);
 
   const chooseFromMapHandler = () => {
     setStep(2);
@@ -155,7 +146,7 @@ export default function BookingScreen({ navigation }) {
 
   const hanldeConfirmFromMap = () => {
     if (focusInput === DESTINATION_INPUT) {
-      //pick up is already set from useEffect on first render
+      //pick up is already set from useEffect on first render or base on default address of user
       if (checkLocationIsSet(markerPosition)) {
         setDestinationInput(
           markerPosition.address ? markerPosition.address : markerPosition.name
@@ -172,6 +163,7 @@ export default function BookingScreen({ navigation }) {
           "🚀 ~ file: BookingScreen.js:174 ~ hanldeConfirmFromMap ~ markerPosition:",
           markerPosition
         );
+
         getRoutingFromCoordinates(booking.pickUpLocation, markerPosition)
           .then((routing) => {
             const { coordinates } = routing.geometry;
@@ -181,6 +173,24 @@ export default function BookingScreen({ navigation }) {
               distance,
               time
             );
+
+            if (mapRef.current) {
+              const coordinates = [
+                {
+                  latitude: booking.pickUpLocation.latitude,
+                  longitude: booking.pickUpLocation.longitude,
+                },
+                {
+                  latitude: markerPosition.latitude,
+                  longitude: markerPosition.longitude,
+                },
+              ];
+
+              mapRef.current.fitToCoordinates(coordinates, {
+                edgePadding: { top: 50, right: 50, bottom: 100, left: 50 },
+                animated: true,
+              });
+            }
 
             dispatch({
               type: SET_BOOKING_DETAILS,
@@ -226,8 +236,13 @@ export default function BookingScreen({ navigation }) {
     setStep(1);
   };
 
-  const handleStep3Submit = () => {
+  const handleStep3Submit = (date) => {
+    console.log(
+      "🚀 ~ file: BookingScreen.js:240 ~ handleStep3Submit ~ date:",
+      date
+    );
     // Do any necessary form validation or error checking here
+    dispatch({ type: SET_BOOKING_DETAILS, payload: { date } });
     setStep(4);
   };
 
@@ -266,10 +281,16 @@ export default function BookingScreen({ navigation }) {
     });
     //upload image to firebase storage
   };
-  const handleStep6Submit = () => {
+  const handleStep6Submit = (note) => {
+    console.log(
+      "🚀 ~ file: BookingScreen.js:267 ~ handleStep6Submit ~ note:",
+      note
+    );
+    dispatch({ type: SET_BOOKING_DETAILS, payload: { note } });
     // Do any necessary form validation or error checking here
     //createOrder();
-    dispatch({ type: SET_STEP, payload: 7 });
+
+    setStep(7);
   };
 
   const handleCloseModal = () => {
@@ -407,6 +428,7 @@ export default function BookingScreen({ navigation }) {
               region={booking.region}
             >
               <Marker
+                identifier="pickUp"
                 key={"pickUp"}
                 coordinate={booking.pickUpLocation}
                 title={"Pick up"}
@@ -417,6 +439,7 @@ export default function BookingScreen({ navigation }) {
                 }
               ></Marker>
               <Marker
+                identifier="pickUp"
                 key={"destination"}
                 coordinate={booking.destinationLocation}
                 title={"Destination"}
@@ -621,8 +644,13 @@ export default function BookingScreen({ navigation }) {
   return (
     <AutocompleteDropdownContextProvider>
       <BookingContainer bgColor={COLORS.background}>
-        {booking.step === 1 || booking.step === 2 ? (
+        {step === 1 ? (
           <View paddingX={"10px"}>
+            <ButtonBack onPress={handleBackStep} />
+          </View>
+        ) : null}
+        {step === 2 ? (
+          <View paddingX={"10px"} position={"absolute"} top={"8%"} zIndex={2}>
             <ButtonBack onPress={handleBackStep} />
           </View>
         ) : null}
@@ -639,6 +667,7 @@ export default function BookingScreen({ navigation }) {
   );
 
   function handleBackStep() {
+    if (step === 1) return navigation.navigate("Home");
     setStep((prev) => prev - 1);
   }
 }

@@ -36,7 +36,12 @@ const LocationCardTime = ({ onClickContinue, onPressBack }) => {
   const [showTimePicker, setShowTimePicker] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedTime, setSelectedTime] = useState(new Date());
-  const [finalDate, setFinalDate] = useState(null);
+  const [finalDate, setFinalDate] = useState(convertToFullDateTime(Date.now()));
+
+  useEffect(() => {
+    // to ensure that when user switch from choose date to now that now still get current date
+    if (isNowSelected) setFinalDate(convertToFullDateTime(Date.now()));
+  }, [isNowSelected]);
 
   const handleDateChange = (_event, date) => {
     setShowDatePicker(false);
@@ -44,15 +49,16 @@ const LocationCardTime = ({ onClickContinue, onPressBack }) => {
     setShowTimePicker(true);
   };
 
+  function converDateToFullDateFormat(selectedDate, date) {
+    const formattedDate = convertToDate(selectedDate);
+    const formattedTime = convertToTime(date);
+    return `${formattedTime} ${formattedDate}`;
+  }
+
   const handleTimeChange = (_event, date) => {
     setShowTimePicker(false);
     setSelectedTime(date);
-
-    const formattedDate = convertToDate(selectedDate);
-    const formattedTime = convertToTime(date);
-    const finalDateTime = `${formattedTime} ${formattedDate}`;
-
-    setFinalDate(finalDateTime);
+    setFinalDate(converDateToFullDateFormat(selectedDate, date));
   };
 
   return (
@@ -185,7 +191,7 @@ const LocationCardTime = ({ onClickContinue, onPressBack }) => {
             w={"200px"}
             marginLeft={"auto"}
             borderRadius={"20px"}
-            onTouchEnd={onClickContinue}
+            onTouchEnd={() => onClickContinue(finalDate)}
           >
             <Text color={"white"} bold fontSize={SIZES.small}>
               Continue
