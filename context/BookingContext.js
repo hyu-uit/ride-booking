@@ -94,8 +94,7 @@ function calculatePrice(distanceInKm) {
     return 0; // No distance, no price
   }
   // Calculate the total price
-  const totalPrice =
-    FIRST_KM_PRICE + PRICE_PER_NEXT_KM * ceilingKilometer(distanceInKm - 1);
+  const totalPrice = FIRST_KM_PRICE + PRICE_PER_NEXT_KM * (distanceInKm - 1);
   return totalPrice;
 }
 

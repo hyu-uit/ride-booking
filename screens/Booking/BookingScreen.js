@@ -3,12 +3,7 @@ import styled from "styled-components";
 import { COLORS, SIZES } from "../../constants/theme";
 import { Button, Center, HStack, Image, Text, VStack, View } from "native-base";
 import { SafeAreaView } from "react-native-safe-area-context";
-import MapView, {
-  Callout,
-  MapCallout,
-  Marker,
-  Polyline,
-} from "react-native-maps";
+import MapView, { Marker, Polyline } from "react-native-maps";
 import { Keyboard, TouchableWithoutFeedback } from "react-native";
 import LocationCardWithChange from "../../components/LocationCard/LocationCardWithChange";
 import SelectedButton from "../../components/Button/SelectedButton";
@@ -134,6 +129,7 @@ export default function BookingScreen({ navigation }) {
           },
         });
     } else if (step === 3) {
+      // zoom map center to see both markers
       if (mapRef.current) {
         const coordinates = [
           {
@@ -146,7 +142,7 @@ export default function BookingScreen({ navigation }) {
           },
         ];
         mapRef.current.fitToCoordinates(coordinates, {
-          edgePadding: { top: 200, right: 200, bottom: 200, left: 200 },
+          edgePadding: { top: 50, right: 50, bottom: 100, left: 50 },
           animated: true,
         });
       }
@@ -189,15 +185,15 @@ export default function BookingScreen({ navigation }) {
             dispatch({
               type: SET_BOOKING_DETAILS,
               payload: {
-                distance: ceilingKilometer(distance),
+                distance: ceilingKilometer(distance), // 1201m -> 1.3km
                 time: ceilingMinute(time),
-                price: calculatePrice(distance),
+                price: calculatePrice(Math.ceil(distance / 1000)), // convert m to km then ceiling, 1201 -> 2km
               },
             });
             console.log("🚀 ~ file: BookingScreen.js:192 ~ .then ~ distance:", {
               distance: ceilingKilometer(distance),
               time: ceilingMinute(time),
-              price: calculatePrice(distance),
+              price: calculatePrice(Math.ceil(distance / 1000)),
             });
 
             setRouting(

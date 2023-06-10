@@ -114,13 +114,12 @@ const LocationCardWithChange = ({
             </Text>
             <AutocompleteDropdown
               onFocus={() => {
-                setShowDropdown(true);
+                setShowDropdown((prev) => !prev);
                 setFocusInput(DESTINATION_INPUT);
               }}
               direction={Platform.select({ ios: "down" })}
               showChevron={false}
               dataSet={suggestionsList}
-              onBlur={() => setShowDropdown(false)}
               onSelectItem={(item) => {
                 originalResult.map((result) => {
                   if (result.place_id == item.id) {
