@@ -33,6 +33,7 @@ import {
 import {
   BACK_STEP,
   BookingContext,
+  SET_BOOKING_DETAILS,
   SET_DESTINATION_LOCATION,
   SET_INITIAL_LOCATION,
   SET_PICK_UP_LOCATION,
@@ -43,12 +44,13 @@ import { useContext } from "react";
 import { useState } from "react";
 import { useEffect } from "react";
 import { AutocompleteDropdownContextProvider } from "react-native-autocomplete-dropdown";
+import { ceilingKilometer, ceilingMinute } from "../../helper/converter";
 
 export const PICK_UP_INPUT = "PICK_UP_INPUT";
 export const DESTINATION_INPUT = "DESTINATION_INPUT";
 
 export default function BookingScreen({ navigation }) {
-  const { booking, dispatch } = useContext(BookingContext);
+  const { booking, dispatch, calculatePrice } = useContext(BookingContext);
   const [focusInput, setFocusInput] = useState(DESTINATION_INPUT);
   const mapRef = useRef(null);
   // sometimes name is unavailable in respond body so using address instead
@@ -177,6 +179,26 @@ export default function BookingScreen({ navigation }) {
         getRoutingFromCoordinates(booking.pickUpLocation, markerPosition)
           .then((routing) => {
             const { coordinates } = routing.geometry;
+            const { distance, time } = routing.properties;
+            console.log(
+              "🚀 ~ file: BookingScreen.js:183 ~ .then ~ distance, time:",
+              distance,
+              time
+            );
+
+            dispatch({
+              type: SET_BOOKING_DETAILS,
+              payload: {
+                distance: ceilingKilometer(distance),
+                time: ceilingMinute(time),
+                price: calculatePrice(distance),
+              },
+            });
+            console.log("🚀 ~ file: BookingScreen.js:192 ~ .then ~ distance:", {
+              distance: ceilingKilometer(distance),
+              time: ceilingMinute(time),
+              price: calculatePrice(distance),
+            });
 
             setRouting(
               coordinates[0].map(([longitude, latitude]) => ({
@@ -250,7 +272,7 @@ export default function BookingScreen({ navigation }) {
   };
   const handleStep6Submit = () => {
     // Do any necessary form validation or error checking here
-    createOrder();
+    //createOrder();
     dispatch({ type: SET_STEP, payload: 7 });
   };
 

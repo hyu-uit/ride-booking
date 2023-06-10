@@ -8,8 +8,8 @@ export const fetchCurrentUserLocation = async () => {
   }
 
   const location = await Location.getCurrentPositionAsync({
-    accuracy: Location.Accuracy.Highest,
-    maximumAge: 10000,
+    accuracy: Location.Accuracy.BestForNavigation,
+    timeInterval: 10000,
   });
   console.log(
     "🚀 ~ file: location.js:11 ~ fetchCurrentUserLocation ~ location:",

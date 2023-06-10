@@ -1,5 +1,4 @@
 import {
-  Box,
   Button,
   Center,
   Divider,
@@ -94,7 +93,7 @@ const LocationCardCost = ({ onClickContinue, onPressBack }) => {
                 alignSelf={"center"}
               />
               <Text fontSize={SIZES.h4} color={"white"} bold>
-                2km
+                {booking.bookingDetails.distance}km
               </Text>
             </HStack>
             <HStack space={3}>
@@ -106,13 +105,13 @@ const LocationCardCost = ({ onClickContinue, onPressBack }) => {
                 alignSelf={"center"}
               />
               <Text fontSize={SIZES.h4} color={"white"} bold>
-                5mins
+                {booking.bookingDetails.time}mins
               </Text>
             </HStack>
           </VStack>
           <VStack marginLeft={"auto"}>
             <Text fontSize={SIZES.h2} color={"white"} bold>
-              20,000đ
+              {booking.bookingDetails.price}đ
             </Text>
             <Text
               fontSize={SIZES.h5}
@@ -120,7 +119,7 @@ const LocationCardCost = ({ onClickContinue, onPressBack }) => {
               strikeThrough
               textAlign={"right"}
             >
-              20,000đ
+              {booking.bookingDetails.price}đ
             </Text>
           </VStack>
         </HStack>
