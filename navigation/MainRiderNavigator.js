@@ -8,11 +8,13 @@ import RiderScheduleScreen from "../screens/Rider/RiderSchedule";
 import { RiderHomeStackScreen } from "./RiderHomeNavigator";
 import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
 import { RiderScheduledStackScreen } from "./RiderScheduledNavigator";
+import { useTranslation } from "react-i18next";
 
 const MainRiderTab = createBottomTabNavigator();
 
 const MainRiderNavigator = ({ navigation }) => {
   const operator = Platform.OS === "ios" ? 90 : 60;
+  const { t } = useTranslation();
   return (
     <MainRiderTab.Navigator
       screenOptions={({ route }) => ({
@@ -48,7 +50,7 @@ const MainRiderNavigator = ({ navigation }) => {
             backgroundColor: COLORS.tertiary,
             height: operator,
           },
-          tabBarLabel: "Home",
+          tabBarLabel: t("home"),
         })}
       />
       <MainRiderTab.Screen
@@ -61,18 +63,18 @@ const MainRiderNavigator = ({ navigation }) => {
             backgroundColor: COLORS.tertiary,
             height: operator,
           },
-          tabBarLabel: "Scheduled",
+          tabBarLabel: t("scheduled"),
         })}
       />
       <MainRiderTab.Screen
         name="Income"
         component={IncomeScreen}
-        options={{ tabBarLabel: "Income" }}
+        options={{ tabBarLabel: t("income") }}
       />
       <MainRiderTab.Screen
         name="RiderProfile"
         component={RiderProfileScreen}
-        options={{ tabBarLabel: "Profile" }}
+        options={{ tabBarLabel: t("profile") }}
       />
     </MainRiderTab.Navigator>
   );

@@ -11,6 +11,8 @@ import {
   Divider,
   Switch,
   Avatar,
+  Icon,
+  Select,
 } from "native-base";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { SIZES, COLORS, FONTS } from "../../constants/theme";
@@ -23,6 +25,8 @@ import { doc, getDoc, updateDoc } from "@firebase/firestore";
 import { db, storage } from "../../config/config";
 import { getFromAsyncStorage } from "../../helper/asyncStorage";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
+import { useTranslation } from "react-i18next";
+import i18next from "i18next";
 
 // const RiderProfileScreen = ({ navigation }) => {
 //   return (
@@ -103,13 +107,25 @@ import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 //   );
 // };
 const RiderProfileScreen = ({ navigation, route }) => {
+  const { t } = useTranslation();
   const [profileImg, setProfileImg] = useState(null);
   const [phone, setPhone] = useState("");
+  const [language, setLanguage] = useState(i18next.language);
+  const [imgUri, setImgUri] = useState(null);
 
   const [users, setUsers] = useState({});
   useEffect(() => {
     fetchDataAndPhoneNumber();
-  }, [navigation]);
+    if (language === "vi") {
+      setImgUri(
+        "https://upload.wikimedia.org/wikipedia/commons/thumb/2/21/Flag_of_Vietnam.svg/2000px-Flag_of_Vietnam.svg.png"
+      );
+    } else {
+      setImgUri(
+        "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Flag_of_the_United_Kingdom_%281-2%29.svg/1200px-Flag_of_the_United_Kingdom_%281-2%29.svg.png"
+      );
+    }
+  }, []);
   const fetchDataAndPhoneNumber = async () => {
     try {
       let phoneNumberValue = await getFromAsyncStorage("phoneNumber");
@@ -227,53 +243,85 @@ const RiderProfileScreen = ({ navigation, route }) => {
 
             <VStack>
               <Text style={{ ...FONTS.h4, color: COLORS.fifthary }} mt={10}>
-                Full name
+                {t("fullName")}
               </Text>
               <Text style={{ ...FONTS.h3, color: COLORS.white }} mt={2}>
                 {users.displayName}
               </Text>
               <Text style={{ ...FONTS.h4, color: COLORS.fifthary }} mt={10}>
-                Transport type
+                {t("inputType")}
               </Text>
               <Text style={{ ...FONTS.h3, color: COLORS.white }} mt={2}>
                 {users.transportType}
               </Text>
               <Text style={{ ...FONTS.h4, color: COLORS.fifthary }} mt={10}>
-                License plates
+                {t("inputLicense")}
               </Text>
               <Text style={{ ...FONTS.h3, color: COLORS.white }} mt={2}>
                 {users.licensePlates}
               </Text>
               <Text style={{ ...FONTS.h4, color: COLORS.fifthary }} mt={10}>
-                Birthday
+                {t("birthday")}
               </Text>
               <Text style={{ ...FONTS.h3, color: COLORS.white }} mt={2}>
                 {users.birthday}
               </Text>
               <Text style={{ ...FONTS.h4, color: COLORS.fifthary }} mt={10}>
-                Student ID
+                {t("id")}
               </Text>
               <Text style={{ ...FONTS.h3, color: COLORS.white }} mt={2}>
                 {users.studentID}
               </Text>
               <Text style={{ ...FONTS.h4, color: COLORS.fifthary }} mt={10}>
-                School
+                {t("school")}
               </Text>
               <Text style={{ ...FONTS.h3, color: COLORS.white }} mt={2}>
                 {users.school}
               </Text>
               <Text style={{ ...FONTS.h4, color: COLORS.fifthary }} mt={10}>
-                Phone number
+                {t("phone")}
               </Text>
               <Text style={{ ...FONTS.h3, color: COLORS.white }} mt={2}>
                 {phone}
               </Text>
               <Text style={{ ...FONTS.h4, color: COLORS.fifthary }} mt={10}>
-                Email Address
+                {t("email")}
               </Text>
               <Text style={{ ...FONTS.h3, color: COLORS.white }} mt={2}>
                 {users.email}
               </Text>
+              <Text style={{ ...FONTS.h4, color: COLORS.fifthary }} mt={10}>
+                {t("language")}
+              </Text>
+              <HStack alignItems={"center"} mt={2}>
+                <Image
+                  source={{
+                    uri: imgUri,
+                  }}
+                  alt="hi"
+                  w={8}
+                  h={5}
+                />
+                <Select
+                  alignSelf={"flex-end"}
+                  w={"150px"}
+                  h={"50px"}
+                  borderColor={"transparent"}
+                  style={{ ...FONTS.body3 }}
+                  color={COLORS.white}
+                  onValueChange={(itemValue) => {
+                    setLanguage(itemValue);
+                    i18next.changeLanguage(itemValue);
+                  }}
+                  selectedValue={language}
+                  _selectedItem={{
+                    bg: COLORS.fifthary,
+                  }}
+                >
+                  <Select.Item label={t("en")} value="en" />
+                  <Select.Item label={t("vi")} value="vi" />
+                </Select>
+              </HStack>
             </VStack>
 
             <Button

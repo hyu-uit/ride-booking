@@ -4,10 +4,12 @@ import { TouchableOpacity } from "react-native";
 import { SIZES, COLORS, FONTS } from "../constants/theme";
 import pricePromotionIcon from "../assets/price-promotion.png";
 import arrowWhite from "../assets/arrow-white.png";
+import { useTranslation } from "react-i18next";
 
 function PromotionCard(props) {
   let { idPromotion, name, value, expiryDate, description } = props.promotion;
   const { onPress, navigate } = props;
+  const { t } = useTranslation();
 
   return (
     <TouchableOpacity onPress={onPress}>
@@ -106,7 +108,7 @@ function PromotionCard(props) {
                     marginLeft: 10,
                   }}
                 >
-                  {value}
+                  {Number(value).toLocaleString()}đ
                 </Text>
               </View>
               <View
@@ -140,7 +142,7 @@ function PromotionCard(props) {
                       marginLeft: 7,
                     }}
                   >
-                    Detail
+                    {t("detail")}
                   </Text>
                   <Image
                     alt="arrow white"

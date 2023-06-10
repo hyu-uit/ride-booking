@@ -5,6 +5,7 @@ import { COLORS, FONTS } from "../../constants/theme";
 import locationLineIcon from "../../assets/location-line-full.png";
 import { doc, getDoc } from "@firebase/firestore";
 import { db } from "../../config/config";
+import { useTranslation } from "react-i18next";
 
 function HistoryPickUpCard(props, navigation) {
   let {
@@ -25,6 +26,7 @@ function HistoryPickUpCard(props, navigation) {
 
   const [name, setName] = useState("");
   const { onPress } = props;
+  const { t } = useTranslation();
   useEffect(() => {
     getNameCustomer();
   }, []);
@@ -72,12 +74,12 @@ function HistoryPickUpCard(props, navigation) {
               {totalPrice}
             </Text>
           </HStack>
-          <Text
+          {/* <Text
             paddingLeft={26}
             style={{ color: COLORS.lightGrey, ...FONTS.body6 }}
           >
             {idTrip}
-          </Text>
+          </Text> */}
           <Text paddingLeft={26} style={styles.detailText}>
             {datePickUp}, {timePickUp}
           </Text>
@@ -88,14 +90,13 @@ function HistoryPickUpCard(props, navigation) {
                 <VStack>
                   <Text style={styles.detailText}>KTX Khu B</Text>
                   <Text numberOfLines={1} style={styles.titleText}>
-                    Pickup - KTX Khu B ĐHQG, Đông Hòa, Dĩ An, Bình Dương
+                    KTX Khu B ĐHQG, Đông Hòa, Dĩ An, Bình Dương
                   </Text>
                 </VStack>
                 <VStack>
                   <Text style={styles.detailText}>UIT</Text>
                   <Text numberOfLines={1} style={styles.titleText}>
-                    Destination - Trường Đại học Công nghệ Thông tin - ĐHQG
-                    TPHCN...
+                    Trường Đại học Công nghệ Thông tin - ĐHQG TPHCN...
                   </Text>
                 </VStack>
               </VStack>

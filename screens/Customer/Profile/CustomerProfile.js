@@ -23,10 +23,12 @@ import { doc, getDoc, updateDoc } from "@firebase/firestore";
 import { db, storage } from "../../../config/config";
 import { getFromAsyncStorage } from "../../../helper/asyncStorage";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
+import { useTranslation } from "react-i18next";
 
 const CustomerProfile = ({ navigation, route }) => {
   const [profileImg, setProfileImg] = useState(null);
   const [phone, setPhone] = useState("");
+  const { t } = useTranslation();
 
   const [users, setUsers] = useState({});
   useEffect(() => {
@@ -127,7 +129,9 @@ const CustomerProfile = ({ navigation, route }) => {
         <VStack paddingX={"10px"} h={"100%"}>
           <HStack justifyContent={"center"}>
             <View style={{ position: "absolute", left: 0 }}></View>
-            <Text style={{ ...FONTS.h2, color: COLORS.white }}>Profile</Text>
+            <Text style={{ ...FONTS.h2, color: COLORS.white }}>
+              {t("profile")}
+            </Text>
           </HStack>
 
           <ScrollView showsVerticalScrollIndicator={false}>
@@ -152,37 +156,37 @@ const CustomerProfile = ({ navigation, route }) => {
 
             <VStack>
               <Text style={{ ...FONTS.h4, color: COLORS.fifthary }} mt={10}>
-                Full name
+                {t("fullName")}
               </Text>
               <Text style={{ ...FONTS.h3, color: COLORS.white }} mt={2}>
                 {users.displayName}
               </Text>
               <Text style={{ ...FONTS.h4, color: COLORS.fifthary }} mt={10}>
-                Birthday
+                {t("birthday")}
               </Text>
               <Text style={{ ...FONTS.h3, color: COLORS.white }} mt={2}>
                 {users.birthday}
               </Text>
               <Text style={{ ...FONTS.h4, color: COLORS.fifthary }} mt={10}>
-                Student ID
+                {t("id")}
               </Text>
               <Text style={{ ...FONTS.h3, color: COLORS.white }} mt={2}>
                 {users.studentID}
               </Text>
               <Text style={{ ...FONTS.h4, color: COLORS.fifthary }} mt={10}>
-                School
+                {t("school")}
               </Text>
               <Text style={{ ...FONTS.h3, color: COLORS.white }} mt={2}>
                 {users.school}
               </Text>
               <Text style={{ ...FONTS.h4, color: COLORS.fifthary }} mt={10}>
-                Phone number
+                {t("phone")}
               </Text>
               <Text style={{ ...FONTS.h3, color: COLORS.white }} mt={2}>
                 {phone}
               </Text>
               <Text style={{ ...FONTS.h4, color: COLORS.fifthary }} mt={10}>
-                Email Address
+                {t("address")}
               </Text>
               <Text style={{ ...FONTS.h3, color: COLORS.white }} mt={2}>
                 {users.email}
@@ -201,7 +205,7 @@ const CustomerProfile = ({ navigation, route }) => {
               }}
             >
               <Text style={{ ...FONTS.h2 }} color={COLORS.white}>
-                Log out
+                {t("logout")}
               </Text>
             </Button>
           </ScrollView>

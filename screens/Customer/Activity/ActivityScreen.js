@@ -21,22 +21,25 @@ import BookingCard from "../../../components/BookingCard/BookingCard";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../../../config/config";
 import { getFromAsyncStorage } from "../../../helper/asyncStorage";
+import { useTranslation } from "react-i18next";
 
 const ActivityScreen = ({ navigation }) => {
+  const { t } = useTranslation();
+
   const [service, setService] = useState(0);
   const [waitingTrips, setWaitingTrips] = useState({});
   const [confirmedTrips, setConfirmedTrips] = useState({});
   const [canceledTrips, setCanceledTrips] = useState({});
   const [phoneNumber, setPhone] = useState(null);
-  const [imgUri, setImgUri] = useState(null);
+  const [bikeUri, setBikeUri] = useState(
+    "https://res.cloudinary.com/dtutrxnyl/image/upload/v1686364990/bikeWhite_vqyjm3.png"
+  );
+  const [deliveryUri, setDeliveryUri] = useState(
+    "https://res.cloudinary.com/dtutrxnyl/image/upload/v1686364992/deliveryBlue_ztlpxb.png"
+  );
 
   useEffect(() => {
     fetchDataAndPhoneNumber();
-    if (service === 0) {
-      setImgUri("https://cdn-icons-png.flaticon.com/512/7695/7695161.png");
-    } else {
-      setImgUri("https://cdn-icons-png.flaticon.com/512/9134/9134661.png");
-    }
   }, []);
 
   const fetchDataAndPhoneNumber = async () => {
@@ -229,9 +232,9 @@ const ActivityScreen = ({ navigation }) => {
 
   const [index, setIndex] = React.useState(0);
   const [routes] = React.useState([
-    { key: "first", title: "Booking" },
-    { key: "second", title: "Booked" },
-    { key: "third", title: "Canceled" },
+    { key: "first", title: t("booking") },
+    { key: "second", title: t("booked") },
+    { key: "third", title: t("canceled") },
   ]);
 
   return (
@@ -246,13 +249,27 @@ const ActivityScreen = ({ navigation }) => {
               bgColor={service === 0 ? COLORS.primary : COLORS.tertiary}
               onPress={() => {
                 setService(0);
+                setBikeUri(
+                  "https://res.cloudinary.com/dtutrxnyl/image/upload/v1686364990/bikeWhite_vqyjm3.png"
+                );
+                setDeliveryUri(
+                  "https://res.cloudinary.com/dtutrxnyl/image/upload/v1686364992/deliveryBlue_ztlpxb.png"
+                );
               }}
             >
               {/* <Image
                 src={require("../../../assets/images/Activity/ic_bike.png`")}
               /> */}
               <HStack justifyContent={"center"} alignItems={"center"}>
-                {service === 0 ? (
+                <Image
+                  source={{ uri: bikeUri }}
+                  w={"50%"}
+                  h={"120%"}
+                  resizeMode="contain"
+                  alt="Icon bike"
+                  // Other props here
+                />
+                {/* {service === 0 ? (
                   <>
                     <Image
                       source={IC_Bike_White}
@@ -268,7 +285,7 @@ const ActivityScreen = ({ navigation }) => {
                       // Other props here
                     />
                   </>
-                )}
+                )} */}
 
                 <Text
                   style={{
@@ -287,13 +304,19 @@ const ActivityScreen = ({ navigation }) => {
               bgColor={service === 1 ? COLORS.primary : COLORS.tertiary}
               onPress={() => {
                 setService(1);
+                setBikeUri(
+                  "https://res.cloudinary.com/dtutrxnyl/image/upload/v1686364990/bikeBlue_sqih2p.png"
+                );
+                setDeliveryUri(
+                  "https://res.cloudinary.com/dtutrxnyl/image/upload/v1686364990/deliveryWhite_flxx91.png"
+                );
               }}
             >
               {/* <Image
                 src={require("../../../assets/images/Activity/ic_bike.png`")}
               /> */}
               <HStack justifyContent={"center"} alignItems={"center"}>
-                {service === 1 ? (
+                {/* {service === 1 ? (
                   <>
                     <Image
                       source={require("../../../assets/images/Activity/ic_send_white.png")}
@@ -309,7 +332,15 @@ const ActivityScreen = ({ navigation }) => {
                       // Other props here
                     />
                   </>
-                )}
+                )} */}
+                <Image
+                  source={{ uri: deliveryUri }}
+                  w={"50%"}
+                  h={"150%"}
+                  resizeMode="contain"
+                  alt="Icon bike"
+                  // Other props here
+                />
                 <Text
                   style={{
                     ...FONTS.h2,

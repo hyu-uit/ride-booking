@@ -47,6 +47,12 @@ export default function Home({ navigation, route }) {
   const [name, SetName] = useState(null);
   const [avt, SetAvatar] = useState(null);
   const { t } = useTranslation();
+  const [bikeUri, setBikeUri] = useState(
+    "https://res.cloudinary.com/dtutrxnyl/image/upload/v1686364990/bikeWhite_vqyjm3.png"
+  );
+  const [deliveryUri, setDeliveryUri] = useState(
+    "https://res.cloudinary.com/dtutrxnyl/image/upload/v1686364992/deliveryBlue_ztlpxb.png"
+  );
 
   let backButtonPressedOnce = false;
 
@@ -74,7 +80,7 @@ export default function Home({ navigation, route }) {
 
   useEffect(() => {
     fetchDataAndPhoneNumber();
-  }, [navigation]);
+  }, []);
 
   const fetchDataAndPhoneNumber = async () => {
     try {
@@ -208,7 +214,13 @@ export default function Home({ navigation, route }) {
                     bgColor={COLORS.fourthary}
                     borderTopRadius={SIZES.radius10}
                   >
-                    <Image source={BikeImg} alt="bike" />
+                    <Image
+                      source={{ uri: bikeUri }}
+                      w={"100%"}
+                      h={"80%"}
+                      resizeMode="contain"
+                      alt="bike"
+                    />
                   </Center>
                   <Center h={50}>
                     <Text fontSize={SIZES.h4} bold color={"white"}>
@@ -233,7 +245,13 @@ export default function Home({ navigation, route }) {
                     bgColor={COLORS.white}
                     borderTopRadius={SIZES.radius10}
                   >
-                    <Image source={DeliveryImg} alt="delivery" />
+                    <Image
+                      source={{ uri: deliveryUri }}
+                      w={"100%"}
+                      h={"100%"}
+                      resizeMode="contain"
+                      alt="delivery"
+                    />
                   </Center>
                   <Center h={50}>
                     <Text fontSize={SIZES.h4} bold color={"white"}>

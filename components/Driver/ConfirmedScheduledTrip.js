@@ -4,6 +4,7 @@ import { TouchableOpacity, StyleSheet } from "react-native";
 import { COLORS, FONTS } from "../../constants/theme";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../../config/config";
+import { useTranslation } from "react-i18next";
 
 function ConfirmedScheduledTrip(props) {
   let {
@@ -44,6 +45,8 @@ function ConfirmedScheduledTrip(props) {
     });
   };
 
+  const { t } = useTranslation();
+
   return (
     <View
       h={140}
@@ -69,15 +72,6 @@ function ConfirmedScheduledTrip(props) {
               >
                 {name}
               </Text>
-              <Text
-                color={COLORS.lightGrey}
-                style={{
-                  ...FONTS.body6,
-                  marginLeft: 5,
-                }}
-              >
-                {idTrip}
-              </Text>
             </HStack>
             <View>
               <Text
@@ -93,17 +87,17 @@ function ConfirmedScheduledTrip(props) {
           </HStack>
           <HStack space={10}>
             <VStack>
-              <Text style={styles.titleText}>Pick-up</Text>
+              <Text style={styles.titleText}>{t("pickUp")}</Text>
               <Text style={styles.detailText}>KTX Khu B</Text>
             </VStack>
             <VStack>
-              <Text style={styles.titleText}>Destination</Text>
+              <Text style={styles.titleText}>{t("des")}</Text>
               <Text style={styles.detailText}>UIT</Text>
             </VStack>
           </HStack>
           <HStack>
             <VStack>
-              <Text style={styles.titleText}>Time</Text>
+              <Text style={styles.titleText}>{t("time")}</Text>
               <Text style={styles.detailText}>
                 {timePickUp}, {datePickUp}
               </Text>
@@ -132,7 +126,7 @@ function ConfirmedScheduledTrip(props) {
                     }}
                   >
                     <Text bold color={COLORS.red} styles={{ ...FONTS.h5 }}>
-                      Cancel
+                      {t("cancel")}
                     </Text>
                   </TouchableOpacity>
                 </View>

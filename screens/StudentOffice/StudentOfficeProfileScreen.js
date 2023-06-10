@@ -5,6 +5,7 @@ import {
   Image,
   NativeBaseProvider,
   ScrollView,
+  Select,
   Text,
   VStack,
   View,
@@ -18,6 +19,7 @@ import { getFromAsyncStorage } from "../../helper/asyncStorage";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../../config/config";
 import { useTranslation } from "react-i18next";
+import i18next from "i18next";
 
 const StudentOfficeProfileScreen = ({ navigation }) => {
   const [phoneNumber, setPhoneNumber] = useState(null);
@@ -25,8 +27,19 @@ const StudentOfficeProfileScreen = ({ navigation }) => {
   const [address, setAddress] = useState(null);
   const [logo, setLogo] = useState(null);
   const { t } = useTranslation();
+  const [language, setLanguage] = useState(i18next.language);
+  const [imgUri, setImgUri] = useState(null);
 
   useEffect(() => {
+    if (language === "vi") {
+      setImgUri(
+        "https://upload.wikimedia.org/wikipedia/commons/thumb/2/21/Flag_of_Vietnam.svg/2000px-Flag_of_Vietnam.svg.png"
+      );
+    } else {
+      setImgUri(
+        "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Flag_of_the_United_Kingdom_%281-2%29.svg/1200px-Flag_of_the_United_Kingdom_%281-2%29.svg.png"
+      );
+    }
     fetchDataAndPhoneNumber();
   });
   const fetchDataAndPhoneNumber = async () => {
@@ -89,6 +102,38 @@ const StudentOfficeProfileScreen = ({ navigation }) => {
             <Text style={{ ...FONTS.h4, color: COLORS.white }} mt={2}>
               {address}
             </Text>
+            <Text style={{ ...FONTS.h4, color: COLORS.fifthary }} mt={10}>
+              {t("language")}
+            </Text>
+            <HStack alignItems={"center"} mt={2}>
+              <Image
+                source={{
+                  uri: imgUri,
+                }}
+                alt="hi"
+                w={8}
+                h={5}
+              />
+              <Select
+                alignSelf={"flex-end"}
+                w={"150px"}
+                h={"50px"}
+                borderColor={"transparent"}
+                style={{ ...FONTS.body3 }}
+                color={COLORS.white}
+                onValueChange={(itemValue) => {
+                  setLanguage(itemValue);
+                  i18next.changeLanguage(itemValue);
+                }}
+                selectedValue={language}
+                _selectedItem={{
+                  bg: COLORS.fifthary,
+                }}
+              >
+                <Select.Item label={t("en")} value="en" />
+                <Select.Item label={t("vi")} value="vi" />
+              </Select>
+            </HStack>
           </VStack>
 
           <Button

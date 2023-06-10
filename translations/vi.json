@@ -115,7 +115,7 @@
   "time": "Thời gian",
 
   "detail": "Chi tiết",
-  "orderID": "Mã vận đơn",
+  "orderID": "Mã",
   "riderInfo": "Thông tin tài xế",
   "price": "Giá",
   "minutes": "phút",
@@ -144,5 +144,24 @@
 
   "scheduled": "Đã lên lịch",
   "light": "Sáng",
-  "dark": "Tối"
+  "dark": "Tối",
+
+  "waiting": "Đang tìm tài xế...",
+
+  "booking": "Đang đặt",
+  "booked": "Hoàn thành",
+  "terms": "Điều kiện sử dụng",
+  "bookNow": "Đặt ngay",
+
+  "available": "Có sẵn",
+  "finished": "Hoàn thành",
+  "income": "Doanh thu",
+
+  "day": "NGÀY",
+  "week": "TUẦN",
+  "month": "THÁNG",
+  "selectDay": "Chọn ngày",
+  "yourIncome": "Tổng doanh thu của bạn là",
+
+  "language": "Ngôn ngữ"
 }

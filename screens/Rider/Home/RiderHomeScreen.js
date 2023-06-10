@@ -39,6 +39,7 @@ import {
 } from "../../../helper/asyncStorage";
 import { BackHandler, Switch, ToastAndroid } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
+import { useTranslation } from "react-i18next";
 
 const RiderHomeScreen = ({ navigation, route }) => {
   const [service, setService] = useState(0);
@@ -55,6 +56,7 @@ const RiderHomeScreen = ({ navigation, route }) => {
   const [canceledTrips, setCanceledTrips] = useState([]);
   const [phoneNumber, setPhoneNumber] = useState([]);
   const currentDate = moment().format("D/M/YYYY");
+  const { t } = useTranslation();
 
   let backButtonPressedOnce = false;
 
@@ -298,9 +300,9 @@ const RiderHomeScreen = ({ navigation, route }) => {
 
   const [index, setIndex] = React.useState(0);
   const [routes] = React.useState([
-    { key: "first", title: "Available" },
-    { key: "second", title: "Finished" },
-    { key: "third", title: "Canceled" },
+    { key: "first", title: t("available") },
+    { key: "second", title: t("finished") },
+    { key: "third", title: t("canceled") },
   ]);
 
   return (

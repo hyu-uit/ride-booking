@@ -16,6 +16,7 @@ import { useState } from "react";
 import { useEffect } from "react";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../../config/config";
+import { useTranslation } from "react-i18next";
 
 function PopUpRequestCard(props) {
   //const {trip} = props
@@ -36,6 +37,7 @@ function PopUpRequestCard(props) {
   const [name, setName] = useState("");
   const [state, setState] = useState(0);
   const { navigation } = props;
+  const { t } = useTranslation();
 
   if (idTrip !== undefined) {
     getDoc(doc(db, "ListTrip", idTrip)).then((tripData) => {
@@ -88,9 +90,9 @@ function PopUpRequestCard(props) {
 
   const getButtonTextAccept = () => {
     if (state === 0) {
-      return "Accept";
+      return t("accept");
     } else if (state === 1) {
-      return "Done";
+      return t("finished");
     } else {
       setStatusComplete();
       completeTrip();
@@ -99,9 +101,9 @@ function PopUpRequestCard(props) {
 
   const getButtonTextReject = () => {
     if (state === 0) {
-      return "Reject";
+      return t("reject");
     } else if (state === 1) {
-      return "Cancel";
+      return t("cancel");
     } else {
       completeTrip();
     }
@@ -159,9 +161,6 @@ function PopUpRequestCard(props) {
         </Text>
         <HStack>
           <Text style={styles.detailText}>{distance}</Text>
-          <Text style={styles.detailTextNotBold}> - You’re </Text>
-          <Text style={styles.detailText}>0h 15m</Text>
-          <Text style={styles.detailTextNotBold}> away</Text>
         </HStack>
       </VStack>
       <View

@@ -145,5 +145,23 @@
 
   "scheduled": "Scheduled",
   "light": "Light",
-  "dark": "Dark"
+  "dark": "Dark",
+
+  "waiting": "Wating for rider...",
+  "booking": "Booking",
+  "booked": "Booked",
+
+  "terms": "Terms and Conditions",
+  "bookNow": "Book now",
+
+  "available": "Available",
+  "finished": "Finished",
+  "income": "Income",
+  "day": "DAY",
+  "week": "WEEK",
+  "month": "MONTH",
+  "selectDay": "Select date",
+  "yourIncome": "Your total income is",
+
+  "language": "Language"
 }

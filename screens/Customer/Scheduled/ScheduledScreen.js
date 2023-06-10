@@ -21,7 +21,14 @@ import IC_Bike_Blue from "../../../assets/images/Activity/ic_bike_blue.png";
 import HistoryCard from "../../../components/HistoryCard";
 import { useEffect } from "react";
 import { getFromAsyncStorage } from "../../../helper/asyncStorage";
-import { collection, doc, getDoc, getDocs, query, where } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  query,
+  where,
+} from "firebase/firestore";
 import { db } from "../../../config/config";
 import BookingCard from "../../../components/BookingCard/BookingCard";
 
@@ -32,7 +39,7 @@ const ScheduledScreen = ({ navigation }) => {
   const [confirmedTrips, setConfirmedTrips] = useState({});
   const [canceledTrips, setCanceledTrips] = useState({});
   useEffect(() => {
-    fetchDataAndPhoneNumber()    
+    fetchDataAndPhoneNumber();
   }, [navigation]);
 
   const fetchDataAndPhoneNumber = async () => {
@@ -50,13 +57,16 @@ const ScheduledScreen = ({ navigation }) => {
     }
   };
 
-  const getWaitingTrips = async(phoneNumber) => {
+  const getWaitingTrips = async (phoneNumber) => {
     let waitingTrips = [];
     getDocs(
       query(collection(db, "ListTrip"), where("isScheduled", "==", "true"))
     ).then((docSnap) => {
       docSnap.forEach((doc) => {
-        if (doc.data().status == "waiting"&&doc.data().idCustomer==phoneNumber) {
+        if (
+          doc.data().status == "waiting" &&
+          doc.data().idCustomer == phoneNumber
+        ) {
           waitingTrips.push({
             idCustomer: doc.data().idCustomer,
             idTrip: doc.id,
@@ -77,13 +87,16 @@ const ScheduledScreen = ({ navigation }) => {
       setWaitingTrips(waitingTrips);
     });
   };
-  const getConfirmedTrips = async(phoneNumber)  => {
+  const getConfirmedTrips = async (phoneNumber) => {
     let confirmedTrips = [];
     getDocs(
       query(collection(db, "ListTrip"), where("isScheduled", "==", "true"))
     ).then((docSnap) => {
       docSnap.forEach((doc) => {
-        if (doc.data().status == "confirmed"&&doc.data().idCustomer==phoneNumber) {
+        if (
+          doc.data().status == "confirmed" &&
+          doc.data().idCustomer == phoneNumber
+        ) {
           confirmedTrips.push({
             idCustomer: doc.data().idCustomer,
             idTrip: doc.id,
@@ -104,13 +117,16 @@ const ScheduledScreen = ({ navigation }) => {
       setConfirmedTrips(confirmedTrips);
     });
   };
-  const getCanceledTrips = async(phoneNumber) => {
+  const getCanceledTrips = async (phoneNumber) => {
     let canceledTrips = [];
     getDocs(
       query(collection(db, "ListTrip"), where("isScheduled", "==", "true"))
     ).then((docSnap) => {
       docSnap.forEach((doc) => {
-        if (doc.data().status == "canceled"&&doc.data().idCustomer==phoneNumber) {
+        if (
+          doc.data().status == "canceled" &&
+          doc.data().idCustomer == phoneNumber
+        ) {
           canceledTrips.push({
             idCustomer: doc.data().idCustomer,
             idTrip: doc.id,

@@ -17,10 +17,12 @@ import { doc, getDoc } from "firebase/firestore";
 import { db } from "../../../config/config";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Dimensions } from "react-native";
+import { useTranslation } from "react-i18next";
 
 const PromotionDetailScreen = ({ navigation, route }) => {
   const { idPromotion } = route.params;
   const [promotion, setPromotion] = useState({});
+  const { t } = useTranslation();
   useEffect(() => {
     getPromotion();
   }, []);
@@ -63,7 +65,7 @@ const PromotionDetailScreen = ({ navigation, route }) => {
             Discount {promotion.value} for a ride
           </Text>
           <Text style={{ ...FONTS.h4, color: COLORS.fifthary }} mt={5}>
-            Terms and Conditions
+            {t("terms")}
           </Text>
           <Text style={{ ...FONTS.body4, color: COLORS.white }} mt={1}>
             {/* - This promotion is applied for ride service.{"\n"}- This promotion
@@ -90,7 +92,7 @@ const PromotionDetailScreen = ({ navigation, route }) => {
             }}
           >
             <Text style={{ ...FONTS.h2 }} color={COLORS.white}>
-              Book now
+              {t("bookNow")}
             </Text>
           </Button>
         </VStack>
