@@ -18,6 +18,7 @@ import { db } from "../../../config/config";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Dimensions } from "react-native";
 import { useTranslation } from "react-i18next";
+import { Platform } from "react-native";
 
 const PromotionDetailScreen = ({ navigation, route }) => {
   const { idPromotion } = route.params;
@@ -48,7 +49,11 @@ const PromotionDetailScreen = ({ navigation, route }) => {
   const contentHeight = Dimensions.get("window").height;
 
   return (
-    <VStack h={contentHeight} paddingY={"20px"} bgColor={COLORS.background}>
+    <VStack
+      h={Platform.OS === "ios" ? contentHeight : "100%"}
+      paddingY={"20px"}
+      bgColor={COLORS.background}
+    >
       <SafeAreaView>
         <VStack paddingX={"10px"} h={"100%"}>
           <ButtonBack

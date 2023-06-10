@@ -36,7 +36,7 @@ function StudentReportCard(props) {
     studentID,
     portrait,
     status,
-  } = props.listUser;
+  } = props.list;
   const { onPress } = props;
 
   const [locked, setLocked] = useState();
@@ -185,7 +185,7 @@ function StudentReportCard(props) {
               {/* <Image source={CarImg} alt="car" marginLeft={"auto"} /> */}
             </HStack>
           </VStack>
-          <VStack alignItems={"flex-end"} flex>
+          <VStack>
             {/* {locked === 0 ? (
               <>
                 <Button
@@ -219,41 +219,6 @@ function StudentReportCard(props) {
                 </Button>
               </>
             )} */}
-            {status !== "locked" ? (
-              <>
-                <Button
-                  w={"70%"}
-                  variant={"solid"}
-                  borderRadius={20}
-                  style={{ backgroundColor: COLORS.red }}
-                  mr={2}
-                  borderColor={COLORS.primary}
-                  onPress={lockAccount}
-                  mt={10}
-                >
-                  <Text style={{ ...FONTS.h6 }} color={COLORS.white}>
-                    Lock
-                  </Text>
-                </Button>
-              </>
-            ) : (
-              <>
-                <Button
-                  w={"70%"}
-                  variant={"solid"}
-                  borderRadius={20}
-                  style={{ backgroundColor: COLORS.primary }}
-                  mr={2}
-                  borderColor={COLORS.primary}
-                  onPress={unlockAccount}
-                  mt={10}
-                >
-                  <Text style={{ ...FONTS.h6 }} color={COLORS.white}>
-                    Unlock
-                  </Text>
-                </Button>
-              </>
-            )}
           </VStack>
         </HStack>
       </TouchableOpacity>

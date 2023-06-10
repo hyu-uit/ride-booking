@@ -19,7 +19,7 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { useEffect } from "react";
-import { Dimensions } from "react-native";
+import { Dimensions, Platform } from "react-native";
 import { useTranslation } from "react-i18next";
 import i18next from "i18next";
 
@@ -42,7 +42,11 @@ const MenuScreen = ({ navigation }) => {
   });
 
   return (
-    <VStack h={contentHeight} paddingY={"20px"} bgColor={COLORS.background}>
+    <VStack
+      h={Platform.OS === "ios" ? contentHeight : "100%"}
+      paddingY={"20px"}
+      bgColor={COLORS.background}
+    >
       <SafeAreaView>
         <VStack paddingX={"10px"} h={"100%"}>
           <HStack justifyContent={"center"} mb={"20px"}>

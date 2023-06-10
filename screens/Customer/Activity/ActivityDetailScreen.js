@@ -20,6 +20,7 @@ import { useEffect } from "react";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../../../config/config";
 import { useTranslation } from "react-i18next";
+import { Platform } from "react-native";
 
 const ActivityDetailScreen = ({ navigation, route }) => {
   const { idTrip } = route.params;
@@ -67,7 +68,7 @@ const ActivityDetailScreen = ({ navigation, route }) => {
   return (
     <NativeBaseProvider>
       <VStack
-        h={contentHeight}
+        h={Platform.OS === "ios" ? contentHeight : "100%"}
         paddingY={"20px"}
         bgColor={COLORS.background}
         paddingX={"10px"}

@@ -106,9 +106,7 @@ const getTabBarVisibility = (route) => {
 };
 
 const getTabbarActivity = (route) => {
-  console.log(route.name);
   const routeName = getFocusedRouteNameFromRoute(route) ?? "Feed";
-  console.log(routeName);
   if (routeName === "ActivityDetail") {
     return "none";
   }

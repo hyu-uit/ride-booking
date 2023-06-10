@@ -48,13 +48,15 @@ function HistoryPickUpCard(props, navigation) {
     >
       <TouchableOpacity onPress={onPress}>
         <VStack space={1} paddingRight={26}>
-          <HStack
+          <Text
+            mt={2}
+            mb={2}
             paddingLeft={26}
-            space={12}
-            marginTop={4}
-            f
-            alignItems={"center"}
+            style={{ color: COLORS.lightGrey, ...FONTS.body6 }}
           >
+            {idTrip}
+          </Text>
+          <HStack paddingLeft={26} space={12} f alignItems={"center"}>
             <Text
               color={COLORS.white}
               style={{
@@ -74,15 +76,9 @@ function HistoryPickUpCard(props, navigation) {
               {totalPrice}
             </Text>
           </HStack>
-          {/* <Text
-            paddingLeft={26}
-            style={{ color: COLORS.lightGrey, ...FONTS.body6 }}
-          >
-            {idTrip}
-          </Text> */}
-          <Text paddingLeft={26} style={styles.detailText}>
+          {/* <Text paddingLeft={26} style={styles.detailText}>
             {datePickUp}, {timePickUp}
-          </Text>
+          </Text> */}
           <VStack marginTop={2} paddingRight={26}>
             <HStack alignItems={"center"}>
               <Image alt="location line" source={locationLineIcon}></Image>

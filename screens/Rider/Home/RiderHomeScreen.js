@@ -133,14 +133,10 @@ const RiderHomeScreen = ({ navigation, route }) => {
   const getWaitingTrips = () => {
     let waitingTrips = [];
     getDocs(
-      query(
-        collection(db, "ListTrip"),
-        where("isScheduled", "==", "false"),
-        where("date", "==", currentDate)
-      )
+      query(collection(db, "ListTrip"), where("isScheduled", "==", "false"))
     ).then((docSnap) => {
       docSnap.forEach((doc) => {
-        if (doc.data().status == "waiting") {
+        if (doc.data().status == "waiting" && doc.data().idRider === "") {
           waitingTrips.push({
             idCustomer: doc.data().idCustomer,
             idTrip: doc.id,

@@ -15,7 +15,7 @@ import {
 } from "native-base";
 import { SafeAreaView } from "react-native-safe-area-context";
 import MapView from "react-native-maps";
-import { Keyboard, TouchableWithoutFeedback } from "react-native";
+import { Keyboard, Platform, TouchableWithoutFeedback } from "react-native";
 import LocationCardWithChange from "../../components/LocationCard/LocationCardWithChange";
 import SelectedButton from "../../components/Button/SelectedButton";
 import LocationCardTime from "../../components/LocationCard/LocationCard.Time";
@@ -308,7 +308,7 @@ export default function BookingScreen({ navigation, route }) {
 
 const BookingContainer = styled(SafeAreaView)`
   width: 100%;
-  height: ${contentHeight};
+  height: ${Platform.OS === "ios" ? contentHeight : "100%"};
   background-color: ${(props) => props.bgColor};
   display: flex;
   padding: 0;

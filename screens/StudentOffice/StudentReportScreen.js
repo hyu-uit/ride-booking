@@ -49,33 +49,28 @@ const StudentReportScreen = ({ navigation }) => {
   }, []);
   const fetchDataAndPhoneNumber = async () => {
     try {
-      const phoneNumberValue = "";
-      getFromAsyncStorage("phoneNumber")
-        .then((value) => (phoneNumberValue = value))
-        .catch((err) => console.log(err));
+      const phoneNumberValue = await getFromAsyncStorage("phoneNumber");
       setPhoneNumber(phoneNumberValue);
       if (phoneNumberValue) {
         const docData = await getDoc(
           doc(db, "StudentOffice", phoneNumberValue)
         );
-        getUsersRider();
-        getUsersCustomer();
-        getUsersLock();
-        // getUsersCustomer(docData.data().acronym);
-        // getUsersRider(docData.data().acronym);
-        // getUsersLock(docData.data().acronym);
+
+        getUsersRider(docData.data().acronym);
+        getUsersCustomer(docData.data().acronym);
+        getUsersLock(docData.data().acronym);
       }
     } catch (err) {
       console.log(err);
     }
   };
 
-  const getUsersRider = () => {
+  const getUsersRider = (ac) => {
     const riderCollectionRef = collection(db, "Rider");
     const riderQuery = query(
       riderCollectionRef,
-      where("status", "==", "active")
-      // where("school", "==", ac)
+      where("status", "==", "active"),
+      where("school", "==", ac)
     );
     const unsubscribeRider = onSnapshot(riderQuery, (querySnapshot) => {
       const updatedUsers = [];
@@ -88,13 +83,15 @@ const StudentReportScreen = ({ navigation }) => {
           email: doc.data().email,
           studentID: doc.data().studentID,
           portrait: doc.data().portrait,
+          birthday: doc.data().birthday,
           cardFront: doc.data().cardFront,
           cardBack: doc.data().cardBack,
           status: doc.data().status,
-          key: doc.id + "-Rider",
+          key: doc.id + "Rider",
         };
         updatedUsers.push(user);
       });
+      setUsersRider([]);
       setUsersRider((prevUsers) => [
         ...prevUsers.filter((user) => user.role !== "Rider"),
         ...updatedUsers,
@@ -104,12 +101,13 @@ const StudentReportScreen = ({ navigation }) => {
       unsubscribeRider();
     };
   };
-  const getUsersCustomer = () => {
+
+  const getUsersCustomer = (ac) => {
     const customerCollectionRef = collection(db, "Customer");
     const customerQuery = query(
       customerCollectionRef,
-      where("status", "==", "active")
-      // where("school", "==", ac)
+      where("status", "==", "active"),
+      where("school", "==", ac)
     );
     const unsubscribeCustomer = onSnapshot(customerQuery, (querySnapshot) => {
       const updatedUsers = [];
@@ -162,24 +160,25 @@ const StudentReportScreen = ({ navigation }) => {
     return studentID.includes(searchQuery);
   });
 
-  const getUsersLock = () => {
+  const getUsersLock = (ac) => {
     const customerCollectionRef = collection(db, "Customer");
     const riderCollectionRef = collection(db, "Rider");
 
     const customerQuery = query(
       customerCollectionRef,
-      where("status", "==", "locked")
+      where("status", "==", "locked"),
+      where("school", "==", ac)
       // where("school", "==", ac)
     );
     const riderQuery = query(
       riderCollectionRef,
-      where("status", "==", "locked")
+      where("status", "==", "locked"),
+      where("school", "==", ac)
       // where("school", "==", ac)
     );
 
     const unsubscribeCustomer = onSnapshot(customerQuery, (querySnapshot) => {
       const updatedUsers = [];
-      console.log("aaa");
 
       querySnapshot.forEach((doc) => {
         const user = {
@@ -237,10 +236,9 @@ const StudentReportScreen = ({ navigation }) => {
         <FlatList
           w={"100%"}
           data={filteredCustomerUsers}
-          keyExtractor={(item) => item.name}
+          keyExtractor={(item) => item.key}
           renderItem={({ item }) => (
             <StudentReportCard
-              listUser={item}
               onPress={() => {
                 const data = {
                   phoneNumber: "" + item.phoneNumber,
@@ -248,6 +246,7 @@ const StudentReportScreen = ({ navigation }) => {
                 };
                 navigation.navigate("StudentReportDetail", data);
               }}
+              list={item}
             ></StudentReportCard>
           )}
         ></FlatList>
@@ -261,7 +260,24 @@ const StudentReportScreen = ({ navigation }) => {
         <FlatList
           w={"100%"}
           data={filteredRiderUsers}
-          keyExtractor={(item) => item.name}
+          keyExtractor={(item) => item.key}
+          renderItem={({ item }) => (
+            <StudentReportCard
+              onPress={() => {
+                const data = {
+                  phoneNumber: "" + item.phoneNumber,
+                  role: "" + item.role,
+                };
+                navigation.navigate("StudentReportDetail", data);
+              }}
+              list={item}
+            ></StudentReportCard>
+          )}
+        ></FlatList>
+        {/* <FlatList
+          w={"100%"}
+          data={filteredRiderUsers}
+          keyExtractor={(item) => item.key}
           renderItem={({ item }) => (
             <StudentReportCard
               listUser={item}
@@ -274,7 +290,7 @@ const StudentReportScreen = ({ navigation }) => {
               }}
             ></StudentReportCard>
           )}
-        ></FlatList>
+        ></FlatList> */}
       </VStack>
     </VStack>
   );
@@ -283,6 +299,23 @@ const StudentReportScreen = ({ navigation }) => {
     <VStack paddingX={"10px"}>
       <VStack justifyContent={"center"} alignItems={"center"}>
         <FlatList
+          w={"100%"}
+          data={filteredLockedUsers}
+          keyExtractor={(item) => item.key}
+          renderItem={({ item }) => (
+            <StudentReportCard
+              onPress={() => {
+                const data = {
+                  phoneNumber: "" + item.phoneNumber,
+                  role: "" + item.role,
+                };
+                navigation.navigate("StudentReportDetail", data);
+              }}
+              list={item}
+            ></StudentReportCard>
+          )}
+        ></FlatList>
+        {/* <FlatList
           w={"100%"}
           h={"87%"}
           data={filteredLockedUsers}
@@ -299,7 +332,7 @@ const StudentReportScreen = ({ navigation }) => {
               }}
             ></StudentReportCard>
           )}
-        ></FlatList>
+        ></FlatList> */}
       </VStack>
     </VStack>
   );

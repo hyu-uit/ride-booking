@@ -46,6 +46,7 @@ const ActivityScreen = ({ navigation }) => {
     try {
       const phoneNumberValue = await getFromAsyncStorage("phoneNumber");
       setPhone(phoneNumberValue);
+      console.log(phoneNumberValue);
 
       if (phoneNumberValue) {
         getWaitingTrips(phoneNumberValue);
@@ -59,7 +60,7 @@ const ActivityScreen = ({ navigation }) => {
   const getWaitingTrips = async (phoneNumber) => {
     let waitingTrips = [];
     getDocs(
-      query(collection(db, "ListTrip"), where("isScheduled", "==", "true"))
+      query(collection(db, "ListTrip"), where("isScheduled", "==", "false"))
     ).then((docSnap) => {
       docSnap.forEach((doc) => {
         if (
@@ -86,14 +87,15 @@ const ActivityScreen = ({ navigation }) => {
       setWaitingTrips(waitingTrips);
     });
   };
+
   const getConfirmedTrips = async (phoneNumber) => {
     let confirmedTrips = [];
     getDocs(
-      query(collection(db, "ListTrip"), where("isScheduled", "==", "true"))
+      query(collection(db, "ListTrip"), where("isScheduled", "==", "false"))
     ).then((docSnap) => {
       docSnap.forEach((doc) => {
         if (
-          doc.data().status == "confirmed" &&
+          doc.data().status == "done" &&
           doc.data().idCustomer == phoneNumber
         ) {
           confirmedTrips.push({
@@ -148,10 +150,10 @@ const ActivityScreen = ({ navigation }) => {
   };
 
   const FirstRoute = () => (
-    <ScrollView>
+    <VStack paddingX={"10px"}>
       {/* <BookingCard onPress={() => navigation.navigate("ActivityDetail")} /> */}
       <FlatList
-        padding={"10px"}
+        w={"100%"}
         mt={2}
         horizontal={false}
         data={waitingTrips}
@@ -169,15 +171,15 @@ const ActivityScreen = ({ navigation }) => {
           ></BookingCard>
         )}
       ></FlatList>
-    </ScrollView>
+    </VStack>
   );
 
   const SecondRoute = () => (
-    <ScrollView>
+    <VStack paddingX={"10px"}>
       {/* <BookingCard sta={1} />
         <BookingCard sta={1} /> */}
       <FlatList
-        padding={"10px"}
+        w={"100%"}
         mt={2}
         horizontal={false}
         data={confirmedTrips}
@@ -196,13 +198,13 @@ const ActivityScreen = ({ navigation }) => {
           ></BookingCard>
         )}
       ></FlatList>
-    </ScrollView>
+    </VStack>
   );
 
   const ThirdRoute = () => (
-    <ScrollView>
+    <VStack paddingX={"10px"}>
       <FlatList
-        padding={"10px"}
+        w={"100%"}
         mt={2}
         horizontal={false}
         data={canceledTrips}
@@ -221,7 +223,7 @@ const ActivityScreen = ({ navigation }) => {
           ></BookingCard>
         )}
       ></FlatList>
-    </ScrollView>
+    </VStack>
   );
 
   const renderScene = SceneMap({
