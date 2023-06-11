@@ -17,13 +17,17 @@ import MapIcon from "../../assets/map_marker_96px.png";
 import BackIcon from "../../assets/back_icon.png";
 import { COLORS, SIZES } from "../../constants/theme";
 import { useTranslation } from "react-i18next";
-import { BookingContext } from "../../context/BookingContext";
+import {
+  BookingContext,
+  calculateFinalPrice,
+} from "../../context/BookingContext";
 import { useContext } from "react";
 import { isNullOrEmpty } from "../../helper/helper";
 
 const LocationCardCost = ({ onClickContinue, onPressBack }) => {
   const { t } = useTranslation();
   const { booking } = useContext(BookingContext);
+
   return (
     <View
       bgColor={COLORS.background}
@@ -113,16 +117,22 @@ const LocationCardCost = ({ onClickContinue, onPressBack }) => {
           </VStack>
           <VStack marginLeft={"auto"}>
             <Text fontSize={SIZES.h2} color={"white"} bold>
-              {booking.bookingDetails.price}đ
+              {calculateFinalPrice(
+                booking.bookingDetails.price,
+                booking.bookingDetails.promotion
+              )}
+              đ
             </Text>
-            <Text
-              fontSize={SIZES.h5}
-              color={"#808080"}
-              strikeThrough
-              textAlign={"right"}
-            >
-              {booking.bookingDetails.price}đ
-            </Text>
+            {booking.bookingDetails.promotion > 0 ? (
+              <Text
+                fontSize={SIZES.h5}
+                color={"#808080"}
+                strikeThrough
+                textAlign={"right"}
+              >
+                {booking.bookingDetails.price}đ
+              </Text>
+            ) : null}
           </VStack>
         </HStack>
         <HStack>

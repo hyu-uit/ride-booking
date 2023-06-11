@@ -4,11 +4,17 @@ import SmileIcon from "../assets/icons8-slightly-smiling-face-96.png";
 import DisappointedIcon from "../assets/icons8-frowning-face-96.png";
 import { SIZES } from "../constants/theme";
 import SelectedButton from "./Button/SelectedButton";
-import SelecteIconButton from "./Button/SelecteIconButton";
+import SelectIconButton from "./Button/SelecteIconButton";
 import { useTranslation } from "react-i18next";
+import { useContext } from "react";
+import { BookingContext } from "../context/BookingContext";
 
-const RatingPopup = ({ buttonText, isGroupButtonShow, onPress }) => {
+const RatingPopup = () => {
   const { t } = useTranslation();
+  const [isGroupButtonShow, setIsGroupButtonShow] = useState(false);
+  const [ratingType, setRatingType] = useState(null);
+  const [serviceRatings, setServiceRatings] = useState([]);
+
   return (
     <View
       bgColor={"#0B0F2F"}
@@ -30,9 +36,9 @@ const RatingPopup = ({ buttonText, isGroupButtonShow, onPress }) => {
           </Text>
         </VStack>
         <HStack space={4}>
-          <SelecteIconButton icon={LoveIcon} />
-          <SelecteIconButton icon={SmileIcon} />
-          <SelecteIconButton icon={DisappointedIcon} />
+          <SelectIconButton icon={LoveIcon} />
+          <SelectIconButton icon={SmileIcon} />
+          <SelectIconButton icon={DisappointedIcon} />
         </HStack>
         {isGroupButtonShow ? (
           <HStack space={4} flexWrap={"wrap"}>

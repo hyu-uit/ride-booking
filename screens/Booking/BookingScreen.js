@@ -17,7 +17,10 @@ import ButtonBack from "../../components/Global/ButtonBack/ButtonBack";
 import FlagIcon from "../../assets/icons/icons8-flag-filled-48.png";
 import { addDoc, collection } from "@firebase/firestore";
 import { db } from "../../config/config";
-import { fetchCurrentUserLocation } from "../../helper/location";
+import {
+  centerMapToCoordinates,
+  fetchCurrentUserLocation,
+} from "../../helper/location";
 import {
   getRoutingFromCoordinates,
   getSingleAddressFromCoordinate,
@@ -29,6 +32,7 @@ import {
   SET_DESTINATION_LOCATION,
   SET_INITIAL_LOCATION,
   SET_PICK_UP_LOCATION,
+  SET_ROUTING,
   SET_SHOW_MODAL_CANCEL,
   SET_STEP,
 } from "../../context/BookingContext";
@@ -168,7 +172,13 @@ export default function BookingScreen({ navigation }) {
 
         getRoutingFromCoordinates(booking.pickUpLocation, markerPosition)
           .then((routing) => {
-            const { coordinates } = routing.geometry;
+            const { coordinates: coordinatesRouting } = routing.geometry;
+            const coordinatesRoutingFormatted = coordinatesRouting[0].map(
+              ([longitude, latitude]) => ({
+                latitude,
+                longitude,
+              })
+            );
             const { distance, time } = routing.properties;
             console.log(
               "🚀 ~ file: BookingScreen.js:183 ~ .then ~ distance, time:",
@@ -177,22 +187,18 @@ export default function BookingScreen({ navigation }) {
             );
 
             if (mapRef.current) {
-              const coordinates = [
-                {
-                  latitude: booking.pickUpLocation.latitude,
-                  longitude: booking.pickUpLocation.longitude,
-                },
-                {
-                  latitude: markerPosition.latitude,
-                  longitude: markerPosition.longitude,
-                },
-              ];
-
-              mapRef.current.fitToCoordinates(coordinates, {
-                edgePadding: { top: 50, right: 50, bottom: 100, left: 50 },
-                animated: true,
-              });
+              centerMapToCoordinates(
+                mapRef,
+                booking.pickUpLocation,
+                markerPosition
+              );
             }
+
+            // save routing to use in BookingDriver, BookingRating
+            dispatch({
+              type: SET_ROUTING,
+              payload: coordinatesRoutingFormatted,
+            });
 
             dispatch({
               type: SET_BOOKING_DETAILS,
@@ -208,12 +214,7 @@ export default function BookingScreen({ navigation }) {
               price: calculatePrice(Math.ceil(distance / 1000)),
             });
 
-            setRouting(
-              coordinates[0].map(([longitude, latitude]) => ({
-                latitude,
-                longitude,
-              }))
-            );
+            setRouting(coordinatesRoutingFormatted);
             setStep(3);
           })
           .catch((err) =>
@@ -248,8 +249,16 @@ export default function BookingScreen({ navigation }) {
     setStep(4);
   };
 
-  const handleStep4Submit = () => {
+  const handleStep4Submit = (paymentMethod) => {
+    console.log(
+      "🚀 ~ file: BookingScreen.js:252 ~ handleStep4Submit ~ paymentMethod:",
+      paymentMethod
+    );
     // Do any necessary form validation or error checking here
+    dispatch({
+      type: SET_BOOKING_DETAILS,
+      payload: { paymentMethod: paymentMethod },
+    });
     setStep(5);
   };
 

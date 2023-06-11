@@ -25,13 +25,17 @@ const initialState = {
   }, // Initial user location
   bookingDetails: {
     price: 0,
-    paymentMethod: "",
+    paymentMethod: "", // momo or cash
     distance: 0, // km
     time: 0, // minute (travel time from a to b)
     date: "", // date booking format 15:00 12/05/2002
     note: "",
+    promotion: 0, // price - promotion = final price
+    ratingType: "", // disappointed or normal or love
+    serviceRatings: null, // for example Good service, Well prepared, Punctuality,...
   },
   isModalCancelShow: false,
+  routing: null, // to draw line on map
 };
 
 export const SET_STEP = "SET_STEP";
@@ -41,6 +45,7 @@ export const SET_BOOKING_DETAILS = "SET_BOOKING_DETAILS";
 export const SET_DESTINATION_LOCATION = "SET_DESTINATION_LOCATION";
 export const SET_PICK_UP_LOCATION = "SET_PICK_UP_LOCATION";
 export const SET_INITIAL_LOCATION = "SET_INITIAL_LOCATION";
+export const SET_ROUTING = "SET_ROUTING";
 const FIRST_KM_PRICE = 15000;
 const PRICE_PER_NEXT_KM = 5000;
 
@@ -85,9 +90,19 @@ const stateReducer = (state, action) => {
           longitude: action.payload.longitude,
         },
       };
+    case SET_ROUTING:
+      return {
+        ...state,
+        routing: action.payload,
+      };
     default:
-      throw new Error();
+      throw new Error("Unhandle action in booking context!!");
   }
+};
+
+export const calculateFinalPrice = (price, promotion) => {
+  if (promotion >= price) return 0;
+  return price - promotion;
 };
 
 function calculatePrice(distanceInKm) {
