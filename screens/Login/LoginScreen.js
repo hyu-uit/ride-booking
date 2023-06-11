@@ -31,8 +31,8 @@ import PromotionModal from "../../components/Modal/PromotionModal";
 
 const LoginScreen = ({ navigation }) => {
   const animation = useRef(null);
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [role, setRole] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState(null);
+  const [role, setRole] = useState(null);
   let backButtonPressedOnce = false;
   const { t } = useTranslation();
   useEffect(() => {
@@ -66,6 +66,41 @@ const LoginScreen = ({ navigation }) => {
     // );
 
     // return () => backHandler.remove();
+
+    const checkLoginStatus = async () => {
+      try {
+        // Check if the login credentials exist in AsyncStorage
+        // getFromAsyncStorage("phoneNumber").then((result) => {
+        //   setPhoneNumber(result);
+        //   // console.log(result);
+        // });
+        // getFromAsyncStorage("role").then((result) => {
+        //   setRole(result);
+        //   // console.log(result);
+        // });
+        const phoneNumberValue = await getFromAsyncStorage("phoneNumber");
+        const roleValue = await getFromAsyncStorage("role");
+
+        // If the credentials exist, perform an automatic login
+        if (phoneNumberValue !== null && roleValue === "StudentOffice") {
+          navigation.navigate("StudentOfficeNavigator", {
+            screen: "StudentOffice",
+          });
+        } else if (phoneNumberValue !== null && roleValue === "Rider") {
+          navigation.navigate("MainRiderNavigator", {
+            screen: "HomeRider",
+          });
+        } else if ((phoneNumberValue !== null) & (roleValue === "Customer")) {
+          navigation.navigate("MainNavigator", {
+            screen: "HomeStack",
+          });
+        }
+      } catch (error) {
+        console.log("Login check error:", error);
+      }
+    };
+
+    checkLoginStatus();
   }, []);
 
   useFocusEffect(

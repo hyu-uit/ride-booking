@@ -77,81 +77,81 @@ const StudentOfficeProfileScreen = ({ navigation }) => {
             </Text>
           </HStack>
 
-          {/* <ScrollView showsVerticalScrollIndicator={false}> */}
-          <VStack mt={5} alignItems={"center"}>
-            <HStack w={"118px"}>
-              <Image
-                source={{ uri: logo }}
-                h={"118px"}
-                w={"118px"}
-                resizeMode="contain"
-              ></Image>
-            </HStack>
-          </VStack>
+          <ScrollView showsVerticalScrollIndicator={false}>
+            <VStack mt={5} alignItems={"center"}>
+              <HStack w={"118px"}>
+                <Image
+                  source={{ uri: logo }}
+                  h={"118px"}
+                  w={"118px"}
+                  resizeMode="contain"
+                ></Image>
+              </HStack>
+            </VStack>
 
-          <VStack>
-            <Text style={{ ...FONTS.h4, color: COLORS.fifthary }} mt={10}>
-              {t("name")}
-            </Text>
-            <Text style={{ ...FONTS.h4, color: COLORS.white }} mt={2}>
-              {uniName}
-            </Text>
-            <Text style={{ ...FONTS.h4, color: COLORS.fifthary }} mt={10}>
-              {t("address")}
-            </Text>
-            <Text style={{ ...FONTS.h4, color: COLORS.white }} mt={2}>
-              {address}
-            </Text>
-            <Text style={{ ...FONTS.h4, color: COLORS.fifthary }} mt={10}>
-              {t("language")}
-            </Text>
-            <HStack alignItems={"center"} mt={2}>
-              <Image
-                source={{
-                  uri: imgUri,
-                }}
-                alt="hi"
-                w={8}
-                h={5}
-              />
-              <Select
-                alignSelf={"flex-end"}
-                w={"150px"}
-                h={"50px"}
-                borderColor={"transparent"}
-                style={{ ...FONTS.body3 }}
-                color={COLORS.white}
-                onValueChange={(itemValue) => {
-                  setLanguage(itemValue);
-                  i18next.changeLanguage(itemValue);
-                }}
-                selectedValue={language}
-                _selectedItem={{
-                  bg: COLORS.fifthary,
-                }}
-              >
-                <Select.Item label={t("en")} value="en" />
-                <Select.Item label={t("vi")} value="vi" />
-              </Select>
-            </HStack>
-          </VStack>
+            <VStack>
+              <Text style={{ ...FONTS.h4, color: COLORS.fifthary }} mt={10}>
+                {t("name")}
+              </Text>
+              <Text style={{ ...FONTS.h4, color: COLORS.white }} mt={2}>
+                {uniName}
+              </Text>
+              <Text style={{ ...FONTS.h4, color: COLORS.fifthary }} mt={10}>
+                {t("address")}
+              </Text>
+              <Text style={{ ...FONTS.h4, color: COLORS.white }} mt={2}>
+                {address}
+              </Text>
+              <Text style={{ ...FONTS.h4, color: COLORS.fifthary }} mt={10}>
+                {t("language")}
+              </Text>
+              <HStack alignItems={"center"} mt={2}>
+                <Image
+                  source={{
+                    uri: imgUri,
+                  }}
+                  alt="hi"
+                  w={8}
+                  h={5}
+                />
+                <Select
+                  alignSelf={"flex-end"}
+                  w={"150px"}
+                  h={"50px"}
+                  borderColor={"transparent"}
+                  style={{ ...FONTS.body3 }}
+                  color={COLORS.white}
+                  onValueChange={(itemValue) => {
+                    setLanguage(itemValue);
+                    i18next.changeLanguage(itemValue);
+                  }}
+                  selectedValue={language}
+                  _selectedItem={{
+                    bg: COLORS.fifthary,
+                  }}
+                >
+                  <Select.Item label={t("en")} value="en" />
+                  <Select.Item label={t("vi")} value="vi" />
+                </Select>
+              </HStack>
+            </VStack>
 
-          <Button
-            w={"100%"}
-            mt={20}
-            borderRadius={20}
-            bgColor={COLORS.primary}
-            onPress={() => {
-              navigation.navigate("AuthenticationStack", {
-                screen: "Login",
-              });
-            }}
-          >
-            <Text style={{ ...FONTS.h2 }} color={COLORS.white}>
-              {t("logout")}
-            </Text>
-          </Button>
-          {/* </ScrollView> */}
+            <Button
+              w={"100%"}
+              mt={20}
+              borderRadius={20}
+              bgColor={COLORS.primary}
+              onPress={() => {
+                navigation.navigate("AuthenticationStack", {
+                  screen: "Login",
+                });
+              }}
+            >
+              <Text style={{ ...FONTS.h2 }} color={COLORS.white}>
+                {t("logout")}
+              </Text>
+            </Button>
+          </ScrollView>
         </VStack>
       </SafeAreaView>
     </VStack>
