@@ -17,7 +17,7 @@ import { useEffect } from "react";
 import { doc, getDoc, increment, updateDoc } from "firebase/firestore";
 import { db } from "../../config/config";
 
-function PopUpRequestCard(props) {
+function ReceivedTripCard(props) {
   //const {trip} = props
   let {
     idCustomer,
@@ -52,17 +52,29 @@ function PopUpRequestCard(props) {
     });
   }
 
-  const setStatusAccept = () => {
-    updateDoc(doc(db, "ListTrip", idTrip), {
-      status: "accepted",
+  const completeTrip = () => {
+    navigation.replace("MainRiderNavigator", {
+      screen: "HomeRider",
     });
   };
-  const setStatusReject = () => {
-    // navigation.replace("MainRiderNavigator", {
-    //   screen: "HomeRider",
-    // });
+
+  const setStatusCancel = () => {
+    updateDoc(doc(db, "ListTrip", idTrip), {
+      status: "canceled",
+    });
+    updateDoc(doc(db, "Rider", idRider), {
+      cancel: increment(1),
+    });
+    completeTrip();
   };
-  
+
+  const setStatusComplete = () => {
+    updateDoc(doc(db, "ListTrip", idTrip), {
+      status: "done",
+    });
+    completeTrip();
+  };
+
   return (
     <View
       bgColor={COLORS.fourthary}
@@ -148,7 +160,7 @@ function PopUpRequestCard(props) {
             }}
           >
             <TouchableOpacity
-              onPress={setStatusReject}
+              onPress={setStatusCancel}
               style={{
                 borderColor: COLORS.red,
                 height: 59,
@@ -165,7 +177,7 @@ function PopUpRequestCard(props) {
                 fontSize={20}
                 styles={{ ...FONTS.h3 }}
               >
-                Reject
+                Cancel
               </Text>
             </TouchableOpacity>
             <View
@@ -176,7 +188,7 @@ function PopUpRequestCard(props) {
               }}
             >
               <TouchableOpacity
-                onPress={setStatusAccept}
+                onPress={setStatusComplete}
                 style={{
                   borderColor: COLORS.primary,
                   backgroundColor: COLORS.primary,
@@ -194,7 +206,7 @@ function PopUpRequestCard(props) {
                   fontSize={20}
                   styles={{ ...FONTS.h3 }}
                 >
-                  Accept
+                  Done
                 </Text>
               </TouchableOpacity>
             </View>
@@ -219,4 +231,4 @@ const styles = StyleSheet.create({
     ...FONTS.body6,
   },
 });
-export default PopUpRequestCard;
+export default ReceivedTripCard;

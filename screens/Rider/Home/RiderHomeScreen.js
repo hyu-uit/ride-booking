@@ -11,6 +11,7 @@ import {
   ScrollView,
   Icon,
   FlatList,
+  Modal,
 } from "native-base";
 import DefaultAvt from "../../../assets/image6.png";
 import React, { useEffect, useState } from "react";
@@ -30,6 +31,7 @@ import {
   updateDoc,
   doc,
   getDoc,
+  onSnapshot
 } from "@firebase/firestore";
 import { db } from "../../../config/config";
 import moment from "moment/moment";
@@ -39,22 +41,24 @@ import {
 } from "../../../helper/asyncStorage";
 import { BackHandler, Switch, ToastAndroid } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
+import PopUpRequestCard from "../../../components/Driver/PopUpRequestCard";
+import MapView from "react-native-maps";
+import { Marker } from "react-native-svg";
 
 const RiderHomeScreen = ({ navigation, route }) => {
   const [service, setService] = useState(0);
   const [status, setStatus] = useState(0);
-  // const { data } = route.params;
-  // const { phoneNumber, role } = data;
-
-  // useEffect(() => {
-  //   console.log(phoneNumber)
-  // }, []);
-  const [open, setOpen] = useState();
+  const [open, setOpen] = useState("");
+  const [newCurrentTrips, setNewCurrentTrips] = useState([]);
   const [waitingTrips, setWaitingTrips] = useState([]);
   const [finishedTrips, setFinishedTrips] = useState([]);
   const [canceledTrips, setCanceledTrips] = useState([]);
+  const [name, setName] = useState("");
+  const [avt, setAvatar] = useState(null);
   const [phoneNumber, setPhoneNumber] = useState([]);
   const currentDate = moment().format("D/M/YYYY");
+  const [isModalVisible, setModalVisible] = useState(false);
+  const [isReady, setReady] = useState(true);
 
   let backButtonPressedOnce = false;
 
@@ -82,7 +86,7 @@ const RiderHomeScreen = ({ navigation, route }) => {
 
   useEffect(() => {
     fetchDataAndPhoneNumber();
-  }, [navigation]);
+  }, [phoneNumber, navigation]);
 
   const fetchDataAndPhoneNumber = async () => {
     try {
@@ -91,9 +95,11 @@ const RiderHomeScreen = ({ navigation, route }) => {
 
       if (phoneNumberValue) {
         fetchData(phoneNumberValue);
-        await getWaitingTrips();
-        await getFinishedTrips();
-        await getCanceledTrips();
+        fetchNewCurrentTrips();
+        getWaitingTrips();
+        getFinishedTrips();
+        getCanceledTrips();
+
       }
     } catch (err) {
       console.log(err);
@@ -102,21 +108,19 @@ const RiderHomeScreen = ({ navigation, route }) => {
 
   const fetchData = async (phoneNumber) => {
     try {
-      const docData = await getDoc(doc(db, "Rider", phoneNumber));
-      setOpen(docData.data().open);
+      const unsubscribe = onSnapshot(doc(db, "Rider", phoneNumber), (docSnapshot) => {
+        const docData = docSnapshot.data();
+        setOpen(docData.open);
+        setName(docData.displayName);
+        setAvatar(docData.portrait);
+      });
+      return () => {
+        unsubscribe();
+      };
     } catch (error) {
       console.error(error);
     }
   };
-
-  // useEffect(() => {
-  //   getWaitingTrips();
-  //   getFinishedTrips();
-  //   getCanceledTrips();
-  //   getFromAsyncStorage("phoneNumber").then((result) => {
-  //     setPhoneNumber(result);
-  //   });
-  // }, [navigation]);
 
   const handleSwitchChange = () => {
     console.log(open);
@@ -126,89 +130,104 @@ const RiderHomeScreen = ({ navigation, route }) => {
       open: !open,
     });
   };
-
-  const getWaitingTrips = () => {
-    let waitingTrips = [];
-    getDocs(
-      query(
+  const fetchNewCurrentTrips = () => {
+      const waitingTripsQuery = query(
         collection(db, "ListTrip"),
+        where("status", "==", "waiting"),
         where("isScheduled", "==", "false"),
-        where("date", "==", currentDate)
-      )
-    ).then((docSnap) => {
-      docSnap.forEach((doc) => {
-        if (doc.data().status == "waiting") {
-          waitingTrips.push({
-            idCustomer: doc.data().idCustomer,
+      );
+      const unsubscribeTrip = onSnapshot(waitingTripsQuery, (querySnapshot) => {
+        const updatedTrips = [];
+        querySnapshot.forEach((doc) => {
+          const trip = {
             idTrip: doc.id,
-            pickUpLat: doc.data().pickUpLat,
-            pickUpLong: doc.data().pickUpLong,
-            destLat: doc.data().destLat,
-            destLong: doc.data().destLong,
-            date: doc.data().date,
-            time: doc.data().time,
-            datePickUp: doc.data().datePickUp,
-            timePickUp: doc.data().timePickUp,
-            totalPrice: doc.data().totalPrice,
-            distance: doc.data().distance,
-            status: doc.data().status,
-          });
+            ...doc.data()
+          };
+          updatedTrips.push(trip);
+        });
+        setNewCurrentTrips(updatedTrips.slice(0, 1))
+        if (updatedTrips.length === 0) {
+          setModalVisible(false);
+        } else {
+          setModalVisible(true);
         }
       });
-      setWaitingTrips(waitingTrips);
+      return () => {
+        unsubscribeTrip();
+      };
+  };
+
+  const getWaitingTrips = () => {
+    const waitingTripsQuery = query(
+      collection(db, "ListTrip"),
+      where("idRider", "==", phoneNumber),
+      where("status", "==", "accepted"),
+      where("isScheduled", "==", "false")
+    );
+
+    const unsubscribeTrip = onSnapshot(waitingTripsQuery, (querySnapshot) => {
+      const updatedTrips = [];
+      querySnapshot.forEach((doc) => {
+        const trip = {
+          idTrip: doc.id,
+          ...doc.data()
+        };
+        updatedTrips.push(trip);
+      });
+      setWaitingTrips(updatedTrips)
     });
+
+    return () => {
+      unsubscribeTrip();
+    };
   };
 
   const getFinishedTrips = () => {
-    let finishedTrips = [];
-    getDocs(
-      query(collection(db, "ListTrip"), where("status", "==", "done"))
-    ).then((docSnap) => {
-      docSnap.forEach((doc) => {
-        finishedTrips.push({
-          idCustomer: doc.data().idCustomer,
+    const finishedTripsQuery = query(
+      collection(db, "ListTrip"),
+      where("idRider", "==", phoneNumber),
+      where("status", "==", "finished")
+    );
+
+    const unsubscribeTrip = onSnapshot(finishedTripsQuery, (querySnapshot) => {
+      const updatedTrips = [];
+      querySnapshot.forEach((doc) => {
+        const trip = {
           idTrip: doc.id,
-          pickUpLat: doc.data().pickUpLat,
-          pickUpLong: doc.data().pickUpLong,
-          destLat: doc.data().destLat,
-          destLong: doc.data().destLong,
-          date: doc.data().date,
-          time: doc.data().time,
-          datePickUp: doc.data().datePickUp,
-          timePickUp: doc.data().timePickUp,
-          totalPrice: doc.data().totalPrice,
-          distance: doc.data().distance,
-          status: doc.data().status,
-        });
+          ...doc.data()
+        };
+        updatedTrips.push(trip);
       });
-      setFinishedTrips(finishedTrips);
+      setFinishedTrips(updatedTrips)
     });
+
+    return () => {
+      unsubscribeTrip();
+    };
   };
 
   const getCanceledTrips = () => {
-    let canceledTrips = [];
-    getDocs(
-      query(collection(db, "ListTrip"), where("status", "==", "canceled"))
-    ).then((docSnap) => {
-      docSnap.forEach((doc) => {
-        canceledTrips.push({
-          idCustomer: doc.data().idCustomer,
+    const canceledTripsQuery = query(
+      collection(db, "ListTrip"),
+      where("idRider", "==", phoneNumber),
+      where("status", "==", "canceled")
+    );
+    const unsubscribeTrip = onSnapshot(canceledTripsQuery, (querySnapshot) => {
+      const updatedTrips = [];
+      querySnapshot.forEach((doc) => {
+        const trip = {
+          key: doc.id,
           idTrip: doc.id,
-          pickUpLat: doc.data().pickUpLat,
-          pickUpLong: doc.data().pickUpLong,
-          destLat: doc.data().destLat,
-          destLong: doc.data().destLong,
-          date: doc.data().date,
-          time: doc.data().time,
-          datePickUp: doc.data().datePickUp,
-          timePickUp: doc.data().timePickUp,
-          totalPrice: doc.data().totalPrice,
-          distance: doc.data().distance,
-          status: doc.data().status,
-        });
+          ...doc.data()
+        };
+        updatedTrips.push(trip);
       });
-      setCanceledTrips(canceledTrips);
+      setCanceledTrips(updatedTrips);
     });
+
+    return () => {
+      unsubscribeTrip();
+    };
   };
 
   const openCamera = async () => {
@@ -303,27 +322,50 @@ const RiderHomeScreen = ({ navigation, route }) => {
   ]);
 
   return (
+
     <NativeBaseProvider>
       <VStack h={"100%"} paddingTop={"20px"} bgColor={COLORS.background}>
         <SafeAreaView>
           <VStack h={"100%"}>
+            {isModalVisible && newCurrentTrips.length > 0 &&isReady && (
+              <Modal
+                isOpen={isModalVisible}
+                size="lg"
+                overlayVisible={true}
+                backdropPressBehavior="none" 
+              ><MapView
+              provider="google"
+              style={{
+                width: "100%",
+                height: "40%",
+                borderRadius: 20,
+              }}
+            >
+              <Marker
+                coordinate={{ latitude: 9.90761, longitude: 105.31181 }}
+              ></Marker>
+            </MapView>
+                <PopUpRequestCard
+                  trip={newCurrentTrips[0]}
+                  navigation={navigation}
+                ></PopUpRequestCard>
+              </Modal>
+            )}
             <VStack paddingX={"10px"}>
               <HStack w={"100%"} mb={10}>
-                <Avatar source={DefaultAvt} alt="ava" />
+                <Avatar source={{ uri: avt }} alt="ava" />
                 <VStack justifyContent={"center"} ml={3}>
                   <Text fontSize={10} color={COLORS.grey}>
                     Welcome back
                   </Text>
                   <Text fontSize={SIZES.h4} color={COLORS.white} bold>
-                    Huỳnh Thế Vĩ
+                    {name}
                   </Text>
                 </VStack>
                 <HStack position={"absolute"} right={0} alignItems={"center"}>
                   <Button
                     variant={"unstyled"}
-                    onPress={() => {
-                      openCamera();
-                    }}
+                    onPress={()=>openCamera()}
                   >
                     <Image
                       source={QRImage}

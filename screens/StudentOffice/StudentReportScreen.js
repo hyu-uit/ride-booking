@@ -209,14 +209,12 @@ const StudentReportScreen = ({ navigation }) => {
   };
   const FirstRoute = () => (
     <VStack paddingX={"10px"}>
-      <VStack justifyContent={"center"} alignItems={"center"}>
         <FlatList
-          w={"100%"}
           data={filteredCustomerUsers}
-          keyExtractor={(item) => item.name}
+          keyExtractor={(item) => item.key}
           renderItem={({ item }) => (
-            <StudentReportCard
-              listUser={item}
+            <StudentListCard
+              list={item}
               onPress={() => {
                 const data = {
                   phoneNumber: "" + item.phoneNumber,
@@ -224,23 +222,20 @@ const StudentReportScreen = ({ navigation }) => {
                 };
                 navigation.navigate("StudentReportDetail", data);
               }}
-            ></StudentReportCard>
+            ></StudentListCard>
           )}
         ></FlatList>
       </VStack>
-    </VStack>
   );
 
   const SecondRoute = () => (
     <VStack paddingX={"10px"}>
-     <VStack justifyContent={"center"} alignItems={"center"}>
-        <ScrollView w={"100%"}>
           <FlatList
             data={filteredRiderUsers}
-            keyExtractor={(item) => item.name}
+            keyExtractor={(item) => item.key}
             renderItem={({ item }) => (
-              <StudentReportCard
-                listUser={item}
+              <StudentListCard
+              list={item}
                 onPress={() => {
                   const data = {
                     phoneNumber: "" + item.phoneNumber,
@@ -248,25 +243,20 @@ const StudentReportScreen = ({ navigation }) => {
                   };
                   navigation.navigate("StudentReportDetail", data);
                 }}
-              ></StudentReportCard>
+              ></StudentListCard>
             )}
           ></FlatList>
-        </ScrollView>
-      </VStack>
     </VStack>
   );
 
   const ThirdRoute = () => (
     <VStack paddingX={"10px"}>
-      <VStack justifyContent={"center"} alignItems={"center"}>
         <FlatList
-          w={"100%"}
-          h={"87%"}
           data={filteredLockedUsers}
-          keyExtractor={(item) => item.name}
+          keyExtractor={(item) => item.key}
           renderItem={({ item }) => (
-            <StudentReportCard
-              listUser={item}
+            <StudentListCard
+            list={item}
               onPress={() => {
                 const data = {
                   phoneNumber: "" + item.phoneNumber,
@@ -274,10 +264,9 @@ const StudentReportScreen = ({ navigation }) => {
                 };
                 navigation.navigate("StudentReportDetail", data);
               }}
-            ></StudentReportCard>
+            ></StudentListCard>
           )}
         ></FlatList>
-      </VStack>
     </VStack>
   );
 

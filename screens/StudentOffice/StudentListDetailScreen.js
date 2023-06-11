@@ -64,11 +64,16 @@ const StudentListDetailScreen = ({ route, navigation }) => {
             cancelCount++;
           }
         });
-        setCancelTripCount(cancelCount);
         const totalCount = doneCount + cancelCount;
         setDoneTripCount(totalCount);
       }
     );
+    const unsubscribeCancel = onSnapshot(doc(db, role, phoneNumber), (snapshot) => {
+      const docData = snapshot.data();
+        setCancelTripCount(docData.cancel);
+      });
+    
+    
     const ratingUnsubscribe = onSnapshot(
       query(
         collection(db, "RatingList"),
@@ -99,6 +104,7 @@ const StudentListDetailScreen = ({ route, navigation }) => {
     );
     return () => {
       doneUnsubscribe();
+      unsubscribeCancel();
       ratingUnsubscribe();
     };
   }, [phoneNumber, role]);

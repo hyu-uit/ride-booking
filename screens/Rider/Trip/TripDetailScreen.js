@@ -23,6 +23,7 @@ import PopUpRequestCard from "../../../components/Driver/PopUpRequestCard";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../../../config/config";
 import { Dimensions } from "react-native";
+import ReceivedTripCard from "../../../components/Driver/ReceivedTripCard";
 
 const TripDetailScreen = ({ navigation, route }) => {
   const contentHeight = Dimensions.get("window").height;
@@ -37,6 +38,7 @@ const TripDetailScreen = ({ navigation, route }) => {
       if (doc.exists()) {
         data = {
           idCustomer: doc.data().idCustomer,
+          idRider: doc.data().idRider,
           idTrip: doc.id,
           pickUpLat: doc.data().pickUpLat,
           pickUpLong: doc.data().pickUpLong,
@@ -74,10 +76,10 @@ const TripDetailScreen = ({ navigation, route }) => {
             coordinate={{ latitude: 9.90761, longitude: 105.31181 }}
           ></Marker>
         </MapView>
-        <PopUpRequestCard
+        <ReceivedTripCard
           trip={tripData}
           navigation={navigation}
-        ></PopUpRequestCard>
+        ></ReceivedTripCard>
         {/* <HStack justifyContent={"center"} mb={"20px"}>
           <View style={{ position: "absolute", left: 0 }}>
             <ButtonBack></ButtonBack>
