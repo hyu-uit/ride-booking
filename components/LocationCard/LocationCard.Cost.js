@@ -1,5 +1,4 @@
 import {
-  Box,
   Button,
   Center,
   Divider,
@@ -18,14 +17,17 @@ import MapIcon from "../../assets/map_marker_96px.png";
 import BackIcon from "../../assets/back_icon.png";
 import { COLORS, SIZES } from "../../constants/theme";
 import { useTranslation } from "react-i18next";
+import { BookingContext } from "../../context/BookingContext";
+import { useContext } from "react";
+import { isNullOrEmpty } from "../../helper/helper";
 
 const LocationCardCost = ({ onClickContinue, onPressBack }) => {
   const { t } = useTranslation();
+  const { booking } = useContext(BookingContext);
   return (
     <View
       bgColor={COLORS.background}
       w={"100%"}
-      h={370}
       borderTopRadius={20}
       shadow={3}
       position={"absolute"}
@@ -34,13 +36,15 @@ const LocationCardCost = ({ onClickContinue, onPressBack }) => {
     >
       <VStack space={4}>
         <HStack w={"100%"}>
-          <VStack space={2}>
+          <VStack space={2} width={"90%"}>
             <VStack space={1}>
               <Text bold fontSize={SIZES.h6} color={"#8CC3FF"}>
                 {t("pickUp")}
               </Text>
               <Text bold fontSize={SIZES.h6} color={"white"}>
-                Long An
+                {isNullOrEmpty(booking.pickUpLocation.address)
+                  ? booking.pickUpLocation.address
+                  : booking.pickUpLocation.name}
               </Text>
             </VStack>
             <Divider />
@@ -49,7 +53,9 @@ const LocationCardCost = ({ onClickContinue, onPressBack }) => {
                 {t("des")}
               </Text>
               <Text bold fontSize={SIZES.h6} color={"white"}>
-                University of Information Technology
+                {isNullOrEmpty(booking.destinationLocation.address)
+                  ? booking.destinationLocation.address
+                  : booking.destinationLocation.name}
               </Text>
             </VStack>
           </VStack>
@@ -89,7 +95,7 @@ const LocationCardCost = ({ onClickContinue, onPressBack }) => {
                 alignSelf={"center"}
               />
               <Text fontSize={SIZES.h4} color={"white"} bold>
-                2km
+                {booking.bookingDetails.distance}km
               </Text>
             </HStack>
             <HStack space={3}>
@@ -101,13 +107,13 @@ const LocationCardCost = ({ onClickContinue, onPressBack }) => {
                 alignSelf={"center"}
               />
               <Text fontSize={SIZES.h4} color={"white"} bold>
-                5 {t("minutes")}
+                {booking.bookingDetails.time} {t("minutes")}
               </Text>
             </HStack>
           </VStack>
           <VStack marginLeft={"auto"}>
             <Text fontSize={SIZES.h2} color={"white"} bold>
-              20,000đ
+              {booking.bookingDetails.price}đ
             </Text>
             <Text
               fontSize={SIZES.h5}
@@ -115,7 +121,7 @@ const LocationCardCost = ({ onClickContinue, onPressBack }) => {
               strikeThrough
               textAlign={"right"}
             >
-              20,000đ
+              {booking.bookingDetails.price}đ
             </Text>
           </VStack>
         </HStack>

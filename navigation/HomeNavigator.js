@@ -10,29 +10,42 @@ import ConfirmLocationScreen from "../screens/Customer/SavedLocation/ConfirmLoca
 import BookingScreen from "../screens/Booking/BookingScreen";
 import BookingDriverScreen from "../screens/Booking/BookingDriverScreen";
 import BookingRatingScreen from "../screens/Booking/BookingRatingScreen";
+import { BookingProvider } from "../context/BookingContext";
 
 const HomeStack = createNativeStackNavigator();
 
 export function HomeStackScreen() {
   return (
-    <HomeStack.Navigator screenOptions={{ headerShown: false }}>
-      <HomeStack.Screen name="Home" component={Home} />
-      <HomeStack.Screen
-        name="ActivityDetail"
-        component={ActivityDetailScreen}
-      />
-      <HomeStack.Screen name="Menu" component={MenuScreen} />
-      <HomeStack.Screen name="Scheduled" component={ScheduledScreen} />
-      <HomeStack.Screen name="Payment" component={PaymentScreen} />
-      <HomeStack.Screen name="SavedLocation" component={SavedLocationScreen} />
-      <HomeStack.Screen name="AddLocation" component={AddLocationScreen} />
-      <HomeStack.Screen
-        name="ConfirmLocation"
-        component={ConfirmLocationScreen}
-      />
-      <HomeStack.Screen name="Booking" component={BookingScreen} />
-      <HomeStack.Screen name="BookingDriver" component={BookingDriverScreen} />
-      <HomeStack.Screen name="BookingRating" component={BookingRatingScreen} />
-    </HomeStack.Navigator>
+    <BookingProvider>
+      <HomeStack.Navigator screenOptions={{ headerShown: false }}>
+        <HomeStack.Screen name="Home" component={Home} />
+        <HomeStack.Screen
+          name="ActivityDetail"
+          component={ActivityDetailScreen}
+        />
+        <HomeStack.Screen name="Menu" component={MenuScreen} />
+        <HomeStack.Screen name="Scheduled" component={ScheduledScreen} />
+        <HomeStack.Screen name="Payment" component={PaymentScreen} />
+        <HomeStack.Screen
+          name="SavedLocation"
+          component={SavedLocationScreen}
+        />
+        <HomeStack.Screen name="AddLocation" component={AddLocationScreen} />
+        <HomeStack.Screen
+          name="ConfirmLocation"
+          component={ConfirmLocationScreen}
+        />
+
+        <HomeStack.Screen name="Booking" component={BookingScreen} />
+        <HomeStack.Screen
+          name="BookingDriver"
+          component={BookingDriverScreen}
+        />
+        <HomeStack.Screen
+          name="BookingRating"
+          component={BookingRatingScreen}
+        />
+      </HomeStack.Navigator>
+    </BookingProvider>
   );
 }

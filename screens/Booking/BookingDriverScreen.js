@@ -3,7 +3,6 @@ import { useReducer } from "react";
 import RatingPopup from "../../components/RatingPopup";
 import styled from "styled-components";
 import { SafeAreaView } from "react-native-safe-area-context";
-import MapView from "react-native-maps";
 import WaitingRiderCard from "../../components/DriverInformationCard/WaitingRiderCard";
 import OnTheWayCard from "../../components/DriverInformationCard/OnTheWayCard";
 import FinishedTripCard from "../../components/DriverInformationCard/FinishedTripCard";
@@ -60,7 +59,6 @@ const BookingDriverScreen = ({ navigation }) => {
       case 1:
         return (
           <>
-            <MapView style={{ flex: 1 }} provider="google"></MapView>
             <WaitingRiderCard
               onPressCancel={handleStep1Button}
               onPressInfo={handleShowModalInfo}
@@ -70,7 +68,6 @@ const BookingDriverScreen = ({ navigation }) => {
       case 2:
         return (
           <>
-            <MapView style={{ flex: 1 }} provider="google"></MapView>
             <OnTheWayCard
               onPressCancel={handleStep2Button}
               onPressInfo={handleShowModalInfo}
@@ -80,7 +77,6 @@ const BookingDriverScreen = ({ navigation }) => {
       case 3:
         return (
           <>
-            <MapView style={{ flex: 1 }} provider="google"></MapView>
             <FinishedTripCard
               onClickRate={() => navigation.navigate("BookingRating")}
               onPressInfo={handleShowModalInfo}

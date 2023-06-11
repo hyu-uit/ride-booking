@@ -1,24 +1,8 @@
-import {
-  Button,
-  HStack,
-  Input,
-  NativeBaseProvider,
-  Text,
-  VStack,
-  View,
-  Image,
-  Avatar,
-  Switch,
-  ScrollView,
-} from "native-base";
-import DefaultAvt from "../../../assets/image6.png";
+import { VStack, View } from "native-base";
 import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { COLORS, FONTS, SIZES } from "../../../constants/theme";
 import ButtonBack from "../../../components/Global/ButtonBack/ButtonBack";
-import MapView, { Marker } from "react-native-maps";
-import Icon from "react-native-vector-icons/FontAwesome";
-import { Ionicons } from "@expo/vector-icons";
 import PopUpRequestCard from "../../../components/Driver/PopUpRequestCard";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../../../config/config";
@@ -62,7 +46,7 @@ const TripDetailScreen = ({ navigation, route }) => {
             }}
           />
         </View>
-        <MapView
+        {/* <MapView
           provider="google"
           style={{
             width: "100%",

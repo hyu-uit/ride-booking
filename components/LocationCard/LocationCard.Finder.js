@@ -23,7 +23,6 @@ const LocationCardFinder = ({ onPressCancel }) => {
     <View
       bgColor={"#0B0F2F"}
       w={"100%"}
-      h={410}
       borderTopRadius={20}
       shadow={3}
       position={"absolute"}

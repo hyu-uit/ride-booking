@@ -11,10 +11,8 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { SIZES, COLORS, FONTS } from "../../../constants/theme";
 import ButtonBack from "../../../components/Global/ButtonBack/ButtonBack";
-import MapView, { Marker } from "react-native-maps";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { Ionicons } from "@expo/vector-icons";
-import MapViewDirections from "react-native-maps-directions";
 import { useState } from "react";
 import { useEffect } from "react";
 import { doc, getDoc } from "firebase/firestore";
@@ -88,7 +86,7 @@ const ActivityDetailScreen = ({ navigation, route }) => {
               </Text>
             </HStack>
             <ScrollView h={"100%"} showsVerticalScrollIndicator={false}>
-              <MapView
+              {/* <MapView
                 provider="google"
                 style={{ width: "100%", height: 200, borderRadius: 20 }}
               >
@@ -99,8 +97,8 @@ const ActivityDetailScreen = ({ navigation, route }) => {
                   origin={{ latitude: 9.90761, longitude: 105.31181 }}
                   destination={{ latitude: 10.77653, longitude: 106.700981 }}
                   apikey={API_KEY}
-                /> */}
-              </MapView>
+                />
+              </MapView> */}
 
               <View
                 style={{

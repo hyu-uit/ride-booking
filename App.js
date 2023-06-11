@@ -1,6 +1,5 @@
 import { NativeBaseProvider } from "native-base";
 import Navigation from "./navigation";
-import { useFonts } from "expo-font";
 import * as Font from "expo-font";
 import { AppProvider } from "./context/AppContext";
 import { useTranslation, initReactI18next } from "react-i18next";
@@ -38,9 +37,8 @@ async function loadFonts() {
   });
 }
 export default function App() {
-  loadFonts().then(() => {
-    // Start your app
-  });
+  loadFonts().then(() => {});
+
   return (
     <AppProvider>
       <Navigation></Navigation>

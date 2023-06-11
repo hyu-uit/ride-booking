@@ -11,8 +11,13 @@ import React from "react";
 import BackIcon from "../../assets/back_icon.png";
 import { SIZES } from "../../constants/theme";
 import { useTranslation } from "react-i18next";
+import { useContext } from "react";
+import { BookingContext } from "../../context/BookingContext";
+import { useState } from "react";
 
 const LocationCardNote = ({ onClickContinue, onPressBack }) => {
+  const { dispatch } = useContext(BookingContext);
+  const [note, setNote] = useState("");
   const { t } = useTranslation();
   return (
     <View
@@ -36,6 +41,8 @@ const LocationCardNote = ({ onClickContinue, onPressBack }) => {
           borderWidth={0}
           bgColor={"#101744"}
           color={"white"}
+          value={note}
+          onChangeText={(text) => setNote(text)}
         />
         <HStack>
           <Button
@@ -53,7 +60,7 @@ const LocationCardNote = ({ onClickContinue, onPressBack }) => {
             w={"200px"}
             marginLeft={"auto"}
             borderRadius={"20px"}
-            onTouchEnd={onClickContinue}
+            onTouchEnd={() => onClickContinue(note)}
           >
             <Text color={"white"} bold fontSize={SIZES.small}>
               {t("continue")}
