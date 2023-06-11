@@ -26,8 +26,9 @@ import { useEffect } from "react";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../../config/config";
 import ConfirmedScheduledTrip from "../../components/Driver/ConfirmedScheduledTrip";
+import { useTranslation } from "react-i18next";
 
-const RiderSchedule = () => {
+const RiderSchedule = ({ navigation }) => {
   const [service, setService] = useState(0);
   const [waitingTrips, setWaitingTrips] = useState({});
   const [confirmedTrips, setConfirmedTrips] = useState({});
@@ -36,14 +37,14 @@ const RiderSchedule = () => {
     getWaitingTrips();
     getConfirmedTrips();
   }, []);
-  
+
   const getWaitingTrips = () => {
     let waitingTrips = [];
     getDocs(
       query(collection(db, "ListTrip"), where("isScheduled", "==", "true"))
     ).then((docSnap) => {
       docSnap.forEach((doc) => {
-        if(doc.data().status=="waiting"){
+        if (doc.data().status == "waiting") {
           waitingTrips.push({
             idCustomer: doc.data().idCustomer,
             idTrip: doc.id,
@@ -53,8 +54,8 @@ const RiderSchedule = () => {
             destLong: doc.data().destLong,
             date: doc.data().date,
             time: doc.data().time,
-            datePickUp:doc.data().datePickUp,
-            timePickUp:doc.data().timePickUp,
+            datePickUp: doc.data().datePickUp,
+            timePickUp: doc.data().timePickUp,
             totalPrice: doc.data().totalPrice,
             distance: doc.data().distance,
           });
@@ -69,7 +70,7 @@ const RiderSchedule = () => {
       query(collection(db, "ListTrip"), where("isScheduled", "==", "true"))
     ).then((docSnap) => {
       docSnap.forEach((doc) => {
-        if(doc.data().status=="confirmed"){
+        if (doc.data().status == "confirmed") {
           confirmedTrips.push({
             idCustomer: doc.data().idCustomer,
             idTrip: doc.id,
@@ -79,8 +80,8 @@ const RiderSchedule = () => {
             destLong: doc.data().destLong,
             date: doc.data().date,
             time: doc.data().time,
-            datePickUp:doc.data().datePickUp,
-            timePickUp:doc.data().timePickUp,
+            datePickUp: doc.data().datePickUp,
+            timePickUp: doc.data().timePickUp,
             totalPrice: doc.data().totalPrice,
             distance: doc.data().distance,
           });
@@ -92,48 +93,48 @@ const RiderSchedule = () => {
   const FirstRoute = () => (
     <ScrollView>
       <FlatList
-      padding={"10px"}
-      mt={2}
-      horizontal={false}
-      data={waitingTrips}
-      keyExtractor={(item) => item.idTrip}
-      renderItem={({ item }) => (
-        <RequestCard
-          onPress={() => {
-            const data = {
-              idTrip: "" + item.idTrip
-            };
-            navigation.navigate("TripDetail", data);
-          }}
-          trip={item}
-          key={item.idTrip}
-        ></RequestCard>
-      )}
-    ></FlatList>
+        padding={"10px"}
+        mt={2}
+        horizontal={false}
+        data={waitingTrips}
+        keyExtractor={(item) => item.idTrip}
+        renderItem={({ item }) => (
+          <RequestCard
+            onPress={() => {
+              const data = {
+                idTrip: "" + item.idTrip,
+              };
+              navigation.navigate("TripDetail", data);
+            }}
+            trip={item}
+            key={item.idTrip}
+          ></RequestCard>
+        )}
+      ></FlatList>
     </ScrollView>
   );
 
   const SecondRoute = () => (
     <ScrollView>
       <FlatList
-      padding={"10px"}
-      mt={2}
-      horizontal={false}
-      data={confirmedTrips}
-      keyExtractor={(item) => item.idTrip}
-      renderItem={({ item }) => (
-        <ConfirmedScheduledTrip
-          onPress={() => {
-            const data = {
-              idTrip: "" + item.idTrip
-            };
-            navigation.navigate("TripDetail", data);
-          }}
-          trip={item}
-          key={item.idTrip}
-        ></ConfirmedScheduledTrip>
-      )}
-    ></FlatList>
+        padding={"10px"}
+        mt={2}
+        horizontal={false}
+        data={confirmedTrips}
+        keyExtractor={(item) => item.idTrip}
+        renderItem={({ item }) => (
+          <ConfirmedScheduledTrip
+            onPress={() => {
+              const data = {
+                idTrip: "" + item.idTrip,
+              };
+              navigation.navigate("TripDetail", data);
+            }}
+            trip={item}
+            key={item.idTrip}
+          ></ConfirmedScheduledTrip>
+        )}
+      ></FlatList>
     </ScrollView>
   );
 
@@ -150,11 +151,19 @@ const RiderSchedule = () => {
     second: SecondRoute,
   });
 
+  const { t } = useTranslation();
+
   const [index, setIndex] = React.useState(0);
   const [routes] = React.useState([
-    { key: "first", title: "Available" },
-    { key: "second", title: "Confirmed" },
+    { key: "first", title: t("available") },
+    { key: "second", title: t("confirm") },
   ]);
+  const [bikeUri, setBikeUri] = useState(
+    "https://res.cloudinary.com/dtutrxnyl/image/upload/v1686364990/bikeWhite_vqyjm3.png"
+  );
+  const [deliveryUri, setDeliveryUri] = useState(
+    "https://res.cloudinary.com/dtutrxnyl/image/upload/v1686364992/deliveryBlue_ztlpxb.png"
+  );
 
   return (
     <VStack h={"100%"} paddingY={"20px"} bgColor={COLORS.background}>
@@ -165,9 +174,6 @@ const RiderSchedule = () => {
           justifyContent={"center"}
         >
           <View style={{ position: "absolute", left: 0 }}></View>
-          <Text style={{ ...FONTS.h2, color: COLORS.white }} ml={4} mb={5}>
-            Scheduled
-          </Text>
         </HStack>
         <HStack justifyContent={"center"} space={"10px"}>
           <Button
@@ -177,29 +183,26 @@ const RiderSchedule = () => {
             bgColor={service === 0 ? COLORS.primary : COLORS.tertiary}
             onPress={() => {
               setService(0);
+              setBikeUri(
+                "https://res.cloudinary.com/dtutrxnyl/image/upload/v1686364990/bikeWhite_vqyjm3.png"
+              );
+              setDeliveryUri(
+                "https://res.cloudinary.com/dtutrxnyl/image/upload/v1686364992/deliveryBlue_ztlpxb.png"
+              );
             }}
           >
             {/* <Image
                   src={require("../../../assets/images/Activity/ic_bike.png`")}
                 /> */}
             <HStack justifyContent={"center"} alignItems={"center"}>
-              {service === 0 ? (
-                <>
-                  <Image
-                    source={IC_Bike_White}
-                    alt="Icon bike"
-                    // Other props here
-                  />
-                </>
-              ) : (
-                <>
-                  <Image
-                    source={IC_Bike_Blue}
-                    alt="Icon bike"
-                    // Other props here
-                  />
-                </>
-              )}
+              <Image
+                source={{ uri: bikeUri }}
+                w={"50%"}
+                h={"120%"}
+                resizeMode="contain"
+                alt="Icon bike"
+                // Other props here
+              />
 
               <Text
                 style={{
@@ -218,29 +221,26 @@ const RiderSchedule = () => {
             bgColor={service === 1 ? COLORS.primary : COLORS.tertiary}
             onPress={() => {
               setService(1);
+              setBikeUri(
+                "https://res.cloudinary.com/dtutrxnyl/image/upload/v1686364990/bikeBlue_sqih2p.png"
+              );
+              setDeliveryUri(
+                "https://res.cloudinary.com/dtutrxnyl/image/upload/v1686364990/deliveryWhite_flxx91.png"
+              );
             }}
           >
             {/* <Image
                   src={require("../../../assets/images/Activity/ic_bike.png`")}
                 /> */}
             <HStack justifyContent={"center"} alignItems={"center"}>
-              {service === 1 ? (
-                <>
-                  <Image
-                    source={require("../../assets/images/Activity/ic_send_white.png")}
-                    alt="Icon send"
-                    // Other props here
-                  />
-                </>
-              ) : (
-                <>
-                  <Image
-                    source={require("../../assets/images/Activity/ic_send_blue.png")}
-                    alt="Icon send"
-                    // Other props here
-                  />
-                </>
-              )}
+              <Image
+                source={{ uri: deliveryUri }}
+                w={"50%"}
+                h={"150%"}
+                resizeMode="contain"
+                alt="Icon bike"
+                // Other props here
+              />
               <Text
                 style={{
                   ...FONTS.h2,

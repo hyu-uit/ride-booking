@@ -31,13 +31,14 @@ import {
   documentId,
 } from "firebase/firestore";
 import { Alert } from "react-native";
-import { AsyncStorage } from "react-native";
 import { LogBox } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import moment from "moment";
+import { saveToAsyncStorage } from "../../helper/asyncStorage";
+import { useTranslation } from "react-i18next";
 
-// LogBox.ignoreAllLogs(); //Ignore all log notifications
+LogBox.ignoreAllLogs(); //Ignore all log notifications
 
 const SignUpScreen = ({ navigation }) => {
   const [school, setSchool] = useState("");
@@ -46,16 +47,31 @@ const SignUpScreen = ({ navigation }) => {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [email, setEmail] = useState("");
   const [role, setRole] = useState("");
+  const [licensePlates, setLicensePlates] = useState("");
+  const [transportType, setTransportType] = useState("");
 
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [finalDate, setFinalDate] = useState(null);
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  const { t } = useTranslation();
 
   const handleDateChange = (_event, date) => {
-    setShowDatePicker(false);
-    setSelectedDate(date);
-    setShowTimePicker(true);
-    setFinalDate(moment(selectedDate).format("DD-MM-YYYY"));
+    const now = new Date();
+    const birthday = new Date(date);
+    if (birthday.getTime() > now.getTime()) {
+      Alert.alert(t("alertBirthday"), "", [
+        {
+          text: "OK",
+        },
+      ]);
+    } else {
+      setShowDatePicker(false);
+      setSelectedDate(date);
+      setShowDatePicker(true);
+      setFinalDate(moment(selectedDate).format("DD-MM-YYYY"));
+    }
   };
 
   const signUp = () => {
@@ -65,28 +81,34 @@ const SignUpScreen = ({ navigation }) => {
       phoneNumber == "",
       email == "")
     ) {
-      Alert.alert("Please enter your information.", "", [
+      Alert.alert(t("alertInfo"), "", [
         {
           text: "OK",
         },
       ]);
     } else if (phoneNumber.length !== 10) {
-      Alert.alert(
-        "Invalid phone number",
-        "Please re-enter your phone number.",
-        [
-          {
-            text: "OK",
-          },
-        ]
-      );
+      Alert.alert(t("alertInvalid"), t("alertReEnter"), [
+        {
+          text: "OK",
+        },
+      ]);
+    } else if (!emailRegex.test(email)) {
+      Alert.alert(t("alertEmail"), "", [
+        {
+          text: "OK",
+        },
+      ]);
     } else {
       let count = 0;
+      let rejected = false;
       getDocs(collection(db, role)).then((docSnap) => {
         docSnap.forEach((doc) => {
           if (doc.id == phoneNumber) count++;
+          if (doc.data().status === "rejected" && doc.id === phoneNumber)
+            rejected = true;
+          console.log(doc.id);
         });
-        if (count == 0) {
+        if (count == 0 || rejected === true) {
           // setDoc(doc(db, role, phoneNumber), {
           //   displayName: name,
           //   email: email,
@@ -94,23 +116,22 @@ const SignUpScreen = ({ navigation }) => {
           //   studentID: id,
           //   status: "pending",
           // });
-          AsyncStorage.setItem("phoneNumber", phoneNumber);
-          AsyncStorage.setItem("role", role);
-          AsyncStorage.setItem("displayName", name);
-          AsyncStorage.setItem("school", school);
-          AsyncStorage.setItem("studentID", id);
-          AsyncStorage.setItem("email", email);
+          saveToAsyncStorage("phoneNumber", phoneNumber);
+          saveToAsyncStorage("role", role);
+          saveToAsyncStorage("displayName", name);
+          saveToAsyncStorage("school", school);
+          saveToAsyncStorage("studentID", id);
+          saveToAsyncStorage("email", email);
+          saveToAsyncStorage("licensePlates", licensePlates);
+          saveToAsyncStorage("transportType", transportType);
+          saveToAsyncStorage("dob", finalDate);
           navigation.navigate("UploadID");
         } else {
-          Alert.alert(
-            "Phone number has been existed!",
-            "Please re-enter your phone number.",
-            [
-              {
-                text: "OK",
-              },
-            ]
-          );
+          Alert.alert(t("alertExisted"), t("alertReEnter"), [
+            {
+              text: "OK",
+            },
+          ]);
         }
       });
     }
@@ -122,7 +143,9 @@ const SignUpScreen = ({ navigation }) => {
         Keyboard.dismiss();
       }}
     >
-      <KeyboardAvoidingView behavior="position">
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+      >
         <VStack
           paddingX={"10px"}
           bgColor={COLORS.background}
@@ -137,7 +160,7 @@ const SignUpScreen = ({ navigation }) => {
                 }}
               ></ButtonBack>
               <Text style={{ ...FONTS.h2 }} mt={2} mb={2} color={COLORS.white}>
-                Create Account
+                {t("create")}
               </Text>
               <ScrollView showsVerticalScrollIndicator={false} mb={20}>
                 <Select
@@ -146,7 +169,7 @@ const SignUpScreen = ({ navigation }) => {
                   borderRadius={20}
                   borderColor={COLORS.secondary}
                   mt={5}
-                  placeholder="Choose role"
+                  placeholder={t("inputRole")}
                   style={{ ...FONTS.body3 }}
                   color={COLORS.white}
                   onValueChange={(itemValue) => setRole(itemValue)}
@@ -155,16 +178,48 @@ const SignUpScreen = ({ navigation }) => {
                     bg: COLORS.fifthary,
                   }}
                 >
-                  <Select.Item label="Customer" value="Customer" />
-                  <Select.Item label="Rider" value="Rider" />
+                  <Select.Item label={t("customer")} value="Customer" />
+                  <Select.Item label={t("rider")} value="Rider" />
                 </Select>
+                {role === "Rider" ? (
+                  <>
+                    <Input
+                      w={"100%"}
+                      h={"77px"}
+                      borderRadius={20}
+                      borderColor={COLORS.secondary}
+                      mt={5}
+                      placeholder={t("inputType")}
+                      onChangeText={(value) => {
+                        setTransportType(value);
+                      }}
+                      style={{ ...FONTS.body3 }}
+                      color={COLORS.white}
+                    />
+                    <Input
+                      w={"100%"}
+                      h={"77px"}
+                      borderRadius={20}
+                      borderColor={COLORS.secondary}
+                      mt={5}
+                      placeholder={t("inputLicense")}
+                      onChangeText={(value) => {
+                        setLicensePlates(value);
+                      }}
+                      style={{ ...FONTS.body3 }}
+                      color={COLORS.white}
+                    />
+                  </>
+                ) : (
+                  <></>
+                )}
                 <Input
                   w={"100%"}
                   h={"77px"}
                   borderRadius={20}
                   borderColor={COLORS.secondary}
                   mt={5}
-                  placeholder="Full name"
+                  placeholder={t("inputName")}
                   onChangeText={(name) => {
                     setName(name);
                   }}
@@ -192,7 +247,19 @@ const SignUpScreen = ({ navigation }) => {
                         </Text>
                       </>
                     ) : (
-                      <></>
+                      <>
+                        {finalDate === null && showDatePicker === false ? (
+                          <>
+                            <Text
+                              style={{ ...FONTS.body3, color: COLORS.grey }}
+                            >
+                              Ngày sinh
+                            </Text>
+                          </>
+                        ) : (
+                          <></>
+                        )}
+                      </>
                     )}
                     <Ionicons
                       onPress={() => {
@@ -222,7 +289,7 @@ const SignUpScreen = ({ navigation }) => {
                   borderRadius={20}
                   borderColor={COLORS.secondary}
                   mt={5}
-                  placeholder="Student ID"
+                  placeholder={t("inputId")}
                   onChangeText={(id) => {
                     setID(id);
                   }}
@@ -235,7 +302,7 @@ const SignUpScreen = ({ navigation }) => {
                   borderRadius={20}
                   borderColor={COLORS.secondary}
                   mt={5}
-                  placeholder="Choose school"
+                  placeholder={t("inputSchool")}
                   style={{ ...FONTS.body3 }}
                   color={COLORS.white}
                   onValueChange={(itemValue) => setSchool(itemValue)}
@@ -244,21 +311,12 @@ const SignUpScreen = ({ navigation }) => {
                     bg: COLORS.fifthary,
                   }}
                 >
-                  <Select.Item
-                    label="University of Information Technology"
-                    value="UIT"
-                  />
-                  <Select.Item
-                    label="University of Social Sciences and Humanities"
-                    value="USSH"
-                  />
-                  <Select.Item label="University of Science" value="US" />
-                  <Select.Item label="University of Technology" value="UT" />
-                  <Select.Item
-                    label="University of Economics and Law"
-                    value="UEL"
-                  />
-                  <Select.Item label="International University" value="IU" />
+                  <Select.Item label={t("UIT")} value="UIT" />
+                  <Select.Item label={t("USSH")} value="USSH" />
+                  <Select.Item label={t("US")} value="US" />
+                  <Select.Item label={t("UT")} value="UT" />
+                  <Select.Item label={t("UEL")} value="UEL" />
+                  <Select.Item label={t("IU")} value="IU" />
                 </Select>
                 <Input
                   w={"100%"}
@@ -266,7 +324,7 @@ const SignUpScreen = ({ navigation }) => {
                   borderRadius={20}
                   borderColor={COLORS.secondary}
                   mt={5}
-                  placeholder="Phone number"
+                  placeholder={t("inputPhone")}
                   onChangeText={(phoneNumber) => {
                     setPhoneNumber(phoneNumber);
                   }}
@@ -280,7 +338,7 @@ const SignUpScreen = ({ navigation }) => {
                   borderRadius={20}
                   borderColor={COLORS.secondary}
                   mt={5}
-                  placeholder="Email address"
+                  placeholder={t("inputEmail")}
                   onChangeText={(email) => {
                     setEmail(email);
                   }}
@@ -290,7 +348,7 @@ const SignUpScreen = ({ navigation }) => {
                 <VStack w={"100%"} mt={3}>
                   <HStack justifyContent={"center"} mb={5}>
                     <Text color={COLORS.white} style={{ ...FONTS.body3 }}>
-                      You have already an account?{" "}
+                      {t("already")}{" "}
                     </Text>
                     <Text
                       onPress={() => {
@@ -299,7 +357,7 @@ const SignUpScreen = ({ navigation }) => {
                       color={COLORS.primary}
                       style={{ ...FONTS.body3, fontWeight: "bold" }}
                     >
-                      Sign in
+                      {t("signin")}
                     </Text>
                   </HStack>
                   <Button
@@ -309,7 +367,7 @@ const SignUpScreen = ({ navigation }) => {
                     onPress={signUp}
                   >
                     <Text style={{ ...FONTS.h2 }} color={COLORS.white}>
-                      Continue
+                      {t("continue")}
                     </Text>
                   </Button>
                 </VStack>

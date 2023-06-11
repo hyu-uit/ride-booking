@@ -8,6 +8,8 @@ import OnTheWayCard from "../../components/DriverInformationCard/OnTheWayCard";
 import FinishedTripCard from "../../components/DriverInformationCard/FinishedTripCard";
 import ConfirmModal from "../../components/Modal/ConfirmModal";
 import DriverInformationModal from "../../components/Modal/DriverInformationModal";
+import { VStack } from "native-base";
+import { COLORS } from "../../constants";
 
 const initialState = {
   step: 1,
@@ -88,20 +90,22 @@ const BookingDriverScreen = ({ navigation }) => {
   };
 
   return (
-    <BookingContainer>
-      {renderStepContent()}
-      <ConfirmModal
-        isShow={state.isModalCancelShow}
-        title={"Cancel booking"}
-        content={"Are you sure that you want to cancel this booking?"}
-        onClose={handleShowModalCancel}
-        onPressOK={handleShowModalCancel}
-      />
-      <DriverInformationModal
-        isShow={state.isModalInfoShow}
-        onClose={handleShowModalInfo}
-      />
-    </BookingContainer>
+    <VStack h={"100%"} w={"100%"} bgColor={COLORS.background}>
+      <BookingContainer>
+        {renderStepContent()}
+        <ConfirmModal
+          isShow={state.isModalCancelShow}
+          title={"Cancel booking"}
+          content={"Are you sure that you want to cancel this booking?"}
+          onClose={handleShowModalCancel}
+          onPressOK={handleShowModalCancel}
+        />
+        <DriverInformationModal
+          isShow={state.isModalInfoShow}
+          onClose={handleShowModalInfo}
+        />
+      </BookingContainer>
+    </VStack>
   );
 };
 

@@ -5,8 +5,10 @@ import DisappointedIcon from "../assets/icons8-frowning-face-96.png";
 import { SIZES } from "../constants/theme";
 import SelectedButton from "./Button/SelectedButton";
 import SelecteIconButton from "./Button/SelecteIconButton";
+import { useTranslation } from "react-i18next";
 
 const RatingPopup = ({ buttonText, isGroupButtonShow, onPress }) => {
+  const { t } = useTranslation();
   return (
     <View
       bgColor={"#0B0F2F"}
@@ -21,10 +23,10 @@ const RatingPopup = ({ buttonText, isGroupButtonShow, onPress }) => {
       <VStack h={"100%"} space={4}>
         <VStack alignItems={"center"}>
           <Text fontSize={SIZES.h3} color={"white"} bold>
-            How was your ride?
+            {t("how")}
           </Text>
           <Text fontSize={SIZES.h6} color={"#125CAE"}>
-            Your rating helps us improve
+            {t("improve")}
           </Text>
         </VStack>
         <HStack space={4}>

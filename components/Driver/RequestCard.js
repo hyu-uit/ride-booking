@@ -4,8 +4,9 @@ import { TouchableOpacity, StyleSheet } from "react-native";
 import { COLORS, FONTS } from "../../constants/theme";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../../config/config";
+import { useTranslation } from "react-i18next";
 
-function RequestCard (props) {
+function RequestCard(props) {
   let {
     idCustomer,
     idTrip,
@@ -19,27 +20,30 @@ function RequestCard (props) {
     timePickUp,
     status,
     totalPrice,
-    distance
-  } = props.trip
-const [name, setName] = useState("")
-const { navigation } = props;
+    distance,
+  } = props.trip;
+  const [name, setName] = useState("");
+  const { navigation } = props;
+  const { t } = useTranslation();
 
-if(idTrip!==undefined){
-  getDoc(doc(db,"ListTrip",idTrip)).then(tripData=>{
-    if(tripData.exists()){
-      getDoc(doc(db,"Customer",tripData.data().idCustomer)).then(docData=>{
-        if(docData.exists()){
-          setName(docData.data().displayName)
-        }
-      })
-    }
-  })
-}
-  const onClickAccept=()=>{
-    updateDoc(doc(db,"ListTrip",idTrip),{
-      status:"confirmed"
-    })
+  if (idTrip !== undefined) {
+    getDoc(doc(db, "ListTrip", idTrip)).then((tripData) => {
+      if (tripData.exists()) {
+        getDoc(doc(db, "Customer", tripData.data().idCustomer)).then(
+          (docData) => {
+            if (docData.exists()) {
+              setName(docData.data().displayName);
+            }
+          }
+        );
+      }
+    });
   }
+  const onClickAccept = () => {
+    updateDoc(doc(db, "ListTrip", idTrip), {
+      status: "confirmed",
+    });
+  };
   return (
     <View
       h={140}
@@ -64,15 +68,6 @@ if(idTrip!==undefined){
             >
               {name}
             </Text>
-            <Text
-              color={COLORS.lightGrey}
-              style={{
-                ...FONTS.body6,
-                marginLeft: 5,
-              }}
-            >
-              {idTrip}
-            </Text>
           </HStack>
           <View>
             <Text
@@ -82,24 +77,26 @@ if(idTrip!==undefined){
                 alignItems: "flex-end",
               }}
             >
-              {totalPrice}
+              {Number(totalPrice).toLocaleString()}đ
             </Text>
           </View>
         </HStack>
         <HStack space={10}>
           <VStack>
-            <Text style={styles.titleText}>Pick-up</Text>
+            <Text style={styles.titleText}>{t("pickUp")}</Text>
             <Text style={styles.detailText}>KTX Khu B</Text>
           </VStack>
           <VStack>
-            <Text style={styles.titleText}>Destination</Text>
+            <Text style={styles.titleText}>{t("des")}</Text>
             <Text style={styles.detailText}>UIT</Text>
           </VStack>
         </HStack>
         <HStack>
           <VStack>
-            <Text style={styles.titleText}>Time</Text>
-            <Text style={styles.detailText}>{timePickUp}, {datePickUp}</Text>
+            <Text style={styles.titleText}>{t("time")}</Text>
+            <Text style={styles.detailText}>
+              {timePickUp}, {datePickUp}
+            </Text>
           </VStack>
           <Flex
             flex={1}
@@ -113,8 +110,7 @@ if(idTrip!==undefined){
                 }}
               >
                 <TouchableOpacity
-                  onPress={
-                    onClickAccept}
+                  onPress={onClickAccept}
                   style={{
                     borderColor: COLORS.primary,
                     backgroundColor: COLORS.primary,
@@ -127,7 +123,7 @@ if(idTrip!==undefined){
                   }}
                 >
                   <Text bold color={COLORS.white} styles={{ ...FONTS.h5 }}>
-                    Accept
+                    {t("accept")}
                   </Text>
                 </TouchableOpacity>
               </View>
@@ -137,7 +133,7 @@ if(idTrip!==undefined){
       </VStack>
     </View>
   );
-};
+}
 const styles = StyleSheet.create({
   titleText: {
     color: COLORS.grey,

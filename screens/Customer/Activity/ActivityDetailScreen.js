@@ -1,4 +1,4 @@
-import { View, Text } from "react-native";
+import { View, Text, Dimensions } from "react-native";
 import React from "react";
 import {
   Button,
@@ -17,10 +17,14 @@ import { useState } from "react";
 import { useEffect } from "react";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../../../config/config";
+import { useTranslation } from "react-i18next";
+import { Platform } from "react-native";
 
 const ActivityDetailScreen = ({ navigation, route }) => {
   const { idTrip } = route.params;
   const [tripData, setTrip] = useState([]);
+  const contentHeight = Dimensions.get("window").height;
+  const { t } = useTranslation();
 
   // const API_KEY = "AIzaSyDEokOCthVrnmMPiI_fLEZKQtV1SjFvjxQ";
   // const API_KEY = "AIzaSyA_suPUj4xs62VSz5pbRPQ1R-9Bk9Nh6dY";
@@ -43,12 +47,14 @@ const ActivityDetailScreen = ({ navigation, route }) => {
               destLat: tripData.data().destLat,
               destLong: tripData.data().destLong,
               date: tripData.data().date,
+              portrait: docData.data().portrait,
               time: tripData.data().time,
               totalPrice: tripData.data().totalPrice,
               distance: tripData.data().distance,
               licensePlates: docData.data().licensePlates,
               transportType: docData.data().transportType,
               displayName: docData.data().displayName,
+              school: docData.data().school,
             };
             setTrip(data);
           }
@@ -60,7 +66,7 @@ const ActivityDetailScreen = ({ navigation, route }) => {
   return (
     <NativeBaseProvider>
       <VStack
-        h={"100%"}
+        h={Platform.OS === "ios" ? contentHeight : "100%"}
         paddingY={"20px"}
         bgColor={COLORS.background}
         paddingX={"10px"}
@@ -75,7 +81,9 @@ const ActivityDetailScreen = ({ navigation, route }) => {
                   }}
                 ></ButtonBack>
               </View>
-              <Text style={{ ...FONTS.h2, color: COLORS.white }}>Detail</Text>
+              <Text style={{ ...FONTS.h2, color: COLORS.white }}>
+                {t("detail")}
+              </Text>
             </HStack>
             <ScrollView h={"100%"} showsVerticalScrollIndicator={false}>
               {/* <MapView
@@ -102,10 +110,11 @@ const ActivityDetailScreen = ({ navigation, route }) => {
                 }}
               >
                 <HStack>
-                  <Text style={{ ...FONTS.h5, color: COLORS.fifthary }}>
-                    ID:{" "}
+                  <Text style={{ ...FONTS.body5, color: COLORS.fifthary }}>
+                    {t("orderID")}
+                    {": "}
                   </Text>
-                  <Text style={{ ...FONTS.h5, color: COLORS.white }}>
+                  <Text style={{ ...FONTS.body5, color: COLORS.white }}>
                     {idTrip}
                   </Text>
                 </HStack>
@@ -114,7 +123,7 @@ const ActivityDetailScreen = ({ navigation, route }) => {
                   <VStack>
                     <VStack>
                       <Text style={{ ...FONTS.body5, color: COLORS.fifthary }}>
-                        Pick up
+                        {t("pickUp")}
                       </Text>
                       <Text style={{ ...FONTS.h5, color: COLORS.white }}>
                         University of Information Technology
@@ -122,7 +131,7 @@ const ActivityDetailScreen = ({ navigation, route }) => {
                     </VStack>
                     <VStack mt={"15px"}>
                       <Text style={{ ...FONTS.body5, color: COLORS.fifthary }}>
-                        Drop off
+                        {t("des")}
                       </Text>
                       <Text style={{ ...FONTS.h5, color: COLORS.white }}>
                         University of Economic and Law
@@ -183,11 +192,11 @@ const ActivityDetailScreen = ({ navigation, route }) => {
                 padding={"10px"}
               >
                 <Text style={{ ...FONTS.h5, color: COLORS.white }}>
-                  Rider information
+                  {t("riderInfo")}
                 </Text>
                 <HStack mt={"5px"}>
                   <Image
-                    source={require("../../../assets/images/Activity/ic_bike_white.png")}
+                    source={{ uri: tripData.portrait }}
                     alt="Avatar"
                     style={{
                       borderRadius: SIZES.radius50,
@@ -201,7 +210,7 @@ const ActivityDetailScreen = ({ navigation, route }) => {
                       {tripData.displayName}
                     </Text>
                     <Text style={{ ...FONTS.body6, color: COLORS.fourthary }}>
-                      University of Information Technology
+                      {tripData.school}
                     </Text>
                   </VStack>
                 </HStack>
@@ -214,7 +223,7 @@ const ActivityDetailScreen = ({ navigation, route }) => {
                         color: COLORS.fifthary,
                       }}
                     >
-                      Bike number
+                      {t("inputLicense")}
                     </Text>
                     <Text
                       style={{
@@ -223,7 +232,7 @@ const ActivityDetailScreen = ({ navigation, route }) => {
                         color: COLORS.fifthary,
                       }}
                     >
-                      Bike type
+                      {t("inputType")}
                     </Text>
                   </VStack>
                   <VStack ml={39}>
@@ -270,7 +279,9 @@ const ActivityDetailScreen = ({ navigation, route }) => {
                 borderRadius={20}
                 padding={"10px"}
               >
-                <Text style={{ ...FONTS.h5, color: COLORS.white }}>Price</Text>
+                <Text style={{ ...FONTS.h5, color: COLORS.white }}>
+                  {t("price")}
+                </Text>
                 <HStack mt={3}>
                   <VStack>
                     <HStack>
@@ -294,7 +305,7 @@ const ActivityDetailScreen = ({ navigation, route }) => {
                           marginLeft: 10,
                         }}
                       >
-                        5 minutes
+                        5 {t("minutes")}
                       </Text>
                     </HStack>
                   </VStack>
@@ -314,7 +325,7 @@ const ActivityDetailScreen = ({ navigation, route }) => {
                         textDecorationLine: "line-through",
                       }}
                     >
-                      30,000đ
+                      {tripData.totalPrice}
                     </Text>
                   </VStack>
                 </HStack>
@@ -328,7 +339,7 @@ const ActivityDetailScreen = ({ navigation, route }) => {
                 onPress={() => {}}
               >
                 <Text style={{ ...FONTS.h2, color: COLORS.white }}>
-                  Book again
+                  {t("reBooking")}
                 </Text>
               </Button>
             </ScrollView>

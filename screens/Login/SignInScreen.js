@@ -3,6 +3,7 @@ import {
   HStack,
   Input,
   NativeBaseProvider,
+  ScrollView,
   Text,
   VStack,
 } from "native-base";
@@ -15,9 +16,12 @@ import { Keyboard } from "react-native";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../../config/config";
 import { AsyncStorage } from "react-native";
+import { saveToAsyncStorage } from "../../helper/asyncStorage";
+import { useTranslation } from "react-i18next";
 
 const SignInScreen = ({ navigation }) => {
   const [role, setRole] = useState(0);
+  const { t } = useTranslation();
 
   const [phoneNumber, setPhoneNumber] = useState("");
   const [displayOTPInput, setDisplayOTPInput] = useState(false);
@@ -42,41 +46,70 @@ const SignInScreen = ({ navigation }) => {
 
   const checkPhoneNumber = () => {
     if (phoneNumber.length !== 10) {
-      Alert.alert(
-        "Invalid phone number",
-        "Please re-enter your phone number.",
-        [
-          {
-            text: "OK",
-          },
-        ]
-      );
+      Alert.alert(t("alertInvalid"), t("alertReEnter"), [
+        {
+          text: "OK",
+        },
+      ]);
     } else {
       let getRole = "";
       {
         role != 2
-          ? role == 0
+          ? role != 1
             ? (getRole = "Customer")
             : (getRole = "Rider")
           : (getRole = "StudentOffice");
       }
-      getDoc(doc(db, getRole, phoneNumber))
-        .then((docData) => {
-          if (docData.exists() && docData.data().status === "active") {
-            AsyncStorage.setItem("phoneNumber", phoneNumber);
-            AsyncStorage.setItem("role", getRole);
-            navigation.navigate("Verify");
-          } else if (docData.exists() && docData.data().status === "pending") {
-            navigation.navigate("Pending");
-          } else {
-            navigation.navigate("Pending");
-            Alert.alert("Phone number has not been registered!");
-            console.log("no such data");
-          }
-        })
-        .catch((error) => {});
+
+      if (getRole === "StudentOffice") {
+        getDoc(doc(db, getRole, phoneNumber))
+          .then((docData) => {
+            if (docData.exists()) {
+              // AsyncStorage.setItem("phoneNumber", phoneNumber);
+              // AsyncStorage.setItem("role", getRole);
+              saveToAsyncStorage("phoneNumber", phoneNumber);
+              saveToAsyncStorage("role", getRole);
+              navigation.navigate("StudentOfficeNavigator", {
+                screen: "StudentOffice",
+              });
+            } else {
+              Alert.alert("Wrong phone number!");
+              console.log("no such data");
+            }
+          })
+          .catch((error) => {});
+      } else {
+        getDoc(doc(db, getRole, phoneNumber))
+          .then((docData) => {
+            if (!docData.exists()) {
+              Alert.alert(t("alertNotExist"));
+            }
+
+            if (docData.exists() && docData.data().status === "active") {
+              // AsyncStorage.setItem("phoneNumber", phoneNumber);
+              // AsyncStorage.setItem("role", getRole);
+              saveToAsyncStorage("phoneNumber", phoneNumber);
+              saveToAsyncStorage("role", getRole);
+              navigation.navigate("Verify");
+            } else if (
+              docData.exists() &&
+              (docData.data().status === "pending" ||
+                docData.data().status === "rejected")
+            ) {
+              navigation.navigate("Pending");
+              saveToAsyncStorage("phoneNumber", phoneNumber);
+              saveToAsyncStorage("role", getRole);
+            } else if (docData.data().status === "locked") {
+              Alert.alert(t("alertLocked"), t("contactOffice"));
+            } else {
+              Alert.alert(t("alertExisted"));
+            }
+          })
+          .catch((error) => {});
+      }
     }
   };
+
   const onHandleLogin = () => {
     if (role == 1) {
       navigation.navigate("MainRiderNavigator", {
@@ -104,59 +137,64 @@ const SignInScreen = ({ navigation }) => {
             }}
           ></ButtonBack>
           <Text style={{ ...FONTS.h2 }} mt={10} color={COLORS.white}>
-            Let's sign you in
+            {t("letSignIn")}
           </Text>
           <HStack mt={7} w={"100%"}>
-            <Button
-              variant={"outline"}
-              w={"27%"}
-              borderRadius={10}
-              bgColor={role === 0 ? COLORS.fourthary : "transparent"}
-              borderColor={COLORS.fifthary}
-              onPress={() => {
-                setRole(0);
-              }}
-            >
-              <Text color={COLORS.white} style={{ ...FONTS.h5 }}>
-                Customer
-              </Text>
-            </Button>
-            <Button
-              variant={"outline"}
-              w={"18%"}
-              borderRadius={10}
-              borderColor={COLORS.fifthary}
-              bgColor={role === 1 ? COLORS.fourthary : "transparent"}
-              onPress={() => {
-                setRole(1);
-                // navigation.navigate("MainRiderNavigator", {
-                //   screen: "HomeRider",
-                // });
-              }}
-              ml={4}
-            >
-              <Text color={COLORS.white} style={{ ...FONTS.h5 }}>
-                Rider
-              </Text>
-            </Button>
-            <Button
-              variant={"outline"}
-              w={"40%"}
-              borderRadius={10}
-              borderColor={COLORS.fifthary}
-              bgColor={role === 2 ? COLORS.fourthary : "transparent"}
-              onPress={() => {
-                setRole(2);
-                // navigation.navigate("StudentOfficeNavigator", {
-                //   screen: "StudentOffice",
-                // });
-              }}
-              ml={4}
-            >
-              <Text color={COLORS.white} style={{ ...FONTS.h5 }}>
-                Office of Student
-              </Text>
-            </Button>
+            <ScrollView horizontal>
+              <Button
+                full
+                variant={"outline"}
+                // w={"27%"}
+                borderRadius={10}
+                bgColor={role === 0 ? COLORS.fourthary : "transparent"}
+                borderColor={COLORS.fifthary}
+                onPress={() => {
+                  setRole(0);
+                }}
+              >
+                <Text color={COLORS.white} style={{ ...FONTS.h5 }}>
+                  {t("customer")}
+                </Text>
+              </Button>
+              <Button
+                variant={"outline"}
+                // w={"18%"}
+                full
+                borderRadius={10}
+                borderColor={COLORS.fifthary}
+                bgColor={role === 1 ? COLORS.fourthary : "transparent"}
+                onPress={() => {
+                  setRole(1);
+                  // navigation.navigate("MainRiderNavigator", {
+                  //   screen: "HomeRider",
+                  // });
+                }}
+                ml={4}
+              >
+                <Text color={COLORS.white} style={{ ...FONTS.h5 }}>
+                  {t("rider")}
+                </Text>
+              </Button>
+              <Button
+                variant={"outline"}
+                // w={"40%"}
+                full
+                borderRadius={10}
+                borderColor={COLORS.fifthary}
+                bgColor={role === 2 ? COLORS.fourthary : "transparent"}
+                onPress={() => {
+                  setRole(2);
+                  // navigation.navigate("StudentOfficeNavigator", {
+                  //   screen: "StudentOffice",
+                  // });
+                }}
+                ml={4}
+              >
+                <Text color={COLORS.white} style={{ ...FONTS.h5 }}>
+                  {t("office")}
+                </Text>
+              </Button>
+            </ScrollView>
           </HStack>
 
           <Input
@@ -165,7 +203,7 @@ const SignInScreen = ({ navigation }) => {
             borderRadius={20}
             borderColor={COLORS.secondary}
             mt={10}
-            placeholder="Enter your phone number"
+            placeholder={t("enterPhone")}
             style={{ ...FONTS.body3 }}
             color={COLORS.white}
             keyboardType="numeric"
@@ -175,7 +213,7 @@ const SignInScreen = ({ navigation }) => {
           <VStack position={"absolute"} bottom={10} w={"100%"}>
             <HStack justifyContent={"center"} mb={5}>
               <Text color={COLORS.white} style={{ ...FONTS.body3 }}>
-                You don't have account?{" "}
+                {t("dontHaveAccount")}{" "}
               </Text>
               <Text
                 onPress={() => {
@@ -184,7 +222,7 @@ const SignInScreen = ({ navigation }) => {
                 color={COLORS.primary}
                 style={{ ...FONTS.body3, fontWeight: "bold" }}
               >
-                Register
+                {t("register")}
               </Text>
             </HStack>
             <Button
@@ -200,7 +238,7 @@ const SignInScreen = ({ navigation }) => {
               }
             >
               <Text style={{ ...FONTS.h2 }} color={COLORS.white}>
-                Continue
+                {t("continue")}
               </Text>
             </Button>
           </VStack>

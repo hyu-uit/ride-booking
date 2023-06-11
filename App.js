@@ -2,6 +2,23 @@ import { NativeBaseProvider } from "native-base";
 import Navigation from "./navigation";
 import * as Font from "expo-font";
 import { AppProvider } from "./context/AppContext";
+import { useTranslation, initReactI18next } from "react-i18next";
+import i18n from "i18next";
+import { ExpoLocalization } from "expo-localization";
+import en from "./translations/en.json";
+import vi from "./translations/vi.json";
+
+i18n.use(initReactI18next).init({
+  resources: {
+    en: { translation: en },
+    vi: { translation: vi },
+  },
+  fallbackLng: "vi", // Default language fallback
+  debug: false, // Set to true for development
+  interpolation: {
+    escapeValue: false, // React already escapes by default
+  }, // Default language if translation is missing
+});
 
 async function loadFonts() {
   await Font.loadAsync({

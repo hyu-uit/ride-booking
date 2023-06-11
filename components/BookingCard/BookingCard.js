@@ -14,8 +14,9 @@ import { COLORS, SIZES } from "../../constants/theme";
 import { TouchableOpacity } from "react-native";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../../config/config";
+import { useTranslation } from "react-i18next";
 
-function BookingCard (props){
+function BookingCard(props) {
   let {
     idCustomer,
     idTrip,
@@ -30,25 +31,28 @@ function BookingCard (props){
     status,
     idRider,
     totalPrice,
-    distance
-  } = props.trip
+    distance,
+  } = props.trip;
 
- const [name, setName] = useState("")
- const [licensePlates, setLicensePlates] = useState("")
+  const [name, setName] = useState("");
+  const [licensePlates, setLicensePlates] = useState("");
+  const [avt, setAvatar] = useState(null);
+  const { t } = useTranslation();
 
-  const {onPress, sta}=props
+  const { onPress, sta } = props;
   useEffect(() => {
     getNameRider();
     setState(sta);
   }, []);
-  const getNameRider=()=>{
-    getDoc(doc(db,"Rider",idRider)).then(docData=>{
-      if(docData.exists()){
-        setName(docData.data().displayName)
-        setLicensePlates(docData.data().licensePlates)
+  const getNameRider = () => {
+    getDoc(doc(db, "Rider", idRider)).then((docData) => {
+      if (docData.exists()) {
+        setName(docData.data().displayName);
+        setLicensePlates(docData.data().licensePlates);
+        setAvatar(docData.data().portrait);
       }
-    })
-  }
+    });
+  };
 
   const [state, setState] = useState(0);
   return (
@@ -59,53 +63,54 @@ function BookingCard (props){
       borderRadius={20}
       shadow={3}
       marginBottom={5}
-      onTouchEnd={onPress}
     >
-      <HStack w={"full"}>
-        <Avatar source={DefaultAvt} margin={"10px 0 0 10px"} />
-        {state === 1 ? (
-          <>
-            <VStack margin={"10px 0 0 10px"}>
-              <Text bold fontSize={SIZES.h4} color={"white"}>
-                {licensePlates}
-              </Text>
-              <Text fontSize={SIZES.font} color={"#808080"}>
-                {name}
-              </Text>
-            </VStack>
-          </>
-        ) : (
-          <>
-            <VStack margin={"10px 0 0 10px"}>
-              <Text bold fontSize={SIZES.h4} color={"white"}>
-                Waiting for rider
-              </Text>
-            </VStack>
-          </>
-        )}
-      </HStack>
-      <HStack space={6} marginLeft={"10px"} marginBottom={"10px"}>
-        <VStack>
-          <Text bold fontSize={10} color={"#808080"}>
-            Pick-up
-          </Text>
-          <Text bold fontSize={10} color={"white"}>
-            Long An
-          </Text>
-        </VStack>
-        <VStack>
-          <Text bold fontSize={10} color={"#808080"}>
-            Destination
-          </Text>
-          <Text bold fontSize={10} color={"white"}>
-            DH CNTT
-          </Text>
-        </VStack>
+      <TouchableOpacity onPress={onPress}>
+        <HStack w={"full"}>
+          <Avatar source={{ uri: avt }} margin={"10px 0 0 10px"} />
+          {state === 1 ? (
+            <>
+              <VStack margin={"10px 0 0 10px"}>
+                <Text bold fontSize={SIZES.h4} color={"white"}>
+                  {licensePlates}
+                </Text>
+                <Text fontSize={SIZES.font} color={"#808080"}>
+                  {name}
+                </Text>
+              </VStack>
+            </>
+          ) : (
+            <>
+              <VStack margin={"10px 0 0 10px"}>
+                <Text bold fontSize={SIZES.h4} color={"white"}>
+                  {t("waiting")}
+                </Text>
+              </VStack>
+            </>
+          )}
+        </HStack>
+        <HStack space={6} marginLeft={"10px"} marginBottom={"10px"}>
+          <VStack>
+            <Text bold fontSize={10} color={"#808080"}>
+              {t("pickUp")}
+            </Text>
+            <Text bold fontSize={10} color={"white"}>
+              Long An
+            </Text>
+          </VStack>
+          <VStack>
+            <Text bold fontSize={10} color={"#808080"}>
+              {t("des")}
+            </Text>
+            <Text bold fontSize={10} color={"white"}>
+              DH CNTT
+            </Text>
+          </VStack>
 
-        {/* <Image source={CarImg} alt="car" marginLeft={"auto"} /> */}
-      </HStack>
+          {/* <Image source={CarImg} alt="car" marginLeft={"auto"} /> */}
+        </HStack>
+      </TouchableOpacity>
     </View>
   );
-};
+}
 
 export default BookingCard;

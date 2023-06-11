@@ -17,42 +17,57 @@ import {
   TouchableWithoutFeedback,
   LayoutAnimation,
   PixelRatio,
+  Alert,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { useEffect } from "react";
-import { AsyncStorage } from "react-native"; 
+import { AsyncStorage } from "react-native";
 import { db, storage } from "../../config/config";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { doc, updateDoc } from "firebase/firestore";
+import {
+  getFromAsyncStorage,
+  saveToAsyncStorage,
+} from "../../helper/asyncStorage";
+import { useTranslation } from "react-i18next";
 const UploadID = ({ navigation }) => {
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [role, setRole] = useState("");
-  const [email, setEmail] = useState("");
-  const [id, setStudentID] = useState("");
-  const [school, setSchool] = useState("");
-  const [name, setDisplayName] = useState("");
+  const { t } = useTranslation();
+  // const [phoneNumber, setPhoneNumber] = useState("");
+  // const [role, setRole] = useState("");
+  // const [email, setEmail] = useState("");
+  // const [id, setStudentID] = useState("");
+  // const [school, setSchool] = useState("");
+  // const [name, setDisplayName] = useState("");
+  // const [licensePlates, setLicensePlates] = useState("");
+  // const [transportType, setTransportType] = useState("");
 
-  useEffect(()=>{
-    AsyncStorage.getItem('phoneNumber').then(result => {
-      setPhoneNumber(result);
-    });
-    AsyncStorage.getItem('role').then(result => {
-      setRole(result);
-    });
-    AsyncStorage.getItem('email').then(result => {
-      setEmail(result);
-    });
-    AsyncStorage.getItem('studentID').then(result => {
-      setStudentID(result);
-    });
-    AsyncStorage.getItem('school').then(result => {
-      setSchool(result);
-    });
-    AsyncStorage.getItem('displayName').then(result => {
-      setDisplayName(result);
-    })
-  }, [])
-  
+  // useEffect(() => {
+  //   getFromAsyncStorage("phoneNumber").then((result) => {
+  //     setPhoneNumber(result);
+  //   });
+  //   getFromAsyncStorage("role").then((result) => {
+  //     setRole(result);
+  //   });
+  //   getFromAsyncStorage("email").then((result) => {
+  //     setEmail(result);
+  //   });
+  //   getFromAsyncStorage("studentID").then((result) => {
+  //     setStudentID(result);
+  //   });
+  //   getFromAsyncStorage("school").then((result) => {
+  //     setSchool(result);
+  //   });
+  //   getFromAsyncStorage("displayName").then((result) => {
+  //     setDisplayName(result);
+  //   });
+  //   getFromAsyncStorage("transportType").then((result) => {
+  //     setTransportType(result);
+  //   });
+  //   getFromAsyncStorage("licensePlates").then((result) => {
+  //     setLicensePlates(result);
+  //   });
+  // }, []);
+
   const [width, setWidth] = useState(
     PixelRatio.roundToNearestPixel(SIZES.width - 20)
   );
@@ -61,18 +76,19 @@ const UploadID = ({ navigation }) => {
   const [imageBack, setImageBack] = useState(null);
 
   //upload image to firebase storage
-  const uploadImage = async ()=>{
-  
-    AsyncStorage.setItem('phoneNumber',phoneNumber);
-    AsyncStorage.setItem('role',role);
-    AsyncStorage.setItem('cardFront',imageFront);
-    AsyncStorage.setItem('cardBack',imageBack);
-    AsyncStorage.setItem('email',email);
-    AsyncStorage.setItem('displayName',name);
-    AsyncStorage.setItem('studentID',id);
-    AsyncStorage.setItem('school',school);
-    navigation.navigate("UploadFace"); 
-  }
+  const uploadImage = async () => {
+    if (imageFront === null || imageBack === null) {
+      Alert.alert(t("uploadID"), "", [
+        {
+          text: "OK",
+        },
+      ]);
+    } else {
+      saveToAsyncStorage("cardFront", imageFront);
+      saveToAsyncStorage("cardBack", imageBack);
+      navigation.navigate("UploadFace");
+    }
+  };
 
   const pickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -86,7 +102,6 @@ const UploadID = ({ navigation }) => {
       setImageFront(result.assets[0].uri);
     }
     //console.log(result.assets[0].uri);
-
   };
 
   const pickImageBack = async () => {
@@ -123,7 +138,11 @@ const UploadID = ({ navigation }) => {
         onLayout={handleLayout}
       >
         <SafeAreaView style={{ width: "100%", height: "100%" }}>
-          <ButtonBack></ButtonBack>
+          <ButtonBack
+            onPress={() => {
+              navigation.goBack();
+            }}
+          ></ButtonBack>
           <Button
             mt={50}
             w={"100%"}
@@ -145,15 +164,14 @@ const UploadID = ({ navigation }) => {
                   alt="ID front"
                   // resizeMode="cover"
                   bg={COLORS.white}
-                >
-                </Image>
+                ></Image>
               </>
             ) : (
               <>
                 <VStack justifyContent={"center"} alignItems={"center"}>
                   <Icon name="upload" size={50} color={COLORS.white} />
                   <Text style={{ ...FONTS.h4 }} color={COLORS.white} mt={5}>
-                    Upload your Student card (front)
+                    {t("uploadIDFront")}
                   </Text>
                 </VStack>
               </>
@@ -187,7 +205,7 @@ const UploadID = ({ navigation }) => {
                 <VStack justifyContent={"center"} alignItems={"center"}>
                   <Icon name="upload" size={50} color={COLORS.white} />
                   <Text style={{ ...FONTS.h4 }} color={COLORS.white} mt={5}>
-                    Upload your Student card (back)
+                    {t("uploadIDBack")}
                   </Text>
                 </VStack>
               </>
@@ -201,7 +219,7 @@ const UploadID = ({ navigation }) => {
             mt={10}
           >
             <Text style={{ ...FONTS.h2 }} color={COLORS.white}>
-              Continue
+              {t("continue")}
             </Text>
           </Button>
         </SafeAreaView>

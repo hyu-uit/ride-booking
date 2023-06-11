@@ -19,27 +19,57 @@ import { PixelRatio } from "react-native";
 import { TabView, TabBar, SceneMap } from "react-native-tab-view";
 import { Ionicons } from "@expo/vector-icons";
 import StudentListCard from "../../components/StudentOffice/StudentListCard";
-import { query, collection, getDocs, where } from "firebase/firestore";
+import {
+  query,
+  collection,
+  getDocs,
+  where,
+  onSnapshot,
+  getDoc,
+  doc,
+} from "firebase/firestore";
 import { db } from "../../config/config";
+import { getFromAsyncStorage } from "../../helper/asyncStorage";
+import { useTranslation } from "react-i18next";
 
 const StudentOfficeListScreen = ({ navigation }) => {
   const [usersRider, setUsersRider] = useState([]);
   const [usersCustomer, setUsersCustomer] = useState([]);
-  const [usersLock, setUsersLock] = useState([]);
+  const [searchText, setSearchText] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState(null);
+  const { t } = useTranslation();
 
   useEffect(() => {
-    getUsersCustomer();
-    getUsersRider();
-    getUsersLock();
+    fetchDataAndPhoneNumber();
   }, []);
+  const fetchDataAndPhoneNumber = async () => {
+    try {
+      const phoneNumberValue = await getFromAsyncStorage("phoneNumber");
+      setPhoneNumber(phoneNumberValue);
+      if (phoneNumberValue) {
+        const docData = await getDoc(
+          doc(db, "StudentOffice", phoneNumberValue)
+        );
 
-  const getUsersRider = () => {
-    let usersRider = [];
-    getDocs(
-      query(collection(db, "Rider"), where("status", "==", "active"))
-    ).then((docSnap) => {
-      docSnap.forEach((doc) => {
-        usersRider.push({
+        getUsersCustomer(docData.data().acronym);
+        getUsersRider(docData.data().acronym);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const getUsersRider = (ac) => {
+    const riderCollectionRef = collection(db, "Rider");
+    const riderQuery = query(
+      riderCollectionRef,
+      where("status", "==", "active"),
+      where("school", "==", ac)
+    );
+    const unsubscribeRider = onSnapshot(riderQuery, (querySnapshot) => {
+      const updatedUsers = [];
+      querySnapshot.forEach((doc) => {
+        const user = {
           role: "Rider",
           phoneNumber: doc.id,
           school: doc.data().school,
@@ -47,226 +77,133 @@ const StudentOfficeListScreen = ({ navigation }) => {
           email: doc.data().email,
           studentID: doc.data().studentID,
           portrait: doc.data().portrait,
+          birthday: doc.data().birthday,
           cardFront: doc.data().cardFront,
           cardBack: doc.data().cardBack,
-        });
+          key: doc.id + "Rider",
+        };
+        updatedUsers.push(user);
       });
-      setUsersRider(usersRider);
+      setUsersRider([]);
+      setUsersRider((prevUsers) => [
+        ...prevUsers.filter((user) => user.role !== "Rider"),
+        ...updatedUsers,
+      ]);
     });
+    return () => {
+      unsubscribeRider();
+    };
   };
-  const getUsersCustomer = () => {
-    let usersCustomer = [];
-    getDocs(
-      query(collection(db, "Customer"), where("status", "==", "active"))
-    ).then((docSnap) => {
-      docSnap.forEach((doc) => {
-        usersCustomer.push({
+
+  const getUsersCustomer = (ac) => {
+    const customerCollectionRef = collection(db, "Customer");
+    const customerQuery = query(
+      customerCollectionRef,
+      where("status", "==", "active"),
+      where("school", "==", ac)
+    );
+    const unsubscribeCustomer = onSnapshot(customerQuery, (querySnapshot) => {
+      const updatedUsers = [];
+      querySnapshot.forEach((doc) => {
+        const user = {
           role: "Customer",
           phoneNumber: doc.id,
           school: doc.data().school,
           displayName: doc.data().displayName,
           email: doc.data().email,
           studentID: doc.data().studentID,
+          birthday: doc.data().birthday,
           portrait: doc.data().portrait,
           cardFront: doc.data().cardFront,
           cardBack: doc.data().cardBack,
-        });
+          key: doc.id + "-Customer",
+        };
+        updatedUsers.push(user);
       });
-      setUsersCustomer(usersCustomer);
+      setUsersCustomer((prevUsers) => [
+        ...prevUsers.filter((user) => user.role !== "Customer"),
+        ...updatedUsers,
+      ]);
     });
+    return () => {
+      unsubscribeCustomer();
+    };
   };
-  const getUsersLock = () => {
-    let usersLock = [];
-    getDocs(
-      query(collection(db, "Customer"), where("status", "==", "locked"))
-    ).then((docSnap) => {
-      docSnap.forEach((doc) => {
-        usersLock.push({
-          role: "Customer",
-          phoneNumber: doc.id,
-          school: doc.data().school,
-          displayName: doc.data().displayName,
-          email: doc.data().email,
-          studentID: doc.data().studentID,
-          portrait: doc.data().portrait,
-          cardFront: doc.data().cardFront,
-          cardBack: doc.data().cardBack,
-        });
-      });
-    });
-    getDocs(
-      query(collection(db, "Rider"), where("status", "==", "locked"))
-    ).then((docSnap) => {
-      docSnap.forEach((doc) => {
-        usersLock.push({
-          role: "Rider",
-          phoneNumber: doc.id,
-          school: doc.data().school,
-          displayName: doc.data().displayName,
-          email: doc.data().email,
-          studentID: doc.data().studentID,
-          portrait: doc.data().portrait,
-          cardFront: doc.data().cardFront,
-          cardBack: doc.data().cardBack,
-        });
-      });
-      setUsersLock(usersLock);
-    });
+
+  const handleSearchTextChange = (text) => {
+    setSearchText(text);
   };
-  const FirstRoute = () => (
-    <VStack paddingX={"10px"} w={"100%"}>
-      <Input
-        mb={5}
-        borderRadius={10}
-        h={"50px"}
-        placeholder="Search by Student ID"
-        width="100%"
-        variant={"filled"}
-        bgColor={COLORS.tertiary}
-        borderWidth={0}
-        fontSize={SIZES.body3}
-        color={COLORS.white}
-        marginTop={8}
-        InputLeftElement={
-          <Icon
-            ml="2"
-            size="4"
-            color={COLORS.white}
-            as={<Ionicons name="ios-search" />}
-          />
-        }
-      />
-      <VStack mt={"17px"} justifyContent={"end"} alignItems={"center"}>
-        <ScrollView w={"100%"}>
-          {/* <StudentListCard
-            onPress={() => {
-              navigation.navigate("StudentListDetail");
-            }}
-          /> */}
-          <FlatList
-            data={usersCustomer}
-            keyExtractor={(item) => item.name}
-            renderItem={({ item }) => (
-              <StudentListCard
-                onPress={() => {
-                  const data = {
-                    phoneNumber: "" + item.phoneNumber,
-                    role: "" + item.role,
-                  };
-                  navigation.navigate("StudentListDetail", data);
-                }}
-                list={item}
-              ></StudentListCard>
-            )}
-          ></FlatList>
-        </ScrollView>
-      </VStack>
-    </VStack>
-  );
 
-  const SecondRoute = () => (
-    <VStack paddingX={"10px"}>
-      <Input
-        mb={5}
-        borderRadius={10}
-        h={"50px"}
-        placeholder="Search by Student ID"
-        width="100%"
-        variant={"filled"}
-        bgColor={COLORS.tertiary}
-        borderWidth={0}
-        fontSize={SIZES.body3}
-        color={COLORS.white}
-        marginTop={8}
-        InputLeftElement={
-          <Icon
-            ml="2"
-            size="4"
-            color={COLORS.white}
-            as={<Ionicons name="ios-search" />}
-          />
-        }
-      />
-      <VStack mt={"17px"} justifyContent={"center"} alignItems={"center"}>
-        <ScrollView w={"100%"}>
-          <FlatList
-            data={usersRider}
-            keyExtractor={(item) => item.name}
-            renderItem={({ item }) => (
-              <StudentListCard
-                onPress={() => {
-                  const data = {
-                    phoneNumber: "" + item.phoneNumber,
-                    role: "" + item.role,
-                  };
-                  navigation.navigate("StudentListDetail", data);
-                }}
-                list={item}
-              ></StudentListCard>
-            )}
-          ></FlatList>
-        </ScrollView>
-      </VStack>
-    </VStack>
-  );
+  const filteredCustomerUsers = usersCustomer.filter((user) => {
+    const studentID = user.studentID.toLowerCase();
+    const searchQuery = searchText.toLowerCase();
 
-  const ThirdRoute = () => (
-    <VStack paddingX={"10px"}>
-      <Input
-        mb={5}
-        borderRadius={10}
-        h={"50px"}
-        placeholder="Search by Student ID"
-        width="100%"
-        variant={"filled"}
-        bgColor={COLORS.tertiary}
-        borderWidth={0}
-        fontSize={SIZES.body3}
-        color={COLORS.white}
-        marginTop={8}
-        InputLeftElement={
-          <Icon
-            ml="2"
-            size="4"
-            color={COLORS.white}
-            as={<Ionicons name="ios-search" />}
-          />
-        }
-      />
-      <VStack mt={"17px"} justifyContent={"center"} alignItems={"center"}>
-        <ScrollView w={"100%"}>
-          <FlatList
-            data={usersLock}
-            keyExtractor={(item) => item.name}
-            renderItem={({ item }) => (
-              <StudentListCard
-                onPress={() => {
-                  const data = {
-                    phoneNumber: "" + item.phoneNumber,
-                    role: "" + item.role,
-                  };
-                  navigation.navigate("StudentListDetail", data);
-                }}
-                list={item}
-              ></StudentListCard>
-            )}
-          ></FlatList>
-        </ScrollView>
+    return studentID.includes(searchQuery);
+  });
+  const filteredRiderUsers = usersRider.filter((user) => {
+    const studentID = user.studentID.toLowerCase();
+    const searchQuery = searchText.toLowerCase();
+
+    return studentID.includes(searchQuery);
+  });
+
+  const FirstRoute = () => {
+    return (
+      <VStack paddingX={"10px"} w={"100%"}>
+        <FlatList
+          data={filteredCustomerUsers}
+          keyExtractor={(item) => item.key}
+          renderItem={({ item }) => (
+            <StudentListCard
+              onPress={() => {
+                const data = {
+                  phoneNumber: "" + item.phoneNumber,
+                  role: "" + item.role,
+                };
+                navigation.navigate("StudentListDetail", data);
+              }}
+              list={item}
+            ></StudentListCard>
+          )}
+        ></FlatList>
       </VStack>
-    </VStack>
-  );
+    );
+  };
+
+  const SecondRoute = () => {
+    return (
+      <VStack paddingX={"10px"}>
+        <FlatList
+          data={filteredRiderUsers}
+          keyExtractor={(item) => item.key}
+          renderItem={({ item }) => (
+            <StudentListCard
+              onPress={() => {
+                const data = {
+                  phoneNumber: "" + item.phoneNumber,
+                  role: "" + item.role,
+                };
+                navigation.navigate("StudentListDetail", data);
+              }}
+              list={item}
+            ></StudentListCard>
+          )}
+        ></FlatList>
+      </VStack>
+    );
+  };
 
   const renderScene = SceneMap({
     first: FirstRoute,
     second: SecondRoute,
-    third: ThirdRoute,
+    // third: ThirdRoute,
   });
 
   const [index, setIndex] = React.useState(0);
   const [routes] = React.useState([
-    { key: "first", title: "Customer" },
-    { key: "second", title: "Rider" },
-    { key: "third", title: "Locked" },
+    { key: "first", title: t("customer") },
+    { key: "second", title: t("rider") },
+    // { key: "third", title: "Bad" },
   ]);
 
   return (
@@ -279,13 +216,40 @@ const StudentOfficeListScreen = ({ navigation }) => {
             onIndexChange={setIndex}
             initialLayout={{ width: SIZES.width }}
             renderTabBar={(props) => (
-              <TabBar
-                {...props}
-                style={{ backgroundColor: COLORS.tertiary }}
-                inactiveColor={COLORS.fourthary}
-                indicatorStyle={{ backgroundColor: COLORS.fourthary }}
-                labelStyle={{ ...FONTS.h5 }}
-              />
+              <VStack>
+                <TabBar
+                  {...props}
+                  style={{ backgroundColor: COLORS.tertiary, marginBottom: 2 }}
+                  inactiveColor={COLORS.fourthary}
+                  indicatorStyle={{ backgroundColor: COLORS.fourthary }}
+                  labelStyle={{ ...FONTS.h5 }}
+                />
+                <VStack paddingX={"10px"}>
+                  <Input
+                    mb={4}
+                    borderRadius={10}
+                    h={"50px"}
+                    placeholder={t("search")}
+                    width="100%"
+                    variant={"filled"}
+                    bgColor={COLORS.tertiary}
+                    borderWidth={0}
+                    fontSize={SIZES.body3}
+                    color={COLORS.white}
+                    marginTop={4}
+                    value={searchText}
+                    onChangeText={handleSearchTextChange}
+                    InputLeftElement={
+                      <Icon
+                        ml="2"
+                        size="4"
+                        color={COLORS.white}
+                        as={<Ionicons name="ios-search" />}
+                      />
+                    }
+                  />
+                </VStack>
+              </VStack>
             )}
           />
         </VStack>

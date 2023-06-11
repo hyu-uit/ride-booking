@@ -8,7 +8,6 @@ import {
   View,
   Image,
   Avatar,
-  Switch,
   ScrollView,
   Icon,
   FlatList,
@@ -23,9 +22,24 @@ import HistoryCard from "../../../components/HistoryCard";
 import * as ImagePicker from "expo-image-picker";
 import HistoryPickUpCard from "../../../components/Driver/HistoryPickUpCard";
 import { Ionicons } from "@expo/vector-icons";
-import { collection, getDocs, query, where } from "@firebase/firestore";
+import {
+  collection,
+  getDocs,
+  query,
+  where,
+  updateDoc,
+  doc,
+  getDoc,
+} from "@firebase/firestore";
 import { db } from "../../../config/config";
 import moment from "moment/moment";
+import {
+  getFromAsyncStorage,
+  saveToAsyncStorage,
+} from "../../../helper/asyncStorage";
+import { BackHandler, Switch, ToastAndroid } from "react-native";
+import { useFocusEffect } from "@react-navigation/native";
+import { useTranslation } from "react-i18next";
 
 const RiderHomeScreen = ({ navigation, route }) => {
   const [service, setService] = useState(0);
@@ -36,28 +50,93 @@ const RiderHomeScreen = ({ navigation, route }) => {
   // useEffect(() => {
   //   console.log(phoneNumber)
   // }, []);
+  const [open, setOpen] = useState();
   const [waitingTrips, setWaitingTrips] = useState([]);
   const [finishedTrips, setFinishedTrips] = useState([]);
   const [canceledTrips, setCanceledTrips] = useState([]);
-  const currentDate = moment().format("DD/M/YYYY");
+  const [phoneNumber, setPhoneNumber] = useState([]);
+  const currentDate = moment().format("D/M/YYYY");
+  const { t } = useTranslation();
+
+  let backButtonPressedOnce = false;
+
+  useFocusEffect(
+    React.useCallback(() => {
+      const onBackPress = () => {
+        if (backButtonPressedOnce) {
+          BackHandler.exitApp();
+        } else {
+          backButtonPressedOnce = true;
+          ToastAndroid.show("Press back again to exit", ToastAndroid.SHORT);
+          setTimeout(() => {
+            backButtonPressedOnce = false;
+          }, 2000); // Reset the variable after 2 seconds
+        }
+        return true;
+      };
+
+      BackHandler.addEventListener("hardwareBackPress", onBackPress);
+
+      return () =>
+        BackHandler.removeEventListener("hardwareBackPress", onBackPress);
+    }, [])
+  );
 
   useEffect(() => {
-    getWaitingTrips();
-    getFinishedTrips();
-    getCanceledTrips();
+    fetchDataAndPhoneNumber();
   }, [navigation]);
+
+  const fetchDataAndPhoneNumber = async () => {
+    try {
+      const phoneNumberValue = await getFromAsyncStorage("phoneNumber");
+      setPhoneNumber(phoneNumberValue);
+
+      if (phoneNumberValue) {
+        fetchData(phoneNumberValue);
+        // const docData = await getDoc(doc(db, "ListTrip", phoneNumberValue));
+        await getWaitingTrips();
+        await getFinishedTrips();
+        await getCanceledTrips();
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const fetchData = async (phoneNumber) => {
+    try {
+      const docData = await getDoc(doc(db, "Rider", phoneNumber));
+      setOpen(docData.data().open);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  // useEffect(() => {
+  //   getWaitingTrips();
+  //   getFinishedTrips();
+  //   getCanceledTrips();
+  //   getFromAsyncStorage("phoneNumber").then((result) => {
+  //     setPhoneNumber(result);
+  //   });
+  // }, [navigation]);
+
+  const handleSwitchChange = () => {
+    console.log(open);
+    setOpen((pre) => !pre);
+    console.log(open);
+    updateDoc(doc(db, "Rider", phoneNumber), {
+      open: !open,
+    });
+  };
 
   const getWaitingTrips = () => {
     let waitingTrips = [];
     getDocs(
-      query(
-        collection(db, "ListTrip"),
-        where("isScheduled", "==", "false"),
-        where("date", "==", currentDate)
-      )
+      query(collection(db, "ListTrip"), where("isScheduled", "==", "false"))
     ).then((docSnap) => {
       docSnap.forEach((doc) => {
-        if (doc.data().status == "waiting") {
+        if (doc.data().status == "waiting" && doc.data().idRider === "") {
           waitingTrips.push({
             idCustomer: doc.data().idCustomer,
             idTrip: doc.id,
@@ -71,6 +150,7 @@ const RiderHomeScreen = ({ navigation, route }) => {
             timePickUp: doc.data().timePickUp,
             totalPrice: doc.data().totalPrice,
             distance: doc.data().distance,
+            status: doc.data().status,
           });
         }
       });
@@ -97,6 +177,7 @@ const RiderHomeScreen = ({ navigation, route }) => {
           timePickUp: doc.data().timePickUp,
           totalPrice: doc.data().totalPrice,
           distance: doc.data().distance,
+          status: doc.data().status,
         });
       });
       setFinishedTrips(finishedTrips);
@@ -122,6 +203,7 @@ const RiderHomeScreen = ({ navigation, route }) => {
           timePickUp: doc.data().timePickUp,
           totalPrice: doc.data().totalPrice,
           distance: doc.data().distance,
+          status: doc.data().status,
         });
       });
       setCanceledTrips(canceledTrips);
@@ -170,7 +252,16 @@ const RiderHomeScreen = ({ navigation, route }) => {
       data={finishedTrips}
       keyExtractor={(item) => item.idTrip}
       renderItem={({ item }) => (
-        <HistoryPickUpCard trip={item} key={item.idTrip}></HistoryPickUpCard>
+        <HistoryPickUpCard
+          trip={item}
+          key={item.idTrip}
+          onPress={() => {
+            const data = {
+              idTrip: "" + item.idTrip,
+            };
+            navigation.navigate("TripDetail", data);
+          }}
+        ></HistoryPickUpCard>
       )}
     ></FlatList>
   );
@@ -183,7 +274,16 @@ const RiderHomeScreen = ({ navigation, route }) => {
       data={canceledTrips}
       keyExtractor={(item) => item.idTrip}
       renderItem={({ item }) => (
-        <HistoryPickUpCard trip={item} key={item.idTrip}></HistoryPickUpCard>
+        <HistoryPickUpCard
+          trip={item}
+          key={item.idTrip}
+          onPress={() => {
+            const data = {
+              idTrip: "" + item.idTrip,
+            };
+            navigation.navigate("TripDetail", data);
+          }}
+        ></HistoryPickUpCard>
       )}
     ></FlatList>
   );
@@ -196,9 +296,9 @@ const RiderHomeScreen = ({ navigation, route }) => {
 
   const [index, setIndex] = React.useState(0);
   const [routes] = React.useState([
-    { key: "first", title: "Available" },
-    { key: "second", title: "Finished" },
-    { key: "third", title: "Canceled" },
+    { key: "first", title: t("available") },
+    { key: "second", title: t("finished") },
+    { key: "third", title: t("canceled") },
   ]);
 
   return (
@@ -231,7 +331,12 @@ const RiderHomeScreen = ({ navigation, route }) => {
                       w={"30px"}
                     ></Image>
                   </Button>
-                  <Switch defaultIsChecked></Switch>
+                  <Switch
+                    thumbColor={open ? COLORS.fifthary : COLORS.grey}
+                    value={open}
+                    onValueChange={handleSwitchChange}
+                    trackColor={{ true: COLORS.fourthary }}
+                  ></Switch>
                 </HStack>
               </HStack>
 

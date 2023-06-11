@@ -6,8 +6,10 @@ import ButtonBack from "../../../components/Global/ButtonBack/ButtonBack";
 import PopUpRequestCard from "../../../components/Driver/PopUpRequestCard";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../../../config/config";
+import { Dimensions } from "react-native";
 
 const TripDetailScreen = ({ navigation, route }) => {
+  const contentHeight = Dimensions.get("window").height;
   const { idTrip } = route.params;
   const [tripData, setTrip] = useState({});
   useEffect(() => {
@@ -28,13 +30,14 @@ const TripDetailScreen = ({ navigation, route }) => {
           time: doc.data().time,
           totalPrice: doc.data().totalPrice,
           distance: doc.data().distance,
+          status: doc.data().status,
         };
       }
       setTrip(data);
     });
   };
   return (
-    <VStack h={"100%"} bgColor={COLORS.background}>
+    <VStack h={contentHeight} bgColor={COLORS.background}>
       <SafeAreaView>
         <View position={"absolute"} top={50} left={2} zIndex={1}>
           <ButtonBack
@@ -54,7 +57,7 @@ const TripDetailScreen = ({ navigation, route }) => {
           <Marker
             coordinate={{ latitude: 9.90761, longitude: 105.31181 }}
           ></Marker>
-        </MapView> */}
+        </MapView>
         <PopUpRequestCard
           trip={tripData}
           navigation={navigation}

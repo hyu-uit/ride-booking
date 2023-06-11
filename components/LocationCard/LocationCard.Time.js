@@ -24,6 +24,7 @@ import {
   convertToTime,
 } from "../../helper/moment";
 import DateTimePicker from "@react-native-community/datetimepicker";
+import { useTranslation } from "react-i18next";
 import { BookingContext } from "../../context/BookingContext";
 import { isNullOrEmpty } from "../../helper/helper";
 import { useContext } from "react";
@@ -37,6 +38,7 @@ const LocationCardTime = ({ onClickContinue, onPressBack }) => {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedTime, setSelectedTime] = useState(new Date());
   const [finalDate, setFinalDate] = useState(convertToFullDateTime(Date.now()));
+  const { t } = useTranslation();
 
   useEffect(() => {
     // to ensure that when user switch from choose date to now that now still get current date
@@ -76,7 +78,7 @@ const LocationCardTime = ({ onClickContinue, onPressBack }) => {
           <VStack space={2} width={"90%"}>
             <VStack space={1}>
               <Text bold fontSize={SIZES.h6} color={"#8CC3FF"}>
-                Pick-up
+                {t("pickUp")}
               </Text>
               <Text bold fontSize={SIZES.h6} color={"white"}>
                 {isNullOrEmpty(booking.pickUpLocation.address)
@@ -87,7 +89,7 @@ const LocationCardTime = ({ onClickContinue, onPressBack }) => {
             <Divider />
             <VStack space={1}>
               <Text bold fontSize={SIZES.h6} color={"#8CC3FF"}>
-                Destination
+                {t("des")}
               </Text>
               <Text bold fontSize={SIZES.h6} color={"white"}>
                 {isNullOrEmpty(booking.destinationLocation.address)
@@ -130,7 +132,7 @@ const LocationCardTime = ({ onClickContinue, onPressBack }) => {
             alignSelf={"center"}
           ></Box>
           <Text fontSize={SIZES.h6} color={"white"}>
-            Schedule Time
+            {t("scheduleTime")}
           </Text>
 
           <Button
@@ -140,7 +142,7 @@ const LocationCardTime = ({ onClickContinue, onPressBack }) => {
             onPress={() => setIsNowSelected(true)}
           >
             <Text style={{ ...FONTS.body6 }} color={"white"}>
-              Now
+              {t("now")}
             </Text>
           </Button>
           <TouchableOpacity
@@ -194,7 +196,7 @@ const LocationCardTime = ({ onClickContinue, onPressBack }) => {
             onTouchEnd={() => onClickContinue(finalDate)}
           >
             <Text color={"white"} bold fontSize={SIZES.small}>
-              Continue
+              {t("continue")}
             </Text>
           </Button>
         </HStack>

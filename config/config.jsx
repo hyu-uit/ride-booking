@@ -1,6 +1,10 @@
 import { initializeApp } from "firebase/app";
 import {getFirestore}from 'firebase/firestore';
 import { getStorage, ref} from 'firebase/storage'
+// import {getAuth, signInWithPhoneNumber} from 'firebase/auth'
+// import { initializeAppCheck, ReCaptchaV3Provider } from "firebase/app-check";
+
+
 // Your web app's Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyDMVr_n-9hYQF3DTZhAYXumPGrOeeYZ3Sc",
@@ -14,6 +18,12 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
+// const appCheck = initializeAppCheck(app, {
+//   provider: new ReCaptchaV3Provider('6LfI-FwmAAAAAE_O7dS3hiEK0UzdKV9CDmryisQn'),
+// });
 export const db = getFirestore(app);
 export const storage = getStorage(app);
+// export const auth = getAuth(app);
+
+
 

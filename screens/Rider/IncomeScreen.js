@@ -16,6 +16,7 @@ import calendarIcon from "../../assets/calendar.png";
 import { TouchableOpacity } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { Ionicons } from "@expo/vector-icons";
+import { useTranslation } from "react-i18next";
 
 const IncomeScreen = () => {
   const [service, setService] = useState(0);
@@ -116,7 +117,7 @@ const IncomeScreen = () => {
           paddingHorizontal: 20,
         }}
       >
-        <Text color={COLORS.fifthary}>Select date</Text>
+        <Text color={COLORS.fifthary}>{t("selectDay")}</Text>
         {/* <Text color={COLORS.white} flex={1}>
           {text}
         </Text> */}
@@ -155,7 +156,7 @@ const IncomeScreen = () => {
         }}
       >
         <Text flex={1} mt={5} color={COLORS.white} style={{ ...FONTS.body3 }}>
-          Your total income is
+          {t("yourIncome")}
         </Text>
         <Text
           flex={1}
@@ -174,10 +175,11 @@ const IncomeScreen = () => {
   };
 
   const [index, setIndex] = React.useState(0);
+  const { t } = useTranslation();
   const [routes] = React.useState([
-    { key: "first", title: "DAY" },
-    { key: "second", title: "WEEK" },
-    { key: "third", title: "MONTH" },
+    { key: "first", title: t("day") },
+    { key: "second", title: t("week") },
+    { key: "third", title: t("month") },
   ]);
 
   return (
@@ -185,14 +187,7 @@ const IncomeScreen = () => {
       <VStack h={"100%"} paddingBottom={"20px"} bgColor={COLORS.background}>
         <SafeAreaView>
           <VStack h={"100%"}>
-            <View alignItems={"center"}>
-              <Text
-                style={{ color: COLORS.white, ...FONTS.h2, fontWeight: "bold" }}
-                mb={10}
-              >
-                Income
-              </Text>
-            </View>
+            <View alignItems={"center"}></View>
             <TabView
               navigationState={{ index, routes }}
               renderScene={renderScene}

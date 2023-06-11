@@ -14,6 +14,11 @@ import { COLORS, FONTS } from "../../constants";
 import { TouchableWithoutFeedback } from "react-native";
 import { Keyboard } from "react-native";
 import { AsyncStorage } from "react-native";
+import { getFromAsyncStorage } from "../../helper/asyncStorage";
+import { doc, getDoc, setDoc } from "firebase/firestore";
+import { getToken } from "firebase/app-check";
+import { signInWithPhoneNumber } from "@firebase/auth";
+import { useTranslation } from "react-i18next";
 
 const VerifyingScreen = ({ navigation }) => {
   const firstInput = useRef();
@@ -23,50 +28,42 @@ const VerifyingScreen = ({ navigation }) => {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [role, setRole] = useState("");
 
+  const { t } = useTranslation();
+
   useEffect(() => {
-    AsyncStorage.getItem("phoneNumber").then((result) => {
-      setPhoneNumber(result);
-    });
-    AsyncStorage.getItem("role").then((result) => {
-      setRole(result);
-    });
+    getFromAsyncStorage("phoneNumber")
+      .then((value) => setPhoneNumber(value))
+      .catch((err) => console.log(err));
+
+    getFromAsyncStorage("role")
+      .then((value) => setRole(value))
+      .catch((err) => console.log(err));
   }, []);
+
   // navigation.navigate("StudentOfficeNavigator", {
   //   screen: "StudentOffice",
   // });
   const signInOption = () => {
-    {
-      role == "Customer"
-        ? role == "Rider"
-          ? navigation.navigate("MainRiderNavigator", {
-              screen: "HomeRider",
-              params: {
-                data: {
-                  phoneNumber: "" + phoneNumber,
-                  role: "" + role,
-                },
-              },
-            })
-          : navigation.navigate("MainNavigator", {
-              screen: "HomeStack",
-              params: {
-                screen: "Home",
-                data: {
-                  phoneNumber: "" + phoneNumber,
-                  role: "" + role,
-                },
-              },
-            })
-        : navigation.navigate("StudentOfficeNavigator", {
-            screen: "StudentOffice",
-            params: {
-              data: {
-                phoneNumber: "" + phoneNumber,
-                role: "" + role,
-              },
+    role === "Customer"
+      ? navigation.navigate("MainNavigator", {
+          screen: "HomeStack",
+          params: {
+            screen: "Home",
+            data: {
+              phoneNumber: "" + phoneNumber,
+              role: "" + role,
             },
-          });
-    }
+          },
+        })
+      : navigation.navigate("MainRiderNavigator", {
+          screen: "HomeRider",
+          params: {
+            data: {
+              phoneNumber: "" + phoneNumber,
+              role: "" + role,
+            },
+          },
+        });
   };
   const [otp, setOtp] = useState({ 1: "", 2: "", 3: "", 4: "" });
   return (
@@ -89,16 +86,25 @@ const VerifyingScreen = ({ navigation }) => {
           ></ButtonBack>
           <View style={{ alignItems: "center" }}>
             <Text style={{ ...FONTS.h2 }} color={COLORS.white}>
-              Verification
+              {t("verification")}
             </Text>
-            <HStack mt={10}>
-              <Text style={{ ...FONTS.body3 }} color={COLORS.white}>
-                Code sent to{" (+84) "}
+            <VStack mt={10}>
+              <Text
+                style={{ ...FONTS.body3 }}
+                color={COLORS.white}
+                textAlign={"center"}
+              >
+                {t("codeSentTo")}
               </Text>
-              <Text style={{ ...FONTS.body3 }} color={COLORS.white}>
-                0848867679
+              <Text
+                style={{ ...FONTS.body3 }}
+                color={COLORS.white}
+                textAlign={"center"}
+              >
+                {" (+84) "}
+                {phoneNumber}
               </Text>
-            </HStack>
+            </VStack>
             <HStack mt={10}>
               <Input
                 w={"60px"}
@@ -184,7 +190,7 @@ const VerifyingScreen = ({ navigation }) => {
               onPress={signInOption}
             >
               <Text style={{ ...FONTS.h2 }} color={COLORS.white}>
-                Request again
+                {t("again")}
               </Text>
             </Button>
           </View>

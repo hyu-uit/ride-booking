@@ -26,6 +26,7 @@ import {
 import { Platform } from "react-native";
 import { useContext, useState } from "react";
 import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { getAutoCompleteResults } from "../../api/locationAPI";
 import {
   BookingContext,
@@ -74,11 +75,11 @@ const LocationCardWithChange = ({
           .finally(() => setLoading(false));
       }
     }, 1000);
-
     return () => {
       clearTimeout(searchTimeout);
     };
-  }, [desInput]);
+  });
+  const { t } = useTranslation();
 
   return (
     <Flex marginTop={3} marginLeft={3} marginRight={3}>
@@ -94,7 +95,7 @@ const LocationCardWithChange = ({
         <VStack space={2} flex={5}>
           <VStack>
             <Text bold fontSize={SIZES.h6} color={"#8CC3FF"}>
-              Pick-up
+              {t("pickUp")}
             </Text>
             <TouchableOpacity
               onPress={(e) => {
@@ -103,14 +104,14 @@ const LocationCardWithChange = ({
               }}
             >
               <Text color={"white"} padding={1} style={{ ...FONTS.body5 }} bold>
-                {pickUpInput}
+                {t("enterPickUp")}
               </Text>
             </TouchableOpacity>
           </VStack>
           <Divider />
           <VStack>
             <Text bold fontSize={SIZES.h6} color={"#8CC3FF"}>
-              Drop off
+              {t("des")}
             </Text>
             <AutocompleteDropdown
               onFocus={() => {
@@ -153,7 +154,7 @@ const LocationCardWithChange = ({
               }}
               textInputProps={{
                 value: desInput,
-                placeholder: "Search your destination",
+                placeholder: t("enterDestination"),
                 style: {
                   color: "white",
                   paddingLeft: 0,

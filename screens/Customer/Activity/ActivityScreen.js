@@ -20,26 +20,53 @@ import HistoryCard from "../../../components/HistoryCard";
 import BookingCard from "../../../components/BookingCard/BookingCard";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../../../config/config";
+import { getFromAsyncStorage } from "../../../helper/asyncStorage";
+import { useTranslation } from "react-i18next";
 
 const ActivityScreen = ({ navigation }) => {
+  const { t } = useTranslation();
+
   const [service, setService] = useState(0);
   const [waitingTrips, setWaitingTrips] = useState({});
   const [confirmedTrips, setConfirmedTrips] = useState({});
   const [canceledTrips, setCanceledTrips] = useState({});
+  const [phoneNumber, setPhone] = useState(null);
+  const [bikeUri, setBikeUri] = useState(
+    "https://res.cloudinary.com/dtutrxnyl/image/upload/v1686364990/bikeWhite_vqyjm3.png"
+  );
+  const [deliveryUri, setDeliveryUri] = useState(
+    "https://res.cloudinary.com/dtutrxnyl/image/upload/v1686364992/deliveryBlue_ztlpxb.png"
+  );
 
   useEffect(() => {
-    getWaitingTrips();
-    getConfirmedTrips();
-    getCanceledTrips();
+    fetchDataAndPhoneNumber();
   }, []);
 
-  const getWaitingTrips = () => {
+  const fetchDataAndPhoneNumber = async () => {
+    try {
+      const phoneNumberValue = await getFromAsyncStorage("phoneNumber");
+      setPhone(phoneNumberValue);
+      console.log(phoneNumberValue);
+
+      if (phoneNumberValue) {
+        getWaitingTrips(phoneNumberValue);
+        getConfirmedTrips(phoneNumberValue);
+        getCanceledTrips(phoneNumberValue);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  const getWaitingTrips = async (phoneNumber) => {
     let waitingTrips = [];
     getDocs(
-      query(collection(db, "ListTrip"), where("isScheduled", "==", "true"))
+      query(collection(db, "ListTrip"), where("isScheduled", "==", "false"))
     ).then((docSnap) => {
       docSnap.forEach((doc) => {
-        if (doc.data().status == "waiting") {
+        if (
+          doc.data().status == "waiting" &&
+          doc.data().idCustomer == phoneNumber
+        ) {
           waitingTrips.push({
             idCustomer: doc.data().idCustomer,
             idTrip: doc.id,
@@ -60,13 +87,17 @@ const ActivityScreen = ({ navigation }) => {
       setWaitingTrips(waitingTrips);
     });
   };
-  const getConfirmedTrips = () => {
+
+  const getConfirmedTrips = async (phoneNumber) => {
     let confirmedTrips = [];
     getDocs(
-      query(collection(db, "ListTrip"), where("isScheduled", "==", "true"))
+      query(collection(db, "ListTrip"), where("isScheduled", "==", "false"))
     ).then((docSnap) => {
       docSnap.forEach((doc) => {
-        if (doc.data().status == "confirmed") {
+        if (
+          doc.data().status == "done" &&
+          doc.data().idCustomer == phoneNumber
+        ) {
           confirmedTrips.push({
             idCustomer: doc.data().idCustomer,
             idTrip: doc.id,
@@ -87,13 +118,16 @@ const ActivityScreen = ({ navigation }) => {
       setConfirmedTrips(confirmedTrips);
     });
   };
-  const getCanceledTrips = () => {
+  const getCanceledTrips = async (phoneNumber) => {
     let canceledTrips = [];
     getDocs(
       query(collection(db, "ListTrip"), where("isScheduled", "==", "true"))
     ).then((docSnap) => {
       docSnap.forEach((doc) => {
-        if (doc.data().status == "canceled") {
+        if (
+          doc.data().status == "canceled" &&
+          doc.data().idCustomer == phoneNumber
+        ) {
           canceledTrips.push({
             idCustomer: doc.data().idCustomer,
             idTrip: doc.id,
@@ -114,11 +148,12 @@ const ActivityScreen = ({ navigation }) => {
       setCanceledTrips(canceledTrips);
     });
   };
+
   const FirstRoute = () => (
-    <ScrollView>
+    <VStack paddingX={"10px"}>
       {/* <BookingCard onPress={() => navigation.navigate("ActivityDetail")} /> */}
       <FlatList
-        padding={"10px"}
+        w={"100%"}
         mt={2}
         horizontal={false}
         data={waitingTrips}
@@ -136,15 +171,15 @@ const ActivityScreen = ({ navigation }) => {
           ></BookingCard>
         )}
       ></FlatList>
-    </ScrollView>
+    </VStack>
   );
 
   const SecondRoute = () => (
-    <ScrollView>
+    <VStack paddingX={"10px"}>
       {/* <BookingCard sta={1} />
         <BookingCard sta={1} /> */}
       <FlatList
-        padding={"10px"}
+        w={"100%"}
         mt={2}
         horizontal={false}
         data={confirmedTrips}
@@ -163,13 +198,13 @@ const ActivityScreen = ({ navigation }) => {
           ></BookingCard>
         )}
       ></FlatList>
-    </ScrollView>
+    </VStack>
   );
 
   const ThirdRoute = () => (
-    <ScrollView>
+    <VStack paddingX={"10px"}>
       <FlatList
-        padding={"10px"}
+        w={"100%"}
         mt={2}
         horizontal={false}
         data={canceledTrips}
@@ -188,7 +223,7 @@ const ActivityScreen = ({ navigation }) => {
           ></BookingCard>
         )}
       ></FlatList>
-    </ScrollView>
+    </VStack>
   );
 
   const renderScene = SceneMap({
@@ -199,9 +234,9 @@ const ActivityScreen = ({ navigation }) => {
 
   const [index, setIndex] = React.useState(0);
   const [routes] = React.useState([
-    { key: "first", title: "Booking" },
-    { key: "second", title: "Booked" },
-    { key: "third", title: "Canceled" },
+    { key: "first", title: t("booking") },
+    { key: "second", title: t("booked") },
+    { key: "third", title: t("canceled") },
   ]);
 
   return (
@@ -216,13 +251,27 @@ const ActivityScreen = ({ navigation }) => {
               bgColor={service === 0 ? COLORS.primary : COLORS.tertiary}
               onPress={() => {
                 setService(0);
+                setBikeUri(
+                  "https://res.cloudinary.com/dtutrxnyl/image/upload/v1686364990/bikeWhite_vqyjm3.png"
+                );
+                setDeliveryUri(
+                  "https://res.cloudinary.com/dtutrxnyl/image/upload/v1686364992/deliveryBlue_ztlpxb.png"
+                );
               }}
             >
               {/* <Image
                 src={require("../../../assets/images/Activity/ic_bike.png`")}
               /> */}
               <HStack justifyContent={"center"} alignItems={"center"}>
-                {service === 0 ? (
+                <Image
+                  source={{ uri: bikeUri }}
+                  w={"50%"}
+                  h={"120%"}
+                  resizeMode="contain"
+                  alt="Icon bike"
+                  // Other props here
+                />
+                {/* {service === 0 ? (
                   <>
                     <Image
                       source={IC_Bike_White}
@@ -238,7 +287,7 @@ const ActivityScreen = ({ navigation }) => {
                       // Other props here
                     />
                   </>
-                )}
+                )} */}
 
                 <Text
                   style={{
@@ -257,13 +306,19 @@ const ActivityScreen = ({ navigation }) => {
               bgColor={service === 1 ? COLORS.primary : COLORS.tertiary}
               onPress={() => {
                 setService(1);
+                setBikeUri(
+                  "https://res.cloudinary.com/dtutrxnyl/image/upload/v1686364990/bikeBlue_sqih2p.png"
+                );
+                setDeliveryUri(
+                  "https://res.cloudinary.com/dtutrxnyl/image/upload/v1686364990/deliveryWhite_flxx91.png"
+                );
               }}
             >
               {/* <Image
                 src={require("../../../assets/images/Activity/ic_bike.png`")}
               /> */}
               <HStack justifyContent={"center"} alignItems={"center"}>
-                {service === 1 ? (
+                {/* {service === 1 ? (
                   <>
                     <Image
                       source={require("../../../assets/images/Activity/ic_send_white.png")}
@@ -279,7 +334,15 @@ const ActivityScreen = ({ navigation }) => {
                       // Other props here
                     />
                   </>
-                )}
+                )} */}
+                <Image
+                  source={{ uri: deliveryUri }}
+                  w={"50%"}
+                  h={"150%"}
+                  resizeMode="contain"
+                  alt="Icon bike"
+                  // Other props here
+                />
                 <Text
                   style={{
                     ...FONTS.h2,

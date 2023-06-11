@@ -16,6 +16,10 @@ export default function Navigation() {
   const [isFirstUse, setIsFirstUse] = useState(true);
   useEffect(() => {
     getFromAsyncStorage(IS_FIRST_USE).then((value) => {
+      console.log(
+        "🚀 ~ file: index.js:19 ~ getFromAsyncStorage ~ value:",
+        value
+      );
       if (value) setIsFirstUse(value);
     });
   }, []);
@@ -23,21 +27,23 @@ export default function Navigation() {
     <NativeBaseProvider>
       <NavigationContainer>
         <Stack.Navigator screenOptions={{ headerShown: false }}>
-          {/* {isFirstUse ? (
+          {isFirstUse ? (
             <Stack.Screen name="OnBoarding" component={OnBoardingScreen} />
           ) : null}
           <Stack.Screen
             name="AuthenticationStack"
             component={AuthenticationStackScreen}
-          /> */}
+          />
           <Stack.Screen name="MainNavigator" component={MainNavigator} />
           <Stack.Screen
             name="MainRiderNavigator"
             component={MainRiderNavigator}
+            options={{ gestureEnabled: false }}
           />
           <Stack.Screen
             name="StudentOfficeNavigator"
             component={StudentOfficeStackScreen}
+            options={{ gestureEnabled: false }}
           />
         </Stack.Navigator>
       </NavigationContainer>

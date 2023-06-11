@@ -1,6 +1,7 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import PromotionDetailScreen from "../screens/Customer/Promotion/PromotionDetailScreen";
 import PromotionScreen from "../screens/Customer/Promotion/PromotionScreen";
+import BookingScreen from "../screens/Booking/BookingScreen";
 
 const PromotionStack = createNativeStackNavigator();
 
@@ -12,6 +13,7 @@ export function PromotionStackScreen() {
         name="PromotionDetail"
         component={PromotionDetailScreen}
       />
+      <PromotionStack.Screen name="Booking" component={BookingScreen} />
     </PromotionStack.Navigator>
   );
 }

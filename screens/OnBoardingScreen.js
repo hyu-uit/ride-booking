@@ -1,12 +1,15 @@
 import React from "react";
 import {
+  Button,
   Center,
   FlatList,
   Flex,
   HStack,
   Image,
   ScrollView,
+  Select,
   Text,
+  VStack,
   View,
 } from "native-base";
 import { TouchableOpacity, StyleSheet, ScrollViewBase } from "react-native";
@@ -17,6 +20,12 @@ import arrowNext from "../assets/images/OnBoarding/arrowNext.png";
 import { Dimensions } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
+import { useTranslation } from "react-i18next";
+import { useEffect } from "react";
+import VietnamFlag from "../assets/images/Login/vietnamFlag.png";
+import UKFlag from "../assets/images/Login/ukFlag.png";
+import { useState } from "react";
+import i18next from "i18next";
 
 const { width, height } = Dimensions.get("window");
 
@@ -30,22 +39,23 @@ const slides = [
   {
     id: "2",
     image: require("../assets/images/OnBoarding/image-2.png"),
-    title: "VNU - HCM\nSTUDENTS",
-    subtitle:
-      "This app is used for Student of VNU-HCM only\nThey can be a rider to share their bike\nor earn some more money",
+    // title: "VNU - HCM\nSTUDENTS",
+    title: "",
+    // subtitle:
+    //   "This app is used for Student of VNU-HCM only\nThey can be a rider to share their bike\nor earn some more money",
+    subtitle: "",
   },
   {
     id: "3",
     image: require("../assets/images/OnBoarding/image-3.png"),
-    title: "SAFETY",
-    subtitle:
-      "All of riders and customer are accepted\nby Student Office for each school\n",
+    title: "",
+    subtitle: "",
   },
 ];
 
 const Slide = ({ item }) => {
   return (
-    <View
+    <VStack
       style={{
         alignItems: "center",
       }}
@@ -55,17 +65,35 @@ const Slide = ({ item }) => {
         source={item.image}
         style={{
           resizeMode: "contain",
-          height: "80%",
+          height: item.id === "1" ? "90%" : "65%",
           width,
           marginBottom: 10,
         }}
       ></Image>
       <Text style={styles.title}>{item.title}</Text>
       <Text style={styles.subtitle}>{item.subtitle}</Text>
-    </View>
+    </VStack>
   );
 };
 const OnBoardingScreen = ({ navigation }) => {
+  const { t } = useTranslation();
+  const [language, setLanguage] = useState(i18next.language);
+  const [imgUri, setImgUri] = useState(null);
+  useEffect(() => {
+    slides[1].title = t("VNU");
+    slides[1].subtitle = t("VNUContent");
+    slides[2].title = t("Safety");
+    slides[2].subtitle = t("SafetyContent");
+    if (language === "vi") {
+      setImgUri(
+        "https://upload.wikimedia.org/wikipedia/commons/thumb/2/21/Flag_of_Vietnam.svg/2000px-Flag_of_Vietnam.svg.png"
+      );
+    } else {
+      setImgUri(
+        "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Flag_of_the_United_Kingdom_%281-2%29.svg/1200px-Flag_of_the_United_Kingdom_%281-2%29.svg.png"
+      );
+    }
+  });
   const [currentSlideIndex, setCurrentSlideIndex] = React.useState(0);
   const ref = React.useRef();
   const updateCurrentSlideIndex = (e) => {
@@ -129,7 +157,7 @@ const OnBoardingScreen = ({ navigation }) => {
                     color: COLORS.white,
                   }}
                 >
-                  Get Started
+                  {t("getStarted")}
                 </Text>
               </TouchableOpacity>
             </View>
@@ -193,6 +221,35 @@ const OnBoardingScreen = ({ navigation }) => {
         flex: 1,
       }}
     >
+      <HStack justifyContent={"flex-end"} alignItems={"center"}>
+        <Image
+          source={{
+            uri: imgUri,
+          }}
+          alt="hi"
+          w={8}
+          h={5}
+        />
+        <Select
+          alignSelf={"flex-end"}
+          w={"150px"}
+          h={"50px"}
+          borderColor={"transparent"}
+          style={{ ...FONTS.body3 }}
+          color={COLORS.white}
+          onValueChange={(itemValue) => {
+            setLanguage(itemValue);
+            i18next.changeLanguage(itemValue);
+          }}
+          selectedValue={language}
+          _selectedItem={{
+            bg: COLORS.fifthary,
+          }}
+        >
+          <Select.Item label={t("en")} value="en" />
+          <Select.Item label={t("vi")} value="vi" />
+        </Select>
+      </HStack>
       {/* <ScrollView pagingEnabled> */}
       <FlatList
         height={height}
@@ -213,15 +270,15 @@ const styles = StyleSheet.create({
   title: {
     color: COLORS.white,
     ...FONTS.h1,
-    marginTop: -100,
+    // marginTop: -100,
     fontWeight: "bold",
     textAlign: "center",
   },
   subtitle: {
     color: COLORS.grey,
     ...FONTS.body4,
-    marginTop: 20,
-    marginBottom: 40,
+    // marginTop: 20,
+    // marginBottom: 40,
     fontWeight: "bold",
     textAlign: "center",
   },

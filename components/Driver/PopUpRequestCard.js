@@ -16,8 +16,9 @@ import { useState } from "react";
 import { useEffect } from "react";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../../config/config";
+import { useTranslation } from "react-i18next";
 
-function PopUpRequestCard (props){
+function PopUpRequestCard(props) {
   //const {trip} = props
   let {
     idCustomer,
@@ -30,89 +31,91 @@ function PopUpRequestCard (props){
     time,
     status,
     totalPrice,
-    distance
-  } = props.trip
-  
-const [name, setName] = useState("")
-const [state, setState] = useState(0); 
-const { navigation } = props;
+    distance,
+  } = props.trip;
 
-if(idTrip!==undefined){
-  getDoc(doc(db,"ListTrip",idTrip)).then(tripData=>{
-    if(tripData.exists()){
-      getDoc(doc(db,"Customer",tripData.data().idCustomer)).then(docData=>{
-        if(docData.exists()){
-          setName(docData.data().displayName)
-        }
-      })
+  const [name, setName] = useState("");
+  const [state, setState] = useState(0);
+  const { navigation } = props;
+  const { t } = useTranslation();
+
+  if (idTrip !== undefined) {
+    getDoc(doc(db, "ListTrip", idTrip)).then((tripData) => {
+      if (tripData.exists()) {
+        getDoc(doc(db, "Customer", tripData.data().idCustomer)).then(
+          (docData) => {
+            if (docData.exists()) {
+              setName(docData.data().displayName);
+            }
+          }
+        );
+      }
+    });
+  }
+
+  const completeTrip = () => {
+    navigation.replace("MainRiderNavigator", {
+      screen: "HomeRider",
+    });
+  };
+  const setStatusAccept = () => {
+    updateDoc(doc(db, "ListTrip", idTrip), {
+      status: "accepted",
+    });
+  };
+  const setStatusCancel = () => {
+    updateDoc(doc(db, "ListTrip", idTrip), {
+      status: "canceled",
+    });
+  };
+  const setStatusReject = () => {
+    navigation.replace("MainRiderNavigator", {
+      screen: "HomeRider",
+    });
+  };
+  const setStatusComplete = () => {
+    updateDoc(doc(db, "ListTrip", idTrip), {
+      status: "done",
+    });
+  };
+
+  const onClickAccept = () => {
+    if (state === 0) {
+      setStatusAccept();
+      setState(1);
+    } else if (state === 1) {
+      setState(2);
     }
-  })
-}
+  };
 
+  const getButtonTextAccept = () => {
+    if (state === 0) {
+      return t("accept");
+    } else if (state === 1) {
+      return t("finished");
+    } else {
+      setStatusComplete();
+      completeTrip();
+    }
+  };
 
-const completeTrip = () => {
-  navigation.replace("MainRiderNavigator", {
-    screen: "HomeRider",
-  });
-}
-const setStatusAccept = () => {
-  updateDoc(doc(db,"ListTrip",idTrip),{
-    status:"accepted"
-  })
-};
-const setStatusCancel = () => {
-  updateDoc(doc(db,"ListTrip",idTrip),{
-    status:"canceled"
-  })
-};
-const setStatusReject = () => {
-  navigation.replace("MainRiderNavigator", {
-    screen: "HomeRider",
-  });
-};
-const setStatusComplete = () => {
-  updateDoc(doc(db,"ListTrip",idTrip),{
-    status:"done"
-  })
-};
-
-const onClickAccept= ()=>{
-  if (state === 0) {
-  setStatusAccept()
-    setState(1);
-  } else if(state===1){
-    setState(2);
-  }
-}
-
- const getButtonTextAccept = () => {
-  if (state === 0) {
-    return 'Accept';
-  } else if(state===1){
-    return 'Done';
-  }else {
-    setStatusComplete()
-    completeTrip()
-  }
-};
-
-const getButtonTextReject = () => {
-  if (state === 0) {
-    return 'Reject';
-  } else if(state===1){
-    return 'Cancel';
-  }else {
-    completeTrip()
-  }
-};
-const onClickReject= ()=>{
-  if (state === 0) {
-    setStatusReject()
-  } else if(state===1){
-    setStatusCancel()
-    completeTrip()
-  }
-}
+  const getButtonTextReject = () => {
+    if (state === 0) {
+      return t("reject");
+    } else if (state === 1) {
+      return t("cancel");
+    } else {
+      completeTrip();
+    }
+  };
+  const onClickReject = () => {
+    if (state === 0) {
+      setStatusReject();
+    } else if (state === 1) {
+      setStatusCancel();
+      completeTrip();
+    }
+  };
   return (
     <View
       bgColor={COLORS.fourthary}
@@ -149,18 +152,15 @@ const onClickReject= ()=>{
           </View>
         </HStack>
         <Text
-              color={COLORS.lightGrey}
-              style={{
-                ...FONTS.body6,
-              }}
-            >
-              {idTrip}
-            </Text>
+          color={COLORS.lightGrey}
+          style={{
+            ...FONTS.body6,
+          }}
+        >
+          {idTrip}
+        </Text>
         <HStack>
           <Text style={styles.detailText}>{distance}</Text>
-          <Text style={styles.detailTextNotBold}> - You’re </Text>
-          <Text style={styles.detailText}>0h 15m</Text>
-          <Text style={styles.detailTextNotBold}> away</Text>
         </HStack>
       </VStack>
       <View
@@ -198,8 +198,7 @@ const onClickReject= ()=>{
             }}
           >
             <TouchableOpacity
-              onPress={onClickReject
-              }
+              onPress={onClickReject}
               style={{
                 borderColor: COLORS.red,
                 height: 59,
@@ -216,7 +215,7 @@ const onClickReject= ()=>{
                 fontSize={20}
                 styles={{ ...FONTS.h3 }}
               >
-                 {getButtonTextReject()}
+                {getButtonTextReject()}
               </Text>
             </TouchableOpacity>
             <View
@@ -227,8 +226,7 @@ const onClickReject= ()=>{
               }}
             >
               <TouchableOpacity
-                onPress={onClickAccept
-                }
+                onPress={onClickAccept}
                 style={{
                   borderColor: COLORS.primary,
                   backgroundColor: COLORS.primary,
@@ -255,7 +253,7 @@ const onClickReject= ()=>{
       </View>
     </View>
   );
-};
+}
 const styles = StyleSheet.create({
   titleText: {
     color: COLORS.grey,
@@ -272,4 +270,3 @@ const styles = StyleSheet.create({
   },
 });
 export default PopUpRequestCard;
-

@@ -37,6 +37,8 @@ import { useState } from "react";
 import { useEffect } from "react";
 import { AutocompleteDropdownContextProvider } from "react-native-autocomplete-dropdown";
 import { ceilingKilometer, ceilingMinute } from "../../helper/converter";
+import { Dimensions } from "react-native";
+import { useTranslation } from "react-i18next";
 
 export const PICK_UP_INPUT = "PICK_UP_INPUT";
 export const DESTINATION_INPUT = "DESTINATION_INPUT";
@@ -347,7 +349,7 @@ export default function BookingScreen({ navigation }) {
                     alt="flag-icon"
                   />
                   <Text bold fontSize={SIZES.h5} color={"white"}>
-                    Saved location
+                    {t("savedLocations")}
                   </Text>
                 </HStack>
                 <HStack space={2} marginTop={2} marginLeft={3} marginRight={3}>
@@ -641,6 +643,8 @@ export default function BookingScreen({ navigation }) {
     }
   };
 
+  const { t } = useTranslation();
+
   return (
     <AutocompleteDropdownContextProvider>
       <BookingContainer bgColor={COLORS.background}>
@@ -678,7 +682,7 @@ function checkLocationIsSet({ latitude, longitude }) {
 
 const BookingContainer = styled(SafeAreaView)`
   width: 100%;
-  height: 100%;
+  height: ${Platform.OS === "ios" ? contentHeight : "100%"};
   background-color: ${(props) => props.bgColor};
   display: flex;
   padding: 0;

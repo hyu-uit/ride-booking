@@ -10,6 +10,7 @@ import {
 import React from "react";
 import BackIcon from "../../assets/back_icon.png";
 import { SIZES } from "../../constants/theme";
+import { useTranslation } from "react-i18next";
 import { useContext } from "react";
 import { BookingContext } from "../../context/BookingContext";
 import { useState } from "react";
@@ -17,6 +18,7 @@ import { useState } from "react";
 const LocationCardNote = ({ onClickContinue, onPressBack }) => {
   const { dispatch } = useContext(BookingContext);
   const [note, setNote] = useState("");
+  const { t } = useTranslation();
   return (
     <View
       bgColor={"#0B0F2F"}
@@ -30,10 +32,10 @@ const LocationCardNote = ({ onClickContinue, onPressBack }) => {
     >
       <VStack space={4}>
         <Text fontSize={SIZES.h3} bold color={"white"}>
-          Note
+          {t("note")}
         </Text>
         <TextArea
-          placeholder="Notes for driver"
+          placeholder={t("noteforRider")}
           w={"100%"}
           h={"60%"}
           borderWidth={0}
@@ -61,7 +63,7 @@ const LocationCardNote = ({ onClickContinue, onPressBack }) => {
             onTouchEnd={() => onClickContinue(note)}
           >
             <Text color={"white"} bold fontSize={SIZES.small}>
-              Continue
+              {t("continue")}
             </Text>
           </Button>
         </HStack>

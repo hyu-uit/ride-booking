@@ -1,4 +1,3 @@
-import React from "react";
 import styled from "styled-components";
 import { FONTS, COLORS, SIZES } from "../constants";
 import {
@@ -17,7 +16,7 @@ import {
 import DefaultAvt from "../assets/image6.png";
 import { SafeAreaView } from "react-native-safe-area-context";
 import MenuIcon from "../assets/icons/icons8-menu-48.png";
-import { TouchableOpacity } from "react-native";
+import { TouchableOpacity, BackHandler, ToastAndroid } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import SelectedButton from "../components/Button/SelectedButton";
 import HistoryCard from "../components/HistoryCard";
@@ -26,42 +25,113 @@ import DeliveryImg from "../assets/images/delivery_1.png";
 import { TouchableWithoutFeedback } from "react-native";
 import { Keyboard } from "react-native";
 import LottieView from "lottie-react-native";
-import { useState } from "react";
-import { collection, getDocs, query, where } from "firebase/firestore";
-import { db } from "../config/config";
 import { useEffect } from "react";
+import { getFromAsyncStorage } from "../helper/asyncStorage";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import React, { useState } from "react";
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  query,
+  where,
+} from "firebase/firestore";
+import { db } from "../config/config";
+import { useFocusEffect } from "@react-navigation/native";
+import { useTranslation } from "react-i18next";
 
 export default function Home({ navigation, route }) {
+  const [phone, setPhone] = useState("");
   const [historyTrips, setHistoryTrips] = useState([]);
+  const [name, SetName] = useState(null);
+  const [avt, SetAvatar] = useState(null);
+  const { t } = useTranslation();
+  const [bikeUri, setBikeUri] = useState(
+    "https://res.cloudinary.com/dtutrxnyl/image/upload/v1686364990/bikeWhite_vqyjm3.png"
+  );
+  const [deliveryUri, setDeliveryUri] = useState(
+    "https://res.cloudinary.com/dtutrxnyl/image/upload/v1686364992/deliveryBlue_ztlpxb.png"
+  );
+
+  let backButtonPressedOnce = false;
+
+  useFocusEffect(
+    React.useCallback(() => {
+      const onBackPress = () => {
+        if (backButtonPressedOnce) {
+          BackHandler.exitApp();
+        } else {
+          backButtonPressedOnce = true;
+          ToastAndroid.show("Press back again to exit", ToastAndroid.SHORT);
+          setTimeout(() => {
+            backButtonPressedOnce = false;
+          }, 2000); // Reset the variable after 2 seconds
+        }
+        return true;
+      };
+
+      BackHandler.addEventListener("hardwareBackPress", onBackPress);
+
+      return () =>
+        BackHandler.removeEventListener("hardwareBackPress", onBackPress);
+    }, [])
+  );
 
   useEffect(() => {
-    getHistoryTrips();
-  }, [navigation]);
+    fetchDataAndPhoneNumber();
+  }, []);
+
+  const fetchDataAndPhoneNumber = async () => {
+    try {
+      const phoneNumberValue = await getFromAsyncStorage("phoneNumber");
+      setPhone(phoneNumberValue);
+
+      if (phoneNumberValue) {
+        fetchData(phoneNumberValue);
+        getHistoryTrips(phoneNumberValue);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  const fetchData = async (phoneNumber) => {
+    try {
+      const docData = await getDoc(doc(db, "Customer", phoneNumber));
+      SetName(docData.data().displayName);
+      SetAvatar(docData.data().portrait);
+    } catch (error) {
+      console.error(error);
+    }
+  };
   //const {phoneNumber, role} = route.params;
-  const getHistoryTrips = () => {
+  const getHistoryTrips = async (phoneNumber) => {
     let historyTrips = [];
     getDocs(
-      query(collection(db, "ListTrip"), where("status", "==", "done"))
+      query(collection(db, "ListTrip"), where("idCustomer", "==", phoneNumber))
     ).then((docSnap) => {
       docSnap.forEach((doc) => {
-        historyTrips.push({
-          idCustomer: doc.data().idCustomer,
-          idTrip: doc.id,
-          pickUpLat: doc.data().pickUpLat,
-          pickUpLong: doc.data().pickUpLong,
-          destLat: doc.data().destLat,
-          destLong: doc.data().destLong,
-          date: doc.data().date,
-          time: doc.data().time,
-          datePickUp: doc.data().datePickUp,
-          timePickUp: doc.data().timePickUp,
-          totalPrice: doc.data().totalPrice,
-          distance: doc.data().distance,
-        });
+        if (doc.data().status === "done") {
+          historyTrips.push({
+            idCustomer: doc.data().idCustomer,
+            idTrip: doc.id,
+            pickUpLat: doc.data().pickUpLat,
+            pickUpLong: doc.data().pickUpLong,
+            destLat: doc.data().destLat,
+            destLong: doc.data().destLong,
+            date: doc.data().date,
+            time: doc.data().time,
+            datePickUp: doc.data().datePickUp,
+            timePickUp: doc.data().timePickUp,
+            totalPrice: doc.data().totalPrice,
+            distance: doc.data().distance,
+          });
+        }
       });
       setHistoryTrips(historyTrips);
     });
   };
+  console.log(historyTrips);
   return (
     <TouchableWithoutFeedback
       onPress={() => {
@@ -70,13 +140,13 @@ export default function Home({ navigation, route }) {
     >
       <HomeContainer>
         <HStack w={"full"} alignContent={"center"}>
-          <Avatar source={DefaultAvt} margin={"10px 0 0 10px"} />
+          <Avatar source={{ uri: avt }} margin={"10px 0 0 10px"} />
           <VStack margin={"10px 0 0 10px"}>
             <Text fontSize={10} color={COLORS.grey}>
-              Welcome back
+              {t("welcome")}
             </Text>
             <Text fontSize={SIZES.h4} color={COLORS.white} bold>
-              Nguyen Tri Duc
+              {name}
             </Text>
           </VStack>
           <MenuButton
@@ -113,7 +183,7 @@ export default function Home({ navigation, route }) {
               <Text
                 style={{ ...FONTS.body3, color: COLORS.grey, marginLeft: 10 }}
               >
-                Enter your destination
+                {t("enterDes")}
               </Text>
             </HStack>
             {/* <HStack
@@ -144,7 +214,13 @@ export default function Home({ navigation, route }) {
                     bgColor={COLORS.fourthary}
                     borderTopRadius={SIZES.radius10}
                   >
-                    <Image source={BikeImg} alt="bike" />
+                    <Image
+                      source={{ uri: bikeUri }}
+                      w={"100%"}
+                      h={"80%"}
+                      resizeMode="contain"
+                      alt="bike"
+                    />
                   </Center>
                   <Center h={50}>
                     <Text fontSize={SIZES.h4} bold color={"white"}>
@@ -169,11 +245,17 @@ export default function Home({ navigation, route }) {
                     bgColor={COLORS.white}
                     borderTopRadius={SIZES.radius10}
                   >
-                    <Image source={DeliveryImg} alt="delivery" />
+                    <Image
+                      source={{ uri: deliveryUri }}
+                      w={"100%"}
+                      h={"100%"}
+                      resizeMode="contain"
+                      alt="delivery"
+                    />
                   </Center>
                   <Center h={50}>
                     <Text fontSize={SIZES.h4} bold color={"white"}>
-                      DELIVERY
+                      SEND
                     </Text>
                   </Center>
                 </VStack>
@@ -186,7 +268,7 @@ export default function Home({ navigation, route }) {
               alignSelf={"flex-start"}
               marginBottom={3}
             >
-              Last booking
+              {t("lastBooking")}
             </Text>
             <VStack w={"100%"}>
               {/* <HistoryCard
@@ -195,7 +277,7 @@ export default function Home({ navigation, route }) {
                 }}
               /> */}
               <FlatList
-                padding={"10px"}
+                // padding={"10px"}
                 mt={2}
                 horizontal={false}
                 data={historyTrips}

@@ -15,8 +15,10 @@ import LineImg from "../../assets/Line4.png";
 import LocationIcon from "../../assets/icons/icons8-location-48.png";
 import ArrowDownIcon from "../../assets/icons/icons8-down-arrow-48.png";
 import { SIZES } from "../../constants/theme";
+import { useTranslation } from "react-i18next";
 
 const LocationCardFinder = ({ onPressCancel }) => {
+  const { t } = useTranslation();
   return (
     <View
       bgColor={"#0B0F2F"}
@@ -29,13 +31,13 @@ const LocationCardFinder = ({ onPressCancel }) => {
     >
       <VStack space={3}>
         <Text fontSize={SIZES.h3} bold color={"white"}>
-          Finding your driver
+          {t("findingRider")}
         </Text>
         <HStack w={"100%"}>
           <VStack space={2}>
             <VStack space={1}>
               <Text bold fontSize={SIZES.h6} color={"#8CC3FF"}>
-                Pick-up
+                {t("pickUp")}
               </Text>
               <Text bold fontSize={SIZES.h6} color={"white"}>
                 Long An
@@ -44,7 +46,7 @@ const LocationCardFinder = ({ onPressCancel }) => {
             <Divider />
             <VStack space={1}>
               <Text bold fontSize={SIZES.h6} color={"#8CC3FF"}>
-                Destination
+                {t("des")}
               </Text>
               <Text bold fontSize={SIZES.h6} color={"white"}>
                 University of Information Technology
@@ -77,13 +79,13 @@ const LocationCardFinder = ({ onPressCancel }) => {
         </HStack>
         <Divider bgColor={"#125CAE"} />
         <Text fontSize={SIZES.h3} bold color={"white"}>
-          Driver detail
+          {t("detail")}
         </Text>
         <Center h={"40px"}>
           <HStack space={2}>
             <Spinner size="lg" />
             <Text fontSize={SIZES.h4} bold color={"white"}>
-              Finding your driver...
+              {t("findingRider")}
             </Text>
           </HStack>
         </Center>
@@ -95,7 +97,7 @@ const LocationCardFinder = ({ onPressCancel }) => {
             onTouchEnd={onPressCancel}
           >
             <Text color={"white"} bold fontSize={SIZES.small}>
-              Cancel
+              {t("cancel")}
             </Text>
           </Button>
         </HStack>
