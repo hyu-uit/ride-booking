@@ -5,18 +5,36 @@ import styled from "styled-components";
 import { SafeAreaView } from "react-native-safe-area-context";
 import MapView from "react-native-maps";
 import { useTranslation } from "react-i18next";
-import { useEffect } from "react";
 import { VStack } from "native-base";
 import { COLORS } from "../../constants";
+import { BookingContext } from "../../context/BookingContext";
+import { useContext } from "react";
+import { Marker } from "react-native-svg";
 
 const BookingRatingScreen = ({ navigation }) => {
   const { t } = useTranslation();
-  const [step, setStep] = useState(1);
+  const { booking } = useContext(BookingContext);
 
   return (
     <VStack h={"100%"} w={"100%"} bgColor={COLORS.background}>
       <BookingContainer>
-        <RatingPopup />
+        <MapView
+          style={{ height: "45%", borderRadius: 10 }}
+          provider="google"
+          region={booking.region}
+        >
+          <Marker
+            key={"destination"}
+            coordinate={booking.destinationLocation}
+            title={"Destination"}
+            description={
+              booking.destinationLocation.address
+                ? booking.destinationLocation.address
+                : null
+            }
+          />
+        </MapView>
+        <RatingPopup navigation={navigation} />
       </BookingContainer>
     </VStack>
   );

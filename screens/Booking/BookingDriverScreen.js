@@ -21,10 +21,6 @@ const BookingDriverScreen = ({ navigation }) => {
     // Do any necessary form validation or error checking here
     setStep(2);
   };
-  const handleStep2Button = () => {
-    // Do any necessary form validation or error checking here
-    setStep(3);
-  };
 
   const handleShowModalCancel = () => {
     setIsModalCancelShow((prev) => !prev);
@@ -73,7 +69,7 @@ const BookingDriverScreen = ({ navigation }) => {
               ) : null}
             </MapView>
             <OnTheWayCard
-              onPressCancel={handleStep2Button}
+              onPressCancel={handleStep1Button}
               onPressInfo={handleShowModalInfo}
             />
           </>

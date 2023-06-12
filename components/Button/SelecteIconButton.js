@@ -2,15 +2,14 @@ import { Box, Image } from "native-base";
 import React, { useState } from "react";
 import { TouchableOpacity } from "react-native";
 
-const SelectIconButton = ({ isSelected = false, setIsSelected, icon = "" }) => {
+const SelectIconButton = ({ onPress, icon = "", selected }) => {
   return (
-    <TouchableOpacity>
+    <TouchableOpacity onPress={onPress}>
       <Box
-        borderStyle={"dashed"}
+        borderStyle={"solid"}
         borderWidth={1}
         borderRadius={50}
-        borderColor={isSelected ? "transparent" : "#3D5BF8"}
-        onTouchEnd={() => setIsSelected((prev) => !prev)}
+        borderColor={selected ? "#3D5BF8" : "transparent"}
       >
         <Image source={icon} alt="" />
       </Box>
