@@ -26,7 +26,6 @@ import {
   getSingleAddressFromCoordinate,
 } from "../../api/locationAPI";
 import {
-  BACK_STEP,
   BookingContext,
   SET_BOOKING_DETAILS,
   SET_DESTINATION_LOCATION,
@@ -34,14 +33,12 @@ import {
   SET_PICK_UP_LOCATION,
   SET_ROUTING,
   SET_SHOW_MODAL_CANCEL,
-  SET_STEP,
 } from "../../context/BookingContext";
 import { useContext } from "react";
 import { useState } from "react";
 import { useEffect } from "react";
 import { AutocompleteDropdownContextProvider } from "react-native-autocomplete-dropdown";
 import { ceilingKilometer, ceilingMinute } from "../../helper/converter";
-import { Dimensions } from "react-native";
 import { useTranslation } from "react-i18next";
 
 export const PICK_UP_INPUT = "PICK_UP_INPUT";
@@ -55,8 +52,8 @@ export default function BookingScreen({ navigation }) {
   const [markerPosition, setMarkerPosition] = useState({
     name: null,
     address: "",
-    latitude: 0,
-    longitude: 0,
+    latitude: 10.8700089,
+    longitude: 106.8030541,
   });
   const [step, setStep] = useState(1);
   const [pickUpInput, setPickUpInput] = useState("Your location");
@@ -655,28 +652,26 @@ export default function BookingScreen({ navigation }) {
   const { t } = useTranslation();
 
   return (
-    <AutocompleteDropdownContextProvider>
-      <BookingContainer bgColor={COLORS.background}>
-        {step === 1 ? (
-          <View paddingX={"10px"}>
-            <ButtonBack onPress={handleBackStep} />
-          </View>
-        ) : null}
-        {step === 2 ? (
-          <View paddingX={"10px"} position={"absolute"} top={"8%"} zIndex={2}>
-            <ButtonBack onPress={handleBackStep} />
-          </View>
-        ) : null}
-        {renderStepContent()}
-        <ConfirmModal
-          isShow={booking.isModalCancelShow}
-          title={"Cancel booking"}
-          content={"Are you sure that you want to cancel this booking?"}
-          onClose={handleCloseModal}
-          onPressOK={handleCloseModal}
-        />
-      </BookingContainer>
-    </AutocompleteDropdownContextProvider>
+    <BookingContainer bgColor={COLORS.background}>
+      {step === 1 ? (
+        <View paddingX={"10px"}>
+          <ButtonBack onPress={handleBackStep} />
+        </View>
+      ) : null}
+      {step === 2 ? (
+        <View paddingX={"10px"} position={"absolute"} top={"8%"} zIndex={2}>
+          <ButtonBack onPress={handleBackStep} />
+        </View>
+      ) : null}
+      {renderStepContent()}
+      <ConfirmModal
+        isShow={booking.isModalCancelShow}
+        title={"Cancel booking"}
+        content={"Are you sure that you want to cancel this booking?"}
+        onClose={handleCloseModal}
+        onPressOK={handleCloseModal}
+      />
+    </BookingContainer>
   );
 
   function handleBackStep() {

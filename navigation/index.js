@@ -24,29 +24,27 @@ export default function Navigation() {
     });
   }, []);
   return (
-    <NativeBaseProvider>
-      <NavigationContainer>
-        <Stack.Navigator screenOptions={{ headerShown: false }}>
-          {/* {isFirstUse ? (
+    <NavigationContainer>
+      <Stack.Navigator screenOptions={{ headerShown: false }}>
+        {/* {isFirstUse ? (
             <Stack.Screen name="OnBoarding" component={OnBoardingScreen} />
           ) : null}
           <Stack.Screen
             name="AuthenticationStack"
             component={AuthenticationStackScreen}
           /> */}
-          <Stack.Screen name="MainNavigator" component={MainNavigator} />
-          <Stack.Screen
-            name="MainRiderNavigator"
-            component={MainRiderNavigator}
-            options={{ gestureEnabled: false }}
-          />
-          <Stack.Screen
-            name="StudentOfficeNavigator"
-            component={StudentOfficeStackScreen}
-            options={{ gestureEnabled: false }}
-          />
-        </Stack.Navigator>
-      </NavigationContainer>
-    </NativeBaseProvider>
+        <Stack.Screen name="MainNavigator" component={MainNavigator} />
+        <Stack.Screen
+          name="MainRiderNavigator"
+          component={MainRiderNavigator}
+          options={{ gestureEnabled: false }}
+        />
+        <Stack.Screen
+          name="StudentOfficeNavigator"
+          component={StudentOfficeStackScreen}
+          options={{ gestureEnabled: false }}
+        />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }

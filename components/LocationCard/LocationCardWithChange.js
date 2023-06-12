@@ -18,11 +18,7 @@ import {
   PICK_UP_INPUT,
 } from "../../screens/Booking/BookingScreen";
 import { AutocompleteDropdown } from "react-native-autocomplete-dropdown";
-import {
-  Dimensions,
-  TouchableOpacity,
-  TouchableWithoutFeedback,
-} from "react-native";
+import { TouchableOpacity } from "react-native";
 import { Platform } from "react-native";
 import { useContext, useState } from "react";
 import { useEffect } from "react";
@@ -78,7 +74,8 @@ const LocationCardWithChange = ({
     return () => {
       clearTimeout(searchTimeout);
     };
-  });
+  }, [desInput]);
+
   const { t } = useTranslation();
 
   return (
@@ -115,11 +112,9 @@ const LocationCardWithChange = ({
             </Text>
             <AutocompleteDropdown
               onFocus={() => {
-                setShowDropdown((prev) => !prev);
                 setFocusInput(DESTINATION_INPUT);
               }}
               direction={Platform.select({ ios: "down" })}
-              showChevron={false}
               dataSet={suggestionsList}
               onSelectItem={(item) => {
                 originalResult.map((result) => {
@@ -170,7 +165,6 @@ const LocationCardWithChange = ({
                 marginLeft: 0,
               }}
               suggestionsListContainerStyle={{
-                display: showDropdown ? "flex" : "none",
                 backgroundColor: COLORS.tertiary,
                 paddingHorizontal: 5,
                 width: "105%",

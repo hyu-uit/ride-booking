@@ -55,12 +55,6 @@ const SavedLocationScreen = ({ onClickCard, onClickAdd, navigation }) => {
         <TouchableOpacity>
           <SavedLocationCard onPress={() => onClickCard}></SavedLocationCard>
         </TouchableOpacity>
-        <TouchableOpacity>
-          <SavedLocationCard onPress={() => onClickCard}></SavedLocationCard>
-        </TouchableOpacity>
-        <TouchableOpacity>
-          <SavedLocationCard onPress={() => onClickCard}></SavedLocationCard>
-        </TouchableOpacity>
         <HStack
           onTouchEnd={() => navigation.navigate("AddLocation")}
           space={8}

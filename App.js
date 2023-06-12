@@ -7,6 +7,7 @@ import i18n from "i18next";
 import { ExpoLocalization } from "expo-localization";
 import en from "./translations/en.json";
 import vi from "./translations/vi.json";
+import { AutocompleteDropdownContextProvider } from "react-native-autocomplete-dropdown";
 
 i18n.use(initReactI18next).init({
   resources: {
@@ -41,7 +42,11 @@ export default function App() {
 
   return (
     <AppProvider>
-      <Navigation></Navigation>
+      <NativeBaseProvider>
+        <AutocompleteDropdownContextProvider>
+          <Navigation></Navigation>
+        </AutocompleteDropdownContextProvider>
+      </NativeBaseProvider>
     </AppProvider>
   );
 }

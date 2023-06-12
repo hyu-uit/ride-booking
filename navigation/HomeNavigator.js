@@ -18,7 +18,7 @@ export function HomeStackScreen() {
   return (
     <BookingProvider>
       <HomeStack.Navigator screenOptions={{ headerShown: false }}>
-        {/* <HomeStack.Screen name="Home" component={Home} />
+        <HomeStack.Screen name="Home" component={Home} />
         <HomeStack.Screen
           name="ActivityDetail"
           component={ActivityDetailScreen}
@@ -34,7 +34,7 @@ export function HomeStackScreen() {
         <HomeStack.Screen
           name="ConfirmLocation"
           component={ConfirmLocationScreen}
-        /> */}
+        />
 
         <HomeStack.Screen name="Booking" component={BookingScreen} />
         <HomeStack.Screen
