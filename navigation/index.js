@@ -26,13 +26,13 @@ export default function Navigation() {
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
-        {/* {isFirstUse ? (
-            <Stack.Screen name="OnBoarding" component={OnBoardingScreen} />
-          ) : null}
-          <Stack.Screen
-            name="AuthenticationStack"
-            component={AuthenticationStackScreen}
-          /> */}
+        {isFirstUse ? (
+          <Stack.Screen name="OnBoarding" component={OnBoardingScreen} />
+        ) : null}
+        <Stack.Screen
+          name="AuthenticationStack"
+          component={AuthenticationStackScreen}
+        />
         <Stack.Screen name="MainNavigator" component={MainNavigator} />
         <Stack.Screen
           name="MainRiderNavigator"
