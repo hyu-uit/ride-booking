@@ -27,6 +27,9 @@ export const getRoutingFromCoordinates = (pickupLoc, destinationLoc) => {
     `https://api.geoapify.com/v1/routing?waypoints=${pickupLoc.latitude},${pickupLoc.longitude}|${destinationLoc.latitude},${destinationLoc.longitude}&mode=motorcycle&lang=en&details=route_details&apiKey=${API_KEY}`,
     requestOptions
   )
-    .then((response) => response.json())
+    .then((response) => {
+      console.log("🚀 ~ file: locationAPI.js:31 ~ .then ~ response:", response);
+      return response.json();
+    })
     .then((result) => result.features[0]);
 };

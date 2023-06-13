@@ -47,3 +47,19 @@ export const centerMapToCoordinates = (
     animated: true,
   });
 };
+
+export const animateToCoordinate = (mapRef, latitude, longitude) => {
+  const coordinate = {
+    latitude,
+    longitude,
+  };
+  mapRef.current.animateToRegion(
+    {
+      latitude,
+      longitude,
+      latitudeDelta: 0.01,
+      longitudeDelta: 0.01,
+    },
+    1000 // Duration of the animation in milliseconds
+  );
+};

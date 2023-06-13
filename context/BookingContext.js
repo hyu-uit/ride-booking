@@ -9,7 +9,7 @@ const initialState = {
     latitude: 0, // Initial latitude
     longitude: 0, // Initial longitude
     latitudeDelta: 0.01, //zoom
-    longitudeDelta: 0.01, //zoom
+    longitudeDelta: 0.015, //zoom
   },
   pickUpLocation: {
     name: "",
