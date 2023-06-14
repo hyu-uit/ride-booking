@@ -38,6 +38,7 @@ function PopUpRequestCard(props) {
   const [state, setState] = useState(0);
   const { navigation, phoneNumber } = props;
   const [isModalVisible, setModalVisible] = useState(false);
+  const { randomTrips, setNewCurrentTrips } = props;
 
   useEffect(() => {
     if (!isModalVisible) {

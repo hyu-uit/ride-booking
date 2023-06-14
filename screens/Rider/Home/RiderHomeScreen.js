@@ -87,7 +87,7 @@ const RiderHomeScreen = ({ navigation, route }) => {
 
   useEffect(() => {
     fetchDataAndPhoneNumber();
-  }, [phoneNumber, navigation]);
+  }, [phoneNumber, open, navigation]);
 
   const fetchDataAndPhoneNumber = async () => {
     try {
@@ -114,6 +114,7 @@ const RiderHomeScreen = ({ navigation, route }) => {
         setOpen(docData.open);
         setName(docData.displayName);
         setAvatar(docData.portrait);
+
       });
       return () => {
         unsubscribe();
@@ -172,47 +173,52 @@ const RiderHomeScreen = ({ navigation, route }) => {
   // };
   
   const fetchNewCurrentTrips = () => {
-    const waitingTripsQuery = query(
-      collection(db, "ListTrip"),
-      where("status", "==", "waiting"),
-      where("isScheduled", "==", "false"),
-    );
-  
-    let previousTrip = null; // Biến để lưu trữ document trước đó
-  
-    const unsubscribeTrip = onSnapshot(waitingTripsQuery, (querySnapshot) => {
-      const updatedTrips = [];
-      querySnapshot.forEach((doc) => {
-        const trip = {
-          idTrip: doc.id,
-          ...doc.data(),
-        };
-        updatedTrips.push(trip);
+    if(open===true){
+      const waitingTripsQuery = query(
+        collection(db, "ListTrip"),
+        where("status", "==", "waiting"),
+        where("isScheduled", "==", "false"),
+        where("idRider", "==", ""),
+      );
+    
+      let previousTrip = null; // Biến để lưu trữ document trước đó
+    
+      const unsubscribeTrip = onSnapshot(waitingTripsQuery, (querySnapshot) => {
+        const updatedTrips = [];
+        querySnapshot.forEach((doc) => {
+          const trip = {
+            idTrip: doc.id,
+            ...doc.data(),
+          };
+          updatedTrips.push(trip);
+        });
+    
+        if (updatedTrips.length === 0) {
+          setModalVisible(false);
+          return;
+        }
+    
+        let randomTrip = null;
+        do {
+          // Random một index từ 0 đến độ dài danh sách updatedTrips
+          const randomIndex = Math.floor(Math.random() * updatedTrips.length);
+    
+          // Lấy document ngẫu nhiên từ danh sách updatedTrips
+          randomTrip = updatedTrips[randomIndex];
+        } while (randomTrip === previousTrip); // Kiểm tra nếu document trùng với document trước đó
+    
+        previousTrip = randomTrip; // Lưu trữ document hiện tại để kiểm tra ở lần kế tiếp
+    // Lưu trữ danh sách các trips đã được random
+        setRandomTrips(updatedTrips);
+        setNewCurrentTrips([randomTrip]);
+        setModalVisible(true);
       });
-  
-      if (updatedTrips.length === 0) {
-        setModalVisible(false);
-        return;
-      }
-  
-      let randomTrip = null;
-      do {
-        // Random một index từ 0 đến độ dài danh sách updatedTrips
-        const randomIndex = Math.floor(Math.random() * updatedTrips.length);
-  
-        // Lấy document ngẫu nhiên từ danh sách updatedTrips
-        randomTrip = updatedTrips[randomIndex];
-      } while (randomTrip === previousTrip); // Kiểm tra nếu document trùng với document trước đó
-  
-      previousTrip = randomTrip; // Lưu trữ document hiện tại để kiểm tra ở lần kế tiếp
-  
-      setNewCurrentTrips([randomTrip]);
-      setModalVisible(true);
-    });
-  
-    return () => {
-      unsubscribeTrip();
-    };
+    
+      return () => {
+        unsubscribeTrip();
+      };
+    }else setModalVisible(false)
+    
   };
   
 
