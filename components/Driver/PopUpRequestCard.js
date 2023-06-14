@@ -36,8 +36,14 @@ function PopUpRequestCard(props) {
 
   const [name, setName] = useState("");
   const [state, setState] = useState(0);
-  const { navigation } = props;
+  const { navigation, phoneNumber } = props;
+  const [isModalVisible, setModalVisible] = useState(false);
 
+  useEffect(() => {
+    if (!isModalVisible) {
+      setModalVisible(false); // Đóng modal
+    }
+  }, [isModalVisible,]);
   if (idTrip !== undefined) {
     getDoc(doc(db, "ListTrip", idTrip)).then((tripData) => {
       if (tripData.exists()) {
@@ -55,12 +61,25 @@ function PopUpRequestCard(props) {
   const setStatusAccept = () => {
     updateDoc(doc(db, "ListTrip", idTrip), {
       status: "accepted",
+      idRider: phoneNumber,
     });
+    const data = { idTrip: "" +idTrip, };
+    navigation.navigate("TripDetail", data);
   };
+  
   const setStatusReject = () => {
-    // navigation.replace("MainRiderNavigator", {
-    //   screen: "HomeRider",
-    // });
+    // if (rejectedCount >= maxRejectCount) {
+    //   setModalVisible(false); // Tắt modal và popup
+    //   return;
+    // }
+    setModalVisible(false); // Đóng modal
+
+    // Random một document mới
+    const randomIndex = Math.floor(Math.random() * randomTrips.length);
+    const randomTrip = randomTrips[randomIndex];
+    
+    // Cập nhật document mới vào state hoặc thực hiện xử lý khác
+    setNewCurrentTrips([randomTrip]);
   };
   
   return (

@@ -19,7 +19,6 @@ import ButtonBack from "../../../components/Global/ButtonBack/ButtonBack";
 import MapView, { Marker } from "react-native-maps";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { Ionicons } from "@expo/vector-icons";
-import PopUpRequestCard from "../../../components/Driver/PopUpRequestCard";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../../../config/config";
 import { Dimensions } from "react-native";
@@ -31,7 +30,18 @@ const TripDetailScreen = ({ navigation, route }) => {
   const [tripData, setTrip] = useState({});
   useEffect(() => {
     getTrip();
-  }, []);
+    const disableSwipeBack = () => {
+      navigation.setOptions({
+        gestureEnabled: false,
+      });
+     };
+     disableSwipeBack();
+     return () => {
+      navigation.setOptions({
+        gestureEnabled: true,
+      });
+    };
+  }, [navigation]);
   const getTrip = () => {
     let data = {};
     getDoc(doc(db, "ListTrip", idTrip)).then((doc) => {
@@ -57,13 +67,6 @@ const TripDetailScreen = ({ navigation, route }) => {
   return (
     <VStack h={contentHeight} bgColor={COLORS.background}>
       <SafeAreaView>
-        <View position={"absolute"} top={50} left={2} zIndex={1}>
-          <ButtonBack
-            onPress={() => {
-              navigation.goBack();
-            }}
-          />
-        </View>
         <MapView
           provider="google"
           style={{

@@ -61,7 +61,9 @@ function ReceivedTripCard(props) {
   const setStatusCancel = () => {
     updateDoc(doc(db, "ListTrip", idTrip), {
       status: "canceled",
+      isRiderCancel: true
     });
+    console.log(idRider)
     updateDoc(doc(db, "Rider", idRider), {
       cancel: increment(1),
     });
@@ -79,7 +81,7 @@ function ReceivedTripCard(props) {
     <View
       bgColor={COLORS.fourthary}
       w={"100%"}
-      h={303}
+      h={343}
       borderTopRadius={20}
       shadow={3}
       position={"absolute"}
@@ -128,7 +130,7 @@ function ReceivedTripCard(props) {
       <View
         bgColor={COLORS.tertiary}
         w={"100%"}
-        h={210}
+        h={250}
         borderTopRadius={20}
         position={"absolute"}
         bottom={0}
