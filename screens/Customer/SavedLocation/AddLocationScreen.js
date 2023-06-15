@@ -11,6 +11,7 @@ import {
   getSingleAddressFromCoordinate,
 } from "../../../api/locationAPI";
 import { fetchCurrentUserLocation } from "../../../helper/location";
+import { getFromAsyncStorage } from "../../../helper/asyncStorage";
 
 const AddLocationScreen = ({ navigation }) => {
   const [searchText, setSearchText] = useState("");
@@ -236,7 +237,7 @@ const AddLocationScreen = ({ navigation }) => {
                     "🚀 ~ file: AddLocationScreen.js:24 ~ AddLocationScreen ~ markerPosition:",
                     markerPosition
                   );
-                  //navigation.navigate("ConfirmLocation");
+                  navigation.navigate("ConfirmLocation", { ...markerPosition });
                 }}
               >
                 <Text style={{ ...FONTS.h2 }} color={COLORS.white}>
