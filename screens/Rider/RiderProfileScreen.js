@@ -325,6 +325,7 @@ const RiderProfileScreen = ({ navigation, route }) => {
             </VStack>
 
             <Button
+              mb={5}
               w={"100%"}
               mt={20}
               borderRadius={20}

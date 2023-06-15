@@ -7,6 +7,7 @@ import PopUpRequestCard from "../../../components/Driver/PopUpRequestCard";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../../../config/config";
 import { Dimensions } from "react-native";
+import { Platform } from "expo-modules-core";
 
 const TripDetailScreen = ({ navigation, route }) => {
   const contentHeight = Dimensions.get("window").height;
@@ -37,7 +38,10 @@ const TripDetailScreen = ({ navigation, route }) => {
     });
   };
   return (
-    <VStack h={contentHeight} bgColor={COLORS.background}>
+    <VStack
+      h={Platform.OS === "ios" ? contentHeight : "100%"}
+      bgColor={COLORS.background}
+    >
       <SafeAreaView>
         <View position={"absolute"} top={50} left={2} zIndex={1}>
           <ButtonBack
