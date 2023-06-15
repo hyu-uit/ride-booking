@@ -23,7 +23,7 @@ import * as ImagePicker from "expo-image-picker";
 import { AsyncStorage } from "react-native";
 import { doc, getDoc, updateDoc } from "@firebase/firestore";
 import { db, storage } from "../../config/config";
-import { getFromAsyncStorage } from "../../helper/asyncStorage";
+import { getFromAsyncStorage, removeValue } from "../../helper/asyncStorage";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { useTranslation } from "react-i18next";
 import i18next from "i18next";
@@ -330,13 +330,15 @@ const RiderProfileScreen = ({ navigation, route }) => {
               borderRadius={20}
               bgColor={COLORS.primary}
               onPress={() => {
+                removeValue("phoneNumber");
+                removeValue("role");
                 navigation.navigate("AuthenticationStack", {
                   screen: "Login",
                 });
               }}
             >
               <Text style={{ ...FONTS.h2 }} color={COLORS.white}>
-                Log out
+                {t("logout")}
               </Text>
             </Button>
           </ScrollView>

@@ -3,6 +3,7 @@ import {
   HStack,
   Image,
   NativeBaseProvider,
+  ScrollView,
   Text,
   VStack,
   View,
@@ -94,7 +95,7 @@ const UploadID = ({ navigation }) => {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
-      aspect: [3, 4],
+      aspect: [4, 3],
       quality: 1,
     });
 
@@ -138,90 +139,92 @@ const UploadID = ({ navigation }) => {
         onLayout={handleLayout}
       >
         <SafeAreaView style={{ width: "100%", height: "100%" }}>
-          <ButtonBack
-            onPress={() => {
-              navigation.goBack();
-            }}
-          ></ButtonBack>
-          <Button
-            mt={50}
-            w={"100%"}
-            h={height}
-            borderColor={COLORS.fifthary}
-            borderWidth={2}
-            backgroundColor={"transparent"}
-            borderStyle={"dashed"}
-            onPress={() => {
-              pickImage();
-            }}
-          >
-            {imageFront !== null ? (
-              <>
-                <Image
-                  source={{ uri: imageFront }}
-                  w={width}
-                  h={"100%"}
-                  alt="ID front"
-                  // resizeMode="cover"
-                  bg={COLORS.white}
-                ></Image>
-              </>
-            ) : (
-              <>
-                <VStack justifyContent={"center"} alignItems={"center"}>
-                  <Icon name="upload" size={50} color={COLORS.white} />
-                  <Text style={{ ...FONTS.h4 }} color={COLORS.white} mt={5}>
-                    {t("uploadIDFront")}
-                  </Text>
-                </VStack>
-              </>
-            )}
-          </Button>
-          <Button
-            mt={50}
-            w={"100%"}
-            h={height}
-            borderColor={COLORS.fifthary}
-            borderWidth={2}
-            backgroundColor={"transparent"}
-            borderStyle={"dashed"}
-            onPress={() => {
-              pickImageBack();
-            }}
-          >
-            {imageBack !== null ? (
-              <>
-                <Image
-                  source={{ uri: imageBack }}
-                  w={width}
-                  h={"100%"}
-                  alt="ID front"
-                  // resizeMode="cover"
-                  bg={COLORS.white}
-                ></Image>
-              </>
-            ) : (
-              <>
-                <VStack justifyContent={"center"} alignItems={"center"}>
-                  <Icon name="upload" size={50} color={COLORS.white} />
-                  <Text style={{ ...FONTS.h4 }} color={COLORS.white} mt={5}>
-                    {t("uploadIDBack")}
-                  </Text>
-                </VStack>
-              </>
-            )}
-          </Button>
-          <Button
-            w={"100%"}
-            borderRadius={20}
-            bgColor={COLORS.primary}
-            onPress={uploadImage}
-            mt={10}
-          >
-            <Text style={{ ...FONTS.h2 }} color={COLORS.white}>
-              {t("continue")}
-            </Text>
-          </Button>
+          <ScrollView>
+            <ButtonBack
+              onPress={() => {
+                navigation.goBack();
+              }}
+            ></ButtonBack>
+            <Button
+              mt={50}
+              w={"100%"}
+              h={height}
+              borderColor={COLORS.fifthary}
+              borderWidth={2}
+              backgroundColor={"transparent"}
+              borderStyle={"dashed"}
+              onPress={() => {
+                pickImage();
+              }}
+            >
+              {imageFront !== null ? (
+                <>
+                  <Image
+                    source={{ uri: imageFront }}
+                    w={width}
+                    h={"100%"}
+                    alt="ID front"
+                    // resizeMode="cover"
+                    bg={COLORS.white}
+                  ></Image>
+                </>
+              ) : (
+                <>
+                  <VStack justifyContent={"center"} alignItems={"center"}>
+                    <Icon name="upload" size={50} color={COLORS.white} />
+                    <Text style={{ ...FONTS.h4 }} color={COLORS.white} mt={5}>
+                      {t("uploadIDFront")}
+                    </Text>
+                  </VStack>
+                </>
+              )}
+            </Button>
+            <Button
+              mt={50}
+              w={"100%"}
+              h={height}
+              borderColor={COLORS.fifthary}
+              borderWidth={2}
+              backgroundColor={"transparent"}
+              borderStyle={"dashed"}
+              onPress={() => {
+                pickImageBack();
+              }}
+            >
+              {imageBack !== null ? (
+                <>
+                  <Image
+                    source={{ uri: imageBack }}
+                    w={width}
+                    h={"100%"}
+                    alt="ID front"
+                    // resizeMode="cover"
+                    bg={COLORS.white}
+                  ></Image>
+                </>
+              ) : (
+                <>
+                  <VStack justifyContent={"center"} alignItems={"center"}>
+                    <Icon name="upload" size={50} color={COLORS.white} />
+                    <Text style={{ ...FONTS.h4 }} color={COLORS.white} mt={5}>
+                      {t("uploadIDBack")}
+                    </Text>
+                  </VStack>
+                </>
+              )}
+            </Button>
+            <Button
+              w={"100%"}
+              borderRadius={20}
+              bgColor={COLORS.primary}
+              onPress={uploadImage}
+              mt={10}
+            >
+              <Text style={{ ...FONTS.h2 }} color={COLORS.white}>
+                {t("continue")}
+              </Text>
+            </Button>
+          </ScrollView>
         </SafeAreaView>
       </VStack>
     </TouchableWithoutFeedback>

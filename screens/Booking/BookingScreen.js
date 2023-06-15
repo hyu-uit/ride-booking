@@ -42,6 +42,7 @@ import { useTranslation } from "react-i18next";
 
 export const PICK_UP_INPUT = "PICK_UP_INPUT";
 export const DESTINATION_INPUT = "DESTINATION_INPUT";
+const contentHeight = Dimensions.get("window").height;
 
 export default function BookingScreen({ navigation }) {
   const { booking, dispatch, calculatePrice } = useContext(BookingContext);
@@ -363,6 +364,7 @@ export default function BookingScreen({ navigation }) {
                     borderRadius={10}
                     bgColor={COLORS.primary}
                     onTouchEnd={chooseFromMapHandler}
+                    mb={5}
                   >
                     <Text fontSize={SIZES.h5} bold color={"white"}>
                       {focusInput === PICK_UP_INPUT
@@ -410,6 +412,7 @@ export default function BookingScreen({ navigation }) {
                 borderRadius={10}
                 bgColor={COLORS.primary}
                 onPress={hanldeConfirmFromMap}
+                mb={8}
               >
                 <Text fontSize={SIZES.h5} bold color={"white"}>
                   {focusInput === PICK_UP_INPUT

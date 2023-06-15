@@ -75,21 +75,23 @@ const StudentReportScreen = ({ navigation }) => {
     const unsubscribeRider = onSnapshot(riderQuery, (querySnapshot) => {
       const updatedUsers = [];
       querySnapshot.forEach((doc) => {
-        const user = {
-          role: "Rider",
-          phoneNumber: doc.id,
-          school: doc.data().school,
-          displayName: doc.data().displayName,
-          email: doc.data().email,
-          studentID: doc.data().studentID,
-          portrait: doc.data().portrait,
-          birthday: doc.data().birthday,
-          cardFront: doc.data().cardFront,
-          cardBack: doc.data().cardBack,
-          status: doc.data().status,
-          key: doc.id + "Rider",
-        };
-        updatedUsers.push(user);
+        if (doc.data().cancel > 1) {
+          const user = {
+            role: "Rider",
+            phoneNumber: doc.id,
+            school: doc.data().school,
+            displayName: doc.data().displayName,
+            email: doc.data().email,
+            studentID: doc.data().studentID,
+            portrait: doc.data().portrait,
+            birthday: doc.data().birthday,
+            cardFront: doc.data().cardFront,
+            cardBack: doc.data().cardBack,
+            status: doc.data().status,
+            key: doc.id + "Rider",
+          };
+          updatedUsers.push(user);
+        }
       });
       setUsersRider([]);
       setUsersRider((prevUsers) => [
@@ -112,20 +114,22 @@ const StudentReportScreen = ({ navigation }) => {
     const unsubscribeCustomer = onSnapshot(customerQuery, (querySnapshot) => {
       const updatedUsers = [];
       querySnapshot.forEach((doc) => {
-        const user = {
-          role: "Customer",
-          phoneNumber: doc.id,
-          school: doc.data().school,
-          displayName: doc.data().displayName,
-          email: doc.data().email,
-          studentID: doc.data().studentID,
-          portrait: doc.data().portrait,
-          cardFront: doc.data().cardFront,
-          cardBack: doc.data().cardBack,
-          status: doc.data().status,
-          key: doc.id + "-Customer",
-        };
-        updatedUsers.push(user);
+        if (doc.data().cancel > 1) {
+          const user = {
+            role: "Customer",
+            phoneNumber: doc.id,
+            school: doc.data().school,
+            displayName: doc.data().displayName,
+            email: doc.data().email,
+            studentID: doc.data().studentID,
+            portrait: doc.data().portrait,
+            cardFront: doc.data().cardFront,
+            cardBack: doc.data().cardBack,
+            status: doc.data().status,
+            key: doc.id + "-Customer",
+          };
+          updatedUsers.push(user);
+        }
       });
       setUsersCustomer((prevUsers) => [
         ...prevUsers.filter((user) => user.role !== "Customer"),
@@ -232,49 +236,46 @@ const StudentReportScreen = ({ navigation }) => {
   };
   const FirstRoute = () => (
     <VStack paddingX={"10px"}>
-      <VStack justifyContent={"center"} alignItems={"center"}>
-        <FlatList
-          w={"100%"}
-          data={filteredCustomerUsers}
-          keyExtractor={(item) => item.key}
-          renderItem={({ item }) => (
-            <StudentReportCard
-              onPress={() => {
-                const data = {
-                  phoneNumber: "" + item.phoneNumber,
-                  role: "" + item.role,
-                };
-                navigation.navigate("StudentReportDetail", data);
-              }}
-              list={item}
-            ></StudentReportCard>
-          )}
-        ></FlatList>
-      </VStack>
+      <FlatList
+        w={"100%"}
+        data={filteredCustomerUsers}
+        keyExtractor={(item) => item.key}
+        renderItem={({ item }) => (
+          <StudentReportCard
+            onPress={() => {
+              const data = {
+                phoneNumber: "" + item.phoneNumber,
+                role: "" + item.role,
+              };
+              navigation.navigate("StudentReportDetail", data);
+            }}
+            list={item}
+          ></StudentReportCard>
+        )}
+      ></FlatList>
     </VStack>
   );
 
   const SecondRoute = () => (
     <VStack paddingX={"10px"}>
-      <VStack justifyContent={"center"} alignItems={"center"}>
-        <FlatList
-          w={"100%"}
-          data={filteredRiderUsers}
-          keyExtractor={(item) => item.key}
-          renderItem={({ item }) => (
-            <StudentReportCard
-              onPress={() => {
-                const data = {
-                  phoneNumber: "" + item.phoneNumber,
-                  role: "" + item.role,
-                };
-                navigation.navigate("StudentReportDetail", data);
-              }}
-              list={item}
-            ></StudentReportCard>
-          )}
-        ></FlatList>
-        {/* <FlatList
+      <FlatList
+        w={"100%"}
+        data={filteredRiderUsers}
+        keyExtractor={(item) => item.key}
+        renderItem={({ item }) => (
+          <StudentReportCard
+            onPress={() => {
+              const data = {
+                phoneNumber: "" + item.phoneNumber,
+                role: "" + item.role,
+              };
+              navigation.navigate("StudentReportDetail", data);
+            }}
+            list={item}
+          ></StudentReportCard>
+        )}
+      ></FlatList>
+      {/* <FlatList
           w={"100%"}
           data={filteredRiderUsers}
           keyExtractor={(item) => item.key}
@@ -291,31 +292,29 @@ const StudentReportScreen = ({ navigation }) => {
             ></StudentReportCard>
           )}
         ></FlatList> */}
-      </VStack>
     </VStack>
   );
 
   const ThirdRoute = () => (
     <VStack paddingX={"10px"}>
-      <VStack justifyContent={"center"} alignItems={"center"}>
-        <FlatList
-          w={"100%"}
-          data={filteredLockedUsers}
-          keyExtractor={(item) => item.key}
-          renderItem={({ item }) => (
-            <StudentReportCard
-              onPress={() => {
-                const data = {
-                  phoneNumber: "" + item.phoneNumber,
-                  role: "" + item.role,
-                };
-                navigation.navigate("StudentReportDetail", data);
-              }}
-              list={item}
-            ></StudentReportCard>
-          )}
-        ></FlatList>
-        {/* <FlatList
+      <FlatList
+        w={"100%"}
+        data={filteredLockedUsers}
+        keyExtractor={(item) => item.key}
+        renderItem={({ item }) => (
+          <StudentReportCard
+            onPress={() => {
+              const data = {
+                phoneNumber: "" + item.phoneNumber,
+                role: "" + item.role,
+              };
+              navigation.navigate("StudentReportDetail", data);
+            }}
+            list={item}
+          ></StudentReportCard>
+        )}
+      ></FlatList>
+      {/* <FlatList
           w={"100%"}
           h={"87%"}
           data={filteredLockedUsers}
@@ -333,7 +332,6 @@ const StudentReportScreen = ({ navigation }) => {
             ></StudentReportCard>
           )}
         ></FlatList> */}
-      </VStack>
     </VStack>
   );
 

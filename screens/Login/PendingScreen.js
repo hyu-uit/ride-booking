@@ -24,9 +24,11 @@ import {
   where,
 } from "firebase/firestore";
 import { db } from "../../config/config";
-import { getFromAsyncStorage } from "../../helper/asyncStorage";
+import { getFromAsyncStorage, removeValue } from "../../helper/asyncStorage";
+import { useTranslation } from "react-i18next";
 
 const PendingScreen = ({ navigation }) => {
+  const { t } = useTranslation();
   useEffect(() => {
     fetchDataAndPhoneNumber();
   }, [navigation]);
@@ -105,7 +107,7 @@ const PendingScreen = ({ navigation }) => {
               mt={10}
               alignSelf={"center"}
             >
-              PENDING
+              {t("pending")}
             </Text>
 
             {reject ? (
@@ -118,7 +120,7 @@ const PendingScreen = ({ navigation }) => {
                   textAlign={"center"}
                   mt={5}
                 >
-                  Your account has been rejected{"\n"}please check reasons below
+                  {t("pendingReject")}
                 </Text>
 
                 <Wrap
@@ -140,7 +142,7 @@ const PendingScreen = ({ navigation }) => {
                           backgroundColor: COLORS.red,
                         }}
                       >
-                        Full name
+                        {t("fullName")}
                       </Text>
                     </>
                   ) : (
@@ -159,7 +161,7 @@ const PendingScreen = ({ navigation }) => {
                           backgroundColor: COLORS.red,
                         }}
                       >
-                        Birthday
+                        {t("birthday")}
                       </Text>
                     </>
                   ) : (
@@ -178,7 +180,7 @@ const PendingScreen = ({ navigation }) => {
                           backgroundColor: COLORS.red,
                         }}
                       >
-                        Student ID Number
+                        {t("id")}
                       </Text>
                     </>
                   ) : (
@@ -197,7 +199,7 @@ const PendingScreen = ({ navigation }) => {
                           backgroundColor: COLORS.red,
                         }}
                       >
-                        Student ID Card (front)
+                        {t("cardFront")}
                       </Text>
                     </>
                   ) : (
@@ -216,7 +218,7 @@ const PendingScreen = ({ navigation }) => {
                           backgroundColor: COLORS.red,
                         }}
                       >
-                        Student ID Card (back)
+                        {t("cardBack")}
                       </Text>
                     </>
                   ) : (
@@ -235,7 +237,7 @@ const PendingScreen = ({ navigation }) => {
                           backgroundColor: COLORS.red,
                         }}
                       >
-                        Portrait picture
+                        {t("portrait")}
                       </Text>
                     </>
                   ) : (
@@ -251,7 +253,7 @@ const PendingScreen = ({ navigation }) => {
                       padding={5}
                     >
                       <Text style={{ ...FONTS.h4, color: COLORS.grey }}>
-                        More information:
+                        {t("moreInfo")}
                       </Text>
                       <Text
                         padding={1}
@@ -281,8 +283,7 @@ const PendingScreen = ({ navigation }) => {
                   textAlign={"center"}
                   mt={5}
                 >
-                  Your account is being approved by Student Office{"\n"}Please
-                  wait until receiving a notification by SMS
+                  {t("pendingContent")}
                 </Text>
               </>
             )}
@@ -291,14 +292,17 @@ const PendingScreen = ({ navigation }) => {
               borderRadius={20}
               bgColor={COLORS.primary}
               mt={50}
-              onPress={() =>
+              onPress={() => {
+                removeValue("phoneNumber");
+                removeValue("role");
+
                 navigation.navigate("AuthenticationStack", {
                   screen: "SignIn",
-                })
-              }
+                });
+              }}
             >
               <Text style={{ ...FONTS.h2 }} color={COLORS.white}>
-                Go back
+                {t("back")}
               </Text>
             </Button>
           </ScrollView>

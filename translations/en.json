@@ -166,5 +166,11 @@
   "language": "Language",
 
   "choosePromo": "Choose a promotion",
-  "choosePromoContent": "Get your trip cheaper with our promotions"
+  "choosePromoContent": "Get your trip cheaper with our promotions",
+
+  "pending": "Pending",
+  "pendingContent": "Your account is being approved by Student Office\nPleasewait until receiving a notification by SMS",
+  "pendingReject": "Your account has been rejected\nplease check reasons below",
+
+  "unlock": "Unlock account"
 }

@@ -26,6 +26,7 @@ import VietnamFlag from "../assets/images/Login/vietnamFlag.png";
 import UKFlag from "../assets/images/Login/ukFlag.png";
 import { useState } from "react";
 import i18next from "i18next";
+import { saveToAsyncStorage } from "../helper/asyncStorage";
 
 const { width, height } = Dimensions.get("window");
 
@@ -143,11 +144,12 @@ const OnBoardingScreen = ({ navigation }) => {
               </TouchableOpacity>
               <View width={5}></View>
               <TouchableOpacity
-                onPress={() =>
+                onPress={() => {
+                  saveToAsyncStorage("isFirstTime", "false");
                   navigation.navigate("AuthenticationStack", {
                     screen: "Login",
-                  })
-                }
+                  });
+                }}
                 style={styles.buttonGetStarted}
               >
                 <Text

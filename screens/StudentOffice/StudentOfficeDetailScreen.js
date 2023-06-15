@@ -230,7 +230,7 @@ const StudentOfficeDetailScreen = ({ navigation, route }) => {
                 ></Image>
               </View>
 
-              <HStack justifyContent={"space-between"}>
+              <HStack justifyContent={"space-between"} mb={10}>
                 <Button
                   w={"48%"}
                   variant={"outline"}

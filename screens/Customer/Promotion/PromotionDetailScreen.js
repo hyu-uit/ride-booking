@@ -82,7 +82,7 @@ const PromotionDetailScreen = ({ navigation, route }) => {
             {promotion.description}
           </Text>
 
-          <Button
+          {/* <Button
             w={"100%"}
             borderRadius={20}
             bgColor={COLORS.primary}
@@ -93,13 +93,13 @@ const PromotionDetailScreen = ({ navigation, route }) => {
               const data = {
                 idPromotion: "" + idPromotion,
               };
-              navigation.navigate("Booking", data);
+              navigation.navigate("Booking");
             }}
           >
             <Text style={{ ...FONTS.h2 }} color={COLORS.white}>
               {t("bookNow")}
             </Text>
-          </Button>
+          </Button> */}
         </VStack>
       </SafeAreaView>
     </VStack>

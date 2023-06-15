@@ -13,21 +13,23 @@ import { IS_FIRST_USE } from "../constants/asyncStorageKey";
 const Stack = createNativeStackNavigator();
 
 export default function Navigation() {
-  const [isFirstUse, setIsFirstUse] = useState(true);
+  // const [isFirstUse, setIsFirstUse] = useState(true);
+  const [isFirstTime, setIsFirstTime] = useState(true);
   useEffect(() => {
-    getFromAsyncStorage(IS_FIRST_USE).then((value) => {
-      console.log(
-        "🚀 ~ file: index.js:19 ~ getFromAsyncStorage ~ value:",
-        value
-      );
-      if (value) setIsFirstUse(value);
-    });
+    // getFromAsyncStorage(IS_FIRST_USE).then((value) => {
+    //   if (value) setIsFirstUse(value);
+    // });
+    // getFromAsyncStorage("isFirstTime").then((value) => {
+    //   if (value !== null && value === "false") {
+    //     setIsFirstTime(false);
+    //   }
+    // });
   }, []);
   return (
     <NativeBaseProvider>
       <NavigationContainer>
         <Stack.Navigator screenOptions={{ headerShown: false }}>
-          {isFirstUse ? (
+          {isFirstTime ? (
             <Stack.Screen name="OnBoarding" component={OnBoardingScreen} />
           ) : null}
           <Stack.Screen

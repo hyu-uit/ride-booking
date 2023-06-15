@@ -108,34 +108,27 @@ const MenuScreen = ({ navigation }) => {
               </HStack>
             </Button>
             <Divider mt={3} bg={COLORS.tertiary} />
-            <Button
-              bgColor={"transparent"}
-              w={"100%"}
-              justifyContent={"flex-start"}
-            >
-              <HStack alignItems={"center"}>
-                <Icon name="language" size={20} color={COLORS.fifthary} />
-                <Select
-                  alignSelf={"flex-end"}
-                  w={"150px"}
-                  h={"50px"}
-                  borderColor={"transparent"}
-                  style={{ ...FONTS.body3 }}
-                  color={COLORS.white}
-                  onValueChange={(itemValue) => {
-                    setLanguage(itemValue);
-                    i18next.changeLanguage(itemValue);
-                  }}
-                  selectedValue={language}
-                  _selectedItem={{
-                    bg: COLORS.fifthary,
-                  }}
-                >
-                  <Select.Item label={t("en")} value="en" />
-                  <Select.Item label={t("vi")} value="vi" />
-                </Select>
-              </HStack>
-            </Button>
+            <HStack alignItems={"center"} w={"100%"} px={5}>
+              <Icon name="language" size={20} color={COLORS.fifthary} />
+              <Select
+                w={200}
+                alignSelf={"flex-end"}
+                borderColor={"transparent"}
+                style={{ ...FONTS.h3 }}
+                color={COLORS.white}
+                onValueChange={(itemValue) => {
+                  setLanguage(itemValue);
+                  i18next.changeLanguage(itemValue);
+                }}
+                selectedValue={language}
+                _selectedItem={{
+                  bg: COLORS.fifthary,
+                }}
+              >
+                <Select.Item label={t("en")} value="en" />
+                <Select.Item label={t("vi")} value="vi" />
+              </Select>
+            </HStack>
           </VStack>
           <HStack
             mt={10}

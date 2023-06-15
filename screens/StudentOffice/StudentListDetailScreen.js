@@ -13,7 +13,7 @@ import {
 import { COLORS, FONTS, SIZES } from "../../constants/theme";
 import { SafeAreaView } from "react-native-safe-area-context";
 import ButtonBack from "../../components/Global/ButtonBack/ButtonBack";
-import { Alert, Dimensions, PixelRatio } from "react-native";
+import { Alert, Dimensions, PixelRatio, Platform } from "react-native";
 import LoveIcon from "../../assets/icons8-smiling-face-with-heart-eyes-96.png";
 import SmileIcon from "../../assets/icons8-slightly-smiling-face-96.png";
 import DisappointedIcon from "../../assets/icons8-frowning-face-96.png";
@@ -172,7 +172,10 @@ const StudentListDetailScreen = ({ route, navigation }) => {
     ]);
   };
   return (
-    <VStack h={contentHeight} bgColor={COLORS.background}>
+    <VStack
+      h={Platform.OS === "ios" ? contentHeight : "100%"}
+      bgColor={COLORS.background}
+    >
       <SafeAreaView>
         <VStack h={"100%"} mt={"17px"} paddingX={"10px"}>
           <HStack mb={2} alignItems={"center"} justifyContent={"center"}>
@@ -350,6 +353,7 @@ const StudentListDetailScreen = ({ route, navigation }) => {
                     borderColor={COLORS.red}
                     onPress={lockAccount}
                     mt={10}
+                    mb={4}
                   >
                     <Text style={{ ...FONTS.h2 }} color={COLORS.white}>
                       Lock account
@@ -366,9 +370,10 @@ const StudentListDetailScreen = ({ route, navigation }) => {
                     borderColor={COLORS.primary}
                     onPress={unlockAccount}
                     mt={10}
+                    mb={4}
                   >
                     <Text style={{ ...FONTS.h2 }} color={COLORS.white}>
-                      Unlock account
+                      {t("unlock")}
                     </Text>
                   </Button>
                 </>

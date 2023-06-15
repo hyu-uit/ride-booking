@@ -15,7 +15,7 @@ import ButtonBack from "../../components/Global/ButtonBack/ButtonBack";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { COLORS, FONTS, SIZES } from "../../constants";
 import { useEffect } from "react";
-import { getFromAsyncStorage } from "../../helper/asyncStorage";
+import { getFromAsyncStorage, removeValue } from "../../helper/asyncStorage";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../../config/config";
 import { useTranslation } from "react-i18next";
@@ -142,6 +142,8 @@ const StudentOfficeProfileScreen = ({ navigation }) => {
               borderRadius={20}
               bgColor={COLORS.primary}
               onPress={() => {
+                removeValue("phoneNumber");
+                removeValue("role");
                 navigation.navigate("AuthenticationStack", {
                   screen: "Login",
                 });

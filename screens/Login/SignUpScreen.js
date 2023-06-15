@@ -69,7 +69,9 @@ const SignUpScreen = ({ navigation }) => {
     } else {
       setShowDatePicker(false);
       setSelectedDate(date);
-      setShowDatePicker(true);
+      Platform.OS === "ios"
+        ? setShowDatePicker(true)
+        : setShowDatePicker(false);
       setFinalDate(moment(selectedDate).format("DD-MM-YYYY"));
     }
   };
@@ -253,7 +255,7 @@ const SignUpScreen = ({ navigation }) => {
                             <Text
                               style={{ ...FONTS.body3, color: COLORS.grey }}
                             >
-                              Ngày sinh
+                              {t("inputBirthday")}
                             </Text>
                           </>
                         ) : (
