@@ -26,3 +26,40 @@ export const fetchCurrentUserLocation = async () => {
 
   // Use the latitude and longitude values as needed
 };
+
+export const centerMapToCoordinates = (
+  mapRef,
+  pickUpCoords,
+  destinationCoords
+) => {
+  const coordinates = [
+    {
+      latitude: pickUpCoords.latitude,
+      longitude: pickUpCoords.longitude,
+    },
+    {
+      latitude: destinationCoords.latitude,
+      longitude: destinationCoords.longitude,
+    },
+  ];
+  mapRef.current.fitToCoordinates(coordinates, {
+    edgePadding: { top: 50, right: 50, bottom: 100, left: 50 },
+    animated: true,
+  });
+};
+
+export const animateToCoordinate = (mapRef, latitude, longitude) => {
+  const coordinate = {
+    latitude,
+    longitude,
+  };
+  mapRef.current.animateToRegion(
+    {
+      latitude,
+      longitude,
+      latitudeDelta: 0.01,
+      longitudeDelta: 0.01,
+    },
+    1000 // Duration of the animation in milliseconds
+  );
+};

@@ -80,7 +80,7 @@ const PromotionModal = ({ props, isShow, onClose, onPress, navigation }) => {
             renderItem={({ item }) => (
               <BookingPromotionCard
                 data={item}
-                onPress={() => {}}
+                onPress={() => onPress(item)}
                 promotion={item}
                 key={item.idTrip}
               ></BookingPromotionCard>

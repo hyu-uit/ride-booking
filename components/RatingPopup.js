@@ -3,12 +3,21 @@ import LoveIcon from "../assets/icons8-smiling-face-with-heart-eyes-96.png";
 import SmileIcon from "../assets/icons8-slightly-smiling-face-96.png";
 import DisappointedIcon from "../assets/icons8-frowning-face-96.png";
 import { SIZES } from "../constants/theme";
-import SelectedButton from "./Button/SelectedButton";
-import SelecteIconButton from "./Button/SelecteIconButton";
+import SelectIconButton from "./Button/SelecteIconButton";
 import { useTranslation } from "react-i18next";
+import { useState } from "react";
 
-const RatingPopup = ({ buttonText, isGroupButtonShow, onPress }) => {
+const RatingPopup = ({ navigation }) => {
   const { t } = useTranslation();
+  const [selectedButton, setSelectedButton] = useState(null);
+
+  const handleCompleteBooking = () => {
+    // handle complete booking logic here
+    // use directly in line 13 to get rating type
+
+    navigation.navigate("Home");
+  };
+
   return (
     <View
       bgColor={"#0B0F2F"}
@@ -30,43 +39,31 @@ const RatingPopup = ({ buttonText, isGroupButtonShow, onPress }) => {
           </Text>
         </VStack>
         <HStack space={4}>
-          <SelecteIconButton icon={LoveIcon} />
-          <SelecteIconButton icon={SmileIcon} />
-          <SelecteIconButton icon={DisappointedIcon} />
+          <SelectIconButton
+            icon={LoveIcon}
+            selected={selectedButton === "love"}
+            onPress={() => setSelectedButton("love")}
+          />
+          <SelectIconButton
+            icon={SmileIcon}
+            selected={selectedButton === "smile"}
+            onPress={() => setSelectedButton("smile")}
+          />
+          <SelectIconButton
+            icon={DisappointedIcon}
+            selected={selectedButton === "disappointed"}
+            onPress={() => setSelectedButton("disappointed")}
+          />
         </HStack>
-        {isGroupButtonShow ? (
-          <HStack space={4} flexWrap={"wrap"}>
-            <SelectedButton
-              text={"Good service"}
-              isSelected={false}
-            ></SelectedButton>
-            <SelectedButton
-              text={"Well prepared"}
-              isSelected={false}
-            ></SelectedButton>
-            <SelectedButton
-              text={"Punctuality"}
-              isSelected={false}
-            ></SelectedButton>
-            <SelectedButton
-              text={"Helpful driver"}
-              isSelected={false}
-            ></SelectedButton>
-            <SelectedButton
-              text={"Friendly driver"}
-              isSelected={false}
-            ></SelectedButton>
-          </HStack>
-        ) : null}
         <Button
           marginTop={"auto"}
           bgColor={"#194AF94D"}
           width={"100%"}
           borderRadius={SIZES.radius}
-          onPress={onPress}
+          onPress={handleCompleteBooking}
         >
           <Text bold fontSize={SIZES.h2} color={"white"}>
-            {buttonText}
+            {selectedButton ? "Back" : "Skip"}
           </Text>
         </Button>
       </VStack>

@@ -14,41 +14,38 @@ const Stack = createNativeStackNavigator();
 
 export default function Navigation() {
   // const [isFirstUse, setIsFirstUse] = useState(true);
-  const [isFirstTime, setIsFirstTime] = useState(true);
+  const [isFirstUse, setIsFirstUse] = useState(true);
   useEffect(() => {
-    // getFromAsyncStorage(IS_FIRST_USE).then((value) => {
-    //   if (value) setIsFirstUse(value);
-    // });
-    // getFromAsyncStorage("isFirstTime").then((value) => {
-    //   if (value !== null && value === "false") {
-    //     setIsFirstTime(false);
-    //   }
-    // });
+    getFromAsyncStorage(IS_FIRST_USE).then((value) => {
+      console.log(
+        "🚀 ~ file: index.js:19 ~ getFromAsyncStorage ~ value:",
+        value
+      );
+      if (value != null) setIsFirstUse(value);
+    });
   }, []);
   return (
-    <NativeBaseProvider>
-      <NavigationContainer>
-        <Stack.Navigator screenOptions={{ headerShown: false }}>
-          {isFirstTime ? (
-            <Stack.Screen name="OnBoarding" component={OnBoardingScreen} />
-          ) : null}
-          <Stack.Screen
-            name="AuthenticationStack"
-            component={AuthenticationStackScreen}
-          />
-          <Stack.Screen name="MainNavigator" component={MainNavigator} />
-          <Stack.Screen
-            name="MainRiderNavigator"
-            component={MainRiderNavigator}
-            options={{ gestureEnabled: false }}
-          />
-          <Stack.Screen
-            name="StudentOfficeNavigator"
-            component={StudentOfficeStackScreen}
-            options={{ gestureEnabled: false }}
-          />
-        </Stack.Navigator>
-      </NavigationContainer>
-    </NativeBaseProvider>
+    <NavigationContainer>
+      <Stack.Navigator screenOptions={{ headerShown: false }}>
+        {isFirstUse ? (
+          <Stack.Screen name="OnBoarding" component={OnBoardingScreen} />
+        ) : null}
+        <Stack.Screen
+          name="AuthenticationStack"
+          component={AuthenticationStackScreen}
+        />
+        <Stack.Screen name="MainNavigator" component={MainNavigator} />
+        <Stack.Screen
+          name="MainRiderNavigator"
+          component={MainRiderNavigator}
+          options={{ gestureEnabled: false }}
+        />
+        <Stack.Screen
+          name="StudentOfficeNavigator"
+          component={StudentOfficeStackScreen}
+          options={{ gestureEnabled: false }}
+        />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }

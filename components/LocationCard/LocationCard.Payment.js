@@ -12,11 +12,37 @@ import React from "react";
 import BackIcon from "../../assets/back_icon.png";
 import VisaIcon from "../../assets/visa_96px.png";
 import MomoIcon from "../../assets/momo_icon.png";
-import { SIZES } from "../../constants/theme";
+import { COLORS, SIZES } from "../../constants/theme";
 import { useTranslation } from "react-i18next";
+import PromotionModal from "../Modal/PromotionModal";
+import { useState } from "react";
+import { TouchableOpacity } from "react-native";
+import { useContext } from "react";
+import {
+  BookingContext,
+  SET_BOOKING_DETAILS,
+} from "../../context/BookingContext";
+
+const CASH = "CASH";
+const MOMO = "MOMO";
 
 const LocationCardPayment = ({ onClickContinue, onPressBack }) => {
   const { t } = useTranslation();
+  const [modal, setModal] = useState(false);
+  const { dispatch } = useContext(BookingContext);
+  const [paymentMethod, setPaymentMethod] = useState(CASH);
+
+  const handleOnPressPromotion = (promotion) => {
+    console.log(
+      "🚀 ~ file: LocationCard.Payment.js:26 ~ handleOnPressPromotion ~ promotion:",
+      promotion
+    );
+    dispatch({
+      type: SET_BOOKING_DETAILS,
+      payload: { promotion: promotion.value },
+    });
+    setModal((prev) => !prev);
+  };
   return (
     <View
       bgColor={"#0B0F2F"}
@@ -32,49 +58,64 @@ const LocationCardPayment = ({ onClickContinue, onPressBack }) => {
           {t("payment")}
         </Text>
         <VStack space={2}>
-          <HStack
-            w={"100%"}
-            h={"60px"}
-            bgColor={"#101744"}
-            borderRadius={"10px"}
-            alignItems={"center"}
-          >
-            <Center w={"50px"} h={"50px"}>
-              <Image w={"35px"} h={"35px"} source={VisaIcon} alt="" />
-            </Center>
-            <Text bold fontSize={SIZES.h3} color={"white"} alignSelf={"center"}>
-              {t("cash")}
-            </Text>
-          </HStack>
-          <HStack
-            w={"100%"}
-            h={"60px"}
-            bgColor={"#101744"}
-            borderRadius={"10px"}
-            alignItems={"center"}
-          >
-            <Center w={"50px"} h={"50px"} space={0}>
-              <Image source={MomoIcon} alt="" />
-            </Center>
-            <Text bold fontSize={SIZES.h3} color={"white"}>
-              Momo
-            </Text>
-          </HStack>
+          <TouchableOpacity onPress={() => setPaymentMethod(CASH)}>
+            <HStack
+              w={"100%"}
+              h={"60px"}
+              bgColor={
+                paymentMethod === CASH ? COLORS.fourthary : COLORS.tertiary
+              }
+              borderRadius={"10px"}
+              alignItems={"center"}
+            >
+              <Center w={"50px"} h={"50px"}>
+                <Image w={"35px"} h={"35px"} source={VisaIcon} alt="" />
+              </Center>
+              <Text
+                bold
+                fontSize={SIZES.h3}
+                color={"white"}
+                alignSelf={"center"}
+              >
+                {t("cash")}
+              </Text>
+            </HStack>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => setPaymentMethod(MOMO)}>
+            <HStack
+              w={"100%"}
+              h={"60px"}
+              bgColor={
+                paymentMethod === MOMO ? COLORS.fourthary : COLORS.tertiary
+              }
+              borderRadius={"10px"}
+              alignItems={"center"}
+            >
+              <Center w={"50px"} h={"50px"} space={0}>
+                <Image source={MomoIcon} alt="" />
+              </Center>
+              <Text bold fontSize={SIZES.h3} color={"white"}>
+                Momo
+              </Text>
+            </HStack>
+          </TouchableOpacity>
         </VStack>
         <Divider />
         <Text fontSize={SIZES.h3} bold color={"white"}>
           {t("promotion")}
         </Text>
-        <Center
-          borderWidth={1}
-          borderRadius={20}
-          borderColor={"white"}
-          borderStyle={"dashed"}
-          bgColor={"#101744"}
-          h={"65px"}
-        >
-          <Text color={"white"}>{t("addPromo")}</Text>
-        </Center>
+        <TouchableOpacity onPress={() => setModal((prev) => !prev)}>
+          <Center
+            borderWidth={1}
+            borderRadius={20}
+            borderColor={"white"}
+            borderStyle={"dashed"}
+            bgColor={"#101744"}
+            h={"65px"}
+          >
+            <Text color={"white"}>{t("addPromo")}</Text>
+          </Center>
+        </TouchableOpacity>
         <HStack>
           <Button
             variant={"outline"}
@@ -91,7 +132,7 @@ const LocationCardPayment = ({ onClickContinue, onPressBack }) => {
             w={"200px"}
             marginLeft={"auto"}
             borderRadius={"20px"}
-            onTouchEnd={onClickContinue}
+            onTouchEnd={() => onClickContinue(paymentMethod)}
           >
             <Text color={"white"} bold fontSize={SIZES.small}>
               {t("continue")}
@@ -99,6 +140,11 @@ const LocationCardPayment = ({ onClickContinue, onPressBack }) => {
           </Button>
         </HStack>
       </VStack>
+      <PromotionModal
+        isShow={modal}
+        onClose={() => setModal((prev) => !prev)}
+        onPress={handleOnPressPromotion}
+      />
     </View>
   );
 };

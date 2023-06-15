@@ -10,15 +10,18 @@ import {
   VStack,
   View,
 } from "native-base";
-import React from "react";
+import React, { useContext } from "react";
 import LineImg from "../../assets/Line4.png";
 import LocationIcon from "../../assets/icons/icons8-location-48.png";
 import ArrowDownIcon from "../../assets/icons/icons8-down-arrow-48.png";
 import { SIZES } from "../../constants/theme";
 import { useTranslation } from "react-i18next";
+import { isNullOrEmpty } from "../../helper/helper";
+import { BookingContext } from "../../context/BookingContext";
 
 const LocationCardFinder = ({ onPressCancel }) => {
   const { t } = useTranslation();
+  const { booking } = useContext(BookingContext);
   return (
     <View
       bgColor={"#0B0F2F"}
@@ -34,13 +37,15 @@ const LocationCardFinder = ({ onPressCancel }) => {
           {t("findingRider")}
         </Text>
         <HStack w={"100%"}>
-          <VStack space={2}>
+          <VStack space={2} width={"90%"}>
             <VStack space={1}>
               <Text bold fontSize={SIZES.h6} color={"#8CC3FF"}>
                 {t("pickUp")}
               </Text>
               <Text bold fontSize={SIZES.h6} color={"white"}>
-                Long An
+                {isNullOrEmpty(booking.pickUpLocation.address)
+                  ? booking.pickUpLocation.address
+                  : booking.pickUpLocation.name}
               </Text>
             </VStack>
             <Divider />
@@ -49,7 +54,9 @@ const LocationCardFinder = ({ onPressCancel }) => {
                 {t("des")}
               </Text>
               <Text bold fontSize={SIZES.h6} color={"white"}>
-                University of Information Technology
+                {isNullOrEmpty(booking.destinationLocation.address)
+                  ? booking.destinationLocation.address
+                  : booking.destinationLocation.name}
               </Text>
             </VStack>
           </VStack>

@@ -1,6 +1,5 @@
-import React from "react";
-import { useReducer } from "react";
-import RatingPopup from "../../components/RatingPopup";
+import React, { useContext, useEffect, useState } from "react";
+import MapView, { Marker, Polyline } from "react-native-maps";
 import styled from "styled-components";
 import { SafeAreaView } from "react-native-safe-area-context";
 import WaitingRiderCard from "../../components/DriverInformationCard/WaitingRiderCard";
@@ -10,56 +9,108 @@ import ConfirmModal from "../../components/Modal/ConfirmModal";
 import DriverInformationModal from "../../components/Modal/DriverInformationModal";
 import { VStack } from "native-base";
 import { COLORS } from "../../constants";
-
-const initialState = {
-  step: 1,
-  isModalCancelShow: false,
-  isModalInfoShow: false,
-};
-
-const SET_STEP_ACTION = "SET_STEP";
-const SET_SHOW_MODAL_CANCEL = "SET_SHOW_MODAL_CANCEL";
-const SET_SHOW_MODAL_INFO = "SET_SHOW_MODAL_INFO";
-
-const stateReducer = (state, action) => {
-  switch (action.type) {
-    case SET_STEP_ACTION:
-      return { ...state, step: action.payload };
-    case SET_SHOW_MODAL_CANCEL:
-      return { ...state, isModalCancelShow: !state.isModalCancelShow };
-    case SET_SHOW_MODAL_INFO:
-      return { ...state, isModalInfoShow: !state.isModalInfoShow };
-    default:
-      throw new Error();
-  }
-};
+import { BookingContext } from "../../context/BookingContext";
+import {
+  LocationAccuracy,
+  requestForegroundPermissionsAsync,
+  watchPositionAsync,
+} from "expo-location";
+import { useRef } from "react";
+import {
+  animateToCoordinate,
+  requestLocationPermissions,
+} from "../../helper/location";
 
 const BookingDriverScreen = ({ navigation }) => {
-  const [state, dispatch] = useReducer(stateReducer, initialState);
+  const [step, setStep] = useState(1);
+  const [isModalCancelShow, setIsModalCancelShow] = useState(false);
+  const [isModalInfoShow, setIsModalInfoShow] = useState(false);
+  const { booking } = useContext(BookingContext);
+  const [marker, setMarker] = useState({ longitude: 0, latitude: 0 });
+  const mapRef = useRef();
+
+  useEffect(() => {
+    // Request permission to access the device's location
+    (async () => {
+      let isAllowed = requestLocationPermissions();
+
+      if (!isAllowed) return;
+
+      // Subscribe to location updates
+      let locationSubscriber = await watchPositionAsync(
+        {
+          accuracy: LocationAccuracy.BestForNavigation,
+          timeInterval: 2000, // Update every 2 seconds
+          distanceInterval: 10, // Update every 10 meters
+        },
+        ({ coords: { latitude, longitude } }) => {
+          console.log(
+            "🚀 ~ file: BookingDriverScreen.js:49 ~ newLocation:",
+            latitude,
+            longitude
+          );
+          animateToCoordinate(mapRef, latitude, longitude);
+          setMarker({ latitude, longitude });
+        }
+      );
+
+      return () => {
+        // Cleanup: unsubscribe from location updates
+        if (locationSubscriber) {
+          locationSubscriber.remove();
+        }
+      };
+    })();
+  }, []);
 
   const handleStep1Button = () => {
     // Do any necessary form validation or error checking here
-    dispatch({ type: SET_STEP_ACTION, payload: 2 });
-  };
-  const handleStep2Button = () => {
-    // Do any necessary form validation or error checking here
-    dispatch({ type: SET_STEP_ACTION, payload: 3 });
+    setStep(2);
   };
 
   const handleShowModalCancel = () => {
-    dispatch({ type: SET_SHOW_MODAL_CANCEL });
+    setIsModalCancelShow((prev) => !prev);
   };
 
   const handleShowModalInfo = () => {
-    dispatch({ type: SET_SHOW_MODAL_INFO });
+    setIsModalInfoShow((prev) => !prev);
   };
 
   const renderStepContent = () => {
-    switch (state.step) {
+    switch (step) {
       case 1:
         return (
           <>
-            <WaitingRiderCard
+            <MapView
+              ref={mapRef}
+              style={{ height: "45%", borderRadius: 10 }}
+              provider="google"
+              region={booking.region}
+            >
+              <Marker
+                key={"current-location"}
+                coordinate={marker}
+                title={"Current location"}
+              ></Marker>
+              <Marker
+                key={"destination"}
+                coordinate={booking.destinationLocation}
+                title={"Destination"}
+                description={
+                  booking.destinationLocation.address
+                    ? booking.destinationLocation.address
+                    : null
+                }
+              />
+              {booking.routing ? (
+                <Polyline
+                  coordinates={booking.routing}
+                  strokeWidth={5}
+                  strokeColor="blue"
+                />
+              ) : null}
+            </MapView>
+            <OnTheWayCard
               onPressCancel={handleStep1Button}
               onPressInfo={handleShowModalInfo}
             />
@@ -68,15 +119,39 @@ const BookingDriverScreen = ({ navigation }) => {
       case 2:
         return (
           <>
-            <OnTheWayCard
-              onPressCancel={handleStep2Button}
-              onPressInfo={handleShowModalInfo}
-            />
-          </>
-        );
-      case 3:
-        return (
-          <>
+            <MapView
+              style={{ height: "45%", borderRadius: 10 }}
+              provider="google"
+              region={booking.region}
+            >
+              <Marker
+                key={"pickUp"}
+                coordinate={booking.pickUpLocation}
+                title={"Pick up"}
+                description={
+                  booking.pickUpLocation.address
+                    ? booking.pickUpLocation.address
+                    : null
+                }
+              ></Marker>
+              <Marker
+                key={"destination"}
+                coordinate={booking.destinationLocation}
+                title={"Destination"}
+                description={
+                  booking.destinationLocation.address
+                    ? booking.destinationLocation.address
+                    : null
+                }
+              />
+              {booking.routing ? (
+                <Polyline
+                  coordinates={booking.routing}
+                  strokeWidth={5}
+                  strokeColor="blue"
+                />
+              ) : null}
+            </MapView>
             <FinishedTripCard
               onClickRate={() => navigation.navigate("BookingRating")}
               onPressInfo={handleShowModalInfo}
@@ -94,14 +169,14 @@ const BookingDriverScreen = ({ navigation }) => {
       <BookingContainer>
         {renderStepContent()}
         <ConfirmModal
-          isShow={state.isModalCancelShow}
+          isShow={isModalCancelShow}
           title={"Cancel booking"}
           content={"Are you sure that you want to cancel this booking?"}
           onClose={handleShowModalCancel}
           onPressOK={handleShowModalCancel}
         />
         <DriverInformationModal
-          isShow={state.isModalInfoShow}
+          isShow={isModalInfoShow}
           onClose={handleShowModalInfo}
         />
       </BookingContainer>
