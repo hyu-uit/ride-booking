@@ -26,8 +26,9 @@ import ReceivedTripCard from "../../../components/Driver/ReceivedTripCard";
 
 const TripDetailScreen = ({ navigation, route }) => {
   const contentHeight = Dimensions.get("window").height;
-  const { idTrip } = route.params;
+  const { idTrip, state } = route.params;
   const [tripData, setTrip] = useState({});
+
   useEffect(() => {
     getTrip();
     const disableSwipeBack = () => {
@@ -64,9 +65,23 @@ const TripDetailScreen = ({ navigation, route }) => {
       setTrip(data);
     });
   };
+  console.log(state)
   return (
     <VStack h={contentHeight} bgColor={COLORS.background}>
       <SafeAreaView>
+        <View style={{
+          position: "absolute",
+          top: 50,
+          left: 2,
+          zIndex: 1,
+          display: state === 1 ? "none" : "flex",
+        }}>
+          <ButtonBack
+            onPress={() => {
+              navigation.goBack();
+            }}
+          />
+        </View>
         <MapView
           provider="google"
           style={{

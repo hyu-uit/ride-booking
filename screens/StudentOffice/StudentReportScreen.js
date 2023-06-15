@@ -74,6 +74,7 @@ const StudentReportScreen = ({ navigation }) => {
           studentID: doc.data().studentID,
           portrait: doc.data().portrait,
           cardFront: doc.data().cardFront,
+          birthday:doc.data().birthday,
           cardBack: doc.data().cardBack,
           key: doc.id + "-Rider",
         };
@@ -106,6 +107,7 @@ const StudentReportScreen = ({ navigation }) => {
           studentID: doc.data().studentID,
           portrait: doc.data().portrait,
           cardFront: doc.data().cardFront,
+          birthday:doc.data().birthday,
           cardBack: doc.data().cardBack,
           key: doc.id + "-Customer",
         };
@@ -170,6 +172,7 @@ const StudentReportScreen = ({ navigation }) => {
           portrait: doc.data().portrait,
           cardFront: doc.data().cardFront,
           cardBack: doc.data().cardBack,
+          birthday:doc.data().birthday,
           key: doc.id + "-Customer",
         };
         updatedUsers.push(user);
@@ -192,6 +195,7 @@ const StudentReportScreen = ({ navigation }) => {
           portrait: doc.data().portrait,
           cardFront: doc.data().cardFront,
           cardBack: doc.data().cardBack,
+          birthday:doc.data().birthday,
           key: doc.id + "-Rider",
         };
         updatedUsers.push(user);

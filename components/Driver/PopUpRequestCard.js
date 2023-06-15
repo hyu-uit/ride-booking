@@ -16,6 +16,7 @@ import { useState } from "react";
 import { useEffect } from "react";
 import { doc, getDoc, increment, updateDoc } from "firebase/firestore";
 import { db } from "../../config/config";
+import { Ionicons } from "@expo/vector-icons";
 
 function PopUpRequestCard(props) {
   //const {trip} = props
@@ -38,13 +39,14 @@ function PopUpRequestCard(props) {
   const [state, setState] = useState(0);
   const { navigation, phoneNumber } = props;
   const [isModalVisible, setModalVisible] = useState(false);
-  const { randomTrips, setNewCurrentTrips } = props;
+  // const { randomTrips, setNewCurrentTrips, setCount } = props;
 
   useEffect(() => {
     if (!isModalVisible) {
       setModalVisible(false); // Đóng modal
     }
-  }, [isModalVisible,]);
+    
+  }, [isModalVisible]);
   if (idTrip !== undefined) {
     getDoc(doc(db, "ListTrip", idTrip)).then((tripData) => {
       if (tripData.exists()) {
@@ -64,34 +66,23 @@ function PopUpRequestCard(props) {
       status: "accepted",
       idRider: phoneNumber,
     });
-    const data = { idTrip: "" +idTrip, };
+    const data = { idTrip: "" + idTrip , state:1};
     navigation.navigate("TripDetail", data);
   };
-  
-  const setStatusReject = () => {
-    // if (rejectedCount >= maxRejectCount) {
-    //   setModalVisible(false); // Tắt modal và popup
-    //   return;
-    // }
-    setModalVisible(false); // Đóng modal
 
-    // Random một document mới
-    const randomIndex = Math.floor(Math.random() * randomTrips.length);
-    const randomTrip = randomTrips[randomIndex];
-    
-    // Cập nhật document mới vào state hoặc thực hiện xử lý khác
-    setNewCurrentTrips([randomTrip]);
+  const { handleStatusReject } = props;
+
+  const setStatusReject = () => {
+    handleStatusReject();
   };
-  
+
   return (
     <View
       bgColor={COLORS.fourthary}
       w={"100%"}
       h={303}
-      borderTopRadius={20}
+      borderRadius={20}
       shadow={3}
-      position={"absolute"}
-      bottom={0}
     >
       <VStack paddingLeft={26} paddingRight={26}>
         <HStack marginTop={4} alignItems={"center"}>
@@ -117,7 +108,7 @@ function PopUpRequestCard(props) {
               {totalPrice}
             </Text>
           </View>
-        </HStack>
+</HStack>
         <Text
           color={COLORS.lightGrey}
           style={{
@@ -137,26 +128,33 @@ function PopUpRequestCard(props) {
         bgColor={COLORS.tertiary}
         w={"100%"}
         h={210}
-        borderTopRadius={20}
+        borderRadius={20}
         position={"absolute"}
         bottom={0}
       >
-        <VStack marginTop={4}>
-          <HStack alignItems={"center"}>
-            <Image alt="location line" source={locationLineIcon}></Image>
+        <VStack marginTop={4} padding={2}>
+          <HStack alignItems={"center"} w={"100%"}>
             <VStack space={5}>
-              <VStack>
-                <Text style={styles.detailText}>KTX Khu B</Text>
-                <Text style={styles.titleText}>
-                  Pickup - KTX Khu B ĐHQG, Đông Hòa, Dĩ An, Bình Dương
-                </Text>
-              </VStack>
-              <VStack>
-                <Text style={styles.detailText}>UIT</Text>
-                <Text style={styles.titleText}>
-                  Destination - Trường Đại học Công nghệ Thông tin - ĐHQG TP..
-                </Text>
-              </VStack>
+              <HStack alignItems={"center"}>
+                <Ionicons
+                  name={"location-outline"}
+                  size={20}
+                  color={COLORS.white}
+                />
+                <VStack w={"100%"} pl={3}>
+                  <Text style={styles.titleText} w={"80%"}>
+                    Pickup - KTX Khu B ĐHQG, Đông Hòa, Dĩ An, Bình Dương
+                  </Text>
+                </VStack>
+              </HStack>
+              <HStack alignItems={"center"}>
+                <Ionicons name={"pin-outline"} size={20} color={COLORS.white} />
+                <VStack>
+                  <Text style={styles.titleText} w={"80%"} pl={3}>
+                    Destination - Trường Đại học Công nghệ Thông tin - ĐHQG TP..
+                  </Text>
+                </VStack>
+              </HStack>
             </VStack>
           </HStack>
           <HStack
@@ -164,15 +162,16 @@ function PopUpRequestCard(props) {
               marginHorizontal: 26,
               marginVertical: 15,
               alignItems: "center",
-              justifyContent: "center",
+              justifyContent: "space-between",
             }}
           >
             <TouchableOpacity
               onPress={setStatusReject}
               style={{
                 borderColor: COLORS.red,
-                height: 59,
-                width: 155,
+                height: 50,
+                // maxWidth: "50%",
+                width: "45%",
                 borderWidth: 1,
                 borderRadius: 20,
                 justifyContent: "center",
@@ -188,36 +187,28 @@ function PopUpRequestCard(props) {
                 Reject
               </Text>
             </TouchableOpacity>
-            <View
+            <TouchableOpacity
+              onPress={setStatusAccept}
               style={{
-                flex: 1,
-                justifyContent: "flex-end",
-                alignItems: "flex-end",
+                borderColor: COLORS.primary,
+                backgroundColor: COLORS.primary,
+                height: 50,
+                width: "45%",
+                borderWidth: 1,
+                borderRadius: 20,
+                justifyContent: "center",
+                alignItems: "center",
               }}
             >
-              <TouchableOpacity
-                onPress={setStatusAccept}
-                style={{
-                  borderColor: COLORS.primary,
-                  backgroundColor: COLORS.primary,
-                  height: 59,
-                  width: 155,
-                  borderWidth: 1,
-                  borderRadius: 20,
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
+              <Text
+                bold
+                color={COLORS.white}
+                fontSize={20}
+                styles={{ ...FONTS.h3 }}
               >
-                <Text
-                  bold
-                  color={COLORS.white}
-                  fontSize={20}
-                  styles={{ ...FONTS.h3 }}
-                >
-                  Accept
-                </Text>
-              </TouchableOpacity>
-            </View>
+                Accept
+              </Text>
+            </TouchableOpacity>
           </HStack>
         </VStack>
       </View>

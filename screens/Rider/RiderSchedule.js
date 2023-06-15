@@ -143,7 +143,9 @@ const RiderSchedule = ({ navigation }) => {
           <ConfirmedScheduledTrip
             onPress={() => {
               const data = {
-                idTrip: "" + item.idTrip,
+                idTrip: "" + item.idTrip,      
+                idRider: phoneNumber,
+                state: 0
               };
               navigation.navigate("TripDetail", data);
             }}

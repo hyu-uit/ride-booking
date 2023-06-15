@@ -60,17 +60,35 @@ function StudentReportCard(props) {
         setDoneTripCount(totalCount);
       }
     );
-    const ratingUnsubscribe = onSnapshot(
-      query(
-        collection(db, "RatingList"),
-        where("idRider", "==", phoneNumber),
-        where("ratingType","==","Bad")
-      ),
+    const ratingUnsubscribe = onSnapshot(doc(db,"Rider", phoneNumber),
+    // (snapshot) => {
+    //   let badCount = 0;
+    //   let normalCount = 0;
+    //   let goodCount = 0;
+    //   snapshot.forEach((doc) => {
+    //     // const status = doc.data().status;
+    //     // if (status === "Good") {
+    //     //   goodCount++;
+    //     // } else if (status === "Normal") {
+    //     //   normalCount++;
+    //     // }else{
+    //     //   badCount++;
+    //     // }
+    //     badCount=doc.data().bad,
+    //     normalCount=doc.data().normal,
+    //     goodCount=doc.data().good
+    //   });
+    // const ratingUnsubscribe = onSnapshot(
+    //   query(
+    //     collection(db, "RatingList"),
+    //     where("idRider", "==", phoneNumber),
+    //     where("ratingType","==","Bad")
+    //   ),
       (snapshot) => {
         let badCount = 0;
         snapshot.forEach((doc) => {
-            badCount++;
-      })
+        badCount=doc.data().bad
+    })
       setRatingList(badCount)
       }
     );

@@ -31,7 +31,7 @@ import {
   updateDoc,
   doc,
   getDoc,
-  onSnapshot
+  onSnapshot,
 } from "@firebase/firestore";
 import { db } from "../../../config/config";
 import moment from "moment/moment";
@@ -44,6 +44,8 @@ import { useFocusEffect } from "@react-navigation/native";
 import PopUpRequestCard from "../../../components/Driver/PopUpRequestCard";
 import MapView from "react-native-maps";
 import { Marker } from "react-native-svg";
+import { Dimensions } from "react-native";
+import WaitingForRiderCard from "../../../components/Driver/WaitingForRiderCard";
 
 const RiderHomeScreen = ({ navigation, route }) => {
   const [service, setService] = useState(0);
@@ -60,6 +62,9 @@ const RiderHomeScreen = ({ navigation, route }) => {
   const [isModalVisible, setModalVisible] = useState(false);
   const [isReady, setReady] = useState(true);
   const [randomTrips, setRandomTrips] = useState([]);
+  const [isCount, setCount] = useState(false);
+  const [modalVisible, setIsModalVisible] = useState(false);
+  const [selectedTrip, setSelectedTrip] = useState([]);
 
   let backButtonPressedOnce = false;
 
@@ -97,10 +102,9 @@ const RiderHomeScreen = ({ navigation, route }) => {
       if (phoneNumberValue) {
         fetchData(phoneNumberValue);
         fetchNewCurrentTrips();
-        // getWaitingTrips();
+        getWaitingTrips();
         getFinishedTrips();
         getCanceledTrips();
-
       }
     } catch (err) {
       console.log(err);
@@ -109,13 +113,15 @@ const RiderHomeScreen = ({ navigation, route }) => {
 
   const fetchData = async (phoneNumber) => {
     try {
-      const unsubscribe = onSnapshot(doc(db, "Rider", phoneNumber), (docSnapshot) => {
-        const docData = docSnapshot.data();
-        setOpen(docData.open);
-        setName(docData.displayName);
-        setAvatar(docData.portrait);
-
-      });
+      const unsubscribe = onSnapshot(
+        doc(db, "Rider", phoneNumber),
+        (docSnapshot) => {
+          const docData = docSnapshot.data();
+          setOpen(docData.open);
+          setName(docData.displayName);
+          setAvatar(docData.portrait);
+        }
+      );
       return () => {
         unsubscribe();
       };
@@ -132,14 +138,14 @@ const RiderHomeScreen = ({ navigation, route }) => {
       open: !open,
     });
   };
-  
+
   // const fetchNewCurrentTrips = () => {
   //   const waitingTripsQuery = query(
   //     collection(db, "ListTrip"),
   //     where("status", "==", "waiting"),
   //     where("isScheduled", "==", "false"),
   //   );
-  
+
   //   const unsubscribeTrip = onSnapshot(waitingTripsQuery, (querySnapshot) => {
   //     const updatedTrips = [];
   //     querySnapshot.forEach((doc) => {
@@ -149,84 +155,161 @@ const RiderHomeScreen = ({ navigation, route }) => {
   //       };
   //       updatedTrips.push(trip);
   //     });
-  
+
   //     // Random một index trong danh sách trips
   //     const randomIndex = Math.floor(Math.random() * updatedTrips.length);
   //     const randomTrip = updatedTrips[randomIndex];
-  
+
   //     // Lưu trữ danh sách các trips đã được random
   //     setRandomTrips(updatedTrips);
-  
+
   //     // Cập nhật document random vào state newCurrentTrips
   //     setNewCurrentTrips([randomTrip]);
-  
+
   //     if (updatedTrips.length === 0) {
   //       setModalVisible(false);
   //     } else {
   //       setModalVisible(true);
   //     }
   //   });
-  
+
   //   return () => {
   //     unsubscribeTrip();
   //   };
   // };
-  
+
   const fetchNewCurrentTrips = () => {
-    if(open===true){
-      const waitingTripsQuery = query(
-        collection(db, "ListTrip"),
-        where("status", "==", "waiting"),
-        where("isScheduled", "==", "false"),
-        where("idRider", "==", ""),
-      );
+    if(isCount===true){
+      if (open === true) {
+        const waitingTripsQuery = query(
+          collection(db, "ListTrip"),
+          where("status", "==", "waiting"),
+          where("isScheduled", "==", "false"),
+          where("idRider", "==", "")
+        );
     
-      let previousTrip = null; // Biến để lưu trữ document trước đó
+        let previousTrip = null; // Biến để lưu trữ document trước đó
     
-      const unsubscribeTrip = onSnapshot(waitingTripsQuery, (querySnapshot) => {
-        const updatedTrips = [];
-        querySnapshot.forEach((doc) => {
-          const trip = {
-            idTrip: doc.id,
-            ...doc.data(),
-          };
-          updatedTrips.push(trip);
+        const unsubscribeTrip = onSnapshot(waitingTripsQuery, (querySnapshot) => {
+          const updatedTrips = [];
+          querySnapshot.forEach((doc) => {
+            const trip = {
+              idTrip: doc.id,
+              ...doc.data(),
+            };
+            updatedTrips.push(trip);
+          });
+    
+          if (updatedTrips.length === 0) {
+            setModalVisible(false);
+            return;
+          }
+    
+          let randomTrip = null;
+          do {
+            const randomIndex = Math.floor(Math.random() * updatedTrips.length);
+            randomTrip = updatedTrips[randomIndex];
+          } while (randomTrip === previousTrip);
+    
+          previousTrip = randomTrip;
+          setRandomTrips(updatedTrips);
+          setNewCurrentTrips([randomTrip]);
+          setModalVisible(true);
         });
     
-        if (updatedTrips.length === 0) {
-          setModalVisible(false);
-          return;
-        }
+        const timeout = setTimeout(() => {
+          unsubscribeTrip(); // Hủy đăng ký lắng nghe
+          fetchNewCurrentTrips(); // Gọi lại hàm sau khoảng thời gian xác định
+        }, 60000); // 1 phút = 60.000 milliseconds
     
-        let randomTrip = null;
-        do {
-          // Random một index từ 0 đến độ dài danh sách updatedTrips
-          const randomIndex = Math.floor(Math.random() * updatedTrips.length);
+        return () => {
+          clearTimeout(timeout); // Xóa bỏ timeout nếu component bị unmount
+          unsubscribeTrip(); // Hủy đăng ký lắng nghe
+        };
+      } else {
+        setModalVisible(false);
+      }
+        
+    } else {
+        if (open === true) {
+          const waitingTripsQuery = query(
+            collection(db, "ListTrip"),
+            where("status", "==", "waiting"),
+            where("isScheduled", "==", "false"),
+            where("idRider", "==", "")
+          );
     
-          // Lấy document ngẫu nhiên từ danh sách updatedTrips
-          randomTrip = updatedTrips[randomIndex];
-        } while (randomTrip === previousTrip); // Kiểm tra nếu document trùng với document trước đó
+          let previousTrip = null; // Biến để lưu trữ document trước đó
     
-        previousTrip = randomTrip; // Lưu trữ document hiện tại để kiểm tra ở lần kế tiếp
-    // Lưu trữ danh sách các trips đã được random
-        setRandomTrips(updatedTrips);
-        setNewCurrentTrips([randomTrip]);
-        setModalVisible(true);
-      });
+          const unsubscribeTrip = onSnapshot(waitingTripsQuery, (querySnapshot) => {
+            const updatedTrips = [];
+            querySnapshot.forEach((doc) => {
+              const trip = {
+                idTrip: doc.id,
+                ...doc.data(),
+              };
+              updatedTrips.push(trip);
+            });
     
-      return () => {
-        unsubscribeTrip();
-      };
-    }else setModalVisible(false)
+            if (updatedTrips.length === 0) {
+              setModalVisible(false);
+              return;
+            }
+    
+            let randomTrip = null;
+            do {// Random một index từ 0 đến độ dài danh sách updatedTrips
+              const randomIndex = Math.floor(Math.random() * updatedTrips.length);
+    
+              // Lấy document ngẫu nhiên từ danh sách updatedTrips
+              randomTrip = updatedTrips[randomIndex];
+            } while (randomTrip === previousTrip); // Kiểm tra nếu document trùng với document trước đó
+    
+            previousTrip = randomTrip; // Lưu trữ document hiện tại để kiểm tra ở lần kế tiếp
+            // Lưu trữ danh sách các trips đã được random
+            setRandomTrips(updatedTrips);
+            setNewCurrentTrips([randomTrip]);
+            setModalVisible(true);
+          });
+    
+          return () => {
+            unsubscribeTrip();
+          };
+        } else setModalVisible(false);
+    }
     
   };
-  
+
+  const getWaitingTrips = () => {
+    const waitingTripsQuery = query(
+      collection(db, "ListTrip"),
+      where("isScheduled", "==", "false"),
+      where("status", "==", "waiting"),
+      where("idRider", "==", "")
+    );
+
+    const unsubscribeTrip = onSnapshot(waitingTripsQuery, (querySnapshot) => {
+      const updatedTrips = [];
+      querySnapshot.forEach((doc) => {
+        const trip = {
+          idTrip: doc.id,
+          ...doc.data(),
+        };
+        updatedTrips.push(trip);
+      });
+      setWaitingTrips(updatedTrips);
+    });
+
+    return () => {
+      unsubscribeTrip();
+    };
+  };
+
 
   const getFinishedTrips = () => {
     const finishedTripsQuery = query(
       collection(db, "ListTrip"),
       where("idRider", "==", phoneNumber),
-      where("status", "==", "finished")
+      where("status", "==", "done")
     );
 
     const unsubscribeTrip = onSnapshot(finishedTripsQuery, (querySnapshot) => {
@@ -234,11 +317,11 @@ const RiderHomeScreen = ({ navigation, route }) => {
       querySnapshot.forEach((doc) => {
         const trip = {
           idTrip: doc.id,
-          ...doc.data()
+          ...doc.data(),
         };
         updatedTrips.push(trip);
       });
-      setFinishedTrips(updatedTrips)
+      setFinishedTrips(updatedTrips);
     });
 
     return () => {
@@ -258,7 +341,7 @@ const RiderHomeScreen = ({ navigation, route }) => {
         const trip = {
           key: doc.id,
           idTrip: doc.id,
-          ...doc.data()
+          ...doc.data(),
         };
         updatedTrips.push(trip);
       });
@@ -281,28 +364,28 @@ const RiderHomeScreen = ({ navigation, route }) => {
       setImage(result.assets[0].uri);
     }
   };
-
-  // const FirstRoute = () => (
-  //   <FlatList
-  //     padding={"10px"}
-  //     mt={2}
-  //     horizontal={false}
-  //     data={waitingTrips}
-  //     keyExtractor={(item) => item.idTrip}
-  //     renderItem={({ item }) => (
-  //       <HistoryPickUpCard
-  //         onPress={() => {
-  //           const data = {
-  //             idTrip: "" + item.idTrip,
-  //           };
-  //           navigation.navigate("TripDetail", data);
-  //         }}
-  //         trip={item}
-  //         key={item.idTrip}
-  //       ></HistoryPickUpCard>
-  //     )}
-  //   ></FlatList>
-  // );
+  
+  const FirstRoute = () => (
+    <FlatList
+      padding={"10px"}
+      mt={2}
+      horizontal={false}
+      data={waitingTrips}
+      keyExtractor={(item) => item.idTrip}
+      renderItem={({ item }) => (
+        <HistoryPickUpCard
+          onPress={() => {
+            setSelectedTrip(item);
+            setIsModalVisible(true);
+          }}
+          trip={item}
+          key={item.idTrip}
+        ></HistoryPickUpCard>      
+      )}
+    >
+       
+    </FlatList>
+  );
 
   const SecondRoute = () => (
     <FlatList
@@ -322,10 +405,11 @@ const RiderHomeScreen = ({ navigation, route }) => {
             navigation.navigate("TripDetail", data);
           }}
         ></HistoryPickUpCard>
-      )}
+       )}
+      
     ></FlatList>
   );
-
+  
   const ThirdRoute = () => (
     <FlatList
       padding={"10px"}
@@ -345,39 +429,88 @@ const RiderHomeScreen = ({ navigation, route }) => {
           }}
         ></HistoryPickUpCard>
       )}
-    ></FlatList>
+    >
+    </FlatList>
   );
 
   const renderScene = SceneMap({
-    first: SecondRoute,
-    second: ThirdRoute,
-    // third: ThirdRoute,
+    first: FirstRoute,
+    second: SecondRoute,
+    third: ThirdRoute,
   });
 
   const [index, setIndex] = React.useState(0);
   const [routes] = React.useState([
-    { key: "first", title: "Finished" },
-    { key: "second", title: "Canceled" },
-    // { key: "third", title: "Canceled" },
+    { key: "first", title: "Available" },
+    { key: "second", title: "Finished" },
+    { key: "third", title: "Canceled" },
   ]);
-
+  const handleStatusReject = () => {
+    setCount(true);
+    setModalVisible(false); // Đóng modal
+  
+    // Random một document mới
+    const randomIndex = Math.floor(Math.random() * randomTrips.length);
+    const randomTrip = randomTrips[randomIndex];
+  
+    // Cập nhật document mới vào state hoặc thực hiện xử lý khác
+    setNewCurrentTrips([randomTrip]);
+  };
   return (
-
     <NativeBaseProvider>
-      <VStack h={"100%"} paddingTop={"20px"} bgColor={COLORS.background}>
+      <VStack paddingTop={"20px"} bgColor={COLORS.background}>
         <SafeAreaView>
           <VStack h={"100%"}>
-            {isModalVisible && newCurrentTrips.length > 0 &&isReady && (
+            {isModalVisible && newCurrentTrips.length > 0 && isReady && (
               <Modal
+                alignSelf={"center"}
+                w={"90%"}
                 isOpen={isModalVisible}
                 size="lg"
                 overlayVisible={true}
-                backdropPressBehavior="none" 
-              ><MapView
+                backdropPressBehavior="none"
+              >
+                <View borderTopRadius={"20px"} w={"100%"} h={"20%"}>
+                  <MapView
+                    provider="google"
+                    style={{
+                      width: "100%",
+                      height: "130%",
+                      borderRadius: 20,
+                    }}
+                  >
+                    <Marker
+                      coordinate={{ latitude: 9.90761, longitude: 105.31181 }}
+                    ></Marker>
+                  </MapView>
+                </View>
+                <PopUpRequestCard
+                  trip={newCurrentTrips[0]}
+                  randomTrips={randomTrips} // Truyền giá trị randomTrips vào
+                  setNewCurrentTrips={setNewCurrentTrips} // Truyền hàm setNewCurrentTrips để cập nhật state
+                  navigation={navigation}
+                  handleStatusReject={handleStatusReject}
+                  count={isCount}
+                  // setCount={setCount}
+                  phoneNumber={phoneNumber}
+                ></PopUpRequestCard>
+              </Modal>
+            )}
+              {modalVisible && (
+        <Modal
+          alignSelf={"center"}
+          w={"90%"}
+          isOpen={modalVisible}
+          size="lg"
+          overlayVisible={true}
+          backdropPressBehavior="none"
+        >
+          <View borderTopRadius={"20px"} w={"100%"} h={"20%"}>
+            <MapView
               provider="google"
               style={{
                 width: "100%",
-                height: "40%",
+                height: "130%",
                 borderRadius: 20,
               }}
             >
@@ -385,15 +518,15 @@ const RiderHomeScreen = ({ navigation, route }) => {
                 coordinate={{ latitude: 9.90761, longitude: 105.31181 }}
               ></Marker>
             </MapView>
-                <PopUpRequestCard
-                  trip={newCurrentTrips[0]}
-                  randomTrips={randomTrips} // Truyền giá trị randomTrips vào
-                  setNewCurrentTrips={setNewCurrentTrips} // Truyền hàm setNewCurrentTrips để cập nhật state
-                  navigation={navigation}
-                  phoneNumber={phoneNumber}
-                ></PopUpRequestCard>
-              </Modal>
-            )}
+          </View>
+          <WaitingForRiderCard
+            trip={selectedTrip}
+            navigation={navigation}
+            setIsModalVisible={setIsModalVisible}
+            phoneNumber={phoneNumber}
+          ></WaitingForRiderCard>
+        </Modal>
+      )}
             <VStack paddingX={"10px"}>
               <HStack w={"100%"} mb={10}>
                 <Avatar source={{ uri: avt }} alt="ava" />
@@ -406,10 +539,7 @@ const RiderHomeScreen = ({ navigation, route }) => {
                   </Text>
                 </VStack>
                 <HStack position={"absolute"} right={0} alignItems={"center"}>
-                  <Button
-                    variant={"unstyled"}
-                    onPress={()=>openCamera()}
-                  >
+                  <Button variant={"unstyled"} onPress={() => openCamera()}>
                     <Image
                       source={QRImage}
                       alt="qr"

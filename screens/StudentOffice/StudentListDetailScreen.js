@@ -73,33 +73,22 @@ const StudentListDetailScreen = ({ route, navigation }) => {
         setCancelTripCount(docData.cancel);
       });
     
-    
-    const ratingUnsubscribe = onSnapshot(
-      query(
-        collection(db, "RatingList"),
-        where("idRider", "==", phoneNumber),
-        where("ratingType", "in", ["Good", "Normal","Bad"])
-      ),
-      (snapshot) => {
-        let badCount = 0;
-        let normalCount = 0;
-        let goodCount = 0;
-        snapshot.forEach((doc) => {
-          const status = doc.data().status;
-          if (status === "Good") {
-            goodCount++;
-          } else if (status === "Normal") {
-            normalCount++;
-          }else{
-            badCount++;
-          }
-        });
-        const rating = {
-          goodCount:goodCount,
-          normalCount:normalCount,
-          badCount:badCount
-        }
-        setRatingList(rating);
+    const ratingUnsubscribe = onSnapshot(doc(db,role, phoneNumber),(snapshot) => {
+      const docData = snapshot.data();
+      // const status = doc.data().status;
+      // if (status === "Good") {
+      //   goodCount++;
+      // } else if (status === "Normal") {
+      //   normalCount++;
+      // }else{
+      //   badCount++;
+      // }
+      const rating = {
+        goodCount:docData.good,
+        normalCount:docData.normal,
+        badCount:docData.bad
+      }
+       setRatingList(rating)
       }
     );
     return () => {

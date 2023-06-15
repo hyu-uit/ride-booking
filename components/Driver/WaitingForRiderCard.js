@@ -18,7 +18,7 @@ import { doc, getDoc, increment, updateDoc } from "firebase/firestore";
 import { db } from "../../config/config";
 import { Ionicons } from "@expo/vector-icons";
 
-function ReceivedTripCard(props) {
+function WaitingForRiderCard(props) {
   //const {trip} = props
   let {
     idCustomer,
@@ -37,8 +37,16 @@ function ReceivedTripCard(props) {
 
   const [name, setName] = useState("");
   const [state, setState] = useState(0);
-  const { navigation } = props;
+  const { navigation, phoneNumber } = props;
+  // const [modalVisible, setModalVisible] = useState(false);
+  const { setIsModalVisible } = props;
 
+  // useEffect(() => {
+  //   if (!isModalVisible) {
+  //     setModalVisible(false); // Đóng modal
+  //   }
+    
+  // }, [isModalVisible]);
   if (idTrip !== undefined) {
     getDoc(doc(db, "ListTrip", idTrip)).then((tripData) => {
       if (tripData.exists()) {
@@ -53,40 +61,27 @@ function ReceivedTripCard(props) {
     });
   }
 
-  const completeTrip = () => {
-    navigation.replace("MainRiderNavigator", {
-      screen: "HomeRider",
+  const setStatusAccept = () => {
+    updateDoc(doc(db, "ListTrip", idTrip), {
+      status: "accepted",
+      idRider: phoneNumber,
     });
+    const data = { idTrip: "" + idTrip , state:1};
+    navigation.navigate("TripDetail", data);
   };
 
-  const setStatusCancel = () => {
-    updateDoc(doc(db, "ListTrip", idTrip), {
-      status: "canceled",
-      isRiderCancel: true
-    });
-    console.log(idRider)
-    updateDoc(doc(db, "Rider", idRider), {
-      cancel: increment(1),
-    });
-    completeTrip();
-  };
 
-  const setStatusComplete = () => {
-    updateDoc(doc(db, "ListTrip", idTrip), {
-      status: "done",
-    });
-    completeTrip();
+  const setStatusReject = () => {
+    setIsModalVisible(false);
   };
 
   return (
     <View
       bgColor={COLORS.fourthary}
       w={"100%"}
-      h={343}
-      borderTopRadius={20}
+      h={303}
+      borderRadius={20}
       shadow={3}
-      position={"absolute"}
-      bottom={0}
     >
       <VStack paddingLeft={26} paddingRight={26}>
         <HStack marginTop={4} alignItems={"center"}>
@@ -112,7 +107,7 @@ function ReceivedTripCard(props) {
               {totalPrice}
             </Text>
           </View>
-        </HStack>
+</HStack>
         <Text
           color={COLORS.lightGrey}
           style={{
@@ -131,13 +126,13 @@ function ReceivedTripCard(props) {
       <View
         bgColor={COLORS.tertiary}
         w={"100%"}
-        h={250}
-        borderTopRadius={20}
+        h={210}
+        borderRadius={20}
         position={"absolute"}
         bottom={0}
       >
-        <VStack marginTop={4} padding={2} >
-        <HStack alignItems={"center"} w={"100%"} paddingLeft={4}>
+        <VStack marginTop={4} padding={2}>
+          <HStack alignItems={"center"} w={"100%"}>
             <VStack space={5}>
               <HStack alignItems={"center"}>
                 <Ionicons
@@ -170,10 +165,10 @@ function ReceivedTripCard(props) {
             }}
           >
             <TouchableOpacity
-              onPress={setStatusCancel}
+              onPress={setStatusReject}
               style={{
                 borderColor: COLORS.red,
-                height: 59,
+                height: 50,
                 // maxWidth: "50%",
                 width: "45%",
                 borderWidth: 1,
@@ -188,15 +183,15 @@ function ReceivedTripCard(props) {
                 fontSize={20}
                 styles={{ ...FONTS.h3 }}
               >
-                Cancel
+                Reject
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={setStatusComplete}
+              onPress={setStatusAccept}
               style={{
                 borderColor: COLORS.primary,
                 backgroundColor: COLORS.primary,
-                height: 59,
+                height: 50,
                 width: "45%",
                 borderWidth: 1,
                 borderRadius: 20,
@@ -209,7 +204,8 @@ function ReceivedTripCard(props) {
                 color={COLORS.white}
                 fontSize={20}
                 styles={{ ...FONTS.h3 }}
-              >Done
+              >
+                Accept
               </Text>
             </TouchableOpacity>
           </HStack>
@@ -233,4 +229,4 @@ const styles = StyleSheet.create({
     ...FONTS.body6,
   },
 });
-export default ReceivedTripCard;
+export default WaitingForRiderCard;
