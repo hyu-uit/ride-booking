@@ -36,8 +36,8 @@ function ReceivedTripCard(props) {
   } = props.trip;
 
   const [name, setName] = useState("");
-  const [state, setState] = useState(0);
-  const { navigation } = props;
+  const [stt, setState] = useState(0);
+  const { navigation, isRead } = props;
 
   if (idTrip !== undefined) {
     getDoc(doc(db, "ListTrip", idTrip)).then((tripData) => {
@@ -78,11 +78,40 @@ function ReceivedTripCard(props) {
     completeTrip();
   };
 
+  const setStatusStart = () => {
+    updateDoc(doc(db, "ListTrip", idTrip), {
+      status: "on the way",
+    });
+  };
+
+  const getButtonTextDone = () => {
+    if (stt === 0) {
+      return "Start";
+    } else if (stt === 1) {
+      return "Done";
+    } else {  console.log(stt)
+
+      setStatusComplete();
+      completeTrip();
+    }
+  };
+
+  const onClickStart= () => {
+    if (stt === 0) {  console.log(stt)
+
+      setStatusStart();
+      setState(1);
+    } else if (stt === 1) {
+      setState(2);  console.log(stt)
+
+    }
+  };
+
   return (
     <View
       bgColor={COLORS.fourthary}
       w={"100%"}
-      h={343}
+      h={isRead ? 260 : 343}
       borderTopRadius={20}
       shadow={3}
       position={"absolute"}
@@ -131,7 +160,7 @@ function ReceivedTripCard(props) {
       <View
         bgColor={COLORS.tertiary}
         w={"100%"}
-        h={250}
+        h={isRead ?170:250}
         borderTopRadius={20}
         position={"absolute"}
         bottom={0}
@@ -168,7 +197,7 @@ function ReceivedTripCard(props) {
               alignItems: "center",
               justifyContent: "space-between",
             }}
-          >
+          >{!isRead && (
             <TouchableOpacity
               onPress={setStatusCancel}
               style={{
@@ -191,8 +220,10 @@ function ReceivedTripCard(props) {
                 Cancel
               </Text>
             </TouchableOpacity>
+            )}
+            {!isRead && (
             <TouchableOpacity
-              onPress={setStatusComplete}
+              onPress={onClickStart}
               style={{
                 borderColor: COLORS.primary,
                 backgroundColor: COLORS.primary,
@@ -209,9 +240,10 @@ function ReceivedTripCard(props) {
                 color={COLORS.white}
                 fontSize={20}
                 styles={{ ...FONTS.h3 }}
-              >Done
+              >{getButtonTextDone()}
               </Text>
             </TouchableOpacity>
+            )}
           </HStack>
         </VStack>
       </View>

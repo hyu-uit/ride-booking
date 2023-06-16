@@ -26,7 +26,7 @@ import ReceivedTripCard from "../../../components/Driver/ReceivedTripCard";
 
 const TripDetailScreen = ({ navigation, route }) => {
   const contentHeight = Dimensions.get("window").height;
-  const { idTrip, state } = route.params;
+  const { idTrip, state, isRead } = route.params;
   const [tripData, setTrip] = useState({});
 
   useEffect(() => {
@@ -96,6 +96,7 @@ const TripDetailScreen = ({ navigation, route }) => {
         </MapView>
         <ReceivedTripCard
           trip={tripData}
+          isRead={isRead}
           navigation={navigation}
         ></ReceivedTripCard>
         {/* <HStack justifyContent={"center"} mb={"20px"}>

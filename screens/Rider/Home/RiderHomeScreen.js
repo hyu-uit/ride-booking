@@ -401,6 +401,7 @@ const RiderHomeScreen = ({ navigation, route }) => {
           onPress={() => {
             const data = {
               idTrip: "" + item.idTrip,
+              isRead:true
             };
             navigation.navigate("TripDetail", data);
           }}
@@ -424,6 +425,7 @@ const RiderHomeScreen = ({ navigation, route }) => {
           onPress={() => {
             const data = {
               idTrip: "" + item.idTrip,
+              isRead:true
             };
             navigation.navigate("TripDetail", data);
           }}
