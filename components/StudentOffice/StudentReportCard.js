@@ -42,10 +42,10 @@ function StudentReportCard(props) {
   const [locked, setLocked] = useState();
   const [doneTripCount, setDoneTripCount] = useState(0);
   const [cancelTripCount, setCancelTripCount] = useState(0);
+  const [totalTripCount, setTotalTripCount] = useState(0);
   const [ratingList, setRatingList] = useState("");
   const { t } = useTranslation();
   useEffect(() => {
-    console.log(status);
     const doneUnsubscribe = onSnapshot(
       query(
         collection(db, "ListTrip"),
@@ -54,39 +54,30 @@ function StudentReportCard(props) {
           "==",
           phoneNumber
         ),
-        where("status", "in", ["done", "canceled"])
+        where("status", "==", "done")
       ),
       (snapshot) => {
         let doneCount = 0;
-        let cancelCount = 0;
         snapshot.forEach((doc) => {
-          const sta = doc.data().status;
-          if (sta === "done") {
             doneCount++;
-          } else if (sta === "canceled") {
-            cancelCount++;
-          }
         });
-        setCancelTripCount(cancelCount);
-        const totalCount = doneCount + cancelCount;
-        setDoneTripCount(totalCount);
+        setDoneTripCount(doneCount);
       }
     );
     const ratingUnsubscribe = onSnapshot(
-      doc(db, "Rider", phoneNumber),
+      doc(db, role, phoneNumber),
       (snapshot) => {
-        let badCount = 0;
-        snapshot.forEach((doc) => {
-          badCount = doc.data().bad;
-        });
-        setRatingList(badCount);
+        const docData = snapshot.data();
+        setRatingList(docData.bad);
+        setCancelTripCount(docData.cancel);
+        setTotalTripCount(doneTripCount+docData.cancel)
       }
     );
     return () => {
       doneUnsubscribe();
       ratingUnsubscribe();
     };
-  }, [phoneNumber, role]);
+  }, [phoneNumber, role, doneTripCount]);
   const lockAccount = () => {
     Alert.alert(t("sureLock"), "", [
       {
@@ -154,7 +145,7 @@ function StudentReportCard(props) {
                   {t("trip")}
                 </Text>
                 <Text bold fontSize={10} color={"white"}>
-                  {doneTripCount}
+                  {totalTripCount}
                 </Text>
               </VStack>
               <VStack alignItems={"center"}>

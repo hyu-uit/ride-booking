@@ -9,6 +9,7 @@ import { Dimensions, Platform } from "react-native";
 import ReceivedTripCard from "../../../components/Driver/ReceivedTripCard";
 import MapView, { Marker, Polyline } from "react-native-maps";
 import { calculateMapDelta } from "../../../helper/location";
+import { Text } from "react-native";
 
 const TripDetailScreen = ({ navigation, route }) => {
   const contentHeight = Dimensions.get("window").height;

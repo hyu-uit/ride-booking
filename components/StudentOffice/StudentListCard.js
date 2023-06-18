@@ -38,6 +38,7 @@ function StudentListCard(props, navigation) {
   const { onPress } = props;
   const [tripCount, setTripCount] = useState("");
   const { t } = useTranslation();
+  const [doneTripCount, setDoneTripCount] = useState(0);
 
   useEffect(() => {
     const unsubscribe = onSnapshot(
@@ -48,29 +49,29 @@ function StudentListCard(props, navigation) {
           "==",
           phoneNumber
         ),
-        where("status", "in", ["done", "canceled"])
+        where("status", "==", "done")
       ),
       (snapshot) => {
         let doneCount = 0;
         let cancelCount = 0;
         snapshot.forEach((doc) => {
-          const status = doc.data().status;
-          if (status === "done") {
             doneCount++;
-          } else if (status === "canceled") {
-            cancelCount++;
-          }
         });
-
-        const totalCount = doneCount + cancelCount;
-        setTripCount(totalCount);
+        setDoneTripCount(doneCount);
       }
     );
-
+    const totalUnsubscribe = onSnapshot(
+      doc(db, role, phoneNumber),
+      (snapshot) => {
+        const docData = snapshot.data();
+        setTripCount(doneTripCount+docData.cancel)
+      }
+    );
     return () => {
       unsubscribe();
+      totalUnsubscribe();
     };
-  }, [phoneNumber, role]);
+  }, [phoneNumber, role, doneTripCount]);
   //const [status, setStatus] = useState(0);
   return (
     <View
