@@ -18,6 +18,7 @@ import FlagIcon from "../../assets/icons/icons8-flag-filled-48.png";
 import { addDoc, collection } from "@firebase/firestore";
 import { db } from "../../config/config";
 import {
+  calculateMapDelta,
   centerMapToCoordinates,
   fetchCurrentUserLocation,
 } from "../../helper/location";
@@ -185,13 +186,21 @@ export default function BookingScreen({ navigation }) {
               time
             );
 
-            if (mapRef.current) {
-              centerMapToCoordinates(
-                mapRef,
-                booking.pickUpLocation,
-                markerPosition
-              );
-            }
+            // if (mapRef.current) {
+            //   centerMapToCoordinates(
+            //     mapRef,
+            //     booking.pickUpLocation,
+            //     markerPosition
+            //   );
+            // }
+
+            dispatch({
+              type: SET_INITIAL_LOCATION,
+              payload: {
+                latitude: booking.pickUpLocation.latitude,
+                longitude: booking.pickUpLocation.longitude,
+              },
+            });
 
             // save routing to use in BookingDriver, BookingRating
             dispatch({

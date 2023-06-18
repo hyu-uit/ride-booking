@@ -124,19 +124,10 @@ const TripDetailScreen = ({ navigation, route }) => {
             }}
             provider="google"
             region={{
-              ...calculateMapDelta(
-                {
-                  latitude: tripData.pickUpLat,
-                  longitude: tripData.pickUpLong,
-                },
-                {
-                  latitude: tripData.destLat,
-                  longitude: tripData.destLong,
-                },
-                60
-              ),
-              latitude: (tripData.destLat + tripData.pickUpLat) / 2, // get center latitude to zoom
-              longitude: (tripData.destLong + tripData.pickUpLong) / 2, // get center longitude to zoom
+              latitudeDelta: 0.01,
+              longitudeDelta: 0.01,
+              latitude: tripData.pickUpLat, // get center latitude to zoom
+              longitude: tripData.pickUpLong, // get center longitude to zoom
             }}
           >
             <Marker

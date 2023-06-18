@@ -87,8 +87,7 @@ const stateReducer = (state, action) => {
         ...state,
         region: {
           ...state.region,
-          latitude: action.payload.latitude,
-          longitude: action.payload.longitude,
+          ...action.payload,
         },
       };
     case SET_ROUTING:
