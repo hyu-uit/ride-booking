@@ -43,12 +43,14 @@ const StudentListDetailScreen = ({ route, navigation }) => {
   const [doneTripCount, setDoneTripCount] = useState(0);
   const [cancelTripCount, setCancelTripCount] = useState(0);
   const [ratingList, setRatingList] = useState({});
+  const [totalTripCount, setTotalTripCount] = useState(0);
 
   const { phoneNumber, role } = route.params;
   const contentHeight = Dimensions.get("window").height;
   const { t } = useTranslation();
   useEffect(() => {
     getUserByPhoneNumber();
+
     const doneUnsubscribe = onSnapshot(
       query(
         collection(db, "ListTrip"),
@@ -57,28 +59,15 @@ const StudentListDetailScreen = ({ route, navigation }) => {
           "==",
           phoneNumber
         ),
-        where("status", "in", ["done", "canceled"])
+        where("status", "==", "done")
       ),
       (snapshot) => {
         let doneCount = 0;
-        let cancelCount = 0;
         snapshot.forEach((doc) => {
-          const status = doc.data().status;
-          if (status === "done") {
             doneCount++;
-          } else if (status === "canceled") {
-            cancelCount++;
-          }
         });
-        const totalCount = doneCount + cancelCount;
-        setDoneTripCount(totalCount);
-      }
-    );
-    const unsubscribeCancel = onSnapshot(
-      doc(db, role, phoneNumber),
-      (snapshot) => {
-        const docData = snapshot.data();
-        setCancelTripCount(docData.cancel);
+        console.log(doneCount)
+        setDoneTripCount(doneCount);
       }
     );
 
@@ -86,28 +75,21 @@ const StudentListDetailScreen = ({ route, navigation }) => {
       doc(db, role, phoneNumber),
       (snapshot) => {
         const docData = snapshot.data();
-        // const status = doc.data().status;
-        // if (status === "Good") {
-        //   goodCount++;
-        // } else if (status === "Normal") {
-        //   normalCount++;
-        // }else{
-        //   badCount++;
-        // }
         const rating = {
           goodCount: docData.good,
           normalCount: docData.normal,
           badCount: docData.bad,
         };
+        setCancelTripCount(docData.cancel);
+        setTotalTripCount(doneTripCount+docData.cancel)
         setRatingList(rating);
       }
     );
     return () => {
       doneUnsubscribe();
-      unsubscribeCancel();
       ratingUnsubscribe();
     };
-  }, [phoneNumber, role]);
+  }, [phoneNumber, role, doneTripCount]);
 
   const getUserByPhoneNumber = () => {
     // setRole("Customer")
@@ -289,7 +271,7 @@ const StudentListDetailScreen = ({ route, navigation }) => {
                 {t("trip")}
               </Text>
               <Text style={{ ...FONTS.h3, color: COLORS.white }} mt={2}>
-                {doneTripCount}
+                {totalTripCount}
               </Text>
               <Text style={{ ...FONTS.h4, color: COLORS.fifthary }} mt={10}>
                 {t("canceled")}
