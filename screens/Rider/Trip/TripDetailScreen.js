@@ -71,7 +71,7 @@ const TripDetailScreen = ({ navigation, route }) => {
             }}
           />
         </View>
-        {/* <MapView
+        /* <MapView
           provider="google"
           style={{
             width: "100%",
