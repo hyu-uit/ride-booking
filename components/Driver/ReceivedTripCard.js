@@ -17,9 +17,8 @@ import { useEffect } from "react";
 import { doc, getDoc, increment, updateDoc } from "firebase/firestore";
 import { db } from "../../config/config";
 import { Ionicons } from "@expo/vector-icons";
-import { useTranslation } from "react-i18next";
 
-function PopUpRequestCard(props) {
+function ReceivedTripCard(props) {
   //const {trip} = props
   let {
     idCustomer,
@@ -37,17 +36,9 @@ function PopUpRequestCard(props) {
   } = props.trip;
 
   const [name, setName] = useState("");
-  const [state, setState] = useState(0);
-  const { navigation, phoneNumber } = props;
-  const [isModalVisible, setModalVisible] = useState(false);
-  // const { randomTrips, setNewCurrentTrips, setCount } = props;
-  const { t } = useTranslation();
+  const [stt, setState] = useState(0);
+  const { navigation, isRead } = props;
 
-  useEffect(() => {
-    if (!isModalVisible) {
-      setModalVisible(false); // Đóng modal
-    }
-  }, [isModalVisible]);
   if (idTrip !== undefined) {
     getDoc(doc(db, "ListTrip", idTrip)).then((tripData) => {
       if (tripData.exists()) {
@@ -62,28 +53,69 @@ function PopUpRequestCard(props) {
     });
   }
 
-  const setStatusAccept = () => {
-    updateDoc(doc(db, "ListTrip", idTrip), {
-      status: "accepted",
-      idRider: phoneNumber,
+  const completeTrip = () => {
+    navigation.replace("MainRiderNavigator", {
+      screen: "HomeRider",
     });
-    const data = { idTrip: "" + idTrip, state: 1 };
-    navigation.navigate("TripDetail", data);
   };
 
-  const { handleStatusReject } = props;
+  const setStatusCancel = () => {
+    updateDoc(doc(db, "ListTrip", idTrip), {
+      status: "canceled",
+      isRiderCancel: true
+    });
+    console.log(idRider)
+    updateDoc(doc(db, "Rider", idRider), {
+      cancel: increment(1),
+    });
+    completeTrip();
+  };
 
-  const setStatusReject = () => {
-    handleStatusReject();
+  const setStatusComplete = () => {
+    updateDoc(doc(db, "ListTrip", idTrip), {
+      status: "done",
+    });
+    completeTrip();
+  };
+
+  const setStatusStart = () => {
+    updateDoc(doc(db, "ListTrip", idTrip), {
+      status: "on the way",
+    });
+  };
+
+  const getButtonTextDone = () => {
+    if (stt === 0) {
+      return "Start";
+    } else if (stt === 1) {
+      return "Done";
+    } else {  console.log(stt)
+
+      setStatusComplete();
+      completeTrip();
+    }
+  };
+
+  const onClickStart= () => {
+    if (stt === 0) {  console.log(stt)
+
+      setStatusStart();
+      setState(1);
+    } else if (stt === 1) {
+      setState(2);  console.log(stt)
+
+    }
   };
 
   return (
     <View
       bgColor={COLORS.fourthary}
       w={"100%"}
-      h={303}
-      borderRadius={20}
+      h={isRead ? 260 : 343}
+      borderTopRadius={20}
       shadow={3}
+      position={"absolute"}
+      bottom={0}
     >
       <VStack paddingLeft={26} paddingRight={26}>
         <HStack marginTop={4} alignItems={"center"}>
@@ -120,18 +152,21 @@ function PopUpRequestCard(props) {
         </Text>
         <HStack>
           <Text style={styles.detailText}>{distance}</Text>
+          <Text style={styles.detailTextNotBold}> - You’re </Text>
+          <Text style={styles.detailText}>0h 15m</Text>
+          <Text style={styles.detailTextNotBold}> away</Text>
         </HStack>
       </VStack>
       <View
         bgColor={COLORS.tertiary}
         w={"100%"}
-        h={210}
-        borderRadius={20}
+        h={isRead ?170:250}
+        borderTopRadius={20}
         position={"absolute"}
         bottom={0}
       >
-        <VStack marginTop={4} padding={2}>
-          <HStack alignItems={"center"} w={"100%"}>
+        <VStack marginTop={4} padding={2} >
+        <HStack alignItems={"center"} w={"100%"} paddingLeft={4}>
             <VStack space={5}>
               <HStack alignItems={"center"}>
                 <Ionicons
@@ -162,12 +197,12 @@ function PopUpRequestCard(props) {
               alignItems: "center",
               justifyContent: "space-between",
             }}
-          >
+          >{!isRead && (
             <TouchableOpacity
-              onPress={setStatusReject}
+              onPress={setStatusCancel}
               style={{
                 borderColor: COLORS.red,
-                height: 50,
+                height: 59,
                 // maxWidth: "50%",
                 width: "45%",
                 borderWidth: 1,
@@ -182,15 +217,17 @@ function PopUpRequestCard(props) {
                 fontSize={20}
                 styles={{ ...FONTS.h3 }}
               >
-                Reject
+                Cancel
               </Text>
             </TouchableOpacity>
+            )}
+            {!isRead && (
             <TouchableOpacity
-              onPress={setStatusAccept}
+              onPress={onClickStart}
               style={{
                 borderColor: COLORS.primary,
                 backgroundColor: COLORS.primary,
-                height: 50,
+                height: 59,
                 width: "45%",
                 borderWidth: 1,
                 borderRadius: 20,
@@ -203,10 +240,10 @@ function PopUpRequestCard(props) {
                 color={COLORS.white}
                 fontSize={20}
                 styles={{ ...FONTS.h3 }}
-              >
-                Accept
+              >{getButtonTextDone()}
               </Text>
             </TouchableOpacity>
+            )}
           </HStack>
         </VStack>
       </View>
@@ -228,4 +265,4 @@ const styles = StyleSheet.create({
     ...FONTS.body6,
   },
 });
-export default PopUpRequestCard;
+export default ReceivedTripCard;

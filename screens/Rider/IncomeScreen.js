@@ -16,6 +16,9 @@ import calendarIcon from "../../assets/calendar.png";
 import { TouchableOpacity } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { Ionicons } from "@expo/vector-icons";
+import { collection, doc, onSnapshot, query, where } from "firebase/firestore";
+import { db } from "../../config/config";
+import { getFromAsyncStorage } from "../../helper/asyncStorage";
 import { useTranslation } from "react-i18next";
 
 const IncomeScreen = () => {
@@ -23,8 +26,45 @@ const IncomeScreen = () => {
   const [date, setDate] = useState(new Date());
   const [mode, setMode] = useState("date");
   const [show, setShow] = useState(false);
-  const [text, setText] = useState("08/05/2023");
+  const [text, setText] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [value, setValue] = useState(0);
+  const [selectedTime, setSelectedTime] = useState("day");
 
+  const handleTimeChange = (index) => {
+    switch (index) {
+      case 0:
+        setSelectedTime("day");
+        break;
+      case 1:
+        setSelectedTime("week");
+        break;
+      case 2:
+        setSelectedTime("month");
+        break;
+      default:
+        setSelectedTime("day");
+    }
+  };
+  useEffect(() => {
+    fetchDataAndPhoneNumber();
+  }, [phoneNumber, text, selectedTime]);
+
+  const fetchDataAndPhoneNumber = async () => {
+    try {
+      const phoneNumberValue = await getFromAsyncStorage("phoneNumber");
+      setPhoneNumber(phoneNumberValue);
+      if (phoneNumberValue) {
+        if (selectedTime === "day") {
+          getIncomeDay();
+        } else if (selectedTime === "month") {
+          getIncomeMonth();
+        } else getIncomeWeek();
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
   const onChange = (event, seletedDate) => {
     const currentDate = seletedDate || date;
     setShow(Platform.OS == "ios");
@@ -39,11 +79,115 @@ const IncomeScreen = () => {
       tempDate.getFullYear();
     setText(fDate);
   };
-
   const showMode = (currentMode) => {
     setShow(true);
     setMode(currentMode);
   };
+  const getIncomeDay = () => {
+    const queryIncome = query(
+      collection(db, "ListTrip"),
+      where("idRider", "==", phoneNumber),
+      where("status", "==", "done"),
+      where("datePickUp", "==", text)
+    );
+    const unsubscribeIncome = onSnapshot(queryIncome, (querySnapshot) => {
+      let totalTemp = 0;
+      querySnapshot.forEach((doc) => {
+        totalTemp += parseInt(doc.data().totalPrice);
+      });
+
+      setValue(totalTemp);
+    });
+
+    return () => {
+      unsubscribeIncome();
+    };
+  };
+  const getIncomeMonth = () => {
+    const dateString = text;
+    const dateParts = dateString.split("/");
+    const month = parseInt(dateParts[1]);
+
+    const queryIncome = query(
+      collection(db, "ListTrip"),
+      where("idRider", "==", phoneNumber),
+      where("status", "==", "done")
+    );
+
+    const unsubscribeIncome = onSnapshot(queryIncome, (querySnapshot) => {
+      let totalTemp = 0;
+      querySnapshot.forEach((doc) => {
+        const docDateParts = doc.data().datePickUp.split("/");
+        const docMonth = parseInt(docDateParts[1]);
+        if (docMonth === month) {
+          totalTemp += parseInt(doc.data().totalPrice);
+          console.log(totalTemp);
+        }
+        setValue(totalTemp);
+      });
+    });
+
+    return () => {
+      unsubscribeIncome();
+    };
+  };
+
+  const getIncomeWeek = () => {
+    const dateString = text;
+    const dateParts = dateString.split("/");
+    const day = parseInt(dateParts[0]);
+    const month = parseInt(dateParts[1]) - 1; // tháng được đánh số từ 0 đến 11, nên cần -1
+    const year = parseInt(dateParts[2]);
+
+    const targetDate = new Date(year, month, day);
+    const startOfWeek = new Date(targetDate);
+    startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay());
+    startOfWeek.setHours(0, 0, 0, 0);
+
+    const endOfWeek = new Date(startOfWeek);
+    endOfWeek.setDate(startOfWeek.getDate() + 6);
+
+    const queryIncome = query(
+      collection(db, "ListTrip"),
+      where("idRider", "==", phoneNumber),
+      where("status", "==", "done")
+    );
+
+    const unsubscribeIncome = onSnapshot(queryIncome, (querySnapshot) => {
+      let totalTemp = 0;
+      querySnapshot.forEach((doc) => {
+        const dateStringDoc = doc.data().datePickUp;
+        const datePartsDoc = dateStringDoc.split("/");
+        const dayDoc = parseInt(datePartsDoc[0]);
+        const monthDoc = parseInt(datePartsDoc[1]) - 1; // tháng được đánh số từ 0 đến 11, nên cần -1
+        const yearDoc = parseInt(datePartsDoc[2]);
+
+        const targetDateDoc = new Date(yearDoc, monthDoc, dayDoc);
+        const startOfWeekDoc = new Date(targetDateDoc);
+        startOfWeekDoc.setDate(
+          startOfWeekDoc.getDate() - startOfWeekDoc.getDay()
+        );
+        startOfWeekDoc.setHours(0, 0, 0, 0);
+
+        const endOfWeekDoc = new Date(startOfWeekDoc);
+        endOfWeekDoc.setDate(startOfWeekDoc.getDate() + 6);
+
+        if (
+          startOfWeek.toString() == startOfWeekDoc.toString() &&
+          endOfWeek.toString() == endOfWeekDoc.toString()
+        ) {
+          totalTemp += parseInt(doc.data().totalPrice);
+        }
+      });
+
+      setValue(totalTemp);
+    });
+
+    return () => {
+      unsubscribeIncome();
+    };
+  };
+
   const FirstRoute = () => (
     <ScrollView>
       <VStack
@@ -140,6 +284,7 @@ const IncomeScreen = () => {
       </HStack>
     );
   };
+
   const TotalIncome = () => {
     return (
       <VStack
@@ -168,7 +313,7 @@ const IncomeScreen = () => {
             justifyContent: "center",
           }}
         >
-          78,000đ
+          {value}
         </Text>
       </VStack>
     );
@@ -191,7 +336,10 @@ const IncomeScreen = () => {
             <TabView
               navigationState={{ index, routes }}
               renderScene={renderScene}
-              onIndexChange={setIndex}
+              onIndexChange={(index) => {
+                setIndex(index);
+                handleTimeChange(index);
+              }}
               initialLayout={{ width: SIZES.width }}
               renderTabBar={(props) => (
                 <TabBar

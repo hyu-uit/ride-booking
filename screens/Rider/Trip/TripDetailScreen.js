@@ -3,25 +3,37 @@ import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { COLORS, FONTS, SIZES } from "../../../constants/theme";
 import ButtonBack from "../../../components/Global/ButtonBack/ButtonBack";
-import PopUpRequestCard from "../../../components/Driver/PopUpRequestCard";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../../../config/config";
-import { Dimensions } from "react-native";
-import { Platform } from "expo-modules-core";
+import { Dimensions, Platform } from "react-native";
+import ReceivedTripCard from "../../../components/Driver/ReceivedTripCard";
 
 const TripDetailScreen = ({ navigation, route }) => {
   const contentHeight = Dimensions.get("window").height;
-  const { idTrip } = route.params;
+  const { idTrip, state, isRead } = route.params;
   const [tripData, setTrip] = useState({});
+
   useEffect(() => {
     getTrip();
-  }, []);
+    const disableSwipeBack = () => {
+      navigation.setOptions({
+        gestureEnabled: false,
+      });
+    };
+    disableSwipeBack();
+    return () => {
+      navigation.setOptions({
+        gestureEnabled: true,
+      });
+    };
+  }, [navigation]);
   const getTrip = () => {
     let data = {};
     getDoc(doc(db, "ListTrip", idTrip)).then((doc) => {
       if (doc.exists()) {
         data = {
           idCustomer: doc.data().idCustomer,
+          idRider: doc.data().idRider,
           idTrip: doc.id,
           pickUpLat: doc.data().pickUpLat,
           pickUpLong: doc.data().pickUpLong,
@@ -37,13 +49,22 @@ const TripDetailScreen = ({ navigation, route }) => {
       setTrip(data);
     });
   };
+  console.log(state);
   return (
     <VStack
       h={Platform.OS === "ios" ? contentHeight : "100%"}
       bgColor={COLORS.background}
     >
       <SafeAreaView>
-        <View position={"absolute"} top={50} left={2} zIndex={1}>
+        <View
+          style={{
+            position: "absolute",
+            top: 50,
+            left: 2,
+            zIndex: 1,
+            display: state === 1 ? "none" : "flex",
+          }}
+        >
           <ButtonBack
             onPress={() => {
               navigation.goBack();
@@ -62,10 +83,11 @@ const TripDetailScreen = ({ navigation, route }) => {
             coordinate={{ latitude: 9.90761, longitude: 105.31181 }}
           ></Marker>
         </MapView>
-        <PopUpRequestCard
+        <ReceivedTripCard
           trip={tripData}
+          isRead={isRead}
           navigation={navigation}
-        ></PopUpRequestCard>
+        ></ReceivedTripCard>
         {/* <HStack justifyContent={"center"} mb={"20px"}>
           <View style={{ position: "absolute", left: 0 }}>
             <ButtonBack></ButtonBack>

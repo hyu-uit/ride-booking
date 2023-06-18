@@ -206,7 +206,7 @@ const RiderProfileScreen = ({ navigation, route }) => {
       () => {
         getDownloadURL(storageRef)
           .then((url) => {
-            updateDoc(doc(db, "Customer", phone), {
+            updateDoc(doc(db, "Rider", phone), {
               portrait: url,
             });
           })

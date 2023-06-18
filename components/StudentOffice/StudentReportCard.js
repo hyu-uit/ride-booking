@@ -73,15 +73,11 @@ function StudentReportCard(props) {
       }
     );
     const ratingUnsubscribe = onSnapshot(
-      query(
-        collection(db, "RatingList"),
-        where("idRider", "==", phoneNumber),
-        where("ratingType", "==", "Bad")
-      ),
+      doc(db, "Rider", phoneNumber),
       (snapshot) => {
         let badCount = 0;
         snapshot.forEach((doc) => {
-          badCount++;
+          badCount = doc.data().bad;
         });
         setRatingList(badCount);
       }

@@ -124,6 +124,7 @@ const StudentReportScreen = ({ navigation }) => {
             studentID: doc.data().studentID,
             portrait: doc.data().portrait,
             cardFront: doc.data().cardFront,
+            birthday: doc.data().birthday,
             cardBack: doc.data().cardBack,
             status: doc.data().status,
             key: doc.id + "-Customer",
@@ -195,6 +196,7 @@ const StudentReportScreen = ({ navigation }) => {
           portrait: doc.data().portrait,
           cardFront: doc.data().cardFront,
           cardBack: doc.data().cardBack,
+          birthday: doc.data().birthday,
           status: doc.data().status,
           key: doc.id + "-Customer",
         };
@@ -218,6 +220,7 @@ const StudentReportScreen = ({ navigation }) => {
           portrait: doc.data().portrait,
           cardFront: doc.data().cardFront,
           cardBack: doc.data().cardBack,
+          birthday: doc.data().birthday,
           status: doc.data().status,
           key: doc.id + "-Rider",
         };
@@ -280,8 +283,8 @@ const StudentReportScreen = ({ navigation }) => {
           data={filteredRiderUsers}
           keyExtractor={(item) => item.key}
           renderItem={({ item }) => (
-            <StudentReportCard
-              listUser={item}
+            <StudentListCard
+              list={item}
               onPress={() => {
                 const data = {
                   phoneNumber: "" + item.phoneNumber,
@@ -289,7 +292,7 @@ const StudentReportScreen = ({ navigation }) => {
                 };
                 navigation.navigate("StudentReportDetail", data);
               }}
-            ></StudentReportCard>
+            ></StudentListCard>
           )}
         ></FlatList> */}
     </VStack>
@@ -318,10 +321,10 @@ const StudentReportScreen = ({ navigation }) => {
           w={"100%"}
           h={"87%"}
           data={filteredLockedUsers}
-          keyExtractor={(item) => item.name}
+          keyExtractor={(item) => item.key}
           renderItem={({ item }) => (
-            <StudentReportCard
-              listUser={item}
+            <StudentListCard
+            list={item}
               onPress={() => {
                 const data = {
                   phoneNumber: "" + item.phoneNumber,
@@ -329,7 +332,7 @@ const StudentReportScreen = ({ navigation }) => {
                 };
                 navigation.navigate("StudentReportDetail", data);
               }}
-            ></StudentReportCard>
+            ></StudentListCard>
           )}
         ></FlatList> */}
     </VStack>

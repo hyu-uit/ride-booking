@@ -17,9 +17,8 @@ import { useEffect } from "react";
 import { doc, getDoc, increment, updateDoc } from "firebase/firestore";
 import { db } from "../../config/config";
 import { Ionicons } from "@expo/vector-icons";
-import { useTranslation } from "react-i18next";
 
-function PopUpRequestCard(props) {
+function WaitingForRiderCard(props) {
   //const {trip} = props
   let {
     idCustomer,
@@ -39,15 +38,15 @@ function PopUpRequestCard(props) {
   const [name, setName] = useState("");
   const [state, setState] = useState(0);
   const { navigation, phoneNumber } = props;
-  const [isModalVisible, setModalVisible] = useState(false);
-  // const { randomTrips, setNewCurrentTrips, setCount } = props;
-  const { t } = useTranslation();
+  // const [modalVisible, setModalVisible] = useState(false);
+  const { setIsModalVisible } = props;
 
-  useEffect(() => {
-    if (!isModalVisible) {
-      setModalVisible(false); // Đóng modal
-    }
-  }, [isModalVisible]);
+  // useEffect(() => {
+  //   if (!isModalVisible) {
+  //     setModalVisible(false); // Đóng modal
+  //   }
+    
+  // }, [isModalVisible]);
   if (idTrip !== undefined) {
     getDoc(doc(db, "ListTrip", idTrip)).then((tripData) => {
       if (tripData.exists()) {
@@ -67,14 +66,13 @@ function PopUpRequestCard(props) {
       status: "accepted",
       idRider: phoneNumber,
     });
-    const data = { idTrip: "" + idTrip, state: 1 };
+    const data = { idTrip: "" + idTrip , state:1};
     navigation.navigate("TripDetail", data);
   };
 
-  const { handleStatusReject } = props;
 
   const setStatusReject = () => {
-    handleStatusReject();
+    setIsModalVisible(false);
   };
 
   return (
@@ -109,7 +107,7 @@ function PopUpRequestCard(props) {
               {totalPrice}
             </Text>
           </View>
-        </HStack>
+</HStack>
         <Text
           color={COLORS.lightGrey}
           style={{
@@ -120,6 +118,9 @@ function PopUpRequestCard(props) {
         </Text>
         <HStack>
           <Text style={styles.detailText}>{distance}</Text>
+          <Text style={styles.detailTextNotBold}> - You’re </Text>
+          <Text style={styles.detailText}>0h 15m</Text>
+          <Text style={styles.detailTextNotBold}> away</Text>
         </HStack>
       </VStack>
       <View
@@ -228,4 +229,4 @@ const styles = StyleSheet.create({
     ...FONTS.body6,
   },
 });
-export default PopUpRequestCard;
+export default WaitingForRiderCard;

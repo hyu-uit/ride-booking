@@ -70,41 +70,41 @@ const StudentListDetailScreen = ({ route, navigation }) => {
             cancelCount++;
           }
         });
-        setCancelTripCount(cancelCount);
         const totalCount = doneCount + cancelCount;
         setDoneTripCount(totalCount);
       }
     );
-    const ratingUnsubscribe = onSnapshot(
-      query(
-        collection(db, "RatingList"),
-        where("idRider", "==", phoneNumber),
-        where("ratingType", "in", ["Good", "Normal", "Bad"])
-      ),
+    const unsubscribeCancel = onSnapshot(
+      doc(db, role, phoneNumber),
       (snapshot) => {
-        let badCount = 0;
-        let normalCount = 0;
-        let goodCount = 0;
-        snapshot.forEach((doc) => {
-          const status = doc.data().status;
-          if (status === "Good") {
-            goodCount++;
-          } else if (status === "Normal") {
-            normalCount++;
-          } else {
-            badCount++;
-          }
-        });
+        const docData = snapshot.data();
+        setCancelTripCount(docData.cancel);
+      }
+    );
+
+    const ratingUnsubscribe = onSnapshot(
+      doc(db, role, phoneNumber),
+      (snapshot) => {
+        const docData = snapshot.data();
+        // const status = doc.data().status;
+        // if (status === "Good") {
+        //   goodCount++;
+        // } else if (status === "Normal") {
+        //   normalCount++;
+        // }else{
+        //   badCount++;
+        // }
         const rating = {
-          goodCount: goodCount,
-          normalCount: normalCount,
-          badCount: badCount,
+          goodCount: docData.good,
+          normalCount: docData.normal,
+          badCount: docData.bad,
         };
         setRatingList(rating);
       }
     );
     return () => {
       doneUnsubscribe();
+      unsubscribeCancel();
       ratingUnsubscribe();
     };
   }, [phoneNumber, role]);

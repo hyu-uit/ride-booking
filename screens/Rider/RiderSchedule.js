@@ -23,72 +23,94 @@ import DriverBookingCard from "../../components/Driver/DriverBookingCard";
 import RequestCard from "../../components/Driver/RequestCard";
 import moment from "moment";
 import { useEffect } from "react";
-import { collection, getDocs, query, where } from "firebase/firestore";
+import {
+  collection,
+  getDocs,
+  onSnapshot,
+  query,
+  where,
+} from "firebase/firestore";
 import { db } from "../../config/config";
 import ConfirmedScheduledTrip from "../../components/Driver/ConfirmedScheduledTrip";
+import { getFromAsyncStorage } from "../../helper/asyncStorage";
 import { useTranslation } from "react-i18next";
 
 const RiderSchedule = ({ navigation }) => {
   const [service, setService] = useState(0);
   const [waitingTrips, setWaitingTrips] = useState({});
   const [confirmedTrips, setConfirmedTrips] = useState({});
+  const [phoneNumber, setPhoneNumber] = useState([]);
 
   useEffect(() => {
-    getWaitingTrips();
-    getConfirmedTrips();
-  }, []);
+    fetchDataAndPhoneNumber();
+  }, [phoneNumber, navigation]);
+
+  const fetchDataAndPhoneNumber = async () => {
+    try {
+      const phoneNumberValue = await getFromAsyncStorage("phoneNumber");
+      setPhoneNumber(phoneNumberValue);
+
+      if (phoneNumberValue) {
+        getWaitingTrips();
+        getConfirmedTrips();
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  // console.log(currentDate)
 
   const getWaitingTrips = () => {
-    let waitingTrips = [];
-    getDocs(
-      query(collection(db, "ListTrip"), where("isScheduled", "==", "true"))
-    ).then((docSnap) => {
-      docSnap.forEach((doc) => {
-        if (doc.data().status == "waiting") {
-          waitingTrips.push({
-            idCustomer: doc.data().idCustomer,
+    const currentDate = new Date();
+    const waitingTripsQuery = query(
+      collection(db, "ListTrip"),
+      where("status", "==", "waiting"),
+      where("isScheduled", "==", "true")
+    );
+
+    const unsubscribeTrip = onSnapshot(waitingTripsQuery, (querySnapshot) => {
+      const updatedTrips = [];
+      querySnapshot.forEach((doc) => {
+        if (moment(doc.data().datePickUp, "D/M/YYYY") > currentDate) {
+          const trip = {
             idTrip: doc.id,
-            pickUpLat: doc.data().pickUpLat,
-            pickUpLong: doc.data().pickUpLong,
-            destLat: doc.data().destLat,
-            destLong: doc.data().destLong,
-            date: doc.data().date,
-            time: doc.data().time,
-            datePickUp: doc.data().datePickUp,
-            timePickUp: doc.data().timePickUp,
-            totalPrice: doc.data().totalPrice,
-            distance: doc.data().distance,
-          });
+            ...doc.data(),
+          };
+          updatedTrips.push(trip);
         }
       });
-      setWaitingTrips(waitingTrips);
+
+      setWaitingTrips(updatedTrips);
     });
+
+    return () => {
+      unsubscribeTrip();
+    };
   };
+
   const getConfirmedTrips = () => {
-    let confirmedTrips = [];
-    getDocs(
-      query(collection(db, "ListTrip"), where("isScheduled", "==", "true"))
-    ).then((docSnap) => {
-      docSnap.forEach((doc) => {
-        if (doc.data().status == "confirmed") {
-          confirmedTrips.push({
-            idCustomer: doc.data().idCustomer,
-            idTrip: doc.id,
-            pickUpLat: doc.data().pickUpLat,
-            pickUpLong: doc.data().pickUpLong,
-            destLat: doc.data().destLat,
-            destLong: doc.data().destLong,
-            date: doc.data().date,
-            time: doc.data().time,
-            datePickUp: doc.data().datePickUp,
-            timePickUp: doc.data().timePickUp,
-            totalPrice: doc.data().totalPrice,
-            distance: doc.data().distance,
-          });
-        }
+    const waitingTripsQuery = query(
+      collection(db, "ListTrip"),
+      where("idRider", "==", phoneNumber),
+      where("status", "==", "confirmed"),
+      where("isScheduled", "==", "true")
+    );
+
+    const unsubscribeTrip = onSnapshot(waitingTripsQuery, (querySnapshot) => {
+      const updatedTrips = [];
+      querySnapshot.forEach((doc) => {
+        const trip = {
+          idTrip: doc.id,
+          ...doc.data(),
+        };
+        updatedTrips.push(trip);
       });
-      setConfirmedTrips(confirmedTrips);
+      setConfirmedTrips(updatedTrips);
     });
+
+    return () => {
+      unsubscribeTrip();
+    };
   };
   const FirstRoute = () => (
     <ScrollView>
@@ -127,6 +149,8 @@ const RiderSchedule = ({ navigation }) => {
             onPress={() => {
               const data = {
                 idTrip: "" + item.idTrip,
+                idRider: phoneNumber,
+                state: 0,
               };
               navigation.navigate("TripDetail", data);
             }}
