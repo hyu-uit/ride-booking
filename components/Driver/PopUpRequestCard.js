@@ -34,6 +34,8 @@ function PopUpRequestCard(props) {
     status,
     totalPrice,
     distance,
+    destAddress,
+    pickUpAddress,
   } = props.trip;
 
   const [name, setName] = useState("");
@@ -81,7 +83,7 @@ function PopUpRequestCard(props) {
     <View
       bgColor={COLORS.fourthary}
       w={"100%"}
-      h={303}
+      h={"2/5"}
       borderRadius={20}
       shadow={3}
     >
@@ -141,7 +143,7 @@ function PopUpRequestCard(props) {
                 />
                 <VStack w={"100%"} pl={3}>
                   <Text style={styles.titleText} w={"80%"}>
-                    Pickup - KTX Khu B ĐHQG, Đông Hòa, Dĩ An, Bình Dương
+                    Pickup - {pickUpAddress}
                   </Text>
                 </VStack>
               </HStack>
@@ -149,7 +151,7 @@ function PopUpRequestCard(props) {
                 <Ionicons name={"pin-outline"} size={20} color={COLORS.white} />
                 <VStack>
                   <Text style={styles.titleText} w={"80%"} pl={3}>
-                    Destination - Trường Đại học Công nghệ Thông tin - ĐHQG TP..
+                    Destination - {destAddress}
                   </Text>
                 </VStack>
               </HStack>

@@ -42,11 +42,12 @@ import {
 import { BackHandler, Switch, ToastAndroid } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import PopUpRequestCard from "../../../components/Driver/PopUpRequestCard";
-import MapView from "react-native-maps";
-import { Marker } from "react-native-svg";
+import MapView, { Marker } from "react-native-maps";
 import { Dimensions } from "react-native";
 import WaitingForRiderCard from "../../../components/Driver/WaitingForRiderCard";
 import { useTranslation } from "react-i18next";
+import { isNullOrEmpty } from "../../../helper/helper";
+import { calculateMapDelta } from "../../../helper/location";
 
 const RiderHomeScreen = ({ navigation, route }) => {
   const [service, setService] = useState(0);
@@ -219,7 +220,19 @@ const RiderHomeScreen = ({ navigation, route }) => {
 
             previousTrip = randomTrip;
             setRandomTrips(updatedTrips);
-            setNewCurrentTrips([randomTrip]);
+            setNewCurrentTrips([
+              {
+                ...randomTrip,
+                pickUpLat: parseFloat(randomTrip.pickUpLat),
+                pickUpLong: parseFloat(randomTrip.pickUpLong),
+                destLat: parseFloat(randomTrip.destLat),
+                destLong: parseFloat(randomTrip.destLong),
+              },
+            ]);
+            console.log(
+              "🚀 ~ file: RiderHomeScreen.js:226 ~ fetchNewCurrentTrips ~ [randomTrip]:",
+              [randomTrip]
+            );
             setModalVisible(true);
           }
         );
@@ -278,7 +291,19 @@ const RiderHomeScreen = ({ navigation, route }) => {
             previousTrip = randomTrip; // Lưu trữ document hiện tại để kiểm tra ở lần kế tiếp
             // Lưu trữ danh sách các trips đã được random
             setRandomTrips(updatedTrips);
-            setNewCurrentTrips([randomTrip]);
+            setNewCurrentTrips([
+              {
+                ...randomTrip,
+                pickUpLat: parseFloat(randomTrip.pickUpLat),
+                pickUpLong: parseFloat(randomTrip.pickUpLong),
+                destLat: parseFloat(randomTrip.destLat),
+                destLong: parseFloat(randomTrip.destLong),
+              },
+            ]);
+            console.log(
+              "🚀 ~ file: RiderHomeScreen.js:288 ~ fetchNewCurrentTrips ~ [randomTrip]:",
+              [randomTrip]
+            );
             setModalVisible(true);
           }
         );
@@ -385,7 +410,13 @@ const RiderHomeScreen = ({ navigation, route }) => {
       renderItem={({ item }) => (
         <HistoryPickUpCard
           onPress={() => {
-            setSelectedTrip(item);
+            setSelectedTrip({
+              ...item,
+              pickUpLat: parseFloat(item.pickUpLat),
+              pickUpLong: parseFloat(item.pickUpLong),
+              destLat: parseFloat(item.destLat),
+              destLong: parseFloat(item.destLong),
+            });
             setIsModalVisible(true);
           }}
           trip={item}
@@ -480,16 +511,70 @@ const RiderHomeScreen = ({ navigation, route }) => {
               >
                 <View borderTopRadius={"20px"} w={"100%"} h={"20%"}>
                   <MapView
-                    provider="google"
                     style={{
                       width: "100%",
                       height: "130%",
                       borderRadius: 20,
                     }}
+                    provider="google"
+                    region={{
+                      ...calculateMapDelta(
+                        {
+                          latitude: newCurrentTrips[0].destLat,
+                          longitude: newCurrentTrips[0].destLong,
+                        },
+                        {
+                          latitude: newCurrentTrips[0].pickUpLat,
+                          longitude: newCurrentTrips[0].pickUpLong,
+                        },
+                        60
+                      ),
+                      latitude: newCurrentTrips[0]
+                        ? (newCurrentTrips[0].destLat +
+                            newCurrentTrips[0].pickUpLat) /
+                          2
+                        : 0, // get center latitude to zoom
+                      longitude: newCurrentTrips[0]
+                        ? (newCurrentTrips[0].destLong +
+                            newCurrentTrips[0].pickUpLong) /
+                          2
+                        : 0, // get center longitude to zoom
+                    }}
                   >
                     <Marker
-                      coordinate={{ latitude: 9.90761, longitude: 105.31181 }}
-                    ></Marker>
+                      identifier="pickUp"
+                      key={"pickUp"}
+                      coordinate={{
+                        latitude: newCurrentTrips[0]
+                          ? newCurrentTrips[0].pickUpLat
+                          : 0,
+                        longitude: newCurrentTrips[0]
+                          ? newCurrentTrips[0].pickUpLong
+                          : 0,
+                      }}
+                      title={"Pick up"}
+                      description={
+                        newCurrentTrips[0]
+                          ? newCurrentTrips[0].pickUpAddress
+                          : ""
+                      }
+                    />
+                    <Marker
+                      identifier="destination"
+                      key={"destination"}
+                      coordinate={{
+                        latitude: newCurrentTrips[0]
+                          ? newCurrentTrips[0].destLat
+                          : 0,
+                        longitude: newCurrentTrips[0]
+                          ? newCurrentTrips[0].destLong
+                          : 0,
+                      }}
+                      title={"Destination"}
+                      description={
+                        newCurrentTrips[0] ? newCurrentTrips[0].destAddress : 0
+                      }
+                    />
                   </MapView>
                 </View>
                 <PopUpRequestCard
@@ -515,16 +600,54 @@ const RiderHomeScreen = ({ navigation, route }) => {
               >
                 <View borderTopRadius={"20px"} w={"100%"} h={"20%"}>
                   <MapView
-                    provider="google"
                     style={{
                       width: "100%",
                       height: "130%",
                       borderRadius: 20,
                     }}
+                    provider="google"
+                    region={{
+                      ...calculateMapDelta(
+                        {
+                          latitude: selectedTrip.destLat,
+                          longitude: selectedTrip.destLong,
+                        },
+                        {
+                          latitude: selectedTrip.pickUpLat,
+                          longitude: selectedTrip.pickUpLong,
+                        },
+                        60
+                      ),
+                      latitude: selectedTrip
+                        ? (selectedTrip.destLat + selectedTrip.pickUpLat) / 2
+                        : 0, // get center latitude to zoom
+                      longitude: selectedTrip
+                        ? (selectedTrip.destLong + selectedTrip.pickUpLong) / 2
+                        : 0, // get center longitude to zoom
+                    }}
                   >
                     <Marker
-                      coordinate={{ latitude: 9.90761, longitude: 105.31181 }}
-                    ></Marker>
+                      identifier="pickUp"
+                      key={"pickUp"}
+                      coordinate={{
+                        latitude: selectedTrip ? selectedTrip.pickUpLat : 0,
+                        longitude: selectedTrip ? selectedTrip.pickUpLong : 0,
+                      }}
+                      title={"Pick up"}
+                      description={
+                        selectedTrip ? selectedTrip.pickUpAddress : ""
+                      }
+                    />
+                    <Marker
+                      identifier="destination"
+                      key={"destination"}
+                      coordinate={{
+                        latitude: selectedTrip ? selectedTrip.destLat : 0,
+                        longitude: selectedTrip ? selectedTrip.destLong : 0,
+                      }}
+                      title={"Destination"}
+                      description={selectedTrip ? selectedTrip.destAddress : 0}
+                    />
                   </MapView>
                 </View>
                 <WaitingForRiderCard
@@ -631,5 +754,9 @@ const RiderHomeScreen = ({ navigation, route }) => {
     </NativeBaseProvider>
   );
 };
+
+function checkValueIsSet(value) {
+  return value ? value : 0; // 0 is default value for long lat
+}
 
 export default RiderHomeScreen;
