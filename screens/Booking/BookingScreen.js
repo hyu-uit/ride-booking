@@ -246,6 +246,8 @@ export default function BookingScreen({ navigation }) {
               payload: coordinatesRoutingFormatted,
             });
 
+            console.log(ceilingMinute(time));
+
             dispatch({
               type: SET_BOOKING_DETAILS,
               payload: {
@@ -293,11 +295,15 @@ export default function BookingScreen({ navigation }) {
   };
   const handleStep3Submit = (date, time) => {
     console.log(
+      "🚀 ~ file: BookingScreen.js:295 ~ handleStep3Submit ~ time:",
+      time
+    );
+    console.log(
       "🚀 ~ file: BookingScreen.js:240 ~ handleStep3Submit ~ date:",
       date
     );
     // Do any necessary form validation or error checking here
-    dispatch({ type: SET_BOOKING_DETAILS, payload: { date, time } });
+    dispatch({ type: SET_BOOKING_DETAILS, payload: { date } });
     setStep(4);
   };
 
@@ -314,10 +320,6 @@ export default function BookingScreen({ navigation }) {
     setStep(5);
   };
 
-  const handleStep5Submit = () => {
-    // Do any necessary form validation or error checking here
-    setStep(6);
-  };
   const createOrder = () => {
     // const currentDate = new Date();
     // const currentDay = currentDate.getDate();
@@ -334,7 +336,7 @@ export default function BookingScreen({ navigation }) {
 
     let price = booking.bookingDetails.price - booking.bookingDetails.promotion;
     if (price <= 0) price = 0;
-    console.log(booking.bookingDetails.time);
+
     addDoc(collection(db, "ListTrip"), {
       idCustomer: phoneNumber,
       idRider: "",
@@ -346,7 +348,7 @@ export default function BookingScreen({ navigation }) {
       pickUpAddress: booking.pickUpLocation.address,
       //nếu mà ngày đón không phải hôm nay thì isScheduled = true
       isScheduled: scheduled,
-      // est:booking.bookingDetails.time,
+      est: booking.bookingDetails.time,
       datePickUp: selectedDate,
       timePickUp: selectedTime,
       date: currentDate,
@@ -359,16 +361,11 @@ export default function BookingScreen({ navigation }) {
     });
     //upload image to firebase storage
   };
-  const handleStep6Submit = (note) => {
-    console.log(
-      "🚀 ~ file: BookingScreen.js:267 ~ handleStep6Submit ~ note:",
-      note
-    );
-    dispatch({ type: SET_BOOKING_DETAILS, payload: { note } });
+
+  const handleStep5Submit = () => {
     // Do any necessary form validation or error checking here
-    //createOrder();
     createOrder();
-    setStep(7);
+    setStep(6);
   };
 
   const handleCloseModal = () => {
@@ -722,50 +719,6 @@ export default function BookingScreen({ navigation }) {
           </>
         );
       case 6:
-        return (
-          <>
-            <MapView
-              ref={mapRef}
-              style={{ height: "45%", borderRadius: 10 }}
-              provider="google"
-              region={booking.region}
-            >
-              <Marker
-                key={"pickUp"}
-                coordinate={booking.pickUpLocation}
-                title={"Pick up"}
-                description={
-                  booking.pickUpLocation.address
-                    ? booking.pickUpLocation.address
-                    : null
-                }
-              ></Marker>
-              <Marker
-                key={"destination"}
-                coordinate={booking.destinationLocation}
-                title={"Destination"}
-                description={
-                  booking.destinationLocation.address
-                    ? booking.destinationLocation.address
-                    : null
-                }
-              />
-              {routing ? (
-                <Polyline
-                  coordinates={routing}
-                  strokeWidth={5}
-                  strokeColor="blue"
-                />
-              ) : null}
-            </MapView>
-            <LocationCardNote
-              onClickContinue={handleStep6Submit}
-              onPressBack={handleBackStep}
-            />
-          </>
-        );
-
-      case 7:
         return (
           <>
             <MapView

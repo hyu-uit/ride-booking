@@ -20,8 +20,7 @@ export const fetchCurrentUserLocation = async () => {
 
   if (!isPermissionsGranted) return;
   const location = await Location.getCurrentPositionAsync({
-    accuracy: Location.Accuracy.BestForNavigation,
-    timeInterval: 100,
+    accuracy: Location.Accuracy.Highest,
   });
   console.log(
     "🚀 ~ file: location.js:11 ~ fetchCurrentUserLocation ~ location:",
