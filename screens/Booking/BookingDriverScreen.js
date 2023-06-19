@@ -33,7 +33,7 @@ const BookingDriverScreen = ({ navigation, route }) => {
   const mapRef = useRef();
   const { idRider, idTrip } = route.params;
   const [phoneNumber, setPhoneNumber] = useState([]);
-  const [tripDetail, setTripDetail] = useState([]);
+  const [tripDetail, setTripDetailDone] = useState([]);
 
   useEffect(() => {
     try {
@@ -93,24 +93,23 @@ const BookingDriverScreen = ({ navigation, route }) => {
   };
 
   const onFinishTrip= () =>{
-    const finishTripQuery = query(
-      collection(db, "ListTrip"),
-      where("isScheduled", "==", "false"),
-      where("status", "in", ["done","canceled"]),
-      where("idCustomer", "==", phoneNumber)
-    );
+    // const finishTripQuery = query(
+    //   collection(db, "ListTrip"),
+    //   where("isScheduled", "==", "false"),
+    //   where("status", "in", ["done","canceled"]),
+    //   where("idCustomer", "==", phoneNumber)
+    // );
 
-    const unsubscribeTrip = onSnapshot(finishTripQuery, (querySnapshot) => {
+    const unsubscribeTrip = onSnapshot(doc(db,"ListTrip", idTrip), (querySnapshot) => {
       const updatedTrip = [];
-      querySnapshot.forEach((doc) => {
-        const trip = {
-          idTrip: doc.id,
-          ...doc.data(),
-        };
-        updatedTrip.push(trip);
-      });
-      setTripDetail(updatedTrip);
-      if (updatedTrip.length > 0) {
+      const docData = querySnapshot.data();
+      const trip = {
+        idTrip: docData.id,
+        ...docData,
+      };
+      updatedTrip.push(trip);
+      setTripDetailDone(updatedTrip);
+      if (updatedTrip[0].status=="done") {
         setStep(2)
       }
     });

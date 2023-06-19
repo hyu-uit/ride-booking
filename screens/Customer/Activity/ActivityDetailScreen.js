@@ -164,12 +164,12 @@ const ActivityDetailScreen = ({ navigation, route }) => {
 
             <HStack mt={"10px"}>
               <VStack>
-                <VStack>
+                <VStack >
                   <Text style={{ ...FONTS.body5, color: COLORS.fifthary }}>
                     {t("pickUp")}
                   </Text>
                   <Text
-                    style={{ ...FONTS.h5, color: COLORS.white, width: "80%" }}
+                    style={{ ...FONTS.h5, color: COLORS.white, width: "80%"}}
                   >
                     {tripData.pickUpAddress}
                   </Text>
@@ -186,7 +186,7 @@ const ActivityDetailScreen = ({ navigation, route }) => {
                 </VStack>
               </VStack>
               <VStack
-                style={{ position: "absolute", right: 0 }}
+                style={{ position: "absolute", right: 0}}
                 alignItems={"center"}
               >
                 <View

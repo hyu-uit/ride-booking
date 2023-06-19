@@ -34,6 +34,7 @@ import {
   doc,
   getDoc,
   getDocs,
+  onSnapshot,
   query,
   where,
 } from "firebase/firestore";
@@ -80,7 +81,7 @@ export default function Home({ navigation, route }) {
 
   useEffect(() => {
     fetchDataAndPhoneNumber();
-  }, []);
+  }, [phone]);
 
   const fetchDataAndPhoneNumber = async () => {
     try {
@@ -105,13 +106,14 @@ export default function Home({ navigation, route }) {
     }
   };
   //const {phoneNumber, role} = route.params;
-  const getHistoryTrips = async (phoneNumber) => {
-    let historyTrips = [];
-    getDocs(
-      query(collection(db, "ListTrip"), where("idCustomer", "==", phoneNumber))
-    ).then((docSnap) => {
-      docSnap.forEach((doc) => {
-        if (doc.data().status === "done") {
+  const getHistoryTrips = () => {
+    const querySnapshot = query(collection(db, "ListTrip"), 
+    where("status","==","done"),
+    where("idCustomer", "==", phone),
+    )
+    const unsubscribe = onSnapshot(querySnapshot, (snapshot) => {
+      let historyTrips = [];
+      snapshot.forEach((doc) => {
           historyTrips.push({
             idCustomer: doc.data().idCustomer,
             idTrip: doc.id,
@@ -123,15 +125,20 @@ export default function Home({ navigation, route }) {
             time: doc.data().time,
             datePickUp: doc.data().datePickUp,
             timePickUp: doc.data().timePickUp,
+            pickUpAddress:doc.data().pickUpAddress,
+            destAddress:doc.data().destAddress,
             totalPrice: doc.data().totalPrice,
             distance: doc.data().distance,
           });
-        }
       });
       setHistoryTrips(historyTrips);
     });
+      return () => {
+      unsubscribe();
+    };
   };
   console.log(historyTrips);
+
   return (
     <TouchableWithoutFeedback
       onPress={() => {

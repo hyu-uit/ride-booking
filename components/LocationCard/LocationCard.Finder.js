@@ -23,7 +23,7 @@ import { useState } from "react";
 import { useEffect } from "react";
 import { db } from "../../config/config";
 
-const LocationCardFinder = ({ onPressCancel, phoneNumber, navigation }) => {
+const LocationCardFinder = ({ onPressCancel, phoneNumber, navigation, setIdTrip }) => {
   const { t } = useTranslation();
   const { booking } = useContext(BookingContext);  
   const [tripDetail, setTripDetail] = useState([]);
