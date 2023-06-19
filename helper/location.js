@@ -3,6 +3,11 @@ import { Dimensions } from "react-native";
 
 export const requestLocationPermissions = async () => {
   const { status } = await Location.requestForegroundPermissionsAsync();
+  console.log(
+    "🚀 ~ file: location.js:6 ~ requestLocationPermissions ~ status:",
+    status
+  );
+
   if (status !== "granted") {
     console.error("Location permission not granted");
     return false;
@@ -16,7 +21,7 @@ export const fetchCurrentUserLocation = async () => {
   if (!isPermissionsGranted) return;
   const location = await Location.getCurrentPositionAsync({
     accuracy: Location.Accuracy.BestForNavigation,
-    timeInterval: 10000,
+    timeInterval: 100,
   });
   console.log(
     "🚀 ~ file: location.js:11 ~ fetchCurrentUserLocation ~ location:",

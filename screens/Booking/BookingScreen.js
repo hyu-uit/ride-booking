@@ -82,6 +82,49 @@ export default function BookingScreen({ navigation }) {
   const [locations, setLocations] = useState([]);
 
   useEffect(() => {
+    if (step === 1)
+      fetchCurrentUserLocation()
+        .then(({ latitude, longitude }) => {
+          console.log(
+            "🚀 ~ file: BookingScreen.js:60 ~ .then ~ latitude, longitude:",
+            latitude,
+            longitude
+          );
+
+          dispatch({
+            type: SET_INITIAL_LOCATION,
+            payload: { latitude, longitude },
+          });
+
+          getSingleAddressFromCoordinate(latitude, longitude)
+            .then((value) => {
+              dispatch({
+                type: SET_PICK_UP_LOCATION,
+                payload: {
+                  name: "Your location",
+                  address: value.formatted,
+                  latitude,
+                  longitude,
+                },
+              });
+
+              setMarkerPosition({
+                name: "Your location",
+                address: value.formatted,
+                latitude,
+                longitude,
+              });
+            })
+            .catch((err) => {
+              console.log("🚀 ~ file: BookingScreen.js:88 ~ .then ~ err:", err);
+            });
+        })
+        .catch((err) => {
+          console.log("🚀 ~ file: BookingScreen.js:90 ~ useEffect ~ err:", err);
+        });
+  }, []);
+
+  useEffect(() => {
     fetchDataAndPhoneNumber();
   });
 
@@ -110,61 +153,14 @@ export default function BookingScreen({ navigation }) {
   }, [phoneNumber]);
 
   useEffect(() => {
-    fetchCurrentUserLocation()
-      .then(({ latitude, longitude }) => {
-        console.log(
-          "🚀 ~ file: BookingScreen.js:60 ~ .then ~ latitude, longitude:",
-          latitude,
-          longitude
-        );
-
-        dispatch({
-          type: SET_INITIAL_LOCATION,
-          payload: { latitude, longitude },
-        });
-
-        getSingleAddressFromCoordinate(latitude, longitude)
-          .then((value) => {
-            console.log(
-              "🚀 ~ file: BookingScreen.js:68 ~ .then ~ value.formatted:",
-              value.formatted
-            );
-            dispatch({
-              type: SET_PICK_UP_LOCATION,
-              payload: {
-                name: "Your location",
-                address: value.formatted,
-                latitude,
-                longitude,
-              },
-            });
-            setMarkerPosition({
-              name: "Your location",
-              address: value.formatted,
-              latitude,
-              longitude,
-            });
-          })
-          .catch((err) => {
-            console.log("🚀 ~ file: BookingScreen.js:88 ~ .then ~ err:", err);
-          });
-      })
-      .catch((err) => {
-        console.log("🚀 ~ file: BookingScreen.js:90 ~ useEffect ~ err:", err);
-      });
-  }, []);
-
-  useEffect(() => {
     // in map step 2 zoom to the pick up or destination according to the input
-    if (booking.step === 2) {
+    if (step === 2) {
       if (focusInput === PICK_UP_INPUT)
         dispatch({
           type: SET_INITIAL_LOCATION,
           payload: {
             latitude: booking.pickUpLocation.latitude,
             longitude: booking.pickUpLocation.longitude,
-            latitudeDelta: 0.01, //zoom
-            longitudeDelta: 0.01, //zoom
           },
         });
       else
@@ -173,8 +169,6 @@ export default function BookingScreen({ navigation }) {
           payload: {
             latitude: booking.destinationLocation.latitude,
             longitude: booking.destinationLocation.longitude,
-            latitudeDelta: 0.01, //zoom
-            longitudeDelta: 0.01, //zoom
           },
         });
     }
@@ -215,6 +209,8 @@ export default function BookingScreen({ navigation }) {
           "🚀 ~ file: BookingScreen.js:174 ~ hanldeConfirmFromMap ~ markerPosition:",
           markerPosition
         );
+
+        console.log(booking);
 
         getRoutingFromCoordinates(booking.pickUpLocation, markerPosition)
           .then((routing) => {
@@ -376,11 +372,54 @@ export default function BookingScreen({ navigation }) {
   };
 
   const renderItem = ({ item, index }) => {
+    function onPress() {
+      console.log(item);
+      const { phoneNumber, ...resCoords } = item;
+      if (focusInput === PICK_UP_INPUT) {
+        setPickUpInput(item.name);
+        dispatch({
+          type: SET_PICK_UP_LOCATION,
+          payload: {
+            name: item.name,
+            address: item.address,
+            latitude: parseFloat(item.lat),
+            longitude: parseFloat(item.long),
+          },
+        });
+      } else {
+        setDestinationInput(item.name);
+        dispatch({
+          type: SET_DESTINATION_LOCATION,
+          payload: {
+            name: item.name,
+            address: item.address,
+            latitude: parseFloat(item.lat),
+            longitude: parseFloat(item.long),
+          },
+        });
+      }
+
+      dispatch({
+        type: SET_INITIAL_LOCATION,
+        payload: {
+          latitude: parseFloat(item.lat),
+          longitude: parseFloat(item.long),
+        },
+      });
+
+      setMarkerPosition({
+        address: item.address,
+        latitude: parseFloat(item.lat),
+        longitude: parseFloat(item.long),
+        name: item.name,
+      });
+    }
+
     if (index === locations.length - 1) {
       // Last item in the list
       return (
         <HStack>
-          <SelectedButton location={item} />
+          <SelectedButton location={item} onPress={onPress} />
           <Button
             style={{ backgroundColor: COLORS.primary }}
             onPress={() => {
@@ -402,8 +441,9 @@ export default function BookingScreen({ navigation }) {
         </HStack>
       );
     }
+
     // Regular items in the list
-    return <SelectedButton location={item} />;
+    return <SelectedButton location={item} onPress={onPress} />;
   };
 
   const renderStepContent = () => {
