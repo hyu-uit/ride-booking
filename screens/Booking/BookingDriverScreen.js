@@ -138,7 +138,7 @@ const BookingDriverScreen = ({ navigation, route }) => {
           <>
             <MapView
               ref={mapRef}
-              style={{ height: "45%", borderRadius: 10 }}
+              style={{ height: "50%", borderRadius: 10 }}
               provider="google"
               region={booking.region}
             >
@@ -176,7 +176,7 @@ const BookingDriverScreen = ({ navigation, route }) => {
         return (
           <>
             <MapView
-              style={{ height: "45%", borderRadius: 10 }}
+              style={{ height: "50%", borderRadius: 10 }}
               provider="google"
               region={booking.region}
             >

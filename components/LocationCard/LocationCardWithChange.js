@@ -61,8 +61,6 @@ const LocationCardWithChange = ({
 
   const [destLoading, setDestLoading] = useState(false);
   const [pickUpLoading, setPickUpLoading] = useState(false);
-  // only one of the two is displayed at a time
-  const [showDropdown, setShowDropdown] = useState("");
 
   useEffect(() => {
     const searchTimeout = setTimeout(() => {
@@ -260,10 +258,10 @@ const LocationCardWithChange = ({
             <AutocompleteDropdown
               onFocus={() => {
                 setFocusInput(PICK_UP_INPUT);
-                setShowDropdown("pickUp");
               }}
               showClear
               onClear={() => setPickUpInput("")}
+              closeOnBlur
               direction={Platform.select({ ios: "down" })}
               dataSet={pickUpSuggestionsList}
               onSelectItem={onSelectPickUpItem}
@@ -296,7 +294,6 @@ const LocationCardWithChange = ({
                 borderTopRightRadius: 0,
                 marginTop: 0,
                 color: "white",
-                position: "absolute",
               }}
               renderItem={(item, text) => (
                 <Text
@@ -319,9 +316,7 @@ const LocationCardWithChange = ({
               showClear
               onFocus={() => {
                 setFocusInput(DESTINATION_INPUT);
-                setShowDropdown("dest");
               }}
-              onBlur={() => setShowDropdown("")}
               direction={Platform.select({ ios: "down" })}
               dataSet={destSuggestionsList}
               onSelectItem={onSelectDestItem}
