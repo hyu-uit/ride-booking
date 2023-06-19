@@ -15,7 +15,7 @@ const SelectedButton = ({ text, isSelected = false, location }) => {
         variant={isSelected ? "solid" : "outline"}
       >
         <Text color={isSelected ? "black" : "white"} bold>
-          {location.name}
+          {location.name !== null ? location.name : text}
         </Text>
       </Button>
     </TouchableOpacity>
