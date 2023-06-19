@@ -18,10 +18,48 @@ import { SIZES } from "../../constants/theme";
 import { useTranslation } from "react-i18next";
 import { isNullOrEmpty } from "../../helper/helper";
 import { BookingContext } from "../../context/BookingContext";
+import { collection, onSnapshot, query, where } from "firebase/firestore";
+import { useState } from "react";
+import { useEffect } from "react";
+import { db } from "../../config/config";
 
-const LocationCardFinder = ({ onPressCancel }) => {
+const LocationCardFinder = ({ onPressCancel, phoneNumber, navigation }) => {
   const { t } = useTranslation();
-  const { booking } = useContext(BookingContext);
+  const { booking } = useContext(BookingContext);  
+  const [tripDetail, setTripDetail] = useState([]);
+
+  useEffect(() => {
+    // to ensure that when user switch from choose date to now that now still get current date
+    onRiderFound()
+  }, [phoneNumber, navigation]);
+
+  const onRiderFound= () =>{
+    const findRiderQuery = query(
+      collection(db, "ListTrip"),
+      where("isScheduled", "==", "false"),
+      where("status", "==", "accepted"),
+      where("idCustomer", "==", phoneNumber)
+    );
+
+    const unsubscribeTrip = onSnapshot(findRiderQuery, (querySnapshot) => {
+      const updatedTrip = [];
+      querySnapshot.forEach((doc) => {
+        const trip = {
+          idTrip: doc.id,
+          ...doc.data(),
+        };
+        updatedTrip.push(trip);
+      });
+      setTripDetail(updatedTrip);
+      if (updatedTrip.length > 0) {
+        const data = { idRider: updatedTrip[0].idRider, idTrip: updatedTrip[0].idTrip};
+        navigation.navigate("BookingDriver",data)
+      }
+    });
+    return () => {
+      unsubscribeTrip();
+    };
+  }
   return (
     <View
       bgColor={"#0B0F2F"}

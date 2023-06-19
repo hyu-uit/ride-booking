@@ -16,9 +16,36 @@ import MapIcon from "../../assets/map_marker_96px.png";
 import barCodeIcon from "../../assets/barcode.png";
 import avatarIcon from "../../assets/avatar.png";
 import { useTranslation } from "react-i18next";
+import { useState } from "react";
+import { useEffect } from "react";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "../../config/config";
+import { useContext } from "react";
+import { BookingContext } from "../../context/BookingContext";
+const FinishedTripCard = ({ onClickRate, onPressInfo , idRider}) => {
+  const { t } = useTranslation(); 
+  const [name, setName] = useState("");
+  const [school, setSchool] = useState("");
+  const [licensePlates, setLicense] = useState("");
+  const [transportType, setTransport] = useState("");
+  const [portrait, setAvt] = useState(null);
+  const { booking } = useContext(BookingContext);  
 
-const FinishedTripCard = ({ onClickRate, onPressInfo }) => {
-  const { t } = useTranslation();
+  useEffect(() => {
+    getRider();
+  }, [idRider]);
+  const getRider = () => {
+    console.log(idRider)
+    getDoc(doc(db, "Rider", idRider)).then((docData) => {
+      if (docData.exists()) {
+        setName(docData.data().displayName);
+        setAvt(docData.data().portrait)
+        setSchool(docData.data().school);
+        setLicense(docData.data().licensePlates);
+        setTransport(docData.data().transportType)
+      }
+    });
+  };
   return (
     <View
       bgColor={COLORS.background}
@@ -69,7 +96,7 @@ const FinishedTripCard = ({ onClickRate, onPressInfo }) => {
           >
             <Image
               alt="avatar"
-              source={avatarIcon}
+              source={{uri:portrait}}
               style={{
                 width: 45,
                 height: 45,
@@ -91,7 +118,7 @@ const FinishedTripCard = ({ onClickRate, onPressInfo }) => {
                 flex: 1,
               }}
             >
-              SnowFlower
+              {name}
             </Text>
             <Text
               style={{
@@ -101,7 +128,7 @@ const FinishedTripCard = ({ onClickRate, onPressInfo }) => {
                 flex: 1,
               }}
             >
-              University of Information Technology
+              {school}
             </Text>
           </VStack>
         </HStack>
@@ -135,7 +162,7 @@ const FinishedTripCard = ({ onClickRate, onPressInfo }) => {
                   fontWeight: "bold",
                 }}
               >
-                59X3 - 91176
+                {licensePlates}
               </Text>
               <Text
                 style={{
@@ -144,7 +171,7 @@ const FinishedTripCard = ({ onClickRate, onPressInfo }) => {
                   fontWeight: "bold",
                 }}
               >
-                SH Mode
+               {transportType}
               </Text>
             </VStack>
           </HStack>
@@ -172,7 +199,7 @@ const FinishedTripCard = ({ onClickRate, onPressInfo }) => {
                 fontWeight: "bold",
               }}
             >
-              2km
+              {booking.bookingDetails.distance}
             </Text>
           </HStack>
           <HStack space={3}>
@@ -210,7 +237,7 @@ const FinishedTripCard = ({ onClickRate, onPressInfo }) => {
               fontWeight: "bold",
             }}
           >
-            20.000đ
+            {booking.bookingDetails.price-booking.bookingDetails.promotion}đ
           </Text>
           <Text
             style={{
@@ -220,7 +247,7 @@ const FinishedTripCard = ({ onClickRate, onPressInfo }) => {
               textDecorationLine: "line-through",
             }}
           >
-            30,000đ
+            {booking.bookingDetails.price}đ
           </Text>
         </VStack>
       </HStack>

@@ -19,6 +19,8 @@ function HistoryPickUpCard(props, navigation) {
     time,
     datePickUp,
     timePickUp,
+    pickUpAddress,
+    destAddress,
     status,
     totalPrice,
     distance,
@@ -84,15 +86,15 @@ function HistoryPickUpCard(props, navigation) {
               <Image alt="location line" source={locationLineIcon}></Image>
               <VStack space={5} style={{ marginRight: 30 }}>
                 <VStack>
-                  <Text style={styles.detailText}>KTX Khu B</Text>
+                  <Text style={styles.detailText}>Pick up</Text>
                   <Text numberOfLines={1} style={styles.titleText}>
-                    KTX Khu B ĐHQG, Đông Hòa, Dĩ An, Bình Dương
+                    {pickUpAddress}
                   </Text>
                 </VStack>
                 <VStack>
-                  <Text style={styles.detailText}>UIT</Text>
+                  <Text style={styles.detailText}>Destination</Text>
                   <Text numberOfLines={1} style={styles.titleText}>
-                    Trường Đại học Công nghệ Thông tin - ĐHQG TPHCN...
+                    {destAddress}
                   </Text>
                 </VStack>
               </VStack>

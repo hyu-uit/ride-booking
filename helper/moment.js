@@ -8,9 +8,9 @@ export const convertToFullDateTime = (date) => {
 };
 
 export const convertToTime = (date) => {
-  return moment(date).format("HH:mm");
+  return moment(date).format("H:m");
 };
 
 export const convertToDate = (date) => {
-  return moment(date).format("DD-MM-YYYY");
+  return moment(date).format("D/M/YYYY");
 };

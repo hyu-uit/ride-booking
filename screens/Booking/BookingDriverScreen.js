@@ -20,15 +20,32 @@ import {
   animateToCoordinate,
   requestLocationPermissions,
 } from "../../helper/location";
+import { collection, doc, increment, onSnapshot, query, updateDoc, where } from "firebase/firestore";
+import { db } from "../../config/config";
+import { getFromAsyncStorage } from "../../helper/asyncStorage";
 
-const BookingDriverScreen = ({ navigation }) => {
+const BookingDriverScreen = ({ navigation, route }) => {
   const [step, setStep] = useState(1);
   const [isModalCancelShow, setIsModalCancelShow] = useState(false);
   const [isModalInfoShow, setIsModalInfoShow] = useState(false);
   const { booking } = useContext(BookingContext);
   const [marker, setMarker] = useState({ longitude: 0, latitude: 0 });
   const mapRef = useRef();
+  const { idRider, idTrip } = route.params;
+  const [phoneNumber, setPhoneNumber] = useState([]);
+  const [tripDetail, setTripDetail] = useState([]);
 
+  useEffect(() => {
+    try {
+      getFromAsyncStorage("phoneNumber").then((phoneNumberValue)=>{
+        setPhoneNumber(phoneNumberValue);
+      })
+    } catch (err) {
+      console.log(err);
+    }
+    onFinishTrip()
+  }, [phoneNumber]);
+  console.log(idTrip)
   useEffect(() => {
     // Request permission to access the device's location
     (async () => {
@@ -61,12 +78,46 @@ const BookingDriverScreen = ({ navigation }) => {
         }
       };
     })();
-  }, []);
+  }, [idRider]);
 
   const handleStep1Button = () => {
+    updateDoc(doc(db,"ListTrip",idTrip),{
+      status:"canceled",
+    })
+    updateDoc(doc(db,"Customer",phoneNumber),{
+      cancel:increment(1),
+    })
+    navigation.navigate("Home")
     // Do any necessary form validation or error checking here
-    setStep(2);
+    // setStep(2);
   };
+
+  const onFinishTrip= () =>{
+    const finishTripQuery = query(
+      collection(db, "ListTrip"),
+      where("isScheduled", "==", "false"),
+      where("status", "in", ["done","canceled"]),
+      where("idCustomer", "==", phoneNumber)
+    );
+
+    const unsubscribeTrip = onSnapshot(finishTripQuery, (querySnapshot) => {
+      const updatedTrip = [];
+      querySnapshot.forEach((doc) => {
+        const trip = {
+          idTrip: doc.id,
+          ...doc.data(),
+        };
+        updatedTrip.push(trip);
+      });
+      setTripDetail(updatedTrip);
+      if (updatedTrip.length > 0) {
+        setStep(2)
+      }
+    });
+    return () => {
+      unsubscribeTrip();
+    };
+  }
 
   const handleShowModalCancel = () => {
     setIsModalCancelShow((prev) => !prev);
@@ -111,6 +162,7 @@ const BookingDriverScreen = ({ navigation }) => {
               ) : null}
             </MapView>
             <OnTheWayCard
+              idRider={idRider}
               onPressCancel={handleStep1Button}
               onPressInfo={handleShowModalInfo}
             />
@@ -153,7 +205,11 @@ const BookingDriverScreen = ({ navigation }) => {
               ) : null}
             </MapView>
             <FinishedTripCard
-              onClickRate={() => navigation.navigate("BookingRating")}
+              idRider={idRider}
+              onClickRate={() =>{
+                const data = { idRider: idRider};
+                navigation.navigate("BookingRating", data)
+              }}
               onPressInfo={handleShowModalInfo}
             />
           </>
