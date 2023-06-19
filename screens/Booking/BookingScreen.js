@@ -768,7 +768,7 @@ export default function BookingScreen({ navigation }) {
 
   return (
     <BookingContainer bgColor={COLORS.background}>
-      {step === 1 && isLoading ? (
+      {step === 1 ? (
         <View paddingX={"10px"}>
           <ButtonBack onPress={handleBackStep} />
         </View>

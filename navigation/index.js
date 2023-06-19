@@ -43,6 +43,7 @@ export default function Navigation() {
         <Stack.Screen
           name="StudentOfficeNavigator"
           component={StudentOfficeStackScreen}
+          tr
           options={{ gestureEnabled: false }}
         />
       </Stack.Navigator>
