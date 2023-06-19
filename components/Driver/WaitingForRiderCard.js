@@ -30,7 +30,10 @@ function WaitingForRiderCard(props) {
     destLong,
     date,
     time,
+    est,
     status,
+    pickUpAddress,
+    destAddress,
     totalPrice,
     distance,
   } = props.trip;
@@ -118,9 +121,8 @@ function WaitingForRiderCard(props) {
         </Text>
         <HStack>
           <Text style={styles.detailText}>{distance}</Text>
-          <Text style={styles.detailTextNotBold}> - You’re </Text>
-          <Text style={styles.detailText}>0h 15m</Text>
-          <Text style={styles.detailTextNotBold}> away</Text>
+          <Text style={styles.detailText}> - {est}</Text>
+          <Text style={styles.detailTextNotBold}> minute(s)</Text>
         </HStack>
       </VStack>
       <View
@@ -142,7 +144,7 @@ function WaitingForRiderCard(props) {
                 />
                 <VStack w={"100%"} pl={3}>
                   <Text style={styles.titleText} w={"80%"}>
-                    Pickup - KTX Khu B ĐHQG, Đông Hòa, Dĩ An, Bình Dương
+                    Pickup - {pickUpAddress}
                   </Text>
                 </VStack>
               </HStack>
@@ -150,7 +152,7 @@ function WaitingForRiderCard(props) {
                 <Ionicons name={"pin-outline"} size={20} color={COLORS.white} />
                 <VStack>
                   <Text style={styles.titleText} w={"80%"} pl={3}>
-                    Destination - Trường Đại học Công nghệ Thông tin - ĐHQG TP..
+                    Destination - {destAddress}
                   </Text>
                 </VStack>
               </HStack>

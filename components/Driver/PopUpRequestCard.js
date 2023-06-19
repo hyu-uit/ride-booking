@@ -34,6 +34,7 @@ function PopUpRequestCard(props) {
     status,
     totalPrice,
     distance,
+    est,
     destAddress,
     pickUpAddress,
   } = props.trip;
@@ -122,6 +123,8 @@ function PopUpRequestCard(props) {
         </Text>
         <HStack>
           <Text style={styles.detailText}>{distance}</Text>
+          <Text style={styles.detailText}> - {est}</Text>
+          <Text style={styles.detailTextNotBold}> minute(s)</Text>
         </HStack>
       </VStack>
       <View

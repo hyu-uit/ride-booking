@@ -30,7 +30,7 @@ import { isNullOrEmpty } from "../../helper/helper";
 import { useContext } from "react";
 import { useEffect } from "react";
 
-const LocationCardTime = ({ onClickContinue, onPressBack }) => {
+const LocationCardTime = ({ onClickContinue, onPressBack, onDateChange, onTimeChange  }) => {
   const { booking } = useContext(BookingContext);
   const [isNowSelected, setIsNowSelected] = useState(true);
   const [showDatePicker, setShowDatePicker] = useState(false);
@@ -42,7 +42,11 @@ const LocationCardTime = ({ onClickContinue, onPressBack }) => {
 
   useEffect(() => {
     // to ensure that when user switch from choose date to now that now still get current date
-    if (isNowSelected) setFinalDate(convertToFullDateTime(Date.now()));
+    if (isNowSelected) {
+      onTimeChange(convertToTime(Date.now()))
+      onDateChange(convertToDate(Date.now()))
+      setFinalDate(convertToFullDateTime(Date.now()));
+    }
   }, [isNowSelected]);
 
   const handleDateChange = (_event, date) => {
@@ -53,7 +57,9 @@ const LocationCardTime = ({ onClickContinue, onPressBack }) => {
 
   function converDateToFullDateFormat(selectedDate, date) {
     const formattedDate = convertToDate(selectedDate);
-    const formattedTime = convertToTime(date);
+    const formattedTime = convertToTime(date); 
+    onDateChange(formattedDate)
+    onTimeChange(formattedTime)
     return `${formattedTime} ${formattedDate}`;
   }
 

@@ -142,45 +142,6 @@ const RiderHomeScreen = ({ navigation, route }) => {
     });
   };
 
-  // const fetchNewCurrentTrips = () => {
-  //   const waitingTripsQuery = query(
-  //     collection(db, "ListTrip"),
-  //     where("status", "==", "waiting"),
-  //     where("isScheduled", "==", "false"),
-  //   );
-
-  //   const unsubscribeTrip = onSnapshot(waitingTripsQuery, (querySnapshot) => {
-  //     const updatedTrips = [];
-  //     querySnapshot.forEach((doc) => {
-  //       const trip = {
-  //         idTrip: doc.id,
-  //         ...doc.data(),
-  //       };
-  //       updatedTrips.push(trip);
-  //     });
-
-  //     // Random một index trong danh sách trips
-  //     const randomIndex = Math.floor(Math.random() * updatedTrips.length);
-  //     const randomTrip = updatedTrips[randomIndex];
-
-  //     // Lưu trữ danh sách các trips đã được random
-  //     setRandomTrips(updatedTrips);
-
-  //     // Cập nhật document random vào state newCurrentTrips
-  //     setNewCurrentTrips([randomTrip]);
-
-  //     if (updatedTrips.length === 0) {
-  //       setModalVisible(false);
-  //     } else {
-  //       setModalVisible(true);
-  //     }
-  //   });
-
-  //   return () => {
-  //     unsubscribeTrip();
-  //   };
-  // };
-
   const fetchNewCurrentTrips = () => {
     if (isCount === true) {
       if (open === true) {

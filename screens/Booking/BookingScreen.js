@@ -15,7 +15,7 @@ import LocationCardFinder from "../../components/LocationCard/LocationCard.Finde
 import ConfirmModal from "../../components/Modal/ConfirmModal";
 import ButtonBack from "../../components/Global/ButtonBack/ButtonBack";
 import FlagIcon from "../../assets/icons/icons8-flag-filled-48.png";
-import { addDoc, collection } from "@firebase/firestore";
+import { addDoc, collection, query, onSnapshot } from "@firebase/firestore";
 import { db } from "../../config/config";
 import {
   calculateMapDelta,
@@ -42,6 +42,8 @@ import { AutocompleteDropdownContextProvider } from "react-native-autocomplete-d
 import { ceilingKilometer, ceilingMinute } from "../../helper/converter";
 import { useTranslation } from "react-i18next";
 import { Dimensions } from "react-native";
+import { convertToDate, convertToTime } from "../../helper/moment";
+import { getFromAsyncStorage } from "../../helper/asyncStorage";
 
 export const PICK_UP_INPUT = "PICK_UP_INPUT";
 export const DESTINATION_INPUT = "DESTINATION_INPUT";
@@ -62,7 +64,21 @@ export default function BookingScreen({ navigation }) {
   const [pickUpInput, setPickUpInput] = useState("Your location");
   const [destinationInput, setDestinationInput] = useState("");
   const [routing, setRouting] = useState([]);
+  const [selectedDate, setSelectedDate] = useState(convertToDate(Date.now()));
+  const [selectedTime, setSelectedTime] = useState(convertToTime(Date.now()));
+  const [phoneNumber, setPhoneNumber] = useState([]);
+  const [tripDetail, setTripDetail] = useState([]);
 
+  useEffect(() => {
+    try {
+      getFromAsyncStorage("phoneNumber").then((phoneNumberValue)=>{
+        setPhoneNumber(phoneNumberValue);
+      })
+    } catch (err) {
+      console.log(err);
+    }
+  }, [phoneNumber]);
+  
   useEffect(() => {
     fetchCurrentUserLocation()
       .then(({ latitude, longitude }) => {
@@ -246,14 +262,20 @@ export default function BookingScreen({ navigation }) {
     }
     setStep(1);
   };
+  const handleDateChange = (date) => {
+    setSelectedDate(date);
+  };
 
-  const handleStep3Submit = (date) => {
+  const handleTimeChange = (time) => {
+    setSelectedTime(time);
+  };
+  const handleStep3Submit = (date,time) => {
     console.log(
       "🚀 ~ file: BookingScreen.js:240 ~ handleStep3Submit ~ date:",
       date
     );
     // Do any necessary form validation or error checking here
-    dispatch({ type: SET_BOOKING_DETAILS, payload: { date } });
+    dispatch({ type: SET_BOOKING_DETAILS, payload: { date, time } });
     setStep(4);
   };
 
@@ -274,29 +296,44 @@ export default function BookingScreen({ navigation }) {
     // Do any necessary form validation or error checking here
     setStep(6);
   };
-  const createOrder = async () => {
-    const currentDate = new Date();
-    const currentDay = currentDate.getDate();
-    const currentMonth = currentDate.getMonth() + 1;
-    const currentYear = currentDate.getFullYear();
-    const currentHour = currentDate.getHours();
-    const currentMinute = currentDate.getMinutes();
+  const createOrder = () => {
+    // const currentDate = new Date();
+    // const currentDay = currentDate.getDate();
+    // const currentMonth = currentDate.getMonth() + 1;
+    // const currentYear = currentDate.getFullYear();
+    // const currentHour = currentDate.getHours();
+    // const currentMinute = currentDate.getMinutes();
+    const currentDate = convertToDate(Date.now())
+    const currentTime = convertToTime(Date.now())
+    let scheduled = "false"
+    if ( currentDate!=selectedDate) {
+      scheduled="true"
+    }
 
+    let price = booking.bookingDetails.price-booking.bookingDetails.promotion
+    if (price<=0) price = 0 
+    console.log(booking.bookingDetails.time)
     addDoc(collection(db, "ListTrip"), {
-      idCustomer: "0393751403",
-      pickUpLat: "",
-      pickUpLong: "",
-      destLat: "",
-      destLong: "",
+      idCustomer: phoneNumber,
+      idRider: "",
+      pickUpLat: booking.pickUpLocation.latitude,
+      pickUpLong: booking.pickUpLocation.longitude,
+      destLat: booking.destinationLocation.latitude,
+      destLong: booking.destinationLocation.longitude,
+      destAddress: booking.destinationLocation.address,
+      pickUpAddress: booking.pickUpLocation.address,
       //nếu mà ngày đón không phải hôm nay thì isScheduled = true
-      isScheduled: "false",
-      datePickUp: "" + currentDay + "/" + currentMonth + "/" + currentYear,
-      timePickUp: "" + currentHour + ":" + currentMinute,
-      date: "" + currentDay + "/" + currentMonth + "/" + currentYear,
-      time: "" + currentHour + ":" + currentMinute,
-      distance: "4km",
-      totalPrice: "55000",
+      isScheduled: scheduled,
+      // est:booking.bookingDetails.time,
+      datePickUp: selectedDate,
+      timePickUp: selectedTime,
+      date: currentDate,
+      time: currentTime,
+      distance: booking.bookingDetails.distance+"km",
+      totalPrice: price,
+      discount:booking.bookingDetails.promotion,
       status: "waiting",
+      idRiderCancel: "",
     });
     //upload image to firebase storage
   };
@@ -308,7 +345,7 @@ export default function BookingScreen({ navigation }) {
     dispatch({ type: SET_BOOKING_DETAILS, payload: { note } });
     // Do any necessary form validation or error checking here
     //createOrder();
-
+    createOrder()
     setStep(7);
   };
 
@@ -481,6 +518,12 @@ export default function BookingScreen({ navigation }) {
             <LocationCardTime
               onClickContinue={handleStep3Submit}
               onPressBack={handleBackStep}
+              selectedDate={selectedDate} 
+              // setSelectedDate={setSelectedDate} 
+              selectedTime={selectedTime} 
+              // setSelectedTime={setSelectedTime}   
+              onDateChange={handleDateChange}
+              onTimeChange={handleTimeChange}
             />
           </>
         );
@@ -652,7 +695,9 @@ export default function BookingScreen({ navigation }) {
               ) : null}
             </MapView>
             <LocationCardFinder
-              onPressCancel={() => navigation.navigate("BookingDriver")}
+              phoneNumber={phoneNumber}
+              navigation={navigation}
+              onPressCancel={() => navigation.navigate("Home")}
             />
           </>
         );

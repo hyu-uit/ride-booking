@@ -11,10 +11,12 @@ import { BookingContext } from "../../context/BookingContext";
 import { useContext } from "react";
 import { Marker } from "react-native-svg";
 
-const BookingRatingScreen = ({ navigation }) => {
+const BookingRatingScreen = ({ navigation, route }) => {
   const { t } = useTranslation();
   const { booking } = useContext(BookingContext);
+  const {idRider} = route.params;
 
+  console.log(idRider)
   return (
     <VStack h={"100%"} w={"100%"} bgColor={COLORS.background}>
       <BookingContainer>
@@ -34,7 +36,7 @@ const BookingRatingScreen = ({ navigation }) => {
             }
           />
         </MapView>
-        <RatingPopup navigation={navigation} />
+        <RatingPopup idRider={idRider} navigation={navigation} />
       </BookingContainer>
     </VStack>
   );

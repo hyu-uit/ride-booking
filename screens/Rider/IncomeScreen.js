@@ -47,6 +47,14 @@ const IncomeScreen = () => {
     }
   };
   useEffect(() => {
+    let tempDate = new Date(date);
+    let fDate =
+      tempDate.getDate() +
+      "/" +
+      (tempDate.getMonth() + 1) +
+      "/" +
+      tempDate.getFullYear();
+      setText(fDate)
     fetchDataAndPhoneNumber();
   }, [phoneNumber, text, selectedTime]);
 
