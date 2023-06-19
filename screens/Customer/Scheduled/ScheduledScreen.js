@@ -26,6 +26,7 @@ import {
   doc,
   getDoc,
   getDocs,
+  onSnapshot,
   query,
   where,
 } from "firebase/firestore";
@@ -40,113 +41,95 @@ const ScheduledScreen = ({ navigation }) => {
   const [canceledTrips, setCanceledTrips] = useState({});
   useEffect(() => {
     fetchDataAndPhoneNumber();
-  }, [navigation]);
+  }, [navigation, phoneNumber]);
 
   const fetchDataAndPhoneNumber = async () => {
     try {
       const phoneNumberValue = await getFromAsyncStorage("phoneNumber");
       setPhone(phoneNumberValue);
-
       if (phoneNumberValue) {
-        getWaitingTrips(phoneNumberValue);
-        getConfirmedTrips(phoneNumberValue);
-        getCanceledTrips(phoneNumberValue);
+        getWaitingTrips();
+        getConfirmedTrips();
+        getCanceledTrips();
       }
     } catch (err) {
       console.log(err);
     }
   };
 
-  const getWaitingTrips = async (phoneNumber) => {
-    let waitingTrips = [];
-    getDocs(
-      query(collection(db, "ListTrip"), where("isScheduled", "==", "true"))
-    ).then((docSnap) => {
-      docSnap.forEach((doc) => {
-        if (
-          doc.data().status == "waiting" &&
-          doc.data().idCustomer == phoneNumber
-        ) {
-          waitingTrips.push({
-            idCustomer: doc.data().idCustomer,
-            idTrip: doc.id,
-            idRider: doc.data().idRider,
-            pickUpLat: doc.data().pickUpLat,
-            pickUpLong: doc.data().pickUpLong,
-            destLat: doc.data().destLat,
-            destLong: doc.data().destLong,
-            date: doc.data().date,
-            time: doc.data().time,
-            datePickUp: doc.data().datePickUp,
-            timePickUp: doc.data().timePickUp,
-            totalPrice: doc.data().totalPrice,
-            distance: doc.data().distance,
-          });
-        }
+  const getWaitingTrips =  () => {
+    const waitingTripsQuery = query(
+      collection(db, "ListTrip"),
+      where("isScheduled", "==", "true"),
+      where("status", "==", "waiting"),
+      where("idCustomer", "==", phoneNumber)
+    );
+
+    const unsubscribeTrip = onSnapshot(waitingTripsQuery, (querySnapshot) => {
+      const updatedTrips = [];
+      querySnapshot.forEach((doc) => {
+        const trip = {
+          idTrip: doc.id,
+          ...doc.data(),
+        };
+        updatedTrips.push(trip);
       });
-      setWaitingTrips(waitingTrips);
+      setWaitingTrips(updatedTrips);
     });
+
+    return () => {
+      unsubscribeTrip();
+    };
   };
-  const getConfirmedTrips = async (phoneNumber) => {
-    let confirmedTrips = [];
-    getDocs(
-      query(collection(db, "ListTrip"), where("isScheduled", "==", "true"))
-    ).then((docSnap) => {
-      docSnap.forEach((doc) => {
-        if (
-          doc.data().status == "confirmed" &&
-          doc.data().idCustomer == phoneNumber
-        ) {
-          confirmedTrips.push({
-            idCustomer: doc.data().idCustomer,
-            idTrip: doc.id,
-            idRider: doc.data().idRider,
-            pickUpLat: doc.data().pickUpLat,
-            pickUpLong: doc.data().pickUpLong,
-            destLat: doc.data().destLat,
-            destLong: doc.data().destLong,
-            date: doc.data().date,
-            time: doc.data().time,
-            datePickUp: doc.data().datePickUp,
-            timePickUp: doc.data().timePickUp,
-            totalPrice: doc.data().totalPrice,
-            distance: doc.data().distance,
-          });
-        }
+  const getConfirmedTrips =  () => {
+    const confirmTripQuery = query(
+      collection(db, "ListTrip"),
+      where("isScheduled", "==", "true"),
+      where("status", "==", "done"),
+      where("idCustomer", "==", phoneNumber)
+    );
+
+    const unsubscribeTrip = onSnapshot(confirmTripQuery, (querySnapshot) => {
+      const updatedTrips = [];
+      querySnapshot.forEach((doc) => {
+        const trip = {
+          idTrip: doc.id,
+          ...doc.data(),
+        };
+        updatedTrips.push(trip);
       });
-      setConfirmedTrips(confirmedTrips);
+      setConfirmedTrips(updatedTrips);
     });
+
+    return () => {
+      unsubscribeTrip();
+    };
   };
-  const getCanceledTrips = async (phoneNumber) => {
-    let canceledTrips = [];
-    getDocs(
-      query(collection(db, "ListTrip"), where("isScheduled", "==", "true"))
-    ).then((docSnap) => {
-      docSnap.forEach((doc) => {
-        if (
-          doc.data().status == "canceled" &&
-          doc.data().idCustomer == phoneNumber
-        ) {
-          canceledTrips.push({
-            idCustomer: doc.data().idCustomer,
-            idTrip: doc.id,
-            idRider: doc.data().idRider,
-            pickUpLat: doc.data().pickUpLat,
-            pickUpLong: doc.data().pickUpLong,
-            destLat: doc.data().destLat,
-            destLong: doc.data().destLong,
-            date: doc.data().date,
-            time: doc.data().time,
-            datePickUp: doc.data().datePickUp,
-            timePickUp: doc.data().timePickUp,
-            totalPrice: doc.data().totalPrice,
-            distance: doc.data().distance,
-          });
-        }
+  const getCanceledTrips =  () => {
+    const cancelQuery = query(
+      collection(db, "ListTrip"),
+      where("isScheduled", "==", "true"),
+      where("status", "==", "canceled"),
+      where("idCustomer", "==", phoneNumber)
+    );
+
+    const unsubscribeTrip = onSnapshot(cancelQuery, (querySnapshot) => {
+      const updatedTrips = [];
+      querySnapshot.forEach((doc) => {
+        const trip = {
+          idTrip: doc.id,
+          ...doc.data(),
+        };
+        updatedTrips.push(trip);
       });
-      setCanceledTrips(canceledTrips);
+      setCanceledTrips(updatedTrips);
     });
+
+    return () => {
+      unsubscribeTrip();
+    }
   };
+
   const FirstRoute = () => (
     <ScrollView>
       <FlatList

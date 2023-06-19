@@ -98,9 +98,17 @@ export default function Home({ navigation, route }) {
   };
   const fetchData = async (phoneNumber) => {
     try {
-      const docData = await getDoc(doc(db, "Customer", phoneNumber));
-      SetName(docData.data().displayName);
-      SetAvatar(docData.data().portrait);
+      const unsubscribe = onSnapshot(
+        doc(db, "Customer", phoneNumber),
+        (docSnapshot) => {
+          const docData = docSnapshot.data();
+          SetName(docData.displayName);
+          SetAvatar(docData.portrait);
+        }
+      );
+      return () => {
+        unsubscribe();
+      };
     } catch (error) {
       console.error(error);
     }
@@ -109,6 +117,7 @@ export default function Home({ navigation, route }) {
   const getHistoryTrips = () => {
     const querySnapshot = query(collection(db, "ListTrip"), 
     where("status","==","done"),
+    where("isScheduled","==","false"),
     where("idCustomer", "==", phone),
     )
     const unsubscribe = onSnapshot(querySnapshot, (snapshot) => {

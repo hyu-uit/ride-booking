@@ -36,7 +36,7 @@ const LocationCardFinder = ({ onPressCancel, phoneNumber, navigation, setIdTrip 
   const onRiderFound= () =>{
     const findRiderQuery = query(
       collection(db, "ListTrip"),
-      where("isScheduled", "==", "false"),
+      // where("isScheduled", "==", "false"),
       where("status", "==", "accepted"),
       where("idCustomer", "==", phoneNumber)
     );
