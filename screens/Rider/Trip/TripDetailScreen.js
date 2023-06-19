@@ -121,7 +121,6 @@ const TripDetailScreen = ({ navigation, route }) => {
             style={{
               width: "100%",
               height: "100%",
-              borderRadius: 20,
             }}
             provider="google"
             region={{

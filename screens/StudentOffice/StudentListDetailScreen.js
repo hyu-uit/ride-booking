@@ -64,9 +64,9 @@ const StudentListDetailScreen = ({ route, navigation }) => {
       (snapshot) => {
         let doneCount = 0;
         snapshot.forEach((doc) => {
-            doneCount++;
+          doneCount++;
         });
-        console.log(doneCount)
+        console.log(doneCount);
         setDoneTripCount(doneCount);
       }
     );
@@ -81,7 +81,7 @@ const StudentListDetailScreen = ({ route, navigation }) => {
           badCount: docData.bad,
         };
         setCancelTripCount(docData.cancel);
-        setTotalTripCount(doneTripCount+docData.cancel)
+        setTotalTripCount(doneTripCount + docData.cancel);
         setRatingList(rating);
       }
     );
@@ -304,21 +304,6 @@ const StudentListDetailScreen = ({ route, navigation }) => {
                         {ratingList.badCount}
                       </Text>
                     </VStack>
-                  </HStack>
-
-                  <HStack justifyContent={"space-between"} space={2}>
-                    <SelectedButton
-                      text={"Friendly (5)"}
-                      isSelected={false}
-                    ></SelectedButton>
-                    <SelectedButton
-                      text={"Friendly (5)"}
-                      isSelected={false}
-                    ></SelectedButton>
-                    <SelectedButton
-                      text={"Friendly (5)"}
-                      isSelected={false}
-                    ></SelectedButton>
                   </HStack>
                 </>
               ) : (

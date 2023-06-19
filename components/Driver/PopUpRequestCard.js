@@ -18,6 +18,7 @@ import { doc, getDoc, increment, updateDoc } from "firebase/firestore";
 import { db } from "../../config/config";
 import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
+import { saveToAsyncStorage } from "../../helper/asyncStorage";
 
 function PopUpRequestCard(props) {
   //const {trip} = props
@@ -72,6 +73,7 @@ function PopUpRequestCard(props) {
     });
     const data = { idTrip: "" + idTrip, state: 1 };
     navigation.navigate("TripDetail", data);
+    saveToAsyncStorage("riderTripId", idTrip);
   };
 
   const { handleStatusReject } = props;
@@ -109,7 +111,7 @@ function PopUpRequestCard(props) {
                 alignItems: "flex-end",
               }}
             >
-              {totalPrice}
+              {parseInt(totalPrice).toLocaleString()}đ
             </Text>
           </View>
         </HStack>
@@ -144,19 +146,25 @@ function PopUpRequestCard(props) {
                   size={20}
                   color={COLORS.white}
                 />
-                <VStack w={"100%"} pl={3}>
-                  <Text style={styles.titleText} w={"80%"}>
-                    Pickup - {pickUpAddress}
-                  </Text>
-                </VStack>
+                <Text
+                  style={styles.titleText}
+                  w={"90%"}
+                  numberOfLines={2}
+                  ml={2}
+                >
+                  {pickUpAddress}
+                </Text>
               </HStack>
               <HStack alignItems={"center"}>
                 <Ionicons name={"pin-outline"} size={20} color={COLORS.white} />
-                <VStack>
-                  <Text style={styles.titleText} w={"80%"} pl={3}>
-                    Destination - {destAddress}
-                  </Text>
-                </VStack>
+                <Text
+                  style={styles.titleText}
+                  w={"90%"}
+                  numberOfLines={2}
+                  ml={2}
+                >
+                  {destAddress}
+                </Text>
               </HStack>
             </VStack>
           </HStack>

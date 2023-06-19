@@ -1,7 +1,16 @@
 import React, { useRef } from "react";
 import styled from "styled-components";
-import { COLORS, SIZES } from "../../constants/theme";
-import { Button, Center, HStack, Image, Text, VStack, View } from "native-base";
+import { COLORS, FONTS, SIZES } from "../../constants/theme";
+import {
+  Button,
+  Center,
+  FlatList,
+  HStack,
+  Image,
+  Text,
+  VStack,
+  View,
+} from "native-base";
 import { SafeAreaView } from "react-native-safe-area-context";
 import MapView, { Marker, Polyline } from "react-native-maps";
 import { Keyboard, TouchableWithoutFeedback } from "react-native";
@@ -15,7 +24,13 @@ import LocationCardFinder from "../../components/LocationCard/LocationCard.Finde
 import ConfirmModal from "../../components/Modal/ConfirmModal";
 import ButtonBack from "../../components/Global/ButtonBack/ButtonBack";
 import FlagIcon from "../../assets/icons/icons8-flag-filled-48.png";
-import { addDoc, collection, query, onSnapshot } from "@firebase/firestore";
+import {
+  addDoc,
+  collection,
+  query,
+  where,
+  onSnapshot,
+} from "@firebase/firestore";
 import { db } from "../../config/config";
 import {
   calculateMapDelta,
@@ -42,8 +57,9 @@ import { AutocompleteDropdownContextProvider } from "react-native-autocomplete-d
 import { ceilingKilometer, ceilingMinute } from "../../helper/converter";
 import { useTranslation } from "react-i18next";
 import { Dimensions } from "react-native";
-import { convertToDate, convertToTime } from "../../helper/moment";
 import { getFromAsyncStorage } from "../../helper/asyncStorage";
+import { Ionicons } from "@expo/vector-icons";
+import { convertToDate, convertToTime } from "../../helper/moment";
 
 export const PICK_UP_INPUT = "PICK_UP_INPUT";
 export const DESTINATION_INPUT = "DESTINATION_INPUT";
@@ -64,21 +80,40 @@ export default function BookingScreen({ navigation }) {
   const [pickUpInput, setPickUpInput] = useState("Your location");
   const [destinationInput, setDestinationInput] = useState("");
   const [routing, setRouting] = useState([]);
+  const [locations, setLocations] = useState([]);
   const [selectedDate, setSelectedDate] = useState(convertToDate(Date.now()));
   const [selectedTime, setSelectedTime] = useState(convertToTime(Date.now()));
   const [phoneNumber, setPhoneNumber] = useState([]);
   const [tripDetail, setTripDetail] = useState([]);
 
   useEffect(() => {
+    fetchDataAndPhoneNumber();
+  });
+
+  const fetchDataAndPhoneNumber = async () => {
     try {
-      getFromAsyncStorage("phoneNumber").then((phoneNumberValue)=>{
-        setPhoneNumber(phoneNumberValue);
-      })
+      const phoneNumberValue = await getFromAsyncStorage("phoneNumber");
+      setPhoneNumber(phoneNumberValue);
     } catch (err) {
       console.log(err);
     }
+  };
+
+  useEffect(() => {
+    const CollectionRef = collection(db, "SavedLocation");
+    const Query = query(CollectionRef, where("phoneNumber", "==", phoneNumber));
+    const unsubscribeSavedLocation = onSnapshot(Query, (QuerySnapshot) => {
+      const locationsTemp = [];
+      QuerySnapshot.forEach((doc) => {
+        locationsTemp.push(doc.data());
+      });
+      setLocations(locationsTemp);
+    });
+    return () => {
+      unsubscribeSavedLocation();
+    };
   }, [phoneNumber]);
-  
+
   useEffect(() => {
     fetchCurrentUserLocation()
       .then(({ latitude, longitude }) => {
@@ -269,7 +304,7 @@ export default function BookingScreen({ navigation }) {
   const handleTimeChange = (time) => {
     setSelectedTime(time);
   };
-  const handleStep3Submit = (date,time) => {
+  const handleStep3Submit = (date, time) => {
     console.log(
       "🚀 ~ file: BookingScreen.js:240 ~ handleStep3Submit ~ date:",
       date
@@ -303,16 +338,16 @@ export default function BookingScreen({ navigation }) {
     // const currentYear = currentDate.getFullYear();
     // const currentHour = currentDate.getHours();
     // const currentMinute = currentDate.getMinutes();
-    const currentDate = convertToDate(Date.now())
-    const currentTime = convertToTime(Date.now())
-    let scheduled = "false"
-    if ( currentDate!=selectedDate) {
-      scheduled="true"
+    const currentDate = convertToDate(Date.now());
+    const currentTime = convertToTime(Date.now());
+    let scheduled = "false";
+    if (currentDate != selectedDate) {
+      scheduled = "true";
     }
 
-    let price = booking.bookingDetails.price-booking.bookingDetails.promotion
-    if (price<=0) price = 0 
-    console.log(booking.bookingDetails.time)
+    let price = booking.bookingDetails.price - booking.bookingDetails.promotion;
+    if (price <= 0) price = 0;
+    console.log(booking.bookingDetails.time);
     addDoc(collection(db, "ListTrip"), {
       idCustomer: phoneNumber,
       idRider: "",
@@ -329,9 +364,9 @@ export default function BookingScreen({ navigation }) {
       timePickUp: selectedTime,
       date: currentDate,
       time: currentTime,
-      distance: booking.bookingDetails.distance+"km",
+      distance: booking.bookingDetails.distance + "km",
       totalPrice: price,
-      discount:booking.bookingDetails.promotion,
+      discount: booking.bookingDetails.promotion,
       status: "waiting",
       idRiderCancel: "",
     });
@@ -345,7 +380,7 @@ export default function BookingScreen({ navigation }) {
     dispatch({ type: SET_BOOKING_DETAILS, payload: { note } });
     // Do any necessary form validation or error checking here
     //createOrder();
-    createOrder()
+    createOrder();
     setStep(7);
   };
 
@@ -372,6 +407,37 @@ export default function BookingScreen({ navigation }) {
         );
         return;
       });
+  };
+
+  const renderItem = ({ item, index }) => {
+    if (index === locations.length - 1) {
+      // Last item in the list
+      return (
+        <HStack>
+          <SelectedButton location={item} />
+          <Button
+            style={{ backgroundColor: COLORS.primary }}
+            onPress={() => {
+              navigation.navigate("AddLocation");
+            }}
+          >
+            <HStack justifyContent={"center"} alignItems={"center"}>
+              <Ionicons
+                name="add-circle-outline"
+                size={20}
+                color={COLORS.white}
+                style={{ marginRight: 10 }}
+              />
+              <Text bold style={{ ...FONTS.h5, color: COLORS.white }}>
+                Add
+              </Text>
+            </HStack>
+          </Button>
+        </HStack>
+      );
+    }
+    // Regular items in the list
+    return <SelectedButton location={item} />;
   };
 
   const renderStepContent = () => {
@@ -406,10 +472,21 @@ export default function BookingScreen({ navigation }) {
                     {t("savedLocations")}
                   </Text>
                 </HStack>
-                <HStack space={2} marginTop={2} marginLeft={3} marginRight={3}>
-                  <SelectedButton text={"Home"} />
+                <HStack mx={"10px"} mt={2} alignItems={"center"}>
+                  {/* <SelectedButton text={"Home"} />
                   <SelectedButton text={"School"} />
-                  <SelectedButton text={"Hotel"} />
+                  <SelectedButton text={"Hotel"} /> */}
+                  <FlatList
+                    // w={"100%"}
+                    horizontal={true}
+                    showsHorizontalScrollIndicator={false}
+                    data={locations}
+                    keyExtractor={(item) => item.id}
+                    // renderItem={({ item }) => (
+                    //   <SelectedButton location={item} />
+                    // )}
+                    renderItem={renderItem}
+                  ></FlatList>
                 </HStack>
                 <Center w={"100%"} marginTop={"auto"} marginBottom={3}>
                   <Button
@@ -518,10 +595,10 @@ export default function BookingScreen({ navigation }) {
             <LocationCardTime
               onClickContinue={handleStep3Submit}
               onPressBack={handleBackStep}
-              selectedDate={selectedDate} 
-              // setSelectedDate={setSelectedDate} 
-              selectedTime={selectedTime} 
-              // setSelectedTime={setSelectedTime}   
+              selectedDate={selectedDate}
+              // setSelectedDate={setSelectedDate}
+              selectedTime={selectedTime}
+              // setSelectedTime={setSelectedTime}
               onDateChange={handleDateChange}
               onTimeChange={handleTimeChange}
             />

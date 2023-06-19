@@ -18,6 +18,7 @@ import { doc, getDoc, increment, updateDoc } from "firebase/firestore";
 import { db } from "../../config/config";
 import { Ionicons } from "@expo/vector-icons";
 import { getRoutingFromCoordinates } from "../../api/locationAPI";
+import { removeValue } from "../../helper/asyncStorage";
 
 function ReceivedTripCard(props) {
   //const {trip} = props
@@ -63,6 +64,7 @@ function ReceivedTripCard(props) {
   };
 
   const setStatusCancel = () => {
+    removeValue("riderTripId");
     updateDoc(doc(db, "ListTrip", idTrip), {
       status: "canceled",
       isRiderCancel: true,
@@ -75,6 +77,7 @@ function ReceivedTripCard(props) {
   };
 
   const setStatusComplete = () => {
+    removeValue("riderTripId");
     updateDoc(doc(db, "ListTrip", idTrip), {
       status: "done",
     });
@@ -141,6 +144,8 @@ function ReceivedTripCard(props) {
       shadow={3}
       position={"absolute"}
       bottom={0}
+      left={0}
+      right={0}
     >
       <VStack paddingLeft={26} paddingRight={26}>
         <HStack marginTop={4} alignItems={"center"}>
@@ -163,7 +168,7 @@ function ReceivedTripCard(props) {
                 alignItems: "flex-end",
               }}
             >
-              {totalPrice}
+              {parseInt(totalPrice).toLocaleString()}đ
             </Text>
           </View>
         </HStack>
@@ -185,7 +190,7 @@ function ReceivedTripCard(props) {
       <View
         bgColor={COLORS.tertiary}
         w={"100%"}
-        h={isRead ? 170 : 270}
+        h={isRead ? 200 : 300}
         borderTopRadius={20}
         position={"absolute"}
         bottom={0}
@@ -199,25 +204,15 @@ function ReceivedTripCard(props) {
                   size={20}
                   color={COLORS.white}
                 />
-                <VStack w={"100%"} pl={3}>
-                  <Text style={styles.titleText} w={"80%"}>
-                    Pickup
-                  </Text>
-                  <Text style={styles.titleText} w={"80%"}>
-                    {pickUpAddress}
-                  </Text>
-                </VStack>
+                <Text style={styles.titleText} w={"90%"} ml={2}>
+                  {pickUpAddress}
+                </Text>
               </HStack>
               <HStack alignItems={"center"}>
                 <Ionicons name={"pin-outline"} size={20} color={COLORS.white} />
-                <VStack>
-                  <Text style={styles.titleText} w={"80%"} pl={3}>
-                    Destination
-                  </Text>
-                  <Text style={styles.titleText} w={"80%"} pl={3}>
-                    {destAddress}
-                  </Text>
-                </VStack>
+                <Text style={styles.titleText} w={"90%"} ml={2}>
+                  {destAddress}
+                </Text>
               </HStack>
             </VStack>
           </HStack>
@@ -285,7 +280,7 @@ function ReceivedTripCard(props) {
 }
 const styles = StyleSheet.create({
   titleText: {
-    color: COLORS.grey,
+    color: COLORS.white,
     ...FONTS.body6,
   },
   detailText: {

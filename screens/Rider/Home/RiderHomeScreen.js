@@ -48,6 +48,7 @@ import WaitingForRiderCard from "../../../components/Driver/WaitingForRiderCard"
 import { useTranslation } from "react-i18next";
 import { isNullOrEmpty } from "../../../helper/helper";
 import { calculateMapDelta } from "../../../helper/location";
+import TripDetailScreen from "../Trip/TripDetailScreen";
 
 const RiderHomeScreen = ({ navigation, route }) => {
   const [service, setService] = useState(0);
@@ -141,6 +142,56 @@ const RiderHomeScreen = ({ navigation, route }) => {
       open: !open,
     });
   };
+
+  useEffect(() => {
+    getFromAsyncStorage("riderTripId").then((value) => {
+      if (value) {
+        navigation.navigate("TripDetail", {
+          idTrip: "" + value,
+          isRead: false,
+        });
+      }
+    });
+  });
+
+  // const fetchNewCurrentTrips = () => {
+  //   const waitingTripsQuery = query(
+  //     collection(db, "ListTrip"),
+  //     where("status", "==", "waiting"),
+  //     where("isScheduled", "==", "false"),
+  //   );
+
+  //   const unsubscribeTrip = onSnapshot(waitingTripsQuery, (querySnapshot) => {
+  //     const updatedTrips = [];
+  //     querySnapshot.forEach((doc) => {
+  //       const trip = {
+  //         idTrip: doc.id,
+  //         ...doc.data(),
+  //       };
+  //       updatedTrips.push(trip);
+  //     });
+
+  //     // Random một index trong danh sách trips
+  //     const randomIndex = Math.floor(Math.random() * updatedTrips.length);
+  //     const randomTrip = updatedTrips[randomIndex];
+
+  //     // Lưu trữ danh sách các trips đã được random
+  //     setRandomTrips(updatedTrips);
+
+  //     // Cập nhật document random vào state newCurrentTrips
+  //     setNewCurrentTrips([randomTrip]);
+
+  //     if (updatedTrips.length === 0) {
+  //       setModalVisible(false);
+  //     } else {
+  //       setModalVisible(true);
+  //     }
+  //   });
+
+  //   return () => {
+  //     unsubscribeTrip();
+  //   };
+  // };
 
   const fetchNewCurrentTrips = () => {
     if (isCount === true) {

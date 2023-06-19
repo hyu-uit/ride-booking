@@ -73,7 +73,7 @@
   "role": "Role",
   "fullName": "Full name",
   "id": "Student ID",
-  "school": "Shool;",
+  "school": "Shool",
   "phone": "Phone number",
   "email": "Email adress",
   "studentInfo": "Student Information",
