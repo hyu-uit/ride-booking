@@ -3,7 +3,7 @@ import { Button, HStack, Image, Input, Text, VStack, View } from "native-base";
 import { COLORS, FONTS } from "../../../constants/theme";
 import { SafeAreaView } from "react-native-safe-area-context";
 import ButtonBack from "../../../components/Global/ButtonBack/ButtonBack";
-import { Keyboard } from "react-native";
+import { Alert, Keyboard } from "react-native";
 import { TouchableWithoutFeedback } from "react-native";
 import {
   addDoc,
@@ -42,16 +42,27 @@ const ConfirmLocationScreen = ({ navigation, route }) => {
     // addDoc(doc(db, "SavedLocation"), {
     //   address: route.params.address,
     // });
-    const collectionRef = collection(db, "SavedLocation");
-    addDoc(collectionRef, {
-      address: route.params.address,
-      name: name,
-      phoneNumber: phoneNumber,
-      lat: "" + route.params.latitude,
-      long: "" + route.params.longitude,
-    });
-    navigation.goBack();
-    navigation.goBack();
+    if (name) {
+      const collectionRef = collection(db, "SavedLocation");
+      addDoc(collectionRef, {
+        address: route.params.address,
+        name: name,
+        phoneNumber: phoneNumber,
+        lat: "" + route.params.latitude,
+        long: "" + route.params.longitude,
+      });
+      navigation.goBack();
+      navigation.goBack();
+    } else {
+      Alert.alert("Are you sure you want to accept this account?", "", [
+        {
+          text: "OK",
+          onPress: () => {
+            // props.onPressDelete(phoneNumber);
+          },
+        },
+      ]);
+    }
   };
 
   return (
