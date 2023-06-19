@@ -75,7 +75,7 @@ const StudentReportScreen = ({ navigation }) => {
     const unsubscribeRider = onSnapshot(riderQuery, (querySnapshot) => {
       const updatedUsers = [];
       querySnapshot.forEach((doc) => {
-        if (doc.data().cancel > 1) {
+        if (doc.data().cancel > 5 || doc.data().bad > 5) {
           const user = {
             role: "Rider",
             phoneNumber: doc.id,
@@ -114,6 +114,7 @@ const StudentReportScreen = ({ navigation }) => {
     const unsubscribeCustomer = onSnapshot(customerQuery, (querySnapshot) => {
       const updatedUsers = [];
       querySnapshot.forEach((doc) => {
+        console.log(doc.data().cancel);
         if (doc.data().cancel > 1) {
           const user = {
             role: "Customer",

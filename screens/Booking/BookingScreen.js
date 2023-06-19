@@ -1,7 +1,16 @@
 import React, { useRef } from "react";
 import styled from "styled-components";
-import { COLORS, SIZES } from "../../constants/theme";
-import { Button, Center, HStack, Image, Text, VStack, View } from "native-base";
+import { COLORS, FONTS, SIZES } from "../../constants/theme";
+import {
+  Button,
+  Center,
+  FlatList,
+  HStack,
+  Image,
+  Text,
+  VStack,
+  View,
+} from "native-base";
 import { SafeAreaView } from "react-native-safe-area-context";
 import MapView, { Marker, Polyline } from "react-native-maps";
 import { Keyboard, TouchableWithoutFeedback } from "react-native";
@@ -15,7 +24,13 @@ import LocationCardFinder from "../../components/LocationCard/LocationCard.Finde
 import ConfirmModal from "../../components/Modal/ConfirmModal";
 import ButtonBack from "../../components/Global/ButtonBack/ButtonBack";
 import FlagIcon from "../../assets/icons/icons8-flag-filled-48.png";
-import { addDoc, collection } from "@firebase/firestore";
+import {
+  addDoc,
+  collection,
+  query,
+  where,
+  onSnapshot,
+} from "@firebase/firestore";
 import { db } from "../../config/config";
 import {
   calculateMapDelta,
@@ -41,6 +56,8 @@ import { useEffect } from "react";
 import { ceilingKilometer, ceilingMinute } from "../../helper/converter";
 import { useTranslation } from "react-i18next";
 import { Dimensions } from "react-native";
+import { getFromAsyncStorage } from "../../helper/asyncStorage";
+import { Ionicons } from "@expo/vector-icons";
 
 export const PICK_UP_INPUT = "PICK_UP_INPUT";
 export const DESTINATION_INPUT = "DESTINATION_INPUT";
@@ -61,6 +78,48 @@ export default function BookingScreen({ navigation }) {
   const [pickUpInput, setPickUpInput] = useState("Your location");
   const [destinationInput, setDestinationInput] = useState("");
   const [routing, setRouting] = useState([]);
+  const [phoneNumber, setPhoneNumber] = useState(null);
+  const [locations, setLocations] = useState([]);
+
+  useEffect(() => {
+    fetchDataAndPhoneNumber();
+  });
+
+  const fetchDataAndPhoneNumber = async () => {
+    try {
+      const phoneNumberValue = await getFromAsyncStorage("phoneNumber");
+      setPhoneNumber(phoneNumberValue);
+
+      if (phoneNumberValue) {
+        fetchData(phoneNumberValue);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const fetchData = async (phoneNumber) => {
+    try {
+      let savedList = [];
+      const CollectionRef = collection(db, "SavedLocation");
+      const Query = query(
+        CollectionRef,
+        where("phoneNumber", "==", phoneNumber)
+      );
+      const unsubscribeSavedLocation = onSnapshot(Query, (QuerySnapshot) => {
+        const locationsTemp = [];
+        QuerySnapshot.forEach((doc) => {
+          locationsTemp.push(doc.data());
+        });
+        setLocations(locationsTemp);
+      });
+      return () => {
+        unsubscribeSavedLocation();
+      };
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   useEffect(() => {
     fetchCurrentUserLocation()
@@ -328,6 +387,34 @@ export default function BookingScreen({ navigation }) {
       });
   };
 
+  const renderItem = ({ item, index }) => {
+    if (index === locations.length - 1) {
+      // Last item in the list
+      return (
+        <Button
+          style={{ backgroundColor: COLORS.primary }}
+          onPress={() => {
+            navigation.navigate("AddLocation");
+          }}
+        >
+          <HStack justifyContent={"center"} alignItems={"center"}>
+            <Ionicons
+              name="add-circle-outline"
+              size={20}
+              color={COLORS.white}
+              style={{ marginRight: 10 }}
+            />
+            <Text bold style={{ ...FONTS.h5, color: COLORS.white }}>
+              Add
+            </Text>
+          </HStack>
+        </Button>
+      );
+    }
+    // Regular items in the list
+    return <SelectedButton location={item} />;
+  };
+
   const renderStepContent = () => {
     switch (step) {
       case 1:
@@ -360,10 +447,21 @@ export default function BookingScreen({ navigation }) {
                     {t("savedLocations")}
                   </Text>
                 </HStack>
-                <HStack space={2} marginTop={2} marginLeft={3} marginRight={3}>
-                  <SelectedButton text={"Home"} />
+                <HStack mx={"10px"} mt={2} alignItems={"center"}>
+                  {/* <SelectedButton text={"Home"} />
                   <SelectedButton text={"School"} />
-                  <SelectedButton text={"Hotel"} />
+                  <SelectedButton text={"Hotel"} /> */}
+                  <FlatList
+                    // w={"100%"}
+                    horizontal={true}
+                    showsHorizontalScrollIndicator={false}
+                    data={locations}
+                    keyExtractor={(item) => item.id}
+                    // renderItem={({ item }) => (
+                    //   <SelectedButton location={item} />
+                    // )}
+                    renderItem={renderItem}
+                  ></FlatList>
                 </HStack>
                 <Center w={"100%"} marginTop={"auto"} marginBottom={3}>
                   <Button
