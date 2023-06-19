@@ -104,22 +104,25 @@ const BookingDriverScreen = ({ navigation, route }) => {
     //   where("idCustomer", "==", phoneNumber)
     // );
 
-    const unsubscribeTrip = onSnapshot(finishTripQuery, (querySnapshot) => {
-      const updatedTrip = [];
-      const docData = querySnapshot.data();
-      const trip = {
-        idTrip: docData.id,
-        ...docData,
-      };
-      updatedTrip.push(trip);
-      setTripDetailDone(updatedTrip);
-      if (
-        updatedTrip[0].status == "done" ||
-        updatedTrip[0].status == "canceled"
-      ) {
-        setStep(2);
+    const unsubscribeTrip = onSnapshot(
+      doc(db, "ListTrip", idTrip),
+      (querySnapshot) => {
+        const updatedTrip = [];
+        const docData = querySnapshot.data();
+        const trip = {
+          idTrip: docData.id,
+          ...docData,
+        };
+        updatedTrip.push(trip);
+        setTripDetailDone(updatedTrip);
+        if (
+          updatedTrip[0].status == "done" ||
+          updatedTrip[0].status == "canceled"
+        ) {
+          setStep(2);
+        }
       }
-    });
+    );
     return () => {
       unsubscribeTrip();
     };
