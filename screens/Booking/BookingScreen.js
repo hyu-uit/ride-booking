@@ -38,7 +38,6 @@ import {
 import { useContext } from "react";
 import { useState } from "react";
 import { useEffect } from "react";
-import { AutocompleteDropdownContextProvider } from "react-native-autocomplete-dropdown";
 import { ceilingKilometer, ceilingMinute } from "../../helper/converter";
 import { useTranslation } from "react-i18next";
 import { Dimensions } from "react-native";
@@ -185,14 +184,6 @@ export default function BookingScreen({ navigation }) {
               distance,
               time
             );
-
-            // if (mapRef.current) {
-            //   centerMapToCoordinates(
-            //     mapRef,
-            //     booking.pickUpLocation,
-            //     markerPosition
-            //   );
-            // }
 
             dispatch({
               type: SET_INITIAL_LOCATION,
