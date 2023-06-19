@@ -16,16 +16,18 @@ export const requestLocationPermissions = async () => {
 };
 
 export const fetchCurrentUserLocation = async () => {
+  console.time();
   const isPermissionsGranted = await requestLocationPermissions();
 
   if (!isPermissionsGranted) return;
-  const location = await Location.getCurrentPositionAsync({
-    accuracy: Location.Accuracy.Highest,
-  });
+
+  const location = await Location.getLastKnownPositionAsync();
   console.log(
     "🚀 ~ file: location.js:11 ~ fetchCurrentUserLocation ~ location:",
     location
   );
+
+  console.timeEnd();
 
   return location.coords;
 

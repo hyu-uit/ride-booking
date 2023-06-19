@@ -7,6 +7,8 @@ import {
   FlatList,
   HStack,
   Image,
+  Skeleton,
+  Spinner,
   Text,
   VStack,
   View,
@@ -84,9 +86,11 @@ export default function BookingScreen({ navigation }) {
   const [selectedTime, setSelectedTime] = useState(convertToTime(Date.now()));
   const [phoneNumber, setPhoneNumber] = useState([]);
   const [tripDetail, setTripDetail] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    if (step === 1)
+    if (step === 1) {
+      setIsLoading(true);
       fetchCurrentUserLocation()
         .then(({ latitude, longitude }) => {
           console.log(
@@ -121,11 +125,14 @@ export default function BookingScreen({ navigation }) {
             })
             .catch((err) => {
               console.log("🚀 ~ file: BookingScreen.js:88 ~ .then ~ err:", err);
-            });
+            })
+            .finally(() => setIsLoading(false));
         })
         .catch((err) => {
           console.log("🚀 ~ file: BookingScreen.js:90 ~ useEffect ~ err:", err);
-        });
+        })
+        .finally(() => setIsLoading(false));
+    }
   }, []);
 
   useEffect(() => {
@@ -293,11 +300,7 @@ export default function BookingScreen({ navigation }) {
   const handleTimeChange = (time) => {
     setSelectedTime(time);
   };
-  const handleStep3Submit = (date, time) => {
-    console.log(
-      "🚀 ~ file: BookingScreen.js:295 ~ handleStep3Submit ~ time:",
-      time
-    );
+  const handleStep3Submit = (date) => {
     console.log(
       "🚀 ~ file: BookingScreen.js:240 ~ handleStep3Submit ~ date:",
       date
@@ -501,18 +504,11 @@ export default function BookingScreen({ navigation }) {
                   </Text>
                 </HStack>
                 <HStack mx={"10px"} mt={2} alignItems={"center"}>
-                  {/* <SelectedButton text={"Home"} />
-                  <SelectedButton text={"School"} />
-                  <SelectedButton text={"Hotel"} /> */}
                   <FlatList
-                    // w={"100%"}
                     horizontal={true}
                     showsHorizontalScrollIndicator={false}
                     data={locations}
-                    keyExtractor={(item) => item.id}
-                    // renderItem={({ item }) => (
-                    //   <SelectedButton location={item} />
-                    // )}
+                    keyExtractor={(item) => item.name}
                     renderItem={renderItem}
                   ></FlatList>
                 </HStack>
@@ -772,7 +768,7 @@ export default function BookingScreen({ navigation }) {
 
   return (
     <BookingContainer bgColor={COLORS.background}>
-      {step === 1 ? (
+      {step === 1 && isLoading ? (
         <View paddingX={"10px"}>
           <ButtonBack onPress={handleBackStep} />
         </View>
@@ -782,7 +778,29 @@ export default function BookingScreen({ navigation }) {
           <ButtonBack onPress={handleBackStep} />
         </View>
       ) : null}
-      {renderStepContent()}
+      {isLoading ? (
+        <VStack w="100%" h={"100%"} borderWidth="1" space={8} rounded="md">
+          <Skeleton h="40" rounded="md" />
+          <Skeleton.Text px="4" />
+          <Skeleton
+            position={"absolute"}
+            bottom={10}
+            px="4"
+            my="4"
+            rounded="md"
+            startColor="primary.100"
+          />
+          <Spinner
+            position={"absolute"}
+            top={"1/2"}
+            left={"1/2"}
+            color="emerald.500"
+            size={"lg"}
+          />
+        </VStack>
+      ) : (
+        renderStepContent()
+      )}
       <ConfirmModal
         isShow={booking.isModalCancelShow}
         title={"Cancel booking"}
