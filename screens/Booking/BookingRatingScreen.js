@@ -14,14 +14,14 @@ import { Marker } from "react-native-svg";
 const BookingRatingScreen = ({ navigation, route }) => {
   const { t } = useTranslation();
   const { booking } = useContext(BookingContext);
-  const {idRider} = route.params;
+  const { idRider } = route.params;
 
-  console.log(idRider)
+  console.log(idRider);
   return (
     <VStack h={"100%"} w={"100%"} bgColor={COLORS.background}>
       <BookingContainer>
         <MapView
-          style={{ height: "45%", borderRadius: 10 }}
+          style={{ height: "50%", borderRadius: 10 }}
           provider="google"
           region={booking.region}
         >
