@@ -10,17 +10,21 @@ import DriverInformationModal from "../../components/Modal/DriverInformationModa
 import { VStack } from "native-base";
 import { COLORS } from "../../constants";
 import { BookingContext } from "../../context/BookingContext";
-import {
-  LocationAccuracy,
-  requestForegroundPermissionsAsync,
-  watchPositionAsync,
-} from "expo-location";
+import { LocationAccuracy, watchPositionAsync } from "expo-location";
 import { useRef } from "react";
 import {
   animateToCoordinate,
   requestLocationPermissions,
 } from "../../helper/location";
-import { collection, doc, increment, onSnapshot, query, updateDoc, where } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  increment,
+  onSnapshot,
+  query,
+  updateDoc,
+  where,
+} from "firebase/firestore";
 import { db } from "../../config/config";
 import { getFromAsyncStorage } from "../../helper/asyncStorage";
 
@@ -37,19 +41,19 @@ const BookingDriverScreen = ({ navigation, route }) => {
 
   useEffect(() => {
     try {
-      getFromAsyncStorage("phoneNumber").then((phoneNumberValue)=>{
+      getFromAsyncStorage("phoneNumber").then((phoneNumberValue) => {
         setPhoneNumber(phoneNumberValue);
-      })
+      });
     } catch (err) {
       console.log(err);
     }
-    onFinishTrip()
+    onFinishTrip();
   }, [phoneNumber]);
-  console.log(idTrip)
+  console.log(idTrip);
   useEffect(() => {
     // Request permission to access the device's location
     (async () => {
-      let isAllowed = requestLocationPermissions();
+      let isAllowed = await requestLocationPermissions();
 
       if (!isAllowed) return;
 
@@ -57,7 +61,7 @@ const BookingDriverScreen = ({ navigation, route }) => {
       let locationSubscriber = await watchPositionAsync(
         {
           accuracy: LocationAccuracy.BestForNavigation,
-          timeInterval: 2000, // Update every 2 seconds
+          timeInterval: 1000, // Update every 2 seconds
           distanceInterval: 10, // Update every 10 meters
         },
         ({ coords: { latitude, longitude } }) => {
@@ -81,18 +85,18 @@ const BookingDriverScreen = ({ navigation, route }) => {
   }, [idRider]);
 
   const handleStep1Button = () => {
-    updateDoc(doc(db,"ListTrip",idTrip),{
-      status:"canceled",
-    })
-    updateDoc(doc(db,"Customer",phoneNumber),{
-      cancel:increment(1),
-    })
-    navigation.navigate("Home")
+    updateDoc(doc(db, "ListTrip", idTrip), {
+      status: "canceled",
+    });
+    updateDoc(doc(db, "Customer", phoneNumber), {
+      cancel: increment(1),
+    });
+    navigation.navigate("Home");
     // Do any necessary form validation or error checking here
     // setStep(2);
   };
 
-  const onFinishTrip= () =>{
+  const onFinishTrip = () => {
     // const finishTripQuery = query(
     //   collection(db, "ListTrip"),
     //   where("isScheduled", "==", "false"),
@@ -100,7 +104,7 @@ const BookingDriverScreen = ({ navigation, route }) => {
     //   where("idCustomer", "==", phoneNumber)
     // );
 
-    const unsubscribeTrip = onSnapshot(doc(db,"ListTrip", idTrip), (querySnapshot) => {
+    const unsubscribeTrip = onSnapshot(finishTripQuery, (querySnapshot) => {
       const updatedTrip = [];
       const docData = querySnapshot.data();
       const trip = {
@@ -109,14 +113,17 @@ const BookingDriverScreen = ({ navigation, route }) => {
       };
       updatedTrip.push(trip);
       setTripDetailDone(updatedTrip);
-      if (updatedTrip[0].status=="done") {
-        setStep(2)
+      if (
+        updatedTrip[0].status == "done" ||
+        updatedTrip[0].status == "canceled"
+      ) {
+        setStep(2);
       }
     });
     return () => {
       unsubscribeTrip();
     };
-  }
+  };
 
   const handleShowModalCancel = () => {
     setIsModalCancelShow((prev) => !prev);
@@ -133,7 +140,7 @@ const BookingDriverScreen = ({ navigation, route }) => {
           <>
             <MapView
               ref={mapRef}
-              style={{ height: "45%", borderRadius: 10 }}
+              style={{ height: "50%", borderRadius: 10 }}
               provider="google"
               region={booking.region}
             >
@@ -171,7 +178,7 @@ const BookingDriverScreen = ({ navigation, route }) => {
         return (
           <>
             <MapView
-              style={{ height: "45%", borderRadius: 10 }}
+              style={{ height: "50%", borderRadius: 10 }}
               provider="google"
               region={booking.region}
             >
@@ -205,9 +212,9 @@ const BookingDriverScreen = ({ navigation, route }) => {
             </MapView>
             <FinishedTripCard
               idRider={idRider}
-              onClickRate={() =>{
-                const data = { idRider: idRider};
-                navigation.navigate("BookingRating", data)
+              onClickRate={() => {
+                const data = { idRider: idRider };
+                navigation.navigate("BookingRating", data);
               }}
               onPressInfo={handleShowModalInfo}
             />

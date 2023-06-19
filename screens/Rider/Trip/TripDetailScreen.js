@@ -1,5 +1,5 @@
 import { VStack, View } from "native-base";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { COLORS, FONTS, SIZES } from "../../../constants/theme";
 import ButtonBack from "../../../components/Global/ButtonBack/ButtonBack";
@@ -8,14 +8,22 @@ import { db } from "../../../config/config";
 import { Dimensions, Platform } from "react-native";
 import ReceivedTripCard from "../../../components/Driver/ReceivedTripCard";
 import MapView, { Marker, Polyline } from "react-native-maps";
-import { calculateMapDelta } from "../../../helper/location";
+import {
+  animateToCoordinate,
+  calculateMapDelta,
+  requestLocationPermissions,
+} from "../../../helper/location";
 import { Text } from "react-native";
+import { LocationAccuracy, watchPositionAsync } from "expo-location";
 
 const TripDetailScreen = ({ navigation, route }) => {
   const contentHeight = Dimensions.get("window").height;
   const { idTrip, state, isRead } = route.params;
   const [tripData, setTrip] = useState({});
   const [routing, setRouting] = useState([]);
+  const [customerLocation, setCustomerLocation] = useState({});
+  const mapRef = useRef();
+  const [isStarted, setIsStarted] = useState(false);
 
   useEffect(() => {
     getTrip();
@@ -32,39 +40,41 @@ const TripDetailScreen = ({ navigation, route }) => {
     };
   }, [navigation]);
 
-  // useEffect(() => {
-  //   // Request permission to access the device's location
-  //   (async () => {
-  //     let isAllowed = requestLocationPermissions();
+  useEffect(() => {
+    if (isStarted) {
+      // Request permission to access the device's location
+      (async () => {
+        let isAllowed = await requestLocationPermissions();
 
-  //     if (!isAllowed) return;
+        if (!isAllowed) return;
 
-  //     // Subscribe to location updates
-  //     let locationSubscriber = await watchPositionAsync(
-  //       {
-  //         accuracy: LocationAccuracy.BestForNavigation,
-  //         timeInterval: 2000, // Update every 2 seconds
-  //         distanceInterval: 10, // Update every 10 meters
-  //       },
-  //       ({ coords: { latitude, longitude } }) => {
-  //         console.log(
-  //           "🚀 ~ file: BookingDriverScreen.js:49 ~ newLocation:",
-  //           latitude,
-  //           longitude
-  //         );
-  //         animateToCoordinate(mapRef, latitude, longitude);
-  //         setMarker({ latitude, longitude });
-  //       }
-  //     );
+        // Subscribe to location updates
+        let locationSubscriber = await watchPositionAsync(
+          {
+            accuracy: LocationAccuracy.BestForNavigation,
+            timeInterval: 1000, // Update every 1 seconds
+            distanceInterval: 10, // Update every 10 meters
+          },
+          ({ coords: { latitude, longitude } }) => {
+            console.log(
+              "🚀 ~ file: TripDetailScreen.js:55 ~ latitude, longitude:",
+              latitude,
+              longitude
+            );
+            animateToCoordinate(mapRef, latitude, longitude);
+            setCustomerLocation({ latitude, longitude });
+          }
+        );
 
-  //     return () => {
-  //       // Cleanup: unsubscribe from location updates
-  //       if (locationSubscriber) {
-  //         locationSubscriber.remove();
-  //       }
-  //     };
-  //   })();
-  // }, []);
+        return () => {
+          // Cleanup: unsubscribe from location updates
+          if (locationSubscriber) {
+            locationSubscriber.remove();
+          }
+        };
+      })();
+    }
+  }, [isStarted]);
 
   const getTrip = () => {
     let data = {};
@@ -87,6 +97,10 @@ const TripDetailScreen = ({ navigation, route }) => {
           pickUpAddress: doc.data().pickUpAddress,
         };
         console.log("🚀 ~ file: TripDetailScreen.js:38 ~ getDoc ~ data:", data);
+        setCustomerLocation({
+          latitude: data.pickUpLat,
+          longitude: data.pickUpLong,
+        });
       }
       setTrip(data);
     });
@@ -118,6 +132,7 @@ const TripDetailScreen = ({ navigation, route }) => {
         tripData.destLong &&
         tripData.pickUpLong ? (
           <MapView
+            ref={mapRef}
             style={{
               width: "100%",
               height: "100%",
@@ -133,10 +148,7 @@ const TripDetailScreen = ({ navigation, route }) => {
             <Marker
               identifier="pickUp-t"
               key={"pickUp-t"}
-              coordinate={{
-                latitude: tripData.pickUpLat,
-                longitude: tripData.pickUpLong,
-              }}
+              coordinate={customerLocation}
               title={"Pick up"}
               description={tripData ? tripData.pickUpAddress : ""}
             ></Marker>
@@ -174,6 +186,7 @@ const TripDetailScreen = ({ navigation, route }) => {
           isRead={isRead}
           setRoute={setRouting}
           navigation={navigation}
+          setIsStarted={setIsStarted}
         ></ReceivedTripCard>
       </SafeAreaView>
     </VStack>

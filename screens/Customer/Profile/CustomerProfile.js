@@ -196,6 +196,7 @@ const CustomerProfile = ({ navigation, route }) => {
             <Button
               w={"100%"}
               paddingBottom={2}
+              mb={3}
               mt={20}
               borderRadius={20}
               bgColor={COLORS.primary}

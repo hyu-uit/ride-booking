@@ -2,7 +2,7 @@ import { Button, Text } from "native-base";
 import React, { useState } from "react";
 import { TouchableOpacity } from "react-native";
 
-const SelectedButton = ({ text, isSelected = false, location }) => {
+const SelectedButton = ({ text, isSelected = false, location, onPress }) => {
   return (
     <TouchableOpacity>
       <Button
@@ -13,6 +13,7 @@ const SelectedButton = ({ text, isSelected = false, location }) => {
         borderRadius={"10px"}
         bgColor={isSelected ? "#D9D9D9" : "transparent"}
         variant={isSelected ? "solid" : "outline"}
+        onPress={onPress}
       >
         <Text color={isSelected ? "black" : "white"} bold>
           {location.name !== null ? location.name : text}

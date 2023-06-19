@@ -3,6 +3,11 @@ import { Dimensions } from "react-native";
 
 export const requestLocationPermissions = async () => {
   const { status } = await Location.requestForegroundPermissionsAsync();
+  console.log(
+    "🚀 ~ file: location.js:6 ~ requestLocationPermissions ~ status:",
+    status
+  );
+
   if (status !== "granted") {
     console.error("Location permission not granted");
     return false;
@@ -14,10 +19,8 @@ export const fetchCurrentUserLocation = async () => {
   const isPermissionsGranted = await requestLocationPermissions();
 
   if (!isPermissionsGranted) return;
-  const location = await Location.getCurrentPositionAsync({
-    accuracy: Location.Accuracy.BestForNavigation,
-    timeInterval: 10000,
-  });
+
+  const location = await Location.getLastKnownPositionAsync();
   console.log(
     "🚀 ~ file: location.js:11 ~ fetchCurrentUserLocation ~ location:",
     location
@@ -50,16 +53,12 @@ export const centerMapToCoordinates = (
 };
 
 export const animateToCoordinate = (mapRef, latitude, longitude) => {
-  const coordinate = {
-    latitude,
-    longitude,
-  };
   mapRef.current.animateToRegion(
     {
       latitude,
       longitude,
-      latitudeDelta: 0.01,
-      longitudeDelta: 0.01,
+      latitudeDelta: 0.04,
+      longitudeDelta: 0.04,
     },
     1000 // Duration of the animation in milliseconds
   );
