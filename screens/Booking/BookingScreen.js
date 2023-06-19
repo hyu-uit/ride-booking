@@ -90,37 +90,25 @@ export default function BookingScreen({ navigation }) {
     try {
       const phoneNumberValue = await getFromAsyncStorage("phoneNumber");
       setPhoneNumber(phoneNumberValue);
-
-      if (phoneNumberValue) {
-        fetchData(phoneNumberValue);
-      }
     } catch (err) {
       console.log(err);
     }
   };
 
-  const fetchData = async (phoneNumber) => {
-    try {
-      let savedList = [];
-      const CollectionRef = collection(db, "SavedLocation");
-      const Query = query(
-        CollectionRef,
-        where("phoneNumber", "==", phoneNumber)
-      );
-      const unsubscribeSavedLocation = onSnapshot(Query, (QuerySnapshot) => {
-        const locationsTemp = [];
-        QuerySnapshot.forEach((doc) => {
-          locationsTemp.push(doc.data());
-        });
-        setLocations(locationsTemp);
+  useEffect(() => {
+    const CollectionRef = collection(db, "SavedLocation");
+    const Query = query(CollectionRef, where("phoneNumber", "==", phoneNumber));
+    const unsubscribeSavedLocation = onSnapshot(Query, (QuerySnapshot) => {
+      const locationsTemp = [];
+      QuerySnapshot.forEach((doc) => {
+        locationsTemp.push(doc.data());
       });
-      return () => {
-        unsubscribeSavedLocation();
-      };
-    } catch (error) {
-      console.error(error);
-    }
-  };
+      setLocations(locationsTemp);
+    });
+    return () => {
+      unsubscribeSavedLocation();
+    };
+  }, [phoneNumber]);
 
   useEffect(() => {
     fetchCurrentUserLocation()
@@ -400,24 +388,27 @@ export default function BookingScreen({ navigation }) {
     if (index === locations.length - 1) {
       // Last item in the list
       return (
-        <Button
-          style={{ backgroundColor: COLORS.primary }}
-          onPress={() => {
-            navigation.navigate("AddLocation");
-          }}
-        >
-          <HStack justifyContent={"center"} alignItems={"center"}>
-            <Ionicons
-              name="add-circle-outline"
-              size={20}
-              color={COLORS.white}
-              style={{ marginRight: 10 }}
-            />
-            <Text bold style={{ ...FONTS.h5, color: COLORS.white }}>
-              Add
-            </Text>
-          </HStack>
-        </Button>
+        <HStack>
+          <SelectedButton location={item} />
+          <Button
+            style={{ backgroundColor: COLORS.primary }}
+            onPress={() => {
+              navigation.navigate("AddLocation");
+            }}
+          >
+            <HStack justifyContent={"center"} alignItems={"center"}>
+              <Ionicons
+                name="add-circle-outline"
+                size={20}
+                color={COLORS.white}
+                style={{ marginRight: 10 }}
+              />
+              <Text bold style={{ ...FONTS.h5, color: COLORS.white }}>
+                Add
+              </Text>
+            </HStack>
+          </Button>
+        </HStack>
       );
     }
     // Regular items in the list

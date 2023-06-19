@@ -43,6 +43,8 @@ const ConfirmLocationScreen = ({ navigation, route }) => {
     //   address: route.params.address,
     // });
     if (name) {
+      const loop = 0;
+
       const collectionRef = collection(db, "SavedLocation");
       addDoc(collectionRef, {
         address: route.params.address,
@@ -54,7 +56,7 @@ const ConfirmLocationScreen = ({ navigation, route }) => {
       navigation.goBack();
       navigation.goBack();
     } else {
-      Alert.alert("Are you sure you want to accept this account?", "", [
+      Alert.alert("Please enter name to save", "", [
         {
           text: "OK",
           onPress: () => {
