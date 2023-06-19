@@ -48,6 +48,7 @@ import WaitingForRiderCard from "../../../components/Driver/WaitingForRiderCard"
 import { useTranslation } from "react-i18next";
 import { isNullOrEmpty } from "../../../helper/helper";
 import { calculateMapDelta } from "../../../helper/location";
+import TripDetailScreen from "../Trip/TripDetailScreen";
 
 const RiderHomeScreen = ({ navigation, route }) => {
   const [service, setService] = useState(0);
@@ -141,6 +142,17 @@ const RiderHomeScreen = ({ navigation, route }) => {
       open: !open,
     });
   };
+
+  useEffect(() => {
+    getFromAsyncStorage("riderTripId").then((value) => {
+      if (value) {
+        navigation.navigate("TripDetail", {
+          idTrip: "" + value,
+          isRead: false,
+        });
+      }
+    });
+  });
 
   // const fetchNewCurrentTrips = () => {
   //   const waitingTripsQuery = query(

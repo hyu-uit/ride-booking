@@ -10,8 +10,11 @@ import {
   collection,
   doc,
   getDoc,
+  getDocs,
+  query,
   setDoc,
   updateDoc,
+  where,
 } from "firebase/firestore";
 import { db } from "../../../config/config";
 import { getFromAsyncStorage } from "../../../helper/asyncStorage";
@@ -19,15 +22,30 @@ import { getFromAsyncStorage } from "../../../helper/asyncStorage";
 const ConfirmLocationScreen = ({ navigation, route }) => {
   const [phoneNumber, setPhoneNumber] = useState();
   const [name, setName] = useState();
+  const [locations, setLocations] = useState([{}]);
   useEffect(() => {
-    getFromAsyncStorage("phoneNumber").then((value) => {
-      setPhoneNumber(value);
-    });
-
-    console.log(route);
+    const phoneNumberValue = getFromAsyncStorage("phoneNumber").then(
+      (value) => {
+        setPhoneNumber(value);
+        getDocs(
+          query(
+            collection(db, "SavedLocation"),
+            where("phoneNumber", "==", value)
+          )
+        ).then((docSnap) => {
+          docSnap.forEach((doc) => {
+            setLocations((prevArray) => [
+              ...prevArray,
+              { name: doc.data().name },
+            ]);
+          });
+        });
+      }
+    );
   }, []);
 
   const ConfirmLocation = () => {
+    console.log();
     // setDoc(doc(db, "SavedLocation", phoneNumber), {
     //   phoneNumber: phoneNumber,
     //   name: name,
@@ -43,18 +61,27 @@ const ConfirmLocationScreen = ({ navigation, route }) => {
     //   address: route.params.address,
     // });
     if (name) {
-      const loop = 0;
-
-      const collectionRef = collection(db, "SavedLocation");
-      addDoc(collectionRef, {
-        address: route.params.address,
-        name: name,
-        phoneNumber: phoneNumber,
-        lat: "" + route.params.latitude,
-        long: "" + route.params.longitude,
-      });
-      navigation.goBack();
-      navigation.goBack();
+      if (locations.some((obj) => obj.name === name)) {
+        Alert.alert("This name existed", "", [
+          {
+            text: "OK",
+            onPress: () => {
+              // props.onPressDelete(phoneNumber);
+            },
+          },
+        ]);
+      } else {
+        const collectionRef = collection(db, "SavedLocation");
+        addDoc(collectionRef, {
+          address: route.params.address,
+          name: name,
+          phoneNumber: phoneNumber,
+          lat: "" + route.params.latitude,
+          long: "" + route.params.longitude,
+        });
+        navigation.goBack();
+        navigation.goBack();
+      }
     } else {
       Alert.alert("Please enter name to save", "", [
         {
