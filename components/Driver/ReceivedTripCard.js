@@ -41,7 +41,7 @@ function ReceivedTripCard(props) {
 
   const [name, setName] = useState("");
   const [stt, setState] = useState(0);
-  const { navigation, isRead, setRoute } = props;
+  const { navigation, isRead, setRoute, setIsStarted } = props;
 
   if (idTrip !== undefined) {
     getDoc(doc(db, "ListTrip", idTrip)).then((tripData) => {
@@ -119,6 +119,7 @@ function ReceivedTripCard(props) {
               longitude,
             }))
           );
+          setIsStarted(true);
         })
         .catch((err) =>
           console.log(
