@@ -61,8 +61,8 @@ const ActivityScreen = ({ navigation }) => {
   const getWaitingTrips =  () => {
     const waitingTripsQuery = query(
       collection(db, "ListTrip"),
-      where("isScheduled", "==", "true"),
-      where("status", "==", "waiting"),
+      where("isScheduled", "==", "false"),
+      where("status", "==", "accepted"),
       where("idCustomer", "==", phoneNumber)
     );
 
@@ -85,7 +85,7 @@ const ActivityScreen = ({ navigation }) => {
   const getConfirmedTrips =  () => {
     const confirmTripQuery = query(
       collection(db, "ListTrip"),
-      where("isScheduled", "==", "true"),
+      where("isScheduled", "==", "false"),
       where("status", "==", "done"),
       where("idCustomer", "==", phoneNumber)
     );
@@ -109,7 +109,7 @@ const ActivityScreen = ({ navigation }) => {
   const getCanceledTrips =  () => {
     const cancelQuery = query(
       collection(db, "ListTrip"),
-      where("isScheduled", "==", "true"),
+      where("isScheduled", "==", "false"),
       where("status", "==", "canceled"),
       where("idCustomer", "==", phoneNumber)
     );
