@@ -40,13 +40,12 @@ const ActivityScreen = ({ navigation }) => {
 
   useEffect(() => {
     fetchDataAndPhoneNumber();
-  }, []);
+  }, [phoneNumber]);
 
   const fetchDataAndPhoneNumber = async () => {
     try {
       const phoneNumberValue = await getFromAsyncStorage("phoneNumber");
       setPhone(phoneNumberValue);
-      console.log(phoneNumberValue);
 
       if (phoneNumberValue) {
         getWaitingTrips();
@@ -59,6 +58,7 @@ const ActivityScreen = ({ navigation }) => {
   };
 
   const getWaitingTrips =  () => {
+    console.log(phoneNumber)
     const waitingTripsQuery = query(
       collection(db, "ListTrip"),
       where("isScheduled", "==", "false"),
@@ -82,6 +82,7 @@ const ActivityScreen = ({ navigation }) => {
       unsubscribeTrip();
     };
   };
+
   const getConfirmedTrips =  () => {
     const confirmTripQuery = query(
       collection(db, "ListTrip"),

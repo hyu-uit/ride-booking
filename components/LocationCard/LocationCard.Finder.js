@@ -51,22 +51,28 @@ const LocationCardFinder = ({ onPressCancel, phoneNumber, navigation }) => {
       (querySnapshot) => {
         const updatedTrip = [];
         const docData = querySnapshot.data();
-        const trip = {
-          idTrip: docData.id,
-          ...docData,
-        };
-        updatedTrip.push(trip);
+        console.log(docData.status)
+        if(docData.status=="accepted"){
+          const trip = {
+            idTrip: booking.bookingDetails.idTrip,
+            ...docData,
+          };
+          updatedTrip.push(trip);
+          setTripDetail(updatedTrip);
 
-        setTripDetail(updatedTrip);
+          console.log(updatedTrip[0].idTrip)
+          if (updatedTrip.length > 0) {
+            const data = {
+              idRider: updatedTrip[0].idRider,
+              idTrip: updatedTrip[0].idTrip,
+            };
+            navigation.navigate("BookingDriver", data);
+          }
+        }
       }
     );
-    if (tripDetail.length > 0) {
-      const data = {
-        idRider: updatedTrip[0].idRider,
-        idTrip: updatedTrip[0].idTrip,
-      };
-      navigation.navigate("BookingDriver", data);
-    }
+
+    
     return () => {
       unsubscribeTrip();
     };
