@@ -347,12 +347,6 @@ export default function BookingScreen({ navigation }) {
   };
 
   const createOrder = () => {
-    // const currentDate = new Date();
-    // const currentDay = currentDate.getDate();
-    // const currentMonth = currentDate.getMonth() + 1;
-    // const currentYear = currentDate.getFullYear();
-    // const currentHour = currentDate.getHours();
-    // const currentMinute = currentDate.getMinutes();
     const currentDate = convertToDate(Date.now());
     const currentTime = convertToTime(Date.now());
     let scheduled = "false";
@@ -362,8 +356,7 @@ export default function BookingScreen({ navigation }) {
 
     let price = booking.bookingDetails.price - booking.bookingDetails.promotion;
     if (price <= 0) price = 0;
-    let id=""
-    const docRef = addDoc(collection(db, "ListTrip"), {
+    return addDoc(collection(db, "ListTrip"), {
       idCustomer: phoneNumber,
       idRider: "",
       pickUpLat: booking.pickUpLocation.latitude,
@@ -384,21 +377,19 @@ export default function BookingScreen({ navigation }) {
       discount: booking.bookingDetails.promotion,
       status: "waiting",
       idRiderCancel: "",
-    }).then((docRef)=>{
-      id=docRef.id
-      console.log("doc.id:", id);
-    })
-    console.log(idTrip)
-    return id;
-    //  setIDTrip(docRef.id);
-    //upload image to firebase storage
+    });
   };
   const handleStep5Submit = () => {
     // Do any necessary form validation or error checking here
-    const id = createOrder();
+    createOrder().then((docRef) => {
+      console.log(
+        "🚀 ~ file: BookingScreen.js:388 ~ createOrder ~ docRef:",
+        docRef
+      );
+      dispatch({ type: SET_BOOKING_DETAILS, payload: { idTrip: docRef.id } });
+      setStep(6);
+    });
     // setIDTrip(id)
-    dispatch({type:SET_BOOKING_DETAILS,payload:{idTrip:id}})
-    setStep(6);
   };
 
   const handleCloseModal = () => {
@@ -428,7 +419,6 @@ export default function BookingScreen({ navigation }) {
 
   const renderItem = ({ item, index }) => {
     function onPress() {
-      console.log(item);
       const { phoneNumber, ...resCoords } = item;
       if (focusInput === PICK_UP_INPUT) {
         setPickUpInput(item.name);

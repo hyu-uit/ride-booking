@@ -25,43 +25,52 @@ import { db } from "../../config/config";
 
 const LocationCardFinder = ({ onPressCancel, phoneNumber, navigation }) => {
   const { t } = useTranslation();
-  const { booking } = useContext(BookingContext);  
+  const { booking } = useContext(BookingContext);
   const [tripDetail, setTripDetail] = useState([]);
 
   useEffect(() => {
     // to ensure that when user switch from choose date to now that now still get current date
-    if(booking.bookingDetails.idTrip!=null||booking.bookingDetails.idTrip!=""){
-      onRiderFound()
+    console.log("finder use effectcall: ", booking.bookingDetails.idTrip);
+    if (
+      booking.bookingDetails.idTrip != null ||
+      booking.bookingDetails.idTrip != ""
+    ) {
+      onRiderFound();
     }
   }, [phoneNumber, navigation, booking.bookingDetails.idTrip]);
 
-  const onRiderFound= () =>{
+  const onRiderFound = () => {
     // const findRiderQuery = query(
     //   collection(db, "ListTrip"),
     //   // where("isScheduled", "==", "false"),
     //   where("status", "==", "accepted"),
     //   where("idCustomer", "==", phoneNumber)
     // );
-    const unsubscribeTrip = onSnapshot(doc(db,"ListTrip",booking.bookingDetails.idTrip), (querySnapshot) => {
-      const updatedTrip = [];
-      const docData=querySnapshot.data()
-          const trip = {
-            idTrip: docData.id,
-            ...docData,
-          };
-          updatedTrip.push(trip);
-      
-      setTripDetail(updatedTrip);
-     
-    });
+    const unsubscribeTrip = onSnapshot(
+      doc(db, "ListTrip", booking.bookingDetails.idTrip),
+      (querySnapshot) => {
+        const updatedTrip = [];
+        const docData = querySnapshot.data();
+        const trip = {
+          idTrip: docData.id,
+          ...docData,
+        };
+        updatedTrip.push(trip);
+
+        setTripDetail(updatedTrip);
+      }
+    );
     if (tripDetail.length > 0) {
-      const data = { idRider: updatedTrip[0].idRider, idTrip: updatedTrip[0].idTrip};
-      navigation.navigate("BookingDriver",data)
+      const data = {
+        idRider: updatedTrip[0].idRider,
+        idTrip: updatedTrip[0].idTrip,
+      };
+      navigation.navigate("BookingDriver", data);
     }
     return () => {
       unsubscribeTrip();
     };
-  }
+  };
   return (
     <View
       bgColor={"#0B0F2F"}
