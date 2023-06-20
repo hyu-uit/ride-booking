@@ -164,6 +164,12 @@ export default function BookingScreen({ navigation }) {
   }, [phoneNumber]);
 
   useEffect(() => {
+    // reload value when in first screen
+    if (step === 1)
+      dispatch({
+        type: SET_BOOKING_DETAILS,
+        payload: { paymentMethod: "", promotion: 0, ratingType: "", date: "" },
+      });
     // in map step 2 zoom to the pick up or destination according to the input
     if (step === 2) {
       if (focusInput === PICK_UP_INPUT)

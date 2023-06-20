@@ -25,9 +25,8 @@ import DeliveryImg from "../assets/images/delivery_1.png";
 import { TouchableWithoutFeedback } from "react-native";
 import { Keyboard } from "react-native";
 import LottieView from "lottie-react-native";
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
 import { getFromAsyncStorage } from "../helper/asyncStorage";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { useState } from "react";
 import {
   collection,
@@ -40,8 +39,21 @@ import {
 import { db } from "../config/config";
 import { useFocusEffect } from "@react-navigation/native";
 import { useTranslation } from "react-i18next";
+import { BookingContext, SET_BOOKING_DETAILS } from "../context/BookingContext";
+
+const bookingDefaultValue = {
+  price: 0,
+  paymentMethod: "", // momo or cash
+  distance: 0, // km
+  time: 0, // minute (travel time from a to b)
+  date: "", // date booking format 15:00 12/05/2002
+  promotion: 0, // price - promotion = final price
+  ratingType: "", // disappointed or normal or love
+  serviceRatings: null, // for example Good service, Well prepared, Punctuality,...
+};
 
 export default function Home({ navigation, route }) {
+  const { dispatch } = useContext(BookingContext);
   const [phone, setPhone] = useState("");
   const [historyTrips, setHistoryTrips] = useState([]);
   const [name, SetName] = useState(null);
@@ -80,6 +92,8 @@ export default function Home({ navigation, route }) {
 
   useEffect(() => {
     fetchDataAndPhoneNumber();
+
+    dispatch({ type: SET_BOOKING_DETAILS, payload: bookingDefaultValue });
   }, []);
 
   const fetchDataAndPhoneNumber = async () => {
@@ -95,6 +109,7 @@ export default function Home({ navigation, route }) {
       console.log(err);
     }
   };
+
   const fetchData = async (phoneNumber) => {
     try {
       const docData = await getDoc(doc(db, "Customer", phoneNumber));

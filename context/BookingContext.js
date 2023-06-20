@@ -31,7 +31,6 @@ const initialState = {
     date: "", // date booking format 15:00 12/05/2002
     promotion: 0, // price - promotion = final price
     ratingType: "", // disappointed or normal or love
-    serviceRatings: null, // for example Good service, Well prepared, Punctuality,...
   },
   isModalCancelShow: false,
   routing: null, // to draw line on map
