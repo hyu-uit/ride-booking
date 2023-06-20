@@ -88,7 +88,7 @@ export default function BookingScreen({ navigation }) {
   const [selectedDate, setSelectedDate] = useState(convertToDate(Date.now()));
   const [selectedTime, setSelectedTime] = useState(convertToTime(Date.now()));
   const [phoneNumber, setPhoneNumber] = useState([]);
-  const [idTrip, setIDTrip] = useState("");
+  const [idTrip, setIDTrip] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
@@ -362,8 +362,8 @@ export default function BookingScreen({ navigation }) {
 
     let price = booking.bookingDetails.price - booking.bookingDetails.promotion;
     if (price <= 0) price = 0;
-
-    addDoc(collection(db, "ListTrip"), {
+    let id=""
+    const docRef = addDoc(collection(db, "ListTrip"), {
       idCustomer: phoneNumber,
       idRider: "",
       pickUpLat: booking.pickUpLocation.latitude,
@@ -384,13 +384,19 @@ export default function BookingScreen({ navigation }) {
       discount: booking.bookingDetails.promotion,
       status: "waiting",
       idRiderCancel: "",
-    });
+    }).then((docRef)=>{
+      id=docRef.id
+      console.log("doc.id:", id);
+    })
+    console.log(idTrip)
+    return id;
+    //  setIDTrip(docRef.id);
     //upload image to firebase storage
   };
-
   const handleStep5Submit = () => {
     // Do any necessary form validation or error checking here
-    createOrder();
+    const id = createOrder();
+    setIDTrip(id)
     setStep(6);
   };
 
@@ -776,6 +782,7 @@ export default function BookingScreen({ navigation }) {
             </MapView>
             <LocationCardFinder
               phoneNumber={phoneNumber}
+              idTrip={idTrip}
               navigation={navigation}
               onPressCancel={onCancel}
             />
