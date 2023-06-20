@@ -29,6 +29,7 @@ const initialState = {
     distance: 0, // km
     time: 0, // minute (travel time from a to b)
     date: "", // date booking format 15:00 12/05/2002
+    promotionName: "",
     promotion: 0, // price - promotion = final price
     ratingType: "", // disappointed or normal or love
   },
