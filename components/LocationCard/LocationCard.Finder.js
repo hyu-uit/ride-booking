@@ -23,16 +23,17 @@ import { useState } from "react";
 import { useEffect } from "react";
 import { db } from "../../config/config";
 
-const LocationCardFinder = ({ onPressCancel, phoneNumber, navigation, idTrip }) => {
+const LocationCardFinder = ({ onPressCancel, phoneNumber, navigation }) => {
   const { t } = useTranslation();
   const { booking } = useContext(BookingContext);  
   const [tripDetail, setTripDetail] = useState([]);
 
   useEffect(() => {
-    console.log("AAA"+idTrip)
     // to ensure that when user switch from choose date to now that now still get current date
-    onRiderFound()
-  }, [phoneNumber, navigation, idTrip]);
+    if(booking.bookingDetails.idTrip!=null||booking.bookingDetails.idTrip!=""){
+      onRiderFound()
+    }
+  }, [phoneNumber, navigation, booking.bookingDetails.idTrip]);
 
   const onRiderFound= () =>{
     // const findRiderQuery = query(
@@ -41,8 +42,7 @@ const LocationCardFinder = ({ onPressCancel, phoneNumber, navigation, idTrip }) 
     //   where("status", "==", "accepted"),
     //   where("idCustomer", "==", phoneNumber)
     // );
-    console.log(idTrip)
-    const unsubscribeTrip = onSnapshot(doc(db,"ListTrip",idTrip), (querySnapshot) => {
+    const unsubscribeTrip = onSnapshot(doc(db,"ListTrip",booking.bookingDetails.idTrip), (querySnapshot) => {
       const updatedTrip = [];
       const docData=querySnapshot.data()
           const trip = {

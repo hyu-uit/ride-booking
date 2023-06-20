@@ -396,7 +396,8 @@ export default function BookingScreen({ navigation }) {
   const handleStep5Submit = () => {
     // Do any necessary form validation or error checking here
     const id = createOrder();
-    setIDTrip(id)
+    // setIDTrip(id)
+    dispatch({type:SET_BOOKING_DETAILS,payload:{idTrip:id}})
     setStep(6);
   };
 
@@ -782,7 +783,6 @@ export default function BookingScreen({ navigation }) {
             </MapView>
             <LocationCardFinder
               phoneNumber={phoneNumber}
-              idTrip={idTrip}
               navigation={navigation}
               onPressCancel={onCancel}
             />
