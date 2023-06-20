@@ -151,7 +151,7 @@ const LocationCardWithChange = ({
                   longitude,
                 },
               });
-              setMarkerPosition({
+              setMarker({
                 name: "Your location",
                 address: value.formatted,
                 latitude,

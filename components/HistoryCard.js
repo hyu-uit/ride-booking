@@ -31,6 +31,8 @@ function HistoryCard(props) {
     time,
     datePickUp,
     timePickUp,
+    pickUpAddress,
+    destAddress,
     status,
     totalPrice,
     distance,
@@ -91,7 +93,7 @@ function HistoryCard(props) {
               {t("pickUp")}
             </Text>
             <Text bold fontSize={10} color={"white"}>
-              Long An
+            {pickUpAddress.length > 10 ? pickUpAddress.substring(0, 10) + "..." : pickUpAddress}
             </Text>
           </VStack>
           <VStack>
@@ -99,7 +101,7 @@ function HistoryCard(props) {
               {t("des")}
             </Text>
             <Text bold fontSize={10} color={"white"}>
-              DH CNTT
+            {destAddress.length > 10 ? destAddress.substring(0, 10) + "..." : destAddress}
             </Text>
           </VStack>
           <VStack>

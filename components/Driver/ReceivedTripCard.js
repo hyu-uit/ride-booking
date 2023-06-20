@@ -191,7 +191,7 @@ function ReceivedTripCard(props) {
       <View
         bgColor={COLORS.tertiary}
         w={"100%"}
-        h={isRead ? 200 : 300}
+        h={isRead ? 180 : 260}
         borderTopRadius={20}
         position={"absolute"}
         bottom={0}

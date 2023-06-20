@@ -76,314 +76,313 @@ const ActivityDetailScreen = ({ navigation, route }) => {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <VStack
-        h={Platform.OS === "ios" ? contentHeight : "100%"}
-        paddingY={"20px"}
-        bgColor={COLORS.background}
-        paddingX={"10px"}
-      >
-        <HStack justifyContent={"center"} mb={"20px"}>
-          <View style={{ position: "absolute", left: 0 }}>
-            <ButtonBack
-              onPress={() => {
-                navigation.goBack();
-              }}
-            ></ButtonBack>
-          </View>
-          <Text style={{ ...FONTS.h2, color: COLORS.white }}>
-            {t("detail")}
-          </Text>
-        </HStack>
-        <ScrollView h={"100%"} showsVerticalScrollIndicator={false}>
-          <VStack></VStack>
-          {tripData.destLat &&
-          tripData.pickUpLat &&
-          tripData.destLong &&
-          tripData.pickUpLong ? (
-            <MapView
-              provider="google"
-              style={{ width: "100%", height: "30%", borderRadius: 20 }}
-              region={{
-                latitudeDelta: 0.01,
-                longitudeDelta: 0.01,
-                latitude: tripData.pickUpLat, // get center latitude to zoom
-                longitude: tripData.pickUpLong, // get center longitude to zoom
-              }}
-            >
-              <Marker
-                identifier="pickUp-t"
-                key={"pickUp-t"}
-                coordinate={{
-                  latitude: tripData.pickUpLat,
-                  longitude: tripData.pickUpLong,
+    <VStack h={"100%"} bgColor={COLORS.background}>
+      <SafeAreaView style={{ flex: 1 }}>
+        <VStack
+          h={Platform.OS === "ios" ? contentHeight : "100%"}
+          paddingY={"20px"}
+          bgColor={COLORS.background}
+          paddingX={"10px"}
+        >
+          <HStack justifyContent={"center"} mb={"20px"}>
+            <View style={{ position: "absolute", left: 0 }}>
+              <ButtonBack
+                onPress={() => {
+                  navigation.goBack();
                 }}
-                title={"Pick up"}
-                description={tripData ? tripData.pickUpAddress : ""}
-              ></Marker>
-              <Marker
-                identifier="destination-t"
-                key={"destination-t"}
-                coordinate={{
-                  latitude: tripData.destLat,
-                  longitude: tripData.destLong,
+              ></ButtonBack>
+            </View>
+            <Text style={{ ...FONTS.h2, color: COLORS.white }}>
+              {t("detail")}
+            </Text>
+          </HStack>
+          <ScrollView showsVerticalScrollIndicator={false}>
+            {tripData.destLat &&
+            tripData.pickUpLat &&
+            tripData.destLong &&
+            tripData.pickUpLong ? (
+              <MapView
+                provider="google"
+                style={{ width: "100%", height: 250, borderRadius: 20 }}
+                region={{
+                  latitudeDelta: 0.01,
+                  longitudeDelta: 0.01,
+                  latitude: tripData.pickUpLat, // get center latitude to zoom
+                  longitude: tripData.pickUpLong, // get center longitude to zoom
                 }}
-                title={"Destination"}
-                description={tripData ? tripData.destAddress : ""}
-              ></Marker>
-            </MapView>
-          ) : (
-            <MapView
+              >
+                <Marker
+                  identifier="pickUp-t"
+                  key={"pickUp-t"}
+                  coordinate={{
+                    latitude: tripData.pickUpLat,
+                    longitude: tripData.pickUpLong,
+                  }}
+                  title={"Pick up"}
+                  description={tripData ? tripData.pickUpAddress : ""}
+                ></Marker>
+                <Marker
+                  identifier="destination-t"
+                  key={"destination-t"}
+                  coordinate={{
+                    latitude: tripData.destLat,
+                    longitude: tripData.destLong,
+                  }}
+                  title={"Destination"}
+                  description={tripData ? tripData.destAddress : ""}
+                ></Marker>
+              </MapView>
+            ) : (
+              <MapView
+                style={{
+                  width: "100%",
+                  height: 250,
+                  borderRadius: 20,
+                }}
+                provider="google"
+              ></MapView>
+            )}
+
+            <View
               style={{
                 width: "100%",
-                height: "30%",
+                backgroundColor: COLORS.tertiary,
                 borderRadius: 20,
+                marginTop: 20,
+                padding: 10,
               }}
-              provider="google"
-            ></MapView>
-          )}
+            >
+              <HStack>
+                <Text style={{ ...FONTS.body5, color: COLORS.fifthary }}>
+                  {t("orderID")}
+                  {": "}
+                </Text>
+                <Text style={{ ...FONTS.body5, color: COLORS.white }}>
+                  {idTrip}
+                </Text>
+              </HStack>
 
-          <View
-            style={{
-              width: "100%",
-              backgroundColor: COLORS.tertiary,
-              borderRadius: 20,
-              marginTop: 20,
-              padding: 10,
-            }}
-          >
-            <HStack>
-              <Text style={{ ...FONTS.body5, color: COLORS.fifthary }}>
-                {t("orderID")}
-                {": "}
-              </Text>
-              <Text style={{ ...FONTS.body5, color: COLORS.white }}>
-                {idTrip}
-              </Text>
-            </HStack>
+              <HStack mt={"10px"}>
+                <VStack w={"90%"}>
+                  <VStack>
+                    <Text style={{ ...FONTS.body5, color: COLORS.fifthary }}>
+                      {t("pickUp")}
+                    </Text>
+                    <Text style={{ ...FONTS.h5, color: COLORS.white }}>
+                      {tripData.pickUpAddress}
+                    </Text>
+                  </VStack>
+                  <VStack mt={"15px"}>
+                    <Text style={{ ...FONTS.body5, color: COLORS.fifthary }}>
+                      {t("des")}
+                    </Text>
+                    <Text
+                      style={{ ...FONTS.h5, color: COLORS.white, width: "80%" }}
+                    >
+                      {tripData.destAddress}
+                    </Text>
+                  </VStack>
+                </VStack>
+                <VStack
+                  style={{ position: "absolute", right: 0 }}
+                  alignItems={"center"}
+                >
+                  <View
+                    style={{
+                      width: 35,
+                      height: 35,
+                      borderRadius: SIZES.radius50,
+                      backgroundColor: COLORS.black,
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Icon
+                      name="arrow-down"
+                      size={20}
+                      color={COLORS.fourthary}
+                    ></Icon>
+                  </View>
+                  <View
+                    style={{
+                      borderLeftWidth: 1,
+                      borderLeftColor: COLORS.fourthary,
+                      height: "50%",
+                    }}
+                  ></View>
+                  <View
+                    style={{
+                      width: 35,
+                      height: 35,
+                      borderRadius: SIZES.radius50,
+                      backgroundColor: COLORS.fourthary,
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Ionicons name="location" size={20} color={COLORS.white} />
+                  </View>
+                </VStack>
+              </HStack>
+            </View>
 
-            <HStack mt={"10px"}>
-              <VStack>
+            <VStack
+              mt={"20px"}
+              bgColor={COLORS.tertiary}
+              borderRadius={20}
+              padding={"10px"}
+            >
+              <Text style={{ ...FONTS.h5, color: COLORS.white }}>
+                {t("riderInfo")}
+              </Text>
+              <HStack mt={"5px"}>
+                <Image
+                  source={{ uri: tripData.portrait }}
+                  alt="Avatar"
+                  style={{
+                    borderRadius: SIZES.radius50,
+                    width: 60,
+                    height: 60,
+                    backgroundColor: COLORS.white,
+                  }}
+                />
+                <VStack ml={"12px"} justifyContent={"center"}>
+                  <Text style={{ ...FONTS.h5, color: COLORS.white }}>
+                    {tripData.displayName}
+                  </Text>
+                  <Text style={{ ...FONTS.body6, color: COLORS.fourthary }}>
+                    {tripData.school}
+                  </Text>
+                </VStack>
+              </HStack>
+              <HStack mt={"12px"}>
                 <VStack>
-                  <Text style={{ ...FONTS.body5, color: COLORS.fifthary }}>
-                    {t("pickUp")}
+                  <Text
+                    style={{
+                      ...FONTS.body6,
+                      fontSize: 12,
+                      color: COLORS.fifthary,
+                    }}
+                  >
+                    {t("inputLicense")}
                   </Text>
                   <Text
-                    style={{ ...FONTS.h5, color: COLORS.white, width: "80%" }}
+                    style={{
+                      ...FONTS.body6,
+                      fontSize: 12,
+                      color: COLORS.fifthary,
+                    }}
                   >
-                    {tripData.pickUpAddress}
+                    {t("inputType")}
                   </Text>
                 </VStack>
-                <VStack mt={"15px"}>
-                  <Text style={{ ...FONTS.body5, color: COLORS.fifthary }}>
-                    {t("des")}
-                  </Text>
-                  <Text
-                    style={{ ...FONTS.h5, color: COLORS.white, width: "80%" }}
-                  >
-                    {tripData.destAddress}
-                  </Text>
-                </VStack>
-              </VStack>
-              <VStack
-                style={{ position: "absolute", right: 0 }}
-                alignItems={"center"}
-              >
-                <View
-                  style={{
-                    width: 35,
-                    height: 35,
-                    borderRadius: SIZES.radius50,
-                    backgroundColor: COLORS.black,
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <Icon
-                    name="arrow-down"
-                    size={20}
-                    color={COLORS.fourthary}
-                  ></Icon>
-                </View>
-                <View
-                  style={{
-                    borderLeftWidth: 1,
-                    borderLeftColor: COLORS.fourthary,
-                    height: "50%",
-                  }}
-                ></View>
-                <View
-                  style={{
-                    width: 35,
-                    height: 35,
-                    borderRadius: SIZES.radius50,
-                    backgroundColor: COLORS.fourthary,
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <Ionicons name="location" size={20} color={COLORS.white} />
-                </View>
-              </VStack>
-            </HStack>
-          </View>
-
-          <VStack
-            mt={"20px"}
-            bgColor={COLORS.tertiary}
-            borderRadius={20}
-            padding={"10px"}
-          >
-            <Text style={{ ...FONTS.h5, color: COLORS.white }}>
-              {t("riderInfo")}
-            </Text>
-            <HStack mt={"5px"}>
-              <Image
-                source={{ uri: tripData.portrait }}
-                alt="Avatar"
-                style={{
-                  borderRadius: SIZES.radius50,
-                  width: 60,
-                  height: 60,
-                  backgroundColor: COLORS.white,
-                }}
-              />
-              <VStack ml={"12px"} justifyContent={"center"}>
-                <Text style={{ ...FONTS.h5, color: COLORS.white }}>
-                  {tripData.displayName}
-                </Text>
-                <Text style={{ ...FONTS.body6, color: COLORS.fourthary }}>
-                  {tripData.school}
-                </Text>
-              </VStack>
-            </HStack>
-            <HStack mt={"12px"}>
-              <VStack>
-                <Text
-                  style={{
-                    ...FONTS.body6,
-                    fontSize: 12,
-                    color: COLORS.fifthary,
-                  }}
-                >
-                  {t("inputLicense")}
-                </Text>
-                <Text
-                  style={{
-                    ...FONTS.body6,
-                    fontSize: 12,
-                    color: COLORS.fifthary,
-                  }}
-                >
-                  {t("inputType")}
-                </Text>
-              </VStack>
-              <VStack ml={39}>
-                <Text
-                  style={{
-                    ...FONTS.h6,
-                    fontSize: 12,
-                    color: COLORS.white,
-                  }}
-                >
-                  {tripData.licensePlates}
-                </Text>
-                <Text
-                  style={{
-                    ...FONTS.h6,
-                    fontSize: 12,
-                    color: COLORS.white,
-                  }}
-                >
-                  {tripData.transportType}
-                </Text>
-              </VStack>
-              <VStack position={"absolute"} right={0} bottom={0}>
-                <HStack justifyContent={"center"} alignItems={"center"}>
+                <VStack ml={39}>
                   <Text
                     style={{
                       ...FONTS.h6,
                       fontSize: 12,
                       color: COLORS.white,
-                      marginRight: 5,
                     }}
                   >
-                    4.5
+                    {tripData.licensePlates}
                   </Text>
-                  <Ionicons name="star" size={20} color={"#E5E92D"} />
-                </HStack>
-              </VStack>
-            </HStack>
-          </VStack>
-
-          <VStack
-            mt={"20px"}
-            bgColor={COLORS.tertiary}
-            borderRadius={20}
-            padding={"10px"}
-          >
-            <Text style={{ ...FONTS.h5, color: COLORS.white }}>
-              {t("price")}
-            </Text>
-            <HStack mt={3}>
-              <VStack>
-                <HStack>
-                  <Ionicons name="map" size={20} color={COLORS.white} />
                   <Text
                     style={{
-                      ...FONTS.h4,
+                      ...FONTS.h6,
+                      fontSize: 12,
                       color: COLORS.white,
-                      marginLeft: 10,
                     }}
                   >
-                    {tripData.distance}
+                    {tripData.transportType}
                   </Text>
-                </HStack>
-                <HStack mt={2}>
-                  <Ionicons name="time" size={20} color={COLORS.white} />
+                </VStack>
+                <VStack position={"absolute"} right={0} bottom={0}>
+                  <HStack justifyContent={"center"} alignItems={"center"}>
+                    <Text
+                      style={{
+                        ...FONTS.h6,
+                        fontSize: 12,
+                        color: COLORS.white,
+                        marginRight: 5,
+                      }}
+                    >
+                      4.5
+                    </Text>
+                    <Ionicons name="star" size={20} color={"#E5E92D"} />
+                  </HStack>
+                </VStack>
+              </HStack>
+            </VStack>
+
+            <VStack
+              mt={"20px"}
+              bgColor={COLORS.tertiary}
+              borderRadius={20}
+              padding={"10px"}
+            >
+              <Text style={{ ...FONTS.h5, color: COLORS.white }}>
+                {t("price")}
+              </Text>
+              <HStack mt={3}>
+                <VStack>
+                  <HStack>
+                    <Ionicons name="map" size={20} color={COLORS.white} />
+                    <Text
+                      style={{
+                        ...FONTS.h4,
+                        color: COLORS.white,
+                        marginLeft: 10,
+                      }}
+                    >
+                      {tripData.distance}
+                    </Text>
+                  </HStack>
+                  <HStack mt={2}>
+                    <Ionicons name="time" size={20} color={COLORS.white} />
+                    <Text
+                      style={{
+                        ...FONTS.h4,
+                        color: COLORS.white,
+                        marginLeft: 10,
+                      }}
+                    >
+                      5 {t("minutes")}
+                    </Text>
+                  </HStack>
+                </VStack>
+
+                <VStack position={"absolute"} right={0} alignItems={"flex-end"}>
+                  <Text style={{ ...FONTS.h2, color: COLORS.white }}>
+                    {parseInt(tripData.totalPrice).toLocaleString()}đ
+                  </Text>
                   <Text
                     style={{
-                      ...FONTS.h4,
-                      color: COLORS.white,
-                      marginLeft: 10,
+                      ...FONTS.h5,
+                      color: COLORS.grey,
+                      textDecorationLine: "line-through",
                     }}
                   >
-                    5 {t("minutes")}
+                    {parseInt(tripData.totalPrice).toLocaleString()}đ
                   </Text>
-                </HStack>
-              </VStack>
-
-              <VStack position={"absolute"} right={0} alignItems={"flex-end"}>
-                <Text style={{ ...FONTS.h2, color: COLORS.white }}>
-                  {tripData.totalPrice}
-                </Text>
-                <Text
-                  style={{
-                    ...FONTS.h5,
-                    color: COLORS.grey,
-                    textDecorationLine: "line-through",
-                  }}
-                >
-                  {tripData.totalPrice}
-                </Text>
-              </VStack>
-            </HStack>
-          </VStack>
-          <Button
-            mb={20}
-            mt={10}
-            w={"100%"}
-            borderRadius={20}
-            bgColor={COLORS.primary}
-            onPress={() => {}}
-          >
-            <Text style={{ ...FONTS.h2, color: COLORS.white }}>
-              {t("reBooking")}
-            </Text>
-          </Button>
-        </ScrollView>
-      </VStack>
-    </SafeAreaView>
+                </VStack>
+              </HStack>
+            </VStack>
+            <Button
+              mb={20}
+              mt={10}
+              w={"100%"}
+              borderRadius={20}
+              bgColor={COLORS.primary}
+              onPress={() => {}}
+            >
+              <Text style={{ ...FONTS.h2, color: COLORS.white }}>
+                {t("reBooking")}
+              </Text>
+            </Button>
+          </ScrollView>
+        </VStack>
+      </SafeAreaView>
+    </VStack>
   );
 };
 

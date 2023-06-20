@@ -28,8 +28,11 @@ import ButtonBack from "../../components/Global/ButtonBack/ButtonBack";
 import FlagIcon from "../../assets/icons/icons8-flag-filled-48.png";
 import {
   addDoc,
+  getDocs,
   collection,
   query,
+  deleteDoc,
+  doc,
   where,
   onSnapshot,
 } from "@firebase/firestore";
@@ -85,7 +88,7 @@ export default function BookingScreen({ navigation }) {
   const [selectedDate, setSelectedDate] = useState(convertToDate(Date.now()));
   const [selectedTime, setSelectedTime] = useState(convertToTime(Date.now()));
   const [phoneNumber, setPhoneNumber] = useState([]);
-  const [tripDetail, setTripDetail] = useState([]);
+  const [idTrip, setIDTrip] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
@@ -202,6 +205,26 @@ export default function BookingScreen({ navigation }) {
         setMarkerPosition(booking.destinationLocation);
     }
   }, [focusInput]);
+
+  const onCancel = () => {
+    const q = query(
+      collection(db, "ListTrip"),
+      where("idCustomer", "==", phoneNumber),
+      where("status", "==", "waiting"),
+      where("isScheduled", "==", "false")
+    );
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      if (!querySnapshot.empty) {
+        const tripId = querySnapshot.docs[0].id;
+        setIDTrip(tripId);
+      }
+    });
+    if (idTrip != "") {
+      deleteDoc(doc(db, "ListTrip", idTrip));
+      navigation.navigate("Home");
+    }
+    return () => unsubscribe();
+  };
 
   const chooseFromMapHandler = () => {
     setStep(2);
@@ -760,7 +783,7 @@ export default function BookingScreen({ navigation }) {
             <LocationCardFinder
               phoneNumber={phoneNumber}
               navigation={navigation}
-              onPressCancel={() => navigation.navigate("Home")}
+              onPressCancel={onCancel}
             />
           </>
         );

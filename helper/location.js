@@ -16,7 +16,6 @@ export const requestLocationPermissions = async () => {
 };
 
 export const fetchCurrentUserLocation = async () => {
-  console.time();
   const isPermissionsGranted = await requestLocationPermissions();
 
   if (!isPermissionsGranted) return;
@@ -26,8 +25,6 @@ export const fetchCurrentUserLocation = async () => {
     "🚀 ~ file: location.js:11 ~ fetchCurrentUserLocation ~ location:",
     location
   );
-
-  console.timeEnd();
 
   return location.coords;
 

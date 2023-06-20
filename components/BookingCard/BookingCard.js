@@ -29,6 +29,8 @@ function BookingCard(props) {
     datePickUp,
     timePickUp,
     status,
+    pickUpAddress,
+    destAddress,
     idRider,
     totalPrice,
     distance,
@@ -94,7 +96,7 @@ function BookingCard(props) {
               {t("pickUp")}
             </Text>
             <Text bold fontSize={10} color={"white"}>
-              Long An
+            {pickUpAddress.length > 10 ? pickUpAddress.substring(0, 10) + "..." : pickUpAddress}
             </Text>
           </VStack>
           <VStack>
@@ -102,7 +104,7 @@ function BookingCard(props) {
               {t("des")}
             </Text>
             <Text bold fontSize={10} color={"white"}>
-              DH CNTT
+            {destAddress.length > 10 ? destAddress.substring(0, 10) + "..." : destAddress}
             </Text>
           </VStack>
 
