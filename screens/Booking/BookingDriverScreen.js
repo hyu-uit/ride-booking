@@ -34,7 +34,7 @@ const BookingDriverScreen = ({ navigation, route }) => {
   const [isModalInfoShow, setIsModalInfoShow] = useState(false);
   const { booking } = useContext(BookingContext);
   const [marker, setMarker] = useState({ longitude: 0, latitude: 0 });
-  const mapRef = useRef();
+  const mapRef = useRef(null);
   const { idRider, idTrip } = route.params;
   const [phoneNumber, setPhoneNumber] = useState([]);
   const [tripDetail, setTripDetail] = useState([]);
@@ -176,6 +176,7 @@ const BookingDriverScreen = ({ navigation, route }) => {
         return (
           <>
             <MapView
+              ref={mapRef}
               style={{ height: "50%", borderRadius: 10 }}
               provider="google"
               region={booking.region}

@@ -56,15 +56,16 @@ export const centerMapToCoordinates = (
 };
 
 export const animateToCoordinate = (mapRef, latitude, longitude) => {
-  mapRef.current.animateToRegion(
-    {
-      latitude,
-      longitude,
-      latitudeDelta: 0.04,
-      longitudeDelta: 0.04,
-    },
-    1000 // Duration of the animation in milliseconds
-  );
+  if (mapRef)
+    mapRef.current.animateToRegion(
+      {
+        latitude,
+        longitude,
+        latitudeDelta: 0.04,
+        longitudeDelta: 0.04,
+      },
+      1000 // Duration of the animation in milliseconds
+    );
 };
 
 export const calculateMapDelta = (marker1, marker2, paddingPercentage) => {
