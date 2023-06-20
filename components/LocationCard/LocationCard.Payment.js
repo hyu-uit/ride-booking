@@ -22,6 +22,7 @@ import {
   BookingContext,
   SET_BOOKING_DETAILS,
 } from "../../context/BookingContext";
+import { isNullOrEmpty } from "../../helper/helper";
 
 const CASH = "CASH";
 const MOMO = "MOMO";
@@ -29,7 +30,7 @@ const MOMO = "MOMO";
 const LocationCardPayment = ({ onClickContinue, onPressBack }) => {
   const { t } = useTranslation();
   const [modal, setModal] = useState(false);
-  const { dispatch } = useContext(BookingContext);
+  const { booking, dispatch } = useContext(BookingContext);
   const [paymentMethod, setPaymentMethod] = useState(CASH);
 
   const handleOnPressPromotion = (promotion) => {
@@ -39,7 +40,7 @@ const LocationCardPayment = ({ onClickContinue, onPressBack }) => {
     );
     dispatch({
       type: SET_BOOKING_DETAILS,
-      payload: { promotion: promotion.value },
+      payload: { promotionName: promotion.name, promotion: promotion.value },
     });
     setModal((prev) => !prev);
   };
@@ -113,7 +114,11 @@ const LocationCardPayment = ({ onClickContinue, onPressBack }) => {
             bgColor={"#101744"}
             h={"65px"}
           >
-            <Text color={"white"}>{t("addPromo")}</Text>
+            <Text color={"white"}>
+              {booking.bookingDetails.promotionName === ""
+                ? t("addPromo")
+                : booking.bookingDetails.promotionName}
+            </Text>
           </Center>
         </TouchableOpacity>
         <HStack>

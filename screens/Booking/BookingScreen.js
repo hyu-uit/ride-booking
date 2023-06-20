@@ -171,7 +171,13 @@ export default function BookingScreen({ navigation }) {
     if (step === 1)
       dispatch({
         type: SET_BOOKING_DETAILS,
-        payload: { paymentMethod: "", promotion: 0, ratingType: "", date: "" },
+        payload: {
+          paymentMethod: "",
+          promotion: 0,
+          ratingType: "",
+          date: "",
+          promotionName: "",
+        },
       });
     // in map step 2 zoom to the pick up or destination according to the input
     if (step === 2) {
