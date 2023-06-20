@@ -15,7 +15,7 @@ import {
 } from "native-base";
 import { SafeAreaView } from "react-native-safe-area-context";
 import MapView, { Marker, Polyline } from "react-native-maps";
-import { Keyboard, TouchableWithoutFeedback } from "react-native";
+import { Alert, Keyboard, TouchableWithoutFeedback } from "react-native";
 import LocationCardWithChange from "../../components/LocationCard/LocationCardWithChange";
 import SelectedButton from "../../components/Button/SelectedButton";
 import LocationCardTime from "../../components/LocationCard/LocationCard.Time";
@@ -167,6 +167,18 @@ export default function BookingScreen({ navigation }) {
   }, [phoneNumber]);
 
   useEffect(() => {
+    // reload value when in first screen
+    if (step === 1)
+      dispatch({
+        type: SET_BOOKING_DETAILS,
+        payload: {
+          paymentMethod: "",
+          promotion: 0,
+          ratingType: "",
+          date: "",
+          promotionName: "",
+        },
+      });
     // in map step 2 zoom to the pick up or destination according to the input
     if (step === 2) {
       if (focusInput === PICK_UP_INPUT)
@@ -201,23 +213,36 @@ export default function BookingScreen({ navigation }) {
   }, [focusInput]);
 
   const onCancel = () => {
-    const q = query(
-      collection(db, "ListTrip"),
-      where("idCustomer", "==", phoneNumber),
-      where("status", "==", "waiting"),
-      where("isScheduled", "==", "false")
-    );
-    const unsubscribe = onSnapshot(q, (querySnapshot) => {
-      if (!querySnapshot.empty) {
-        const tripId = querySnapshot.docs[0].id;
-        setIDTrip(tripId);
-      }
-    });
-    if (idTrip != "") {
-      deleteDoc(doc(db, "ListTrip", idTrip));
-      navigation.navigate("Home");
-    }
-    return () => unsubscribe();
+    Alert.alert("Are you want to cancel this trip?", "", [
+      {
+        text: "Cancel",
+        onPress: () => {
+          // props.onPressDelete(phoneNumber);
+        },
+      },
+      {
+        text: "OK",
+        onPress: () => {
+          const q = query(
+            collection(db, "ListTrip"),
+            where("idCustomer", "==", phoneNumber),
+            where("status", "==", "waiting"),
+            where("isScheduled", "==", "false")
+          );
+          const unsubscribe = onSnapshot(q, (querySnapshot) => {
+            if (!querySnapshot.empty) {
+              const tripId = querySnapshot.docs[0].id;
+              setIDTrip(tripId);
+            }
+          });
+          if (idTrip != "") {
+            deleteDoc(doc(db, "ListTrip", idTrip));
+            navigation.navigate("Home");
+          }
+          return () => unsubscribe();
+        },
+      },
+    ]);
   };
 
   const chooseFromMapHandler = () => {

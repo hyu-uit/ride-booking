@@ -25,9 +25,8 @@ import DeliveryImg from "../assets/images/delivery_1.png";
 import { TouchableWithoutFeedback } from "react-native";
 import { Keyboard } from "react-native";
 import LottieView from "lottie-react-native";
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
 import { getFromAsyncStorage } from "../helper/asyncStorage";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { useState } from "react";
 import {
   collection,
@@ -41,8 +40,21 @@ import {
 import { db } from "../config/config";
 import { useFocusEffect } from "@react-navigation/native";
 import { useTranslation } from "react-i18next";
+import { BookingContext, SET_BOOKING_DETAILS } from "../context/BookingContext";
+
+const bookingDefaultValue = {
+  price: 0,
+  paymentMethod: "", // momo or cash
+  distance: 0, // km
+  time: 0, // minute (travel time from a to b)
+  date: "", // date booking format 15:00 12/05/2002
+  promotion: 0, // price - promotion = final price
+  ratingType: "", // disappointed or normal or love
+  serviceRatings: null, // for example Good service, Well prepared, Punctuality,...
+};
 
 export default function Home({ navigation, route }) {
+  const { dispatch } = useContext(BookingContext);
   const [phone, setPhone] = useState("");
   const [historyTrips, setHistoryTrips] = useState([]);
   const [name, SetName] = useState(null);
@@ -81,6 +93,8 @@ export default function Home({ navigation, route }) {
 
   useEffect(() => {
     fetchDataAndPhoneNumber();
+
+    dispatch({ type: SET_BOOKING_DETAILS, payload: bookingDefaultValue });
   }, [phone]);
 
   const fetchDataAndPhoneNumber = async () => {
@@ -96,6 +110,7 @@ export default function Home({ navigation, route }) {
       console.log(err);
     }
   };
+
   const fetchData = async (phoneNumber) => {
     try {
       const unsubscribe = onSnapshot(
@@ -115,34 +130,35 @@ export default function Home({ navigation, route }) {
   };
   //const {phoneNumber, role} = route.params;
   const getHistoryTrips = () => {
-    const querySnapshot = query(collection(db, "ListTrip"), 
-    where("status","==","done"),
-    where("isScheduled","==","false"),
-    where("idCustomer", "==", phone),
-    )
+    const querySnapshot = query(
+      collection(db, "ListTrip"),
+      where("status", "==", "done"),
+      where("isScheduled", "==", "false"),
+      where("idCustomer", "==", phone)
+    );
     const unsubscribe = onSnapshot(querySnapshot, (snapshot) => {
       let historyTrips = [];
       snapshot.forEach((doc) => {
-          historyTrips.push({
-            idCustomer: doc.data().idCustomer,
-            idTrip: doc.id,
-            pickUpLat: doc.data().pickUpLat,
-            pickUpLong: doc.data().pickUpLong,
-            destLat: doc.data().destLat,
-            destLong: doc.data().destLong,
-            date: doc.data().date,
-            time: doc.data().time,
-            datePickUp: doc.data().datePickUp,
-            timePickUp: doc.data().timePickUp,
-            pickUpAddress:doc.data().pickUpAddress,
-            destAddress:doc.data().destAddress,
-            totalPrice: doc.data().totalPrice,
-            distance: doc.data().distance,
-          });
+        historyTrips.push({
+          idCustomer: doc.data().idCustomer,
+          idTrip: doc.id,
+          pickUpLat: doc.data().pickUpLat,
+          pickUpLong: doc.data().pickUpLong,
+          destLat: doc.data().destLat,
+          destLong: doc.data().destLong,
+          date: doc.data().date,
+          time: doc.data().time,
+          datePickUp: doc.data().datePickUp,
+          timePickUp: doc.data().timePickUp,
+          pickUpAddress: doc.data().pickUpAddress,
+          destAddress: doc.data().destAddress,
+          totalPrice: doc.data().totalPrice,
+          distance: doc.data().distance,
+        });
       });
       setHistoryTrips(historyTrips);
     });
-      return () => {
+    return () => {
       unsubscribe();
     };
   };

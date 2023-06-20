@@ -117,10 +117,12 @@ const LocationCardCost = ({ onClickContinue, onPressBack }) => {
           </VStack>
           <VStack marginLeft={"auto"}>
             <Text fontSize={SIZES.h2} color={"white"} bold>
-              {calculateFinalPrice(
-                booking.bookingDetails.price,
-                booking.bookingDetails.promotion
-              )}
+              {parseInt(
+                calculateFinalPrice(
+                  booking.bookingDetails.price,
+                  booking.bookingDetails.promotion
+                )
+              ).toLocaleString()}
               đ
             </Text>
             {booking.bookingDetails.promotion > 0 ? (
@@ -130,7 +132,7 @@ const LocationCardCost = ({ onClickContinue, onPressBack }) => {
                 strikeThrough
                 textAlign={"right"}
               >
-                {booking.bookingDetails.price}đ
+                {parseInt(booking.bookingDetails.price).toLocaleString()}đ
               </Text>
             ) : null}
           </VStack>

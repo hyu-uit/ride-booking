@@ -23,26 +23,26 @@ import { db } from "../../config/config";
 import { useContext } from "react";
 import { BookingContext } from "../../context/BookingContext";
 
-const OnTheWayCard = ({ onPressCancel, onPressInfo, idRider}) => {
+const OnTheWayCard = ({ onPressCancel, onPressInfo, idRider }) => {
   const [name, setName] = useState("");
   const [school, setSchool] = useState("");
   const [licensePlates, setLicense] = useState("");
   const [transportType, setTransport] = useState("");
   const [portrait, setAvt] = useState(null);
-  const { booking } = useContext(BookingContext);  
+  const { booking } = useContext(BookingContext);
 
   useEffect(() => {
     getRider();
   }, [idRider]);
   const getRider = () => {
-    console.log(idRider)
+    console.log(idRider);
     getDoc(doc(db, "Rider", idRider)).then((docData) => {
       if (docData.exists()) {
         setName(docData.data().displayName);
-        setAvt(docData.data().portrait)
+        setAvt(docData.data().portrait);
         setSchool(docData.data().school);
         setLicense(docData.data().licensePlates);
-        setTransport(docData.data().transportType)
+        setTransport(docData.data().transportType);
       }
     });
   };
@@ -97,7 +97,7 @@ const OnTheWayCard = ({ onPressCancel, onPressInfo, idRider}) => {
           >
             <Image
               alt="avatar"
-              source={{uri:portrait}}
+              source={{ uri: portrait }}
               style={{
                 width: 45,
                 height: 45,
@@ -172,7 +172,7 @@ const OnTheWayCard = ({ onPressCancel, onPressInfo, idRider}) => {
                   fontWeight: "bold",
                 }}
               >
-               {transportType}
+                {transportType}
               </Text>
             </VStack>
           </HStack>
@@ -238,7 +238,10 @@ const OnTheWayCard = ({ onPressCancel, onPressInfo, idRider}) => {
               fontWeight: "bold",
             }}
           >
-            {booking.bookingDetails.price-booking.bookingDetails.promotion}đ
+            {parseInt(
+              booking.bookingDetails.price - booking.bookingDetails.promotion
+            ).toLocaleString()}
+            đ
           </Text>
           <Text
             style={{
@@ -248,7 +251,7 @@ const OnTheWayCard = ({ onPressCancel, onPressInfo, idRider}) => {
               textDecorationLine: "line-through",
             }}
           >
-            {booking.bookingDetails.price}đ
+            {parseInt(booking.bookingDetails.price)}đ
           </Text>
         </VStack>
       </HStack>

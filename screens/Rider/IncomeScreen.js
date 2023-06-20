@@ -54,7 +54,7 @@ const IncomeScreen = () => {
       (tempDate.getMonth() + 1) +
       "/" +
       tempDate.getFullYear();
-      setText(fDate)
+    setText(fDate);
     fetchDataAndPhoneNumber();
   }, [phoneNumber, text, selectedTime]);
 
@@ -321,7 +321,7 @@ const IncomeScreen = () => {
             justifyContent: "center",
           }}
         >
-          {value}
+          {parseInt(value).toLocaleString()}đ
         </Text>
       </VStack>
     );

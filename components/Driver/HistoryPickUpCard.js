@@ -87,7 +87,7 @@ function HistoryPickUpCard(props, navigation) {
                 marginLeft: 5,
               }}
             >
-              {totalPrice}
+              {parseInt(totalPrice).toLocaleString()}đ
             </Text>
           </HStack>
           {/* <Text paddingLeft={26} style={styles.detailText}>
