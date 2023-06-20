@@ -43,9 +43,12 @@ function BookingCard(props) {
 
   const { onPress, sta } = props;
   useEffect(() => {
-    getNameRider();
+    if(idRider!=null&&idRider!=""){
+      getNameRider();
+    }
+    console.log(idRider)
     setState(sta);
-  }, []);
+  }, [idRider]);
   const getNameRider = () => {
     getDoc(doc(db, "Rider", idRider)).then((docData) => {
       if (docData.exists()) {
@@ -68,9 +71,9 @@ function BookingCard(props) {
     >
       <TouchableOpacity onPress={onPress}>
         <HStack w={"full"}>
-          <Avatar source={{ uri: avt }} margin={"10px 0 0 10px"} />
           {state === 1 ? (
             <>
+            <Avatar source={{ uri: avt }} margin={"10px 0 0 10px"} />
               <VStack margin={"10px 0 0 10px"}>
                 <Text bold fontSize={SIZES.h4} color={"white"}>
                   {licensePlates}
@@ -82,6 +85,7 @@ function BookingCard(props) {
             </>
           ) : (
             <>
+           <Avatar source={{ }} margin={"10px 0 0 10px"} />
               <VStack margin={"10px 0 0 10px"}>
                 <Text bold fontSize={SIZES.h4} color={"white"}>
                   {t("waiting")}
@@ -96,7 +100,7 @@ function BookingCard(props) {
               {t("pickUp")}
             </Text>
             <Text bold fontSize={10} color={"white"}>
-            {pickUpAddress.length > 10 ? pickUpAddress.substring(0, 10) + "..." : pickUpAddress}
+            { pickUpAddress.length > 10 ? pickUpAddress.substring(0, 10) + "..." : pickUpAddress}
             </Text>
           </VStack>
           <VStack>
@@ -104,7 +108,7 @@ function BookingCard(props) {
               {t("des")}
             </Text>
             <Text bold fontSize={10} color={"white"}>
-            {destAddress.length > 10 ? destAddress.substring(0, 10) + "..." : destAddress}
+            { destAddress.length > 10 ? destAddress.substring(0, 10) + "..." : destAddress}
             </Text>
           </VStack>
 

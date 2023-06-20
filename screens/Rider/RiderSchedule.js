@@ -125,6 +125,7 @@ const RiderSchedule = ({ navigation }) => {
             onPress={() => {
               const data = {
                 idTrip: "" + item.idTrip,
+                isRead: true,
               };
               navigation.navigate("TripDetail", data);
             }}

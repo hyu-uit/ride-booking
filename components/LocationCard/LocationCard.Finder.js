@@ -18,17 +18,55 @@ import { SIZES } from "../../constants/theme";
 import { useTranslation } from "react-i18next";
 import { isNullOrEmpty } from "../../helper/helper";
 import { BookingContext } from "../../context/BookingContext";
-import { collection, doc, onSnapshot, query, where } from "firebase/firestore";
+import { collection, deleteDoc, doc, onSnapshot, query, where } from "firebase/firestore";
 import { useState } from "react";
 import { useEffect } from "react";
 import { db } from "../../config/config";
+import { Alert } from "react-native";
 
 const LocationCardFinder = ({ onPressCancel, phoneNumber, navigation }) => {
   const { t } = useTranslation();
   const { booking } = useContext(BookingContext);
   const [tripDetail, setTripDetail] = useState([]);
+  const [timer, setTimer] = useState(null);
+  const [isScheduled, setIsScheduled] = useState(null);
+
+  console.log(isScheduled)
+  useEffect(() => {
+    // Start the timer when the component mounts
+    const timerId = setTimeout(() => {
+      if (isScheduled  === "false") {
+      Alert.alert(
+        "Riders seem busy now",
+        "Please try again.",
+        [
+          {
+            text: "OK",
+            onPress: () => {
+              deleteDoc(doc(db, "ListTrip", booking.bookingDetails.idTrip));
+              navigation.navigate("Home");
+            },
+          },
+        ],
+        { cancelable: false }
+      );
+      }
+    }, 60000); // 3 minutes
+    // Clear the timer when the component unmounts
+    return () => {
+      clearTimeout(timerId);
+    };
+  }, [isScheduled]);
 
   useEffect(() => {
+    // Clear the timer if updatedTrip.length > 0
+    if (tripDetail.length > 0) {
+      clearTimeout(timer);
+    }
+  }, [tripDetail]);
+
+  useEffect(() => {
+    
     // to ensure that when user switch from choose date to now that now still get current date
     console.log("finder use effectcall: ", booking.bookingDetails.idTrip);
     if (
@@ -50,29 +88,32 @@ const LocationCardFinder = ({ onPressCancel, phoneNumber, navigation }) => {
       doc(db, "ListTrip", booking.bookingDetails.idTrip),
       (querySnapshot) => {
         const updatedTrip = [];
+        
         const docData = querySnapshot.data();
-        console.log(docData.status)
-        if(docData.status=="accepted"){
-          const trip = {
-            idTrip: booking.bookingDetails.idTrip,
-            ...docData,
-          };
-          updatedTrip.push(trip);
-          setTripDetail(updatedTrip);
-
-          console.log(updatedTrip[0].idTrip)
-          if (updatedTrip.length > 0) {
-            const data = {
-              idRider: updatedTrip[0].idRider,
-              idTrip: updatedTrip[0].idTrip,
+        if(docData ){
+          setIsScheduled(docData.isScheduled)
+          if(docData.status=="accepted"){
+            const trip = {
+              idTrip: booking.bookingDetails.idTrip,
+              ...docData,
             };
-            navigation.navigate("BookingDriver", data);
+            updatedTrip.push(trip);
+            setTripDetail(updatedTrip);
+            console.log(updatedTrip[0].idTrip)
+            if (updatedTrip.length > 0) {
+              const data = {
+                idRider: updatedTrip[0].idRider,
+                idTrip: updatedTrip[0].idTrip,
+              };
+              navigation.navigate("BookingDriver", data);
+            }
           }
         }
+      },
+      (error)=>{
+        console.log("Error fetching trip data:", error);
       }
     );
-
-    
     return () => {
       unsubscribeTrip();
     };

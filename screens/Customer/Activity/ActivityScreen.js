@@ -62,18 +62,19 @@ const ActivityScreen = ({ navigation }) => {
     const waitingTripsQuery = query(
       collection(db, "ListTrip"),
       where("isScheduled", "==", "false"),
-      where("status", "==", "accepted"),
       where("idCustomer", "==", phoneNumber)
     );
 
     const unsubscribeTrip = onSnapshot(waitingTripsQuery, (querySnapshot) => {
       const updatedTrips = [];
       querySnapshot.forEach((doc) => {
-        const trip = {
-          idTrip: doc.id,
-          ...doc.data(),
-        };
-        updatedTrips.push(trip);
+        if(doc.data().status=="waiting"||doc.data().status=="accepted"){
+          const trip = {
+            idTrip: doc.id,
+            ...doc.data(),
+          };
+          updatedTrips.push(trip);
+        }
       });
       setWaitingTrips(updatedTrips);
     });
@@ -141,18 +142,23 @@ const ActivityScreen = ({ navigation }) => {
         horizontal={false}
         data={waitingTrips}
         keyExtractor={(item) => item.idTrip}
-        renderItem={({ item }) => (
+        renderItem={({ item }) => {
+          let sta = item.idRider ? 1 : 0;
+          console.log(sta)
+          return (
           <BookingCard
             onPress={() => {
               const data = {
                 idTrip: "" + item.idTrip,
+                idRider:""+item.idRider
               };
               navigation.navigate("ActivityDetail", data);
             }}
+            sta={sta}
             trip={item}
             key={item.idTrip}
           ></BookingCard>
-        )}
+        )}}
       ></FlatList>
     </VStack>
   );
@@ -173,6 +179,7 @@ const ActivityScreen = ({ navigation }) => {
             onPress={() => {
               const data = {
                 idTrip: "" + item.idTrip,
+                idRider:""+item.idRider
               };
               navigation.navigate("ActivityDetail", data);
             }}
@@ -198,6 +205,7 @@ const ActivityScreen = ({ navigation }) => {
             onPress={() => {
               const data = {
                 idTrip: "" + item.idTrip,
+                idRider:""+item.idRider
               };
               navigation.navigate("ActivityDetail", data);
             }}

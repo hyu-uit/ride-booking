@@ -236,7 +236,7 @@ export default function BookingScreen({ navigation }) {
             }
           });
           if (idTrip != "") {
-            deleteDoc(doc(db, "ListTrip", idTrip));
+            deleteDoc(doc(db, "ListTrip", booking.bookingDetails.idTrip));
             navigation.navigate("Home");
           }
           return () => unsubscribe();
