@@ -863,12 +863,6 @@ export default function BookingScreen({ navigation }) {
   function setCurrentUserLocation() {
     return getLocation()
       .then(({ latitude, longitude }) => {
-        console.log(
-          "🚀 ~ file: BookingScreen.js:60 ~ .then ~ latitude, longitude:",
-          latitude,
-          longitude
-        );
-
         dispatch({
           type: SET_INITIAL_LOCATION,
           payload: { latitude, longitude },

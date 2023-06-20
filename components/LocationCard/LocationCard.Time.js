@@ -57,7 +57,7 @@ const LocationCardTime = ({
   const handleDateChange = (_event, date) => {
     console.log(
       "🚀 ~ file: LocationCard.Time.js:53 ~ handleDateChange ~ date:",
-      date > new Date()
+      date >= new Date()
     );
     setShowDatePicker(false);
 
@@ -75,8 +75,9 @@ const LocationCardTime = ({
 
   const handleTimeChange = (_event, date) => {
     console.log(
-      "🚀 ~ file: LocationCard.Time.js:69 ~ handleTimeChange ~ date:",
-      date > new Date()
+      "🚀 ~ file: LocationCard.Time.js:69 ~ handleTimeChange ~ time:",
+      date > new Date(),
+      date
     );
     setShowTimePicker(false);
     setSelectedTime(date);
