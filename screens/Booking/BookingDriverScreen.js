@@ -34,10 +34,10 @@ const BookingDriverScreen = ({ navigation, route }) => {
   const [isModalInfoShow, setIsModalInfoShow] = useState(false);
   const { booking } = useContext(BookingContext);
   const [marker, setMarker] = useState({ longitude: 0, latitude: 0 });
-  const mapRef = useRef();
+  const mapRef = useRef(null);
   const { idRider, idTrip } = route.params;
   const [phoneNumber, setPhoneNumber] = useState([]);
-  const [tripDetail, setTripDetail] = useState([]);
+  const [tripDetail, setTripDetailDone] = useState([]);
 
   useEffect(() => {
     try {
@@ -97,27 +97,32 @@ const BookingDriverScreen = ({ navigation, route }) => {
   };
 
   const onFinishTrip = () => {
-    const finishTripQuery = query(
-      collection(db, "ListTrip"),
-      where("isScheduled", "==", "false"),
-      where("status", "in", ["done", "canceled"]),
-      where("idCustomer", "==", phoneNumber)
-    );
+    // const finishTripQuery = query(
+    //   collection(db, "ListTrip"),
+    //   where("isScheduled", "==", "false"),
+    //   where("status", "in", ["done","canceled"]),
+    //   where("idCustomer", "==", phoneNumber)
+    // );
 
-    const unsubscribeTrip = onSnapshot(finishTripQuery, (querySnapshot) => {
-      const updatedTrip = [];
-      querySnapshot.forEach((doc) => {
+    const unsubscribeTrip = onSnapshot(
+      doc(db, "ListTrip", idTrip),
+      (querySnapshot) => {
+        const updatedTrip = [];
+        const docData = querySnapshot.data();
         const trip = {
-          idTrip: doc.id,
-          ...doc.data(),
+          idTrip: docData.id,
+          ...docData,
         };
         updatedTrip.push(trip);
-      });
-      setTripDetail(updatedTrip);
-      if (updatedTrip.length > 0) {
-        setStep(2);
+        setTripDetailDone(updatedTrip);
+        if (
+          updatedTrip[0].status == "done" ||
+          updatedTrip[0].status == "canceled"
+        ) {
+          setStep(2);
+        }
       }
-    });
+    );
     return () => {
       unsubscribeTrip();
     };
@@ -176,6 +181,7 @@ const BookingDriverScreen = ({ navigation, route }) => {
         return (
           <>
             <MapView
+              ref={mapRef}
               style={{ height: "50%", borderRadius: 10 }}
               provider="google"
               region={booking.region}

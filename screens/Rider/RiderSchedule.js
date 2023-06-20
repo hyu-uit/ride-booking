@@ -92,7 +92,7 @@ const RiderSchedule = ({ navigation }) => {
     const waitingTripsQuery = query(
       collection(db, "ListTrip"),
       where("idRider", "==", phoneNumber),
-      where("status", "==", "confirmed"),
+      where("status", "==", "accepted"),
       where("isScheduled", "==", "true")
     );
 

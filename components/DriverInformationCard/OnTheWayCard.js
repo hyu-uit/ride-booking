@@ -200,7 +200,7 @@ const OnTheWayCard = ({ onPressCancel, onPressInfo, idRider }) => {
                 fontWeight: "bold",
               }}
             >
-              {booking.bookingDetails.distance}
+              {booking.bookingDetails.distance}km
             </Text>
           </HStack>
           <HStack space={3}>
@@ -219,7 +219,7 @@ const OnTheWayCard = ({ onPressCancel, onPressInfo, idRider }) => {
                 fontWeight: "bold",
               }}
             >
-              5 {t("minutes")}
+              {booking.bookingDetails.time} {t("minutes")}
             </Text>
           </HStack>
         </VStack>
