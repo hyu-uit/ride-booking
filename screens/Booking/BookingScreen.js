@@ -15,7 +15,7 @@ import {
 } from "native-base";
 import { SafeAreaView } from "react-native-safe-area-context";
 import MapView, { Marker, Polyline } from "react-native-maps";
-import { Keyboard, TouchableWithoutFeedback } from "react-native";
+import { Alert, Keyboard, TouchableWithoutFeedback } from "react-native";
 import LocationCardWithChange from "../../components/LocationCard/LocationCardWithChange";
 import SelectedButton from "../../components/Button/SelectedButton";
 import LocationCardTime from "../../components/LocationCard/LocationCard.Time";
@@ -207,23 +207,36 @@ export default function BookingScreen({ navigation }) {
   }, [focusInput]);
 
   const onCancel = () => {
-    const q = query(
-      collection(db, "ListTrip"),
-      where("idCustomer", "==", phoneNumber),
-      where("status", "==", "waiting"),
-      where("isScheduled", "==", "false")
-    );
-    const unsubscribe = onSnapshot(q, (querySnapshot) => {
-      if (!querySnapshot.empty) {
-        const tripId = querySnapshot.docs[0].id;
-        setIDTrip(tripId);
-      }
-    });
-    if (idTrip != "") {
-      deleteDoc(doc(db, "ListTrip", idTrip));
-      navigation.navigate("Home");
-    }
-    return () => unsubscribe();
+    Alert.alert("Are you want to cancel this trip?", "", [
+      {
+        text: "Cancel",
+        onPress: () => {
+          // props.onPressDelete(phoneNumber);
+        },
+      },
+      {
+        text: "OK",
+        onPress: () => {
+          const q = query(
+            collection(db, "ListTrip"),
+            where("idCustomer", "==", phoneNumber),
+            where("status", "==", "waiting"),
+            where("isScheduled", "==", "false")
+          );
+          const unsubscribe = onSnapshot(q, (querySnapshot) => {
+            if (!querySnapshot.empty) {
+              const tripId = querySnapshot.docs[0].id;
+              setIDTrip(tripId);
+            }
+          });
+          if (idTrip != "") {
+            deleteDoc(doc(db, "ListTrip", idTrip));
+            navigation.navigate("Home");
+          }
+          return () => unsubscribe();
+        },
+      },
+    ]);
   };
 
   const chooseFromMapHandler = () => {

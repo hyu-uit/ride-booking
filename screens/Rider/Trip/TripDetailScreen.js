@@ -121,11 +121,17 @@ const TripDetailScreen = ({ navigation, route }) => {
             display: state === 1 ? "none" : "flex",
           }}
         >
-          <ButtonBack
-            onPress={() => {
-              navigation.goBack();
-            }}
-          />
+          {tripData.status !== "accepted" || tripData.status !== "waiting" ? (
+            <>
+              <ButtonBack
+                onPress={() => {
+                  navigation.goBack();
+                }}
+              />
+            </>
+          ) : (
+            <></>
+          )}
         </View>
         {tripData.destLat &&
         tripData.pickUpLat &&

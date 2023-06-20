@@ -9,7 +9,7 @@ import {
   VStack,
   View,
 } from "native-base";
-import { TouchableOpacity, StyleSheet } from "react-native";
+import { TouchableOpacity, StyleSheet, Alert } from "react-native";
 import { COLORS, FONTS } from "../../constants/theme";
 import locationLineIcon from "../../assets/location-line.png";
 import { useState } from "react";
@@ -64,16 +64,29 @@ function ReceivedTripCard(props) {
   };
 
   const setStatusCancel = () => {
-    removeValue("riderTripId");
-    updateDoc(doc(db, "ListTrip", idTrip), {
-      status: "canceled",
-      isRiderCancel: true,
-    });
-    console.log(idRider);
-    updateDoc(doc(db, "Rider", idRider), {
-      cancel: increment(1),
-    });
-    completeTrip();
+    Alert.alert("Are you want to cancel this trip?", "", [
+      {
+        text: "Cancel",
+        onPress: () => {
+          // props.onPressDelete(phoneNumber);
+        },
+      },
+      {
+        text: "OK",
+        onPress: () => {
+          removeValue("riderTripId");
+          updateDoc(doc(db, "ListTrip", idTrip), {
+            status: "canceled",
+            isRiderCancel: true,
+          });
+          console.log(idRider);
+          updateDoc(doc(db, "Rider", idRider), {
+            cancel: increment(1),
+          });
+          completeTrip();
+        },
+      },
+    ]);
   };
 
   const setStatusComplete = () => {
@@ -191,7 +204,7 @@ function ReceivedTripCard(props) {
       <View
         bgColor={COLORS.tertiary}
         w={"100%"}
-        h={isRead ? 180 : 260}
+        h={isRead ? 180 : 280}
         borderTopRadius={20}
         position={"absolute"}
         bottom={0}
@@ -221,6 +234,7 @@ function ReceivedTripCard(props) {
             style={{
               marginHorizontal: 26,
               marginVertical: 15,
+              marginBottom: 10,
               alignItems: "center",
               justifyContent: "space-between",
             }}
