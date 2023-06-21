@@ -54,21 +54,21 @@ const ActivityScreen = ({ navigation }) => {
       setPhone(phoneNumberValue);
 
       if (phoneNumberValue) {
-        getWaitingTrips();
-        getConfirmedTrips();
-        getCanceledTrips();
+        getWaitingTrips(phoneNumberValue);
+        getConfirmedTrips(phoneNumberValue);
+        getCanceledTrips(phoneNumberValue);
       }
     } catch (err) {
       console.log(err);
     }
   };
 
-  const getWaitingTrips = () => {
+  const getWaitingTrips = (phoneNumberValue) => {
     console.log(phoneNumber);
     const waitingTripsQuery = query(
       collection(db, "ListTrip"),
       where("isScheduled", "==", "false"),
-      where("idCustomer", "==", phoneNumber)
+      where("idCustomer", "==", phoneNumberValue)
     );
 
     const unsubscribeTrip = onSnapshot(waitingTripsQuery, (querySnapshot) => {
@@ -90,12 +90,12 @@ const ActivityScreen = ({ navigation }) => {
     };
   };
 
-  const getConfirmedTrips = () => {
+  const getConfirmedTrips = (phoneNumberValue) => {
     const confirmTripQuery = query(
       collection(db, "ListTrip"),
       where("isScheduled", "==", "false"),
       where("status", "==", "done"),
-      where("idCustomer", "==", phoneNumber)
+      where("idCustomer", "==", phoneNumberValue)
     );
 
     const unsubscribeTrip = onSnapshot(confirmTripQuery, (querySnapshot) => {
@@ -114,12 +114,12 @@ const ActivityScreen = ({ navigation }) => {
       unsubscribeTrip();
     };
   };
-  const getCanceledTrips = () => {
+  const getCanceledTrips = (phoneNumberValue) => {
     const cancelQuery = query(
       collection(db, "ListTrip"),
       where("isScheduled", "==", "false"),
       where("status", "==", "canceled"),
-      where("idCustomer", "==", phoneNumber)
+      where("idCustomer", "==", phoneNumberValue)
     );
 
     const unsubscribeTrip = onSnapshot(cancelQuery, (querySnapshot) => {
