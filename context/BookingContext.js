@@ -39,6 +39,26 @@ const initialState = {
   routing: null, // to draw line on map
 };
 
+export const destLocationDefault = {
+  destinationLocation: {
+    name: "",
+    address: "",
+    latitude: 0, // Initial latitude
+    longitude: 0, // Initial longitude
+  }, // Initial user location
+};
+
+export const bookingDefaultValue = {
+  price: 0,
+  paymentMethod: "", // momo or cash
+  distance: 0, // km
+  time: 0, // minute (travel time from a to b)
+  date: "", // date booking format 15:00 12/05/2002
+  promotion: 0, // price - promotion = final price
+  ratingType: "", // disappointed or normal or love
+  serviceRatings: null, // for example Good service, Well prepared, Punctuality,...
+};
+
 export const SET_STEP = "SET_STEP";
 export const BACK_STEP = "BACK_STEP";
 export const SET_SHOW_MODAL_CANCEL = "SET_SHOW_MODAL_CANCEL";

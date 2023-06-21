@@ -44,19 +44,9 @@ import {
   BookingContext,
   SET_BOOKING_DETAILS,
   SET_PICK_UP_LOCATION,
+  bookingDefaultValue,
 } from "../context/BookingContext";
 import { getLocation } from "../helper/location";
-
-const bookingDefaultValue = {
-  price: 0,
-  paymentMethod: "", // momo or cash
-  distance: 0, // km
-  time: 0, // minute (travel time from a to b)
-  date: "", // date booking format 15:00 12/05/2002
-  promotion: 0, // price - promotion = final price
-  ratingType: "", // disappointed or normal or love
-  serviceRatings: null, // for example Good service, Well prepared, Punctuality,...
-};
 
 export default function Home({ navigation, route }) {
   const { dispatch } = useContext(BookingContext);

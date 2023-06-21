@@ -63,8 +63,6 @@ import { Dimensions } from "react-native";
 import { getFromAsyncStorage } from "../../helper/asyncStorage";
 import { Ionicons } from "@expo/vector-icons";
 import { convertToDate, convertToTime } from "../../helper/moment";
-import { Linking } from "react-native";
-import { NativeModules } from "react-native";
 
 export const PICK_UP_INPUT = "PICK_UP_INPUT";
 export const DESTINATION_INPUT = "DESTINATION_INPUT";
@@ -224,11 +222,25 @@ export default function BookingScreen({ navigation }) {
   };
 
   const chooseFromMapHandler = () => {
-    setCurrentUserLocation();
+    //setCurrentUserLocation();
+    console.log(booking.pickUpLocation);
     setStep(2);
   };
 
-  const hanldeConfirmFromMap = () => {
+  const handleConfirmFromMap = () => {
+    if (focusInput === DESTINATION_INPUT)
+      if (
+        markerPosition.latitude === booking.pickUpLocation.latitude &&
+        markerPosition.longitude === booking.pickUpLocation.longitude
+      ) {
+        Alert.alert("Please choose destination location", "", [
+          {
+            text: "OK",
+            onPress: () => {},
+          },
+        ]);
+        return;
+      }
     checkUserLocationEnable().then((isEnabled) => {
       if (isEnabled) {
         if (focusInput === DESTINATION_INPUT) {
@@ -251,8 +263,6 @@ export default function BookingScreen({ navigation }) {
               "🚀 ~ file: BookingScreen.js:174 ~ hanldeConfirmFromMap ~ markerPosition:",
               markerPosition
             );
-
-            console.log(booking);
 
             getRoutingFromCoordinates(booking.pickUpLocation, markerPosition)
               .then((routing) => {
@@ -325,6 +335,7 @@ export default function BookingScreen({ navigation }) {
             type: SET_PICK_UP_LOCATION,
             payload: { ...markerPosition },
           });
+          console.log("337", markerPosition);
           setFocusInput(DESTINATION_INPUT);
         }
         setStep(1);
@@ -441,7 +452,7 @@ export default function BookingScreen({ navigation }) {
     function onPress() {
       const { phoneNumber, ...resCoords } = item;
       if (focusInput === PICK_UP_INPUT) {
-        setPickUpInput(item.name);
+        setPickUpInput(item.add);
         dispatch({
           type: SET_PICK_UP_LOCATION,
           payload: {
@@ -452,7 +463,7 @@ export default function BookingScreen({ navigation }) {
           },
         });
       } else {
-        setDestinationInput(item.name);
+        setDestinationInput(item.address);
         dispatch({
           type: SET_DESTINATION_LOCATION,
           payload: {
@@ -478,6 +489,7 @@ export default function BookingScreen({ navigation }) {
         longitude: parseFloat(item.long),
         name: item.name,
       });
+      setStep(2);
     }
 
     if (index === locations.length - 1) {
@@ -605,7 +617,7 @@ export default function BookingScreen({ navigation }) {
                 w={"90%"}
                 borderRadius={10}
                 bgColor={COLORS.primary}
-                onPress={hanldeConfirmFromMap}
+                onPress={handleConfirmFromMap}
                 mb={8}
               >
                 <Text fontSize={SIZES.h5} bold color={"white"}>
