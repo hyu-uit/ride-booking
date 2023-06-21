@@ -35,7 +35,7 @@ const LocationCardFinder = ({ onPressCancel, phoneNumber, navigation }) => {
   useEffect(() => {
     // Start the timer when the component mounts
     const timerId = setTimeout(() => {
-      if (isScheduled  === "false") {
+      if (isScheduled  === "false"&& (tripDetail!=[])) {
       Alert.alert(
         "Riders seem busy now",
         "Please try again.",
