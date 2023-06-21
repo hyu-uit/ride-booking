@@ -103,19 +103,6 @@ export const centerMapToCoordinates = (
   });
 };
 
-export const animateToCoordinate = (mapRef, latitude, longitude) => {
-  if (mapRef)
-    mapRef.current.animateToRegion(
-      {
-        latitude,
-        longitude,
-        latitudeDelta: 0.04,
-        longitudeDelta: 0.04,
-      },
-      1000 // Duration of the animation in milliseconds
-    );
-};
-
 export const calculateMapDelta = (marker1, marker2, paddingPercentage) => {
   const { latitude: lat1, longitude: lon1 } = marker1;
   const { latitude: lat2, longitude: lon2 } = marker2;

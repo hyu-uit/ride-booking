@@ -15,7 +15,14 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
 import { useEffect } from "react";
-import { deleteDoc, doc, getDoc, increment, onSnapshot, updateDoc } from "firebase/firestore";
+import {
+  deleteDoc,
+  doc,
+  getDoc,
+  increment,
+  onSnapshot,
+  updateDoc,
+} from "firebase/firestore";
 import { db } from "../../../config/config";
 import { useTranslation } from "react-i18next";
 import { Platform } from "react-native";
@@ -27,14 +34,14 @@ const ActivityDetailScreen = ({ navigation, route }) => {
   const contentHeight = Dimensions.get("window").height;
   const { t } = useTranslation();
 
-  console.log(tripData.status)
+  console.log(tripData.status);
   // const API_KEY = "AIzaSyDEokOCthVrnmMPiI_fLEZKQtV1SjFvjxQ";
   // const API_KEY = "AIzaSyA_suPUj4xs62VSz5pbRPQ1R-9Bk9Nh6dY";
   // const API_KEY = "AIzaSyAeoFwgal1syynMHwIR8zBa770UPiaFLFw";
   useEffect(() => {
-    if(idRider!=null&&idRider!=""){
+    if (idRider != null && idRider != "") {
       getTripHasRider();
-    }else{
+    } else {
       getTrip();
     }
   }, [idTrip, idRider]);
@@ -70,7 +77,7 @@ const ActivityDetailScreen = ({ navigation, route }) => {
               school: docData.data().school,
               destAddress: tripData.data().destAddress,
               pickUpAddress: tripData.data().pickUpAddress,
-              status:tripData.data().status
+              status: tripData.data().status,
             };
 
             setTrip(data);
@@ -82,7 +89,7 @@ const ActivityDetailScreen = ({ navigation, route }) => {
   const getTrip = () => {
     let data = {};
     const tripDocRef = doc(db, "ListTrip", idTrip);
-    
+
     const unsubscribe = onSnapshot(tripDocRef, (tripData) => {
       console.log(
         "🚀 ~ file: ActivityDetailScreen.js:41 ~ onSnapshot ~ tripData.data():",
@@ -91,7 +98,7 @@ const ActivityDetailScreen = ({ navigation, route }) => {
       if (tripData.exists()) {
         data = {
           idCustomer: tripData.data().idCustomer,
-          idRider:tripData.data().idRider,
+          idRider: tripData.data().idRider,
           idTrip: tripData.id,
           pickUpLat: parseFloat(tripData.data().pickUpLat),
           pickUpLong: parseFloat(tripData.data().pickUpLong),
@@ -103,31 +110,32 @@ const ActivityDetailScreen = ({ navigation, route }) => {
           distance: tripData.data().distance,
           destAddress: tripData.data().destAddress,
           pickUpAddress: tripData.data().pickUpAddress,
-          status:tripData.data().status
+          status: tripData.data().status,
         };
         setTrip(data);
-       }
+      }
     });
     // Clean up the snapshot listener when the component unmounts or idTrip changes
     return () => {
       unsubscribe();
     };
   };
-  const onPressCancel = ()=>{
-    if(tripData.status==="waiting"){
-      deleteDoc(doc(db,"ListTrip",idTrip))
-    }else if(tripData.status==="accepted"){
-      updateDoc(doc(db,"ListTrip",idTrip),{
-        status:"canceled" 
-      })
-      updateDoc(doc(db,"Customer",tripData.idCustomer),{
-        cancel:increment(1)
-      })
-      navigation.goBack()
-    }else{
-      navigation.navigate("Booking")
+  const onPressCancel = () => {
+    if (tripData.status === "waiting") {
+      deleteDoc(doc(db, "ListTrip", idTrip));
+      navigation.goBack();
+    } else if (tripData.status === "accepted") {
+      updateDoc(doc(db, "ListTrip", idTrip), {
+        status: "canceled",
+      });
+      updateDoc(doc(db, "Customer", tripData.idCustomer), {
+        cancel: increment(1),
+      });
+      navigation.goBack();
+    } else {
+      navigation.navigate("Booking");
     }
-  }
+  };
   return (
     <VStack h={"100%"} bgColor={COLORS.background}>
       <SafeAreaView style={{ flex: 1 }}>
@@ -429,7 +437,9 @@ const ActivityDetailScreen = ({ navigation, route }) => {
               onPress={onPressCancel}
             >
               <Text style={{ ...FONTS.h2, color: COLORS.white }}>
-              {tripData.status === "accepted" ||tripData.status==="waiting" ? t("cancel") : t("reBooking")}
+                {tripData.status === "accepted" || tripData.status === "waiting"
+                  ? t("cancel")
+                  : t("reBooking")}
               </Text>
             </Button>
           </ScrollView>

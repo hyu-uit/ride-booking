@@ -8,11 +8,7 @@ import { db } from "../../../config/config";
 import { Dimensions, Platform } from "react-native";
 import ReceivedTripCard from "../../../components/Driver/ReceivedTripCard";
 import MapView, { Marker, Polyline } from "react-native-maps";
-import {
-  animateToCoordinate,
-  calculateMapDelta,
-  requestLocationPermissions,
-} from "../../../helper/location";
+import { requestLocationPermissions } from "../../../helper/location";
 import { Text } from "react-native";
 import { LocationAccuracy, watchPositionAsync } from "expo-location";
 
@@ -61,7 +57,6 @@ const TripDetailScreen = ({ navigation, route }) => {
               latitude,
               longitude
             );
-            animateToCoordinate(mapRef, latitude, longitude);
             setCustomerLocation({ latitude, longitude });
           }
         );

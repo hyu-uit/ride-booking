@@ -51,26 +51,39 @@ function HistoryPickUpCard(props, navigation) {
     >
       <TouchableOpacity onPress={onPress}>
         <VStack space={1} paddingRight={26}>
-        <HStack paddingLeft={26} space={12} f alignItems={"center"}>
-        <Text
-            mt={2}
-            mb={2}
-            style={{ color: COLORS.lightGrey, ...FONTS.body6 }}
-          >
-            {idTrip}
-          </Text>
-          <View ml={12}  justifyItems={"flex-end"} style={{  backgroundColor: isScheduled === "true" ? COLORS.red : COLORS.primary, borderRadius:20 }}>
-          <Text
-            ml={2}
-            mr={2}
-
-            style={{ color: COLORS.white, ...FONTS.body6 }}
-          >
-               {isScheduled === "false" ? "unscheduled" : "scheduled"} 
-          </Text>
-          </View>
-          </HStack>
           <HStack paddingLeft={26} space={12} f alignItems={"center"}>
+            <Text
+              mt={2}
+              mb={2}
+              style={{ color: COLORS.lightGrey, ...FONTS.body6 }}
+            >
+              {idTrip}
+            </Text>
+            <View
+              ml={12}
+              justifyItems={"flex-end"}
+              style={{
+                backgroundColor:
+                  isScheduled === "true" ? COLORS.red : COLORS.primary,
+                borderRadius: 20,
+              }}
+            >
+              <Text
+                ml={2}
+                mr={2}
+                style={{ color: COLORS.white, ...FONTS.body6 }}
+              >
+                {isScheduled === "false" ? "unscheduled" : "scheduled"}
+              </Text>
+            </View>
+          </HStack>
+          <HStack
+            paddingLeft={26}
+            space={12}
+            f
+            alignItems={"center"}
+            justifyContent={"space-between"}
+          >
             <Text
               color={COLORS.white}
               style={{

@@ -24,7 +24,7 @@ const initialState = {
     longitude: 0, // Initial longitude
   }, // Initial user location
   bookingDetails: {
-    idTrip:"",
+    idTrip: "",
     price: 0,
     paymentMethod: "", // momo or cash
     distance: 0, // km
@@ -33,6 +33,7 @@ const initialState = {
     promotionName: "",
     promotion: 0, // price - promotion = final price
     ratingType: "", // disappointed or normal or love
+    isScheduled: false,
   },
   isModalCancelShow: false,
   routing: null, // to draw line on map

@@ -356,7 +356,8 @@ const RiderHomeScreen = ({ navigation, route }) => {
     const finishedTripsQuery = query(
       collection(db, "ListTrip"),
       where("idRider", "==", phoneNumber),
-      where("status", "==", "done")
+      where("status", "==", "done"),
+      where("isScheduled", "==", "false")
     );
 
     const unsubscribeTrip = onSnapshot(finishedTripsQuery, (querySnapshot) => {
@@ -380,7 +381,8 @@ const RiderHomeScreen = ({ navigation, route }) => {
     const canceledTripsQuery = query(
       collection(db, "ListTrip"),
       where("idRider", "==", phoneNumber),
-      where("status", "==", "canceled")
+      where("status", "==", "canceled"),
+      where("isScheduled", "==", "false")
     );
     const unsubscribeTrip = onSnapshot(canceledTripsQuery, (querySnapshot) => {
       const updatedTrips = [];

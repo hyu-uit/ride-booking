@@ -48,7 +48,7 @@ function WaitingForRiderCard(props) {
   //   if (!isModalVisible) {
   //     setModalVisible(false); // Đóng modal
   //   }
-    
+
   // }, [isModalVisible]);
   if (idTrip !== undefined) {
     getDoc(doc(db, "ListTrip", idTrip)).then((tripData) => {
@@ -69,10 +69,9 @@ function WaitingForRiderCard(props) {
       status: "accepted",
       idRider: phoneNumber,
     });
-    const data = { idTrip: "" + idTrip , state:1};
+    const data = { idTrip: "" + idTrip, state: 1 };
     navigation.navigate("TripDetail", data);
   };
-
 
   const setStatusReject = () => {
     setIsModalVisible(false);
@@ -82,7 +81,7 @@ function WaitingForRiderCard(props) {
     <View
       bgColor={COLORS.fourthary}
       w={"100%"}
-      h={303}
+      h={333}
       borderRadius={20}
       shadow={3}
     >
@@ -107,10 +106,10 @@ function WaitingForRiderCard(props) {
                 alignItems: "flex-end",
               }}
             >
-              {totalPrice}
+              {parseInt(totalPrice).toLocaleString()}đ
             </Text>
           </View>
-</HStack>
+        </HStack>
         <Text
           color={COLORS.lightGrey}
           style={{
@@ -128,7 +127,6 @@ function WaitingForRiderCard(props) {
       <View
         bgColor={COLORS.tertiary}
         w={"100%"}
-        h={210}
         borderRadius={20}
         position={"absolute"}
         bottom={0}
@@ -136,25 +134,26 @@ function WaitingForRiderCard(props) {
         <VStack marginTop={4} padding={2}>
           <HStack alignItems={"center"} w={"100%"}>
             <VStack space={5}>
-              <HStack alignItems={"center"}>
+              <HStack alignItems={"center"} w={"100%"}>
                 <Ionicons
                   name={"location-outline"}
                   size={20}
                   color={COLORS.white}
                 />
-                <VStack w={"100%"} pl={3}>
-                  <Text style={styles.titleText} w={"80%"}>
-                    Pickup - {pickUpAddress}
-                  </Text>
-                </VStack>
+                <Text
+                  style={styles.titleText}
+                  w={"90%"}
+                  bgColor={COLORS.red}
+                  ml={3}
+                >
+                  {pickUpAddress}
+                </Text>
               </HStack>
               <HStack alignItems={"center"}>
                 <Ionicons name={"pin-outline"} size={20} color={COLORS.white} />
-                <VStack>
-                  <Text style={styles.titleText} w={"80%"} pl={3}>
-                    Destination - {destAddress}
-                  </Text>
-                </VStack>
+                <Text style={styles.titleText} w={"90%"} ml={3}>
+                  Destination - {destAddress}
+                </Text>
               </HStack>
             </VStack>
           </HStack>

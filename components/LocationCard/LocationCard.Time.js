@@ -25,7 +25,10 @@ import {
 } from "../../helper/moment";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useTranslation } from "react-i18next";
-import { BookingContext } from "../../context/BookingContext";
+import {
+  BookingContext,
+  SET_BOOKING_DETAILS,
+} from "../../context/BookingContext";
 import { isNullOrEmpty } from "../../helper/helper";
 import { useContext } from "react";
 import { useEffect } from "react";
@@ -36,7 +39,7 @@ const LocationCardTime = ({
   onDateChange,
   onTimeChange,
 }) => {
-  const { booking } = useContext(BookingContext);
+  const { booking, dispatch } = useContext(BookingContext);
   const [isNowSelected, setIsNowSelected] = useState(true);
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);
@@ -160,7 +163,13 @@ const LocationCardTime = ({
             bgColor={isNowSelected ? COLORS.fourthary : COLORS.tertiary}
             borderRadius={50}
             marginLeft={"auto"}
-            onPress={() => setIsNowSelected(true)}
+            onPress={() => {
+              dispatch({
+                type: SET_BOOKING_DETAILS,
+                payload: { isScheduled: false },
+              });
+              setIsNowSelected(true);
+            }}
           >
             <Text style={{ ...FONTS.body6 }} color={"white"}>
               {t("now")}
@@ -168,6 +177,10 @@ const LocationCardTime = ({
           </Button>
           <TouchableOpacity
             onPress={() => {
+              dispatch({
+                type: SET_BOOKING_DETAILS,
+                payload: { isScheduled: true },
+              });
               setShowDatePicker(true);
               setIsNowSelected(false);
             }}

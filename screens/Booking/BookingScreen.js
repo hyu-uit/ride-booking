@@ -397,14 +397,18 @@ export default function BookingScreen({ navigation }) {
   };
   const handleStep5Submit = () => {
     // Do any necessary form validation or error checking here
-    createOrder().then((docRef) => {
-      console.log(
-        "🚀 ~ file: BookingScreen.js:388 ~ createOrder ~ docRef:",
-        docRef
-      );
-      dispatch({ type: SET_BOOKING_DETAILS, payload: { idTrip: docRef.id } });
-      setStep(6);
-    });
+    if (booking.bookingDetails.isScheduled === false) {
+      createOrder().then((docRef) => {
+        console.log(
+          "🚀 ~ file: BookingScreen.js:388 ~ createOrder ~ docRef:",
+          docRef
+        );
+        dispatch({ type: SET_BOOKING_DETAILS, payload: { idTrip: docRef.id } });
+        setStep(6);
+      });
+    } else {
+      navigation.replace("Home");
+    }
     // setIDTrip(id)
   };
 
