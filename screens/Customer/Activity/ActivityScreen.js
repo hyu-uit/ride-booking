@@ -18,7 +18,13 @@ import IC_Bike_White from "../../../assets/images/Activity/ic_bike_white.png";
 import IC_Bike_Blue from "../../../assets/images/Activity/ic_bike_blue.png";
 import HistoryCard from "../../../components/HistoryCard";
 import BookingCard from "../../../components/BookingCard/BookingCard";
-import { collection, getDocs, onSnapshot, query, where } from "firebase/firestore";
+import {
+  collection,
+  getDocs,
+  onSnapshot,
+  query,
+  where,
+} from "firebase/firestore";
 import { db } from "../../../config/config";
 import { getFromAsyncStorage } from "../../../helper/asyncStorage";
 import { useTranslation } from "react-i18next";
@@ -58,7 +64,7 @@ const ActivityScreen = ({ navigation }) => {
     }
   };
 
-  const getWaitingTrips =  () => {
+  const getWaitingTrips = () => {
     const waitingTripsQuery = query(
       collection(db, "ListTrip"),
       where("isScheduled", "==", "false"),
@@ -82,7 +88,7 @@ const ActivityScreen = ({ navigation }) => {
       unsubscribeTrip();
     };
   };
-  const getConfirmedTrips =  () => {
+  const getConfirmedTrips = () => {
     const confirmTripQuery = query(
       collection(db, "ListTrip"),
       where("isScheduled", "==", "false"),
@@ -106,7 +112,7 @@ const ActivityScreen = ({ navigation }) => {
       unsubscribeTrip();
     };
   };
-  const getCanceledTrips =  () => {
+  const getCanceledTrips = () => {
     const cancelQuery = query(
       collection(db, "ListTrip"),
       where("isScheduled", "==", "false"),
@@ -128,7 +134,7 @@ const ActivityScreen = ({ navigation }) => {
 
     return () => {
       unsubscribeTrip();
-    }
+    };
   };
 
   const FirstRoute = () => (
@@ -225,118 +231,6 @@ const ActivityScreen = ({ navigation }) => {
     <NativeBaseProvider>
       <VStack h={"100%"} paddingY={"20px"} bgColor={COLORS.background}>
         <SafeAreaView>
-          <HStack justifyContent={"center"} space={"10px"}>
-            <Button
-              w={"45%"}
-              h={"70px"}
-              borderRadius={20}
-              bgColor={service === 0 ? COLORS.primary : COLORS.tertiary}
-              onPress={() => {
-                setService(0);
-                setBikeUri(
-                  "https://res.cloudinary.com/dtutrxnyl/image/upload/v1686364990/bikeWhite_vqyjm3.png"
-                );
-                setDeliveryUri(
-                  "https://res.cloudinary.com/dtutrxnyl/image/upload/v1686364992/deliveryBlue_ztlpxb.png"
-                );
-              }}
-            >
-              {/* <Image
-                src={require("../../../assets/images/Activity/ic_bike.png`")}
-              /> */}
-              <HStack justifyContent={"center"} alignItems={"center"}>
-                <Image
-                  source={{ uri: bikeUri }}
-                  w={"50%"}
-                  h={"120%"}
-                  resizeMode="contain"
-                  alt="Icon bike"
-                  // Other props here
-                />
-                {/* {service === 0 ? (
-                  <>
-                    <Image
-                      source={IC_Bike_White}
-                      alt="Icon bike"
-                      // Other props here
-                    />
-                  </>
-                ) : (
-                  <>
-                    <Image
-                      source={IC_Bike_Blue}
-                      alt="Icon bike"
-                      // Other props here
-                    />
-                  </>
-                )} */}
-
-                <Text
-                  style={{
-                    ...FONTS.h2,
-                    color: service === 0 ? COLORS.white : COLORS.fourthary,
-                  }}
-                >
-                  Bike
-                </Text>
-              </HStack>
-            </Button>
-            <Button
-              w={"45%"}
-              h={"70px"}
-              borderRadius={20}
-              bgColor={service === 1 ? COLORS.primary : COLORS.tertiary}
-              onPress={() => {
-                setService(1);
-                setBikeUri(
-                  "https://res.cloudinary.com/dtutrxnyl/image/upload/v1686364990/bikeBlue_sqih2p.png"
-                );
-                setDeliveryUri(
-                  "https://res.cloudinary.com/dtutrxnyl/image/upload/v1686364990/deliveryWhite_flxx91.png"
-                );
-              }}
-            >
-              {/* <Image
-                src={require("../../../assets/images/Activity/ic_bike.png`")}
-              /> */}
-              <HStack justifyContent={"center"} alignItems={"center"}>
-                {/* {service === 1 ? (
-                  <>
-                    <Image
-                      source={require("../../../assets/images/Activity/ic_send_white.png")}
-                      alt="Icon send"
-                      // Other props here
-                    />
-                  </>
-                ) : (
-                  <>
-                    <Image
-                      source={require("../../../assets/images/Activity/ic_send_blue.png")}
-                      alt="Icon send"
-                      // Other props here
-                    />
-                  </>
-                )} */}
-                <Image
-                  source={{ uri: deliveryUri }}
-                  w={"50%"}
-                  h={"150%"}
-                  resizeMode="contain"
-                  alt="Icon bike"
-                  // Other props here
-                />
-                <Text
-                  style={{
-                    ...FONTS.h2,
-                    color: service === 1 ? COLORS.white : COLORS.fourthary,
-                  }}
-                >
-                  Send
-                </Text>
-              </HStack>
-            </Button>
-          </HStack>
-
           <VStack h={"100%"} mt={"17px"}>
             <TabView
               navigationState={{ index, routes }}
