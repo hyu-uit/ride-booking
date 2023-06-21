@@ -24,6 +24,7 @@ const initialState = {
     longitude: 0, // Initial longitude
   }, // Initial user location
   bookingDetails: {
+    idTrip:"",
     price: 0,
     paymentMethod: "", // momo or cash
     distance: 0, // km

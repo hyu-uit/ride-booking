@@ -1,4 +1,5 @@
 import * as Location from "expo-location";
+import { Platform } from "react-native";
 import { Dimensions } from "react-native";
 
 export const requestLocationPermissions = async () => {
@@ -15,10 +16,61 @@ export const requestLocationPermissions = async () => {
   return true;
 };
 
+function delay(timeInMilliseconds) {
+  return new Promise((resolve) => {
+    setTimeout(() => resolve(null), timeInMilliseconds);
+  });
+}
+
+export async function getLocation() {
+  const ANDROID_DELAY_IN_MS = 4 * 1000; // 👈 4s
+  const IOS_DELAY_IN_MS = 10 * 1000; // 👈 15s
+
+  const DELAY_IN_MS =
+    Platform.OS === "ios" ? IOS_DELAY_IN_MS : ANDROID_DELAY_IN_MS;
+
+  const MAX_TRIES = 999;
+  let tries = 1;
+
+  let location = null;
+
+  let locationError = null;
+
+  do {
+    try {
+      location = await Promise.race([
+        delay(DELAY_IN_MS),
+        Location.getCurrentPositionAsync({
+          accuracy: Location.LocationAccuracy.Lowest,
+        }),
+      ]);
+
+      if (!location) {
+        throw new Error("Timeout");
+      }
+    } catch (err) {
+      locationError = err;
+    } finally {
+      tries += 1; // 👈 Here
+    }
+  } while (!location && tries <= MAX_TRIES);
+
+  if (!location) {
+    const error = locationError;
+    throw error;
+  }
+
+  return location.coords;
+}
+
+export const checkUserLocationEnable = () => {
+  return Location.hasServicesEnabledAsync();
+};
+
 export const fetchCurrentUserLocation = async () => {
   const isPermissionsGranted = await requestLocationPermissions();
 
-  if (!isPermissionsGranted) return;
+  if (!isPermissionsGranted) return null;
 
   const location = await Location.getLastKnownPositionAsync();
   console.log(
@@ -27,7 +79,6 @@ export const fetchCurrentUserLocation = async () => {
   );
 
   return location.coords;
-
   // Use the latitude and longitude values as needed
 };
 

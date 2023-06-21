@@ -46,13 +46,12 @@ const ActivityScreen = ({ navigation }) => {
 
   useEffect(() => {
     fetchDataAndPhoneNumber();
-  }, []);
+  }, [phoneNumber]);
 
   const fetchDataAndPhoneNumber = async () => {
     try {
       const phoneNumberValue = await getFromAsyncStorage("phoneNumber");
       setPhone(phoneNumberValue);
-      console.log(phoneNumberValue);
 
       if (phoneNumberValue) {
         getWaitingTrips();
@@ -65,21 +64,23 @@ const ActivityScreen = ({ navigation }) => {
   };
 
   const getWaitingTrips = () => {
+    console.log(phoneNumber);
     const waitingTripsQuery = query(
       collection(db, "ListTrip"),
       where("isScheduled", "==", "false"),
-      where("status", "==", "accepted"),
       where("idCustomer", "==", phoneNumber)
     );
 
     const unsubscribeTrip = onSnapshot(waitingTripsQuery, (querySnapshot) => {
       const updatedTrips = [];
       querySnapshot.forEach((doc) => {
-        const trip = {
-          idTrip: doc.id,
-          ...doc.data(),
-        };
-        updatedTrips.push(trip);
+        if (doc.data().status == "waiting" || doc.data().status == "accepted") {
+          const trip = {
+            idTrip: doc.id,
+            ...doc.data(),
+          };
+          updatedTrips.push(trip);
+        }
       });
       setWaitingTrips(updatedTrips);
     });
@@ -88,6 +89,7 @@ const ActivityScreen = ({ navigation }) => {
       unsubscribeTrip();
     };
   };
+
   const getConfirmedTrips = () => {
     const confirmTripQuery = query(
       collection(db, "ListTrip"),
@@ -146,18 +148,24 @@ const ActivityScreen = ({ navigation }) => {
         horizontal={false}
         data={waitingTrips}
         keyExtractor={(item) => item.idTrip}
-        renderItem={({ item }) => (
-          <BookingCard
-            onPress={() => {
-              const data = {
-                idTrip: "" + item.idTrip,
-              };
-              navigation.navigate("ActivityDetail", data);
-            }}
-            trip={item}
-            key={item.idTrip}
-          ></BookingCard>
-        )}
+        renderItem={({ item }) => {
+          let sta = item.idRider ? 1 : 0;
+          console.log(sta);
+          return (
+            <BookingCard
+              onPress={() => {
+                const data = {
+                  idTrip: "" + item.idTrip,
+                  idRider: "" + item.idRider,
+                };
+                navigation.navigate("ActivityDetail", data);
+              }}
+              sta={sta}
+              trip={item}
+              key={item.idTrip}
+            ></BookingCard>
+          );
+        }}
       ></FlatList>
     </VStack>
   );
@@ -178,6 +186,7 @@ const ActivityScreen = ({ navigation }) => {
             onPress={() => {
               const data = {
                 idTrip: "" + item.idTrip,
+                idRider: "" + item.idRider,
               };
               navigation.navigate("ActivityDetail", data);
             }}
@@ -203,6 +212,7 @@ const ActivityScreen = ({ navigation }) => {
             onPress={() => {
               const data = {
                 idTrip: "" + item.idTrip,
+                idRider: "" + item.idRider,
               };
               navigation.navigate("ActivityDetail", data);
             }}

@@ -30,6 +30,7 @@ function RequestCard(props) {
   const { navigation } = props;
   const { t } = useTranslation();
   const [phoneNumber, setPhoneNumber] = useState([]);
+  const { onPress } = props;
 
   useEffect(() => {
     fetchDataAndPhoneNumber();
@@ -75,7 +76,9 @@ function RequestCard(props) {
         borderRadius: 20,
       }}
     >
-      <VStack space={1} style={{ marginVertical: 10 }}>
+      <TouchableOpacity onPress={onPress}
+      >
+         <VStack space={1} style={{ marginVertical: 10 }}>
         <HStack alignItems={"center"}>
           <HStack flex={1}>
             <Text
@@ -154,6 +157,8 @@ function RequestCard(props) {
           </Flex>
         </HStack>
       </VStack>
+      </TouchableOpacity>
+     
     </View>
   );
 }

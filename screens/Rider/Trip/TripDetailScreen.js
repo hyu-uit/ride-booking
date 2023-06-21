@@ -191,6 +191,7 @@ const TripDetailScreen = ({ navigation, route }) => {
         <ReceivedTripCard
           trip={tripData}
           isRead={isRead}
+          sta={1}
           setRoute={setRouting}
           navigation={navigation}
           setIsStarted={setIsStarted}

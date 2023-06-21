@@ -20,7 +20,6 @@ import LocationCardWithChange from "../../components/LocationCard/LocationCardWi
 import SelectedButton from "../../components/Button/SelectedButton";
 import LocationCardTime from "../../components/LocationCard/LocationCard.Time";
 import LocationCardCost from "../../components/LocationCard/LocationCard.Cost";
-import LocationCardNote from "../../components/LocationCard/LocationCard.Note";
 import LocationCardPayment from "../../components/LocationCard/LocationCard.Payment";
 import LocationCardFinder from "../../components/LocationCard/LocationCard.Finder";
 import ConfirmModal from "../../components/Modal/ConfirmModal";
@@ -38,9 +37,9 @@ import {
 } from "@firebase/firestore";
 import { db } from "../../config/config";
 import {
-  calculateMapDelta,
-  centerMapToCoordinates,
+  checkUserLocationEnable,
   fetchCurrentUserLocation,
+  getLocation,
 } from "../../helper/location";
 import {
   getRoutingFromCoordinates,
@@ -64,6 +63,8 @@ import { Dimensions } from "react-native";
 import { getFromAsyncStorage } from "../../helper/asyncStorage";
 import { Ionicons } from "@expo/vector-icons";
 import { convertToDate, convertToTime } from "../../helper/moment";
+import { Linking } from "react-native";
+import { NativeModules } from "react-native";
 
 export const PICK_UP_INPUT = "PICK_UP_INPUT";
 export const DESTINATION_INPUT = "DESTINATION_INPUT";
@@ -88,54 +89,31 @@ export default function BookingScreen({ navigation }) {
   const [selectedDate, setSelectedDate] = useState(convertToDate(Date.now()));
   const [selectedTime, setSelectedTime] = useState(convertToTime(Date.now()));
   const [phoneNumber, setPhoneNumber] = useState([]);
-  const [idTrip, setIDTrip] = useState("");
+  const [idTrip, setIDTrip] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isModalRequestLocation, setIsModalRequestLocation] = useState(false);
 
   useEffect(() => {
-    if (step === 1) {
-      setIsLoading(true);
-      fetchCurrentUserLocation()
-        .then(({ latitude, longitude }) => {
-          console.log(
-            "🚀 ~ file: BookingScreen.js:60 ~ .then ~ latitude, longitude:",
-            latitude,
-            longitude
+    setIsLoading(true);
+    checkUserLocationEnable()
+      .then((isEnabled) => {
+        if (isEnabled) {
+          setCurrentUserLocation().then(({ longitude, latitude }) =>
+            setMarkerPosition({
+              name: "Your location",
+              latitude,
+              longitude,
+            })
           );
-
-          dispatch({
-            type: SET_INITIAL_LOCATION,
-            payload: { latitude, longitude },
+          setMarkerPosition({
+            name: "Your location",
+            latitude,
+            longitude,
           });
-
-          getSingleAddressFromCoordinate(latitude, longitude)
-            .then((value) => {
-              dispatch({
-                type: SET_PICK_UP_LOCATION,
-                payload: {
-                  name: "Your location",
-                  address: value.formatted,
-                  latitude,
-                  longitude,
-                },
-              });
-
-              setMarkerPosition({
-                name: "Your location",
-                address: value.formatted,
-                latitude,
-                longitude,
-              });
-            })
-            .catch((err) => {
-              console.log("🚀 ~ file: BookingScreen.js:88 ~ .then ~ err:", err);
-            })
-            .finally(() => setIsLoading(false));
-        })
-        .catch((err) => {
-          console.log("🚀 ~ file: BookingScreen.js:90 ~ useEffect ~ err:", err);
-        })
-        .finally(() => setIsLoading(false));
-    }
+        } else setIsModalRequestLocation((prev) => !prev);
+      })
+      .finally(() => setIsLoading(false));
+    // to get current location every user choose ok on modal request location
   }, []);
 
   useEffect(() => {
@@ -236,7 +214,7 @@ export default function BookingScreen({ navigation }) {
             }
           });
           if (idTrip != "") {
-            deleteDoc(doc(db, "ListTrip", idTrip));
+            deleteDoc(doc(db, "ListTrip", booking.bookingDetails.idTrip));
             navigation.navigate("Home");
           }
           return () => unsubscribe();
@@ -246,101 +224,114 @@ export default function BookingScreen({ navigation }) {
   };
 
   const chooseFromMapHandler = () => {
+    setCurrentUserLocation();
     setStep(2);
   };
 
   const hanldeConfirmFromMap = () => {
-    if (focusInput === DESTINATION_INPUT) {
-      //pick up is already set from useEffect on first render or base on default address of user
-      if (checkLocationIsSet(markerPosition)) {
-        setDestinationInput(
-          markerPosition.address ? markerPosition.address : markerPosition.name
-        );
-        dispatch({
-          type: SET_DESTINATION_LOCATION,
-          payload: { ...markerPosition },
-        });
-        console.log(
-          "🚀 ~ file: BookingScreen.js:170 ~ hanldeConfirmFromMap ~ booking.pickUpLocation:",
-          booking.pickUpLocation
-        );
-        console.log(
-          "🚀 ~ file: BookingScreen.js:174 ~ hanldeConfirmFromMap ~ markerPosition:",
-          markerPosition
-        );
+    checkUserLocationEnable().then((isEnabled) => {
+      if (isEnabled) {
+        if (focusInput === DESTINATION_INPUT) {
+          //pick up is already set from useEffect on first render or base on default address of user
+          if (checkLocationIsSet(markerPosition)) {
+            setDestinationInput(
+              markerPosition.address
+                ? markerPosition.address
+                : markerPosition.name
+            );
+            dispatch({
+              type: SET_DESTINATION_LOCATION,
+              payload: { ...markerPosition },
+            });
+            console.log(
+              "🚀 ~ file: BookingScreen.js:170 ~ hanldeConfirmFromMap ~ booking.pickUpLocation:",
+              booking.pickUpLocation
+            );
+            console.log(
+              "🚀 ~ file: BookingScreen.js:174 ~ hanldeConfirmFromMap ~ markerPosition:",
+              markerPosition
+            );
 
-        console.log(booking);
+            console.log(booking);
 
-        getRoutingFromCoordinates(booking.pickUpLocation, markerPosition)
-          .then((routing) => {
-            const { coordinates: coordinatesRouting } = routing.geometry;
-            const coordinatesRoutingFormatted = coordinatesRouting[0].map(
-              ([longitude, latitude]) => ({
-                latitude,
-                longitude,
+            getRoutingFromCoordinates(booking.pickUpLocation, markerPosition)
+              .then((routing) => {
+                const { coordinates: coordinatesRouting } = routing.geometry;
+                const coordinatesRoutingFormatted = coordinatesRouting[0].map(
+                  ([longitude, latitude]) => ({
+                    latitude,
+                    longitude,
+                  })
+                );
+                const { distance, time } = routing.properties;
+                console.log(
+                  "🚀 ~ file: BookingScreen.js:183 ~ .then ~ distance, time:",
+                  distance,
+                  time
+                );
+
+                dispatch({
+                  type: SET_INITIAL_LOCATION,
+                  payload: {
+                    latitude: booking.pickUpLocation.latitude,
+                    longitude: booking.pickUpLocation.longitude,
+                  },
+                });
+
+                // save routing to use in BookingDriver, BookingRating
+                dispatch({
+                  type: SET_ROUTING,
+                  payload: coordinatesRoutingFormatted,
+                });
+
+                console.log(ceilingMinute(time));
+
+                dispatch({
+                  type: SET_BOOKING_DETAILS,
+                  payload: {
+                    distance: ceilingKilometer(distance), // 1201m -> 1.3km
+                    time: ceilingMinute(time),
+                    price: calculatePrice(Math.ceil(distance / 1000)), // convert m to km then ceiling, 1201 -> 2km
+                  },
+                });
+                console.log(
+                  "🚀 ~ file: BookingScreen.js:192 ~ .then ~ distance:",
+                  {
+                    distance: ceilingKilometer(distance),
+                    time: ceilingMinute(time),
+                    price: calculatePrice(Math.ceil(distance / 1000)),
+                  }
+                );
+
+                setRouting(coordinatesRoutingFormatted);
+                setStep(3);
               })
-            );
-            const { distance, time } = routing.properties;
-            console.log(
-              "🚀 ~ file: BookingScreen.js:183 ~ .then ~ distance, time:",
-              distance,
-              time
-            );
-
-            dispatch({
-              type: SET_INITIAL_LOCATION,
-              payload: {
-                latitude: booking.pickUpLocation.latitude,
-                longitude: booking.pickUpLocation.longitude,
-              },
-            });
-
-            // save routing to use in BookingDriver, BookingRating
-            dispatch({
-              type: SET_ROUTING,
-              payload: coordinatesRoutingFormatted,
-            });
-
-            console.log(ceilingMinute(time));
-
-            dispatch({
-              type: SET_BOOKING_DETAILS,
-              payload: {
-                distance: ceilingKilometer(distance), // 1201m -> 1.3km
-                time: ceilingMinute(time),
-                price: calculatePrice(Math.ceil(distance / 1000)), // convert m to km then ceiling, 1201 -> 2km
-              },
-            });
-            console.log("🚀 ~ file: BookingScreen.js:192 ~ .then ~ distance:", {
-              distance: ceilingKilometer(distance),
-              time: ceilingMinute(time),
-              price: calculatePrice(Math.ceil(distance / 1000)),
-            });
-
-            setRouting(coordinatesRoutingFormatted);
-            setStep(3);
-          })
-          .catch((err) =>
-            console.log(
-              "🚀 ~ file: BookingScreen.js:156 ~ useEffect ~ err:",
-              err
-            )
+              .catch((err) =>
+                console.log(
+                  "🚀 ~ file: BookingScreen.js:156 ~ useEffect ~ err:",
+                  err
+                )
+              );
+            return;
+          }
+        }
+        if (focusInput === PICK_UP_INPUT) {
+          setPickUpInput(
+            markerPosition.address
+              ? markerPosition.address
+              : markerPosition.name
           );
-        return;
-      }
-    }
-    if (focusInput === PICK_UP_INPUT) {
-      setPickUpInput(
-        markerPosition.address ? markerPosition.address : markerPosition.name
-      );
-      dispatch({
-        type: SET_PICK_UP_LOCATION,
-        payload: { ...markerPosition },
-      });
-      setFocusInput(DESTINATION_INPUT);
-    }
-    setStep(1);
+          dispatch({
+            type: SET_PICK_UP_LOCATION,
+            payload: { ...markerPosition },
+          });
+          setFocusInput(DESTINATION_INPUT);
+        }
+        setStep(1);
+      } else setIsModalRequestLocation(true);
+    });
   };
+
   const handleDateChange = (date) => {
     setSelectedDate(date);
   };
@@ -372,12 +363,6 @@ export default function BookingScreen({ navigation }) {
   };
 
   const createOrder = () => {
-    // const currentDate = new Date();
-    // const currentDay = currentDate.getDate();
-    // const currentMonth = currentDate.getMonth() + 1;
-    // const currentYear = currentDate.getFullYear();
-    // const currentHour = currentDate.getHours();
-    // const currentMinute = currentDate.getMinutes();
     const currentDate = convertToDate(Date.now());
     const currentTime = convertToTime(Date.now());
     let scheduled = "false";
@@ -387,8 +372,7 @@ export default function BookingScreen({ navigation }) {
 
     let price = booking.bookingDetails.price - booking.bookingDetails.promotion;
     if (price <= 0) price = 0;
-
-    addDoc(collection(db, "ListTrip"), {
+    return addDoc(collection(db, "ListTrip"), {
       idCustomer: phoneNumber,
       idRider: "",
       pickUpLat: booking.pickUpLocation.latitude,
@@ -410,13 +394,18 @@ export default function BookingScreen({ navigation }) {
       status: "waiting",
       idRiderCancel: "",
     });
-    //upload image to firebase storage
   };
-
   const handleStep5Submit = () => {
     // Do any necessary form validation or error checking here
-    createOrder();
-    setStep(6);
+    createOrder().then((docRef) => {
+      console.log(
+        "🚀 ~ file: BookingScreen.js:388 ~ createOrder ~ docRef:",
+        docRef
+      );
+      dispatch({ type: SET_BOOKING_DETAILS, payload: { idTrip: docRef.id } });
+      setStep(6);
+    });
+    // setIDTrip(id)
   };
 
   const handleCloseModal = () => {
@@ -446,7 +435,6 @@ export default function BookingScreen({ navigation }) {
 
   const renderItem = ({ item, index }) => {
     function onPress() {
-      console.log(item);
       const { phoneNumber, ...resCoords } = item;
       if (focusInput === PICK_UP_INPUT) {
         setPickUpInput(item.name);
@@ -849,6 +837,16 @@ export default function BookingScreen({ navigation }) {
       ) : (
         renderStepContent()
       )}
+      {/* modal request location */}
+      <ConfirmModal
+        isShow={isModalRequestLocation}
+        title={"Enable location"}
+        content={"Please enable location to use this feature."}
+        onClose={() => navigation.navigate("Home")}
+        onPressOK={() => {
+          setIsModalRequestLocation((prev) => !prev);
+        }}
+      />
       <ConfirmModal
         isShow={booking.isModalCancelShow}
         title={"Cancel booking"}
@@ -860,8 +858,39 @@ export default function BookingScreen({ navigation }) {
   );
 
   function handleBackStep() {
+    console.log("back step");
     if (step === 1) return navigation.navigate("Home");
     setStep((prev) => prev - 1);
+  }
+
+  function setCurrentUserLocation() {
+    return getLocation()
+      .then(({ latitude, longitude }) => {
+        dispatch({
+          type: SET_INITIAL_LOCATION,
+          payload: { latitude, longitude },
+        });
+
+        getSingleAddressFromCoordinate(latitude, longitude)
+          .then((value) => {
+            dispatch({
+              type: SET_PICK_UP_LOCATION,
+              payload: {
+                name: "Your location",
+                address: value.formatted,
+                latitude,
+                longitude,
+              },
+            });
+          })
+          .catch((err) => {
+            console.log("🚀 ~ file: BookingScreen.js:88 ~ .then ~ err:", err);
+          });
+        return { latitude, longitude };
+      })
+      .catch((err) => {
+        console.log("🚀 ~ file: BookingScreen.js:90 ~ useEffect ~ err:", err);
+      });
   }
 }
 
