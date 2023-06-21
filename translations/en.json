@@ -16,6 +16,7 @@
   "customer": "Passenger",
   "rider": "Rider",
   "office": "Office of Student",
+  "enterPasswordOffice": "Enter your password",
 
   "dontHaveAccount": "You don't have account?",
   "enterPhone": "Enter your phone number",
