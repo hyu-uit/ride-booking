@@ -158,6 +158,7 @@ export default function Home({ navigation, route }) {
           destAddress: doc.data().destAddress,
           totalPrice: doc.data().totalPrice,
           distance: doc.data().distance,
+          idRider:doc.data().idRider
         });
       });
       setHistoryTrips(historyTrips);
@@ -323,6 +324,7 @@ export default function Home({ navigation, route }) {
                     onPress={() => {
                       const data = {
                         idTrip: "" + item.idTrip,
+                        idRider:""+item.idRider,
                       };
                       navigation.navigate("ActivityDetail", data);
                     }}
