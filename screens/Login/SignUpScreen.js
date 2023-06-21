@@ -81,7 +81,7 @@ const SignUpScreen = ({ navigation }) => {
       (role == "" || name == "" || id == "",
       school == "",
       phoneNumber == "",
-      email == "")
+      email == "" || finalDate === null)
     ) {
       Alert.alert(t("alertInfo"), "", [
         {
