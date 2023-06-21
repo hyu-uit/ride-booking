@@ -14,7 +14,7 @@ import { LocationAccuracy, watchPositionAsync } from "expo-location";
 
 const TripDetailScreen = ({ navigation, route }) => {
   const contentHeight = Dimensions.get("window").height;
-  const { idTrip, state, isRead } = route.params;
+  const { idTrip, state, isRead, isScheduled } = route.params;
   const [tripData, setTrip] = useState({});
   const [routing, setRouting] = useState([]);
   const [customerLocation, setCustomerLocation] = useState({});
@@ -90,6 +90,7 @@ const TripDetailScreen = ({ navigation, route }) => {
           status: doc.data().status,
           destAddress: doc.data().destAddress,
           pickUpAddress: doc.data().pickUpAddress,
+          isScheduled: doc.data().isScheduled,
         };
         console.log("🚀 ~ file: TripDetailScreen.js:38 ~ getDoc ~ data:", data);
         setCustomerLocation({
@@ -100,7 +101,6 @@ const TripDetailScreen = ({ navigation, route }) => {
       setTrip(data);
     });
   };
-  console.log(state);
   return (
     <VStack
       h={Platform.OS === "ios" ? contentHeight : "100%"}
@@ -186,6 +186,7 @@ const TripDetailScreen = ({ navigation, route }) => {
         <ReceivedTripCard
           trip={tripData}
           isRead={isRead}
+          isScheduled={isScheduled}
           sta={1}
           setRoute={setRouting}
           navigation={navigation}

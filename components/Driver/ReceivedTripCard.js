@@ -18,7 +18,7 @@ import { doc, getDoc, increment, updateDoc } from "firebase/firestore";
 import { db } from "../../config/config";
 import { Ionicons } from "@expo/vector-icons";
 import { getRoutingFromCoordinates } from "../../api/locationAPI";
-import { removeValue } from "../../helper/asyncStorage";
+import { getFromAsyncStorage, removeValue } from "../../helper/asyncStorage";
 
 function ReceivedTripCard(props) {
   //const {trip} = props
@@ -37,11 +37,19 @@ function ReceivedTripCard(props) {
     distance,
     destAddress,
     pickUpAddress,
+    isScheduled,
   } = props.trip;
 
   const [name, setName] = useState("");
+  const [phoneNumber, SetPhoneNumber] = useState();
   const [stt, setState] = useState(0);
   const { navigation, isRead, setRoute, setIsStarted } = props;
+
+  useEffect(() => {
+    getFromAsyncStorage("phoneNumber").then((value) => {
+      SetPhoneNumber(value);
+    });
+  });
 
   if (idTrip !== undefined) {
     getDoc(doc(db, "ListTrip", idTrip)).then((tripData) => {
@@ -149,6 +157,14 @@ function ReceivedTripCard(props) {
     }
   };
 
+  const onAccept = () => {
+    updateDoc(doc(db, "ListTrip", idTrip), {
+      idRider: phoneNumber,
+      status: "accepted",
+    });
+    navigation.goBack();
+  };
+
   return (
     <View
       bgColor={COLORS.fourthary}
@@ -239,7 +255,7 @@ function ReceivedTripCard(props) {
               justifyContent: "space-between",
             }}
           >
-            {!isRead && (
+            {!isRead && status !== "waiting" && (
               <TouchableOpacity
                 onPress={setStatusCancel}
                 style={{
@@ -263,7 +279,7 @@ function ReceivedTripCard(props) {
                 </Text>
               </TouchableOpacity>
             )}
-            {!isRead && (
+            {!isRead && status !== "waiting" && (
               <TouchableOpacity
                 onPress={onClickStart}
                 style={{
@@ -284,6 +300,31 @@ function ReceivedTripCard(props) {
                   styles={{ ...FONTS.h3 }}
                 >
                   {getButtonTextDone()}
+                </Text>
+              </TouchableOpacity>
+            )}
+            {isScheduled && status === "waiting" && (
+              <TouchableOpacity
+                onPress={onAccept}
+                style={{
+                  borderColor: COLORS.primary,
+                  backgroundColor: COLORS.primary,
+                  height: 59,
+                  width: "100%",
+                  borderWidth: 1,
+                  borderRadius: 20,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  marginTop: 20,
+                }}
+              >
+                <Text
+                  bold
+                  color={COLORS.white}
+                  fontSize={20}
+                  styles={{ ...FONTS.h3 }}
+                >
+                  Accept
                 </Text>
               </TouchableOpacity>
             )}

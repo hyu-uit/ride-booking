@@ -145,7 +145,7 @@ const RiderHomeScreen = ({ navigation, route }) => {
 
   useEffect(() => {
     getFromAsyncStorage("riderTripId").then((value) => {
-      if (value) {
+      if (value && status === "accepted") {
         navigation.navigate("TripDetail", {
           idTrip: "" + value,
           isRead: false,

@@ -57,8 +57,8 @@ const ScheduledScreen = ({ navigation }) => {
     }
   };
 
-  const getWaitingTrips =  () => {
-    console.log(phoneNumber)
+  const getWaitingTrips = () => {
+    console.log(phoneNumber);
     const waitingTripsQuery = query(
       collection(db, "ListTrip"),
       where("isScheduled", "==", "true"),
@@ -68,13 +68,17 @@ const ScheduledScreen = ({ navigation }) => {
     const unsubscribeTrip = onSnapshot(waitingTripsQuery, (querySnapshot) => {
       const updatedTrips = [];
       querySnapshot.forEach((doc) => {
-        if(doc.data().status=="waiting"||doc.data().status=="accepted"){
+        if (
+          doc.data().status == "waiting" ||
+          doc.data().status == "accepted" ||
+          doc.data().status === "on the way"
+        ) {
           const trip = {
             idTrip: doc.id,
             ...doc.data(),
           };
           updatedTrips.push(trip);
-        } 
+        }
       });
       setWaitingTrips(updatedTrips);
     });
@@ -84,7 +88,7 @@ const ScheduledScreen = ({ navigation }) => {
     };
   };
 
-  const getConfirmedTrips =  () => {
+  const getConfirmedTrips = () => {
     const confirmTripQuery = query(
       collection(db, "ListTrip"),
       where("isScheduled", "==", "true"),
@@ -108,7 +112,7 @@ const ScheduledScreen = ({ navigation }) => {
       unsubscribeTrip();
     };
   };
-  const getCanceledTrips =  () => {
+  const getCanceledTrips = () => {
     const cancelQuery = query(
       collection(db, "ListTrip"),
       where("isScheduled", "==", "true"),
@@ -130,7 +134,7 @@ const ScheduledScreen = ({ navigation }) => {
 
     return () => {
       unsubscribeTrip();
-    }
+    };
   };
 
   const FirstRoute = () => (
@@ -143,21 +147,22 @@ const ScheduledScreen = ({ navigation }) => {
         keyExtractor={(item) => item.idTrip}
         renderItem={({ item }) => {
           let sta = item.idRider ? 1 : 0;
-          console.log(sta)
+          console.log(sta);
           return (
-          <BookingCard
-            onPress={() => {
-              const data = {
-                idTrip: "" + item.idTrip,
-                idRider:""+item.idRider
-              };
-              navigation.navigate("ActivityDetail", data);
-            }}
-            sta={sta}
-            trip={item}
-            key={item.idTrip}
-          ></BookingCard>
-        )}}
+            <BookingCard
+              onPress={() => {
+                const data = {
+                  idTrip: "" + item.idTrip,
+                  idRider: "" + item.idRider,
+                };
+                navigation.navigate("ActivityDetail", data);
+              }}
+              sta={sta}
+              trip={item}
+              key={item.idTrip}
+            ></BookingCard>
+          );
+        }}
       ></FlatList>
     </ScrollView>
   );
@@ -176,7 +181,7 @@ const ScheduledScreen = ({ navigation }) => {
             onPress={() => {
               const data = {
                 idTrip: "" + item.idTrip,
-                idRider:""+item.idRider
+                idRider: "" + item.idRider,
               };
               navigation.navigate("ActivityDetail", data);
             }}
@@ -202,7 +207,7 @@ const ScheduledScreen = ({ navigation }) => {
             onPress={() => {
               const data = {
                 idTrip: "" + item.idTrip,
-                idRider:""+item.idRider
+                idRider: "" + item.idRider,
               };
               navigation.navigate("ActivityDetail", data);
             }}
