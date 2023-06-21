@@ -20,7 +20,8 @@
       "bundleIdentifier": "com.thevihuynh.carbooking",
       "infoPlist": {
         "NSPhotoLibraryUsageDescription": "To select photos from your library",
-        "NSLocationWhenInUseUsageDescription": "Allow $(PRODUCT_NAME) to use your location"
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "Allow $(PRODUCT_NAME) to use your location",
+        "UIBackgroundModes": ["location", "fetch"]
       }
     },
     "android": {
@@ -34,7 +35,8 @@
         "WRITE_EXTERNAL_STORAGE",
         "CAMERA",
         "MEDIA_LIBRARY",
-        "LOCATION"
+        "LOCATION",
+        "ACCESS_BACKGROUND_LOCATION"
       ]
     },
     "web": {

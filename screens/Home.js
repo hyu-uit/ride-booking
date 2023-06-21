@@ -40,7 +40,12 @@ import {
 import { db } from "../config/config";
 import { useFocusEffect } from "@react-navigation/native";
 import { useTranslation } from "react-i18next";
-import { BookingContext, SET_BOOKING_DETAILS } from "../context/BookingContext";
+import {
+  BookingContext,
+  SET_BOOKING_DETAILS,
+  SET_PICK_UP_LOCATION,
+} from "../context/BookingContext";
+import { getLocation } from "../helper/location";
 
 const bookingDefaultValue = {
   price: 0,
@@ -93,7 +98,16 @@ export default function Home({ navigation, route }) {
 
   useEffect(() => {
     fetchDataAndPhoneNumber();
-
+    getLocation().then(({ latitude, longitude }) => {
+      dispatch({
+        type: SET_PICK_UP_LOCATION,
+        payload: {
+          name: "Your location",
+          latitude,
+          longitude,
+        },
+      });
+    });
     dispatch({ type: SET_BOOKING_DETAILS, payload: bookingDefaultValue });
   }, [phone]);
 
