@@ -1,12 +1,13 @@
 function ceilingFunction(number) {
   // Get the length of the number
-  const length = number.toString().length;
+  const intNumber = Math.ceil(number);
+  const length = intNumber.toString().length;
 
   // Get the power of 10 based on the length
   const power = Math.pow(10, length - 2);
 
   // Calculate the ceiling value
-  const result = Math.ceil(number / power) * power;
+  const result = Math.ceil(intNumber / power) * power;
 
   return result;
 }

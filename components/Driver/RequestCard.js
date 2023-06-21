@@ -44,7 +44,7 @@ function RequestCard(props) {
       console.log(err);
     }
   };
-  console.log(phoneNumber)
+
   if (idTrip !== undefined) {
     getDoc(doc(db, "ListTrip", idTrip)).then((tripData) => {
       if (tripData.exists()) {

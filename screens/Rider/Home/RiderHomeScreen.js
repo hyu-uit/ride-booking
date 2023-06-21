@@ -69,6 +69,7 @@ const RiderHomeScreen = ({ navigation, route }) => {
   const [isCount, setCount] = useState(false);
   const [modalVisible, setIsModalVisible] = useState(false);
   const [selectedTrip, setSelectedTrip] = useState([]);
+  const [isRiderReceived, setIsRiderReceived] = useState(false);
 
   let backButtonPressedOnce = false;
 
@@ -194,7 +195,7 @@ const RiderHomeScreen = ({ navigation, route }) => {
   // };
 
   const fetchNewCurrentTrips = () => {
-    if (isCount === true) {
+    if (isCount === true && isRiderReceived===false) {
       if (open === true) {
         const waitingTripsQuery = query(
           collection(db, "ListTrip"),
@@ -593,6 +594,7 @@ const RiderHomeScreen = ({ navigation, route }) => {
                 </View>
                 <PopUpRequestCard
                   trip={newCurrentTrips[0]}
+                  setIsRiderReceived={setIsRiderReceived}
                   randomTrips={randomTrips} // Truyền giá trị randomTrips vào
                   setNewCurrentTrips={setNewCurrentTrips} // Truyền hàm setNewCurrentTrips để cập nhật state
                   navigation={navigation}
@@ -666,6 +668,7 @@ const RiderHomeScreen = ({ navigation, route }) => {
                 </View>
                 <WaitingForRiderCard
                   trip={selectedTrip}
+                  setIsRiderReceived={setIsRiderReceived}
                   navigation={navigation}
                   setIsModalVisible={setIsModalVisible}
                   phoneNumber={phoneNumber}
