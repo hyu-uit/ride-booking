@@ -195,7 +195,7 @@ const RiderHomeScreen = ({ navigation, route }) => {
   // };
 
   const fetchNewCurrentTrips = () => {
-    if (isCount === true && isRiderReceived===false) {
+    if (isCount === true && isRiderReceived === false) {
       if (open === true) {
         const waitingTripsQuery = query(
           collection(db, "ListTrip"),
@@ -329,28 +329,32 @@ const RiderHomeScreen = ({ navigation, route }) => {
   };
 
   const getWaitingTrips = () => {
-    const waitingTripsQuery = query(
-      collection(db, "ListTrip"),
-      where("isScheduled", "==", "false"),
-      where("status", "==", "waiting"),
-      where("idRider", "==", "")
-    );
+    if (open) {
+      const waitingTripsQuery = query(
+        collection(db, "ListTrip"),
+        where("isScheduled", "==", "false"),
+        where("status", "==", "waiting"),
+        where("idRider", "==", "")
+      );
 
-    const unsubscribeTrip = onSnapshot(waitingTripsQuery, (querySnapshot) => {
-      const updatedTrips = [];
-      querySnapshot.forEach((doc) => {
-        const trip = {
-          idTrip: doc.id,
-          ...doc.data(),
-        };
-        updatedTrips.push(trip);
+      const unsubscribeTrip = onSnapshot(waitingTripsQuery, (querySnapshot) => {
+        const updatedTrips = [];
+        querySnapshot.forEach((doc) => {
+          const trip = {
+            idTrip: doc.id,
+            ...doc.data(),
+          };
+          updatedTrips.push(trip);
+        });
+        setWaitingTrips(updatedTrips);
       });
-      setWaitingTrips(updatedTrips);
-    });
 
-    return () => {
-      unsubscribeTrip();
-    };
+      return () => {
+        unsubscribeTrip();
+      };
+    } else {
+      setWaitingTrips([]);
+    }
   };
 
   const getFinishedTrips = () => {
@@ -515,96 +519,101 @@ const RiderHomeScreen = ({ navigation, route }) => {
       <VStack paddingTop={"20px"} bgColor={COLORS.background}>
         <SafeAreaView>
           <VStack h={"100%"}>
-            {isModalVisible && newCurrentTrips.length > 0 && isReady && (
-              <Modal
-                alignSelf={"center"}
-                w={"90%"}
-                isOpen={isModalVisible}
-                size="lg"
-                overlayVisible={true}
-                backdropPressBehavior="none"
-              >
-                <View borderTopRadius={"20px"} w={"100%"} h={"20%"}>
-                  <MapView
-                    style={{
-                      width: "100%",
-                      height: "130%",
-                      borderRadius: 20,
-                    }}
-                    provider="google"
-                    region={{
-                      ...calculateMapDelta(
-                        {
-                          latitude: newCurrentTrips[0].destLat,
-                          longitude: newCurrentTrips[0].destLong,
-                        },
-                        {
-                          latitude: newCurrentTrips[0].pickUpLat,
-                          longitude: newCurrentTrips[0].pickUpLong,
-                        },
-                        60
-                      ),
-                      latitude: newCurrentTrips[0]
-                        ? (newCurrentTrips[0].destLat +
-                            newCurrentTrips[0].pickUpLat) /
-                          2
-                        : 0, // get center latitude to zoom
-                      longitude: newCurrentTrips[0]
-                        ? (newCurrentTrips[0].destLong +
-                            newCurrentTrips[0].pickUpLong) /
-                          2
-                        : 0, // get center longitude to zoom
-                    }}
-                  >
-                    <Marker
-                      identifier="pickUp"
-                      key={"pickUp"}
-                      coordinate={{
-                        latitude: newCurrentTrips[0]
-                          ? newCurrentTrips[0].pickUpLat
-                          : 0,
-                        longitude: newCurrentTrips[0]
-                          ? newCurrentTrips[0].pickUpLong
-                          : 0,
+            {isModalVisible &&
+              newCurrentTrips.length > 0 &&
+              isReady &&
+              open && (
+                <Modal
+                  alignSelf={"center"}
+                  w={"90%"}
+                  isOpen={isModalVisible}
+                  size="lg"
+                  overlayVisible={true}
+                  backdropPressBehavior="none"
+                >
+                  <View borderTopRadius={"20px"} w={"100%"} h={"20%"}>
+                    <MapView
+                      style={{
+                        width: "100%",
+                        height: "130%",
+                        borderRadius: 20,
                       }}
-                      title={"Pick up"}
-                      description={
-                        newCurrentTrips[0]
-                          ? newCurrentTrips[0].pickUpAddress
-                          : ""
-                      }
-                    />
-                    <Marker
-                      identifier="destination"
-                      key={"destination"}
-                      coordinate={{
+                      provider="google"
+                      region={{
+                        ...calculateMapDelta(
+                          {
+                            latitude: newCurrentTrips[0].destLat,
+                            longitude: newCurrentTrips[0].destLong,
+                          },
+                          {
+                            latitude: newCurrentTrips[0].pickUpLat,
+                            longitude: newCurrentTrips[0].pickUpLong,
+                          },
+                          60
+                        ),
                         latitude: newCurrentTrips[0]
-                          ? newCurrentTrips[0].destLat
-                          : 0,
+                          ? (newCurrentTrips[0].destLat +
+                              newCurrentTrips[0].pickUpLat) /
+                            2
+                          : 0, // get center latitude to zoom
                         longitude: newCurrentTrips[0]
-                          ? newCurrentTrips[0].destLong
-                          : 0,
+                          ? (newCurrentTrips[0].destLong +
+                              newCurrentTrips[0].pickUpLong) /
+                            2
+                          : 0, // get center longitude to zoom
                       }}
-                      title={"Destination"}
-                      description={
-                        newCurrentTrips[0] ? newCurrentTrips[0].destAddress : 0
-                      }
-                    />
-                  </MapView>
-                </View>
-                <PopUpRequestCard
-                  trip={newCurrentTrips[0]}
-                  setIsRiderReceived={setIsRiderReceived}
-                  randomTrips={randomTrips} // Truyền giá trị randomTrips vào
-                  setNewCurrentTrips={setNewCurrentTrips} // Truyền hàm setNewCurrentTrips để cập nhật state
-                  navigation={navigation}
-                  handleStatusReject={handleStatusReject}
-                  count={isCount}
-                  // setCount={setCount}
-                  phoneNumber={phoneNumber}
-                ></PopUpRequestCard>
-              </Modal>
-            )}
+                    >
+                      <Marker
+                        identifier="pickUp"
+                        key={"pickUp"}
+                        coordinate={{
+                          latitude: newCurrentTrips[0]
+                            ? newCurrentTrips[0].pickUpLat
+                            : 0,
+                          longitude: newCurrentTrips[0]
+                            ? newCurrentTrips[0].pickUpLong
+                            : 0,
+                        }}
+                        title={"Pick up"}
+                        description={
+                          newCurrentTrips[0]
+                            ? newCurrentTrips[0].pickUpAddress
+                            : ""
+                        }
+                      />
+                      <Marker
+                        identifier="destination"
+                        key={"destination"}
+                        coordinate={{
+                          latitude: newCurrentTrips[0]
+                            ? newCurrentTrips[0].destLat
+                            : 0,
+                          longitude: newCurrentTrips[0]
+                            ? newCurrentTrips[0].destLong
+                            : 0,
+                        }}
+                        title={"Destination"}
+                        description={
+                          newCurrentTrips[0]
+                            ? newCurrentTrips[0].destAddress
+                            : 0
+                        }
+                      />
+                    </MapView>
+                  </View>
+                  <PopUpRequestCard
+                    trip={newCurrentTrips[0]}
+                    setIsRiderReceived={setIsRiderReceived}
+                    randomTrips={randomTrips} // Truyền giá trị randomTrips vào
+                    setNewCurrentTrips={setNewCurrentTrips} // Truyền hàm setNewCurrentTrips để cập nhật state
+                    navigation={navigation}
+                    handleStatusReject={handleStatusReject}
+                    count={isCount}
+                    // setCount={setCount}
+                    phoneNumber={phoneNumber}
+                  ></PopUpRequestCard>
+                </Modal>
+              )}
             {modalVisible && (
               <Modal
                 alignSelf={"center"}

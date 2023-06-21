@@ -1,4 +1,4 @@
-import { View, Text, Dimensions } from "react-native";
+import { View, Text, Dimensions, Alert } from "react-native";
 import React from "react";
 import {
   Button,
@@ -122,18 +122,57 @@ const ActivityDetailScreen = ({ navigation, route }) => {
   };
   const onPressCancel = () => {
     if (tripData.status === "waiting") {
-      deleteDoc(doc(db, "ListTrip", idTrip));
-      navigation.goBack();
+      Alert.alert("Are you want to cancel this trip?", "", [
+        {
+          text: "Cancel",
+          onPress: () => {
+            // props.onPressDelete(phoneNumber);
+          },
+        },
+        {
+          text: "OK",
+          onPress: () => {
+            deleteDoc(doc(db, "ListTrip", idTrip));
+            navigation.goBack();
+          },
+        },
+      ]);
     } else if (tripData.status === "accepted") {
-      updateDoc(doc(db, "ListTrip", idTrip), {
-        status: "canceled",
-      });
-      updateDoc(doc(db, "Customer", tripData.idCustomer), {
-        cancel: increment(1),
-      });
-      navigation.goBack();
+      Alert.alert("Are you want to cancel this trip?", "", [
+        {
+          text: "Cancel",
+          onPress: () => {
+            // props.onPressDelete(phoneNumber);
+          },
+        },
+        {
+          text: "OK",
+          onPress: () => {
+            updateDoc(doc(db, "ListTrip", idTrip), {
+              status: "canceled",
+            });
+            updateDoc(doc(db, "Customer", tripData.idCustomer), {
+              cancel: increment(1),
+            });
+            navigation.goBack();
+          },
+        },
+      ]);
     } else {
-      navigation.navigate("Booking");
+      Alert.alert("Are you want to cancel this trip?", "", [
+        {
+          text: "Cancel",
+          onPress: () => {
+            // props.onPressDelete(phoneNumber);
+          },
+        },
+        {
+          text: "OK",
+          onPress: () => {
+            navigation.navigate("Booking");
+          },
+        },
+      ]);
     }
   };
   return (
