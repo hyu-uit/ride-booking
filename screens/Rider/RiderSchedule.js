@@ -34,16 +34,20 @@ import { db } from "../../config/config";
 import ConfirmedScheduledTrip from "../../components/Driver/ConfirmedScheduledTrip";
 import { getFromAsyncStorage } from "../../helper/asyncStorage";
 import { useTranslation } from "react-i18next";
+import { convertToTime, convertToDate } from "../../helper/moment";
 
 const RiderSchedule = ({ navigation }) => {
   const [service, setService] = useState(0);
   const [waitingTrips, setWaitingTrips] = useState({});
   const [confirmedTrips, setConfirmedTrips] = useState({});
   const [phoneNumber, setPhoneNumber] = useState([]);
+  const [currentTime, setCurrentTime] = useState(convertToTime(Date.now()));
+  const [date, setCurrentDate] = useState(convertToDate(Date.now()));
 
   useEffect(() => {
     fetchDataAndPhoneNumber();
-  }, [phoneNumber, navigation]);
+    // console.log("AAA"+currentTime)
+  }, [phoneNumber, navigation, currentTime, date]);
 
   const fetchDataAndPhoneNumber = async () => {
     try {
@@ -67,17 +71,25 @@ const RiderSchedule = ({ navigation }) => {
       where("status", "==", "waiting"),
       where("isScheduled", "==", "true")
     );
+    const [hoursCur, minutesCur] = currentTime.split(':');
+    const totalMinutesCur = parseInt(hoursCur, 10) * 60 + parseInt(minutesCur, 10);
 
     const unsubscribeTrip = onSnapshot(waitingTripsQuery, (querySnapshot) => {
       const updatedTrips = [];
       querySnapshot.forEach((doc) => {
-        if (moment(doc.data().datePickUp, "D/M/YYYY") > currentDate) {
-          const trip = {
-            idTrip: doc.id,
-            ...doc.data(),
-          };
-          updatedTrips.push(trip);
-        }
+        const [hoursDB, minutesDB] = doc.data().timePickUp.split(':');
+        const totalMinutesDB = parseInt(hoursDB, 10) * 60 + parseInt(minutesDB, 10);
+
+        const totalMin= totalMinutesDB-totalMinutesCur
+        if (moment(doc.data().datePickUp, "D/M/YYYY") > currentDate||doc.data().datePickUp == date) {
+          if(parseInt(totalMin)>60){
+            const trip = {
+              idTrip: doc.id,
+              ...doc.data(),
+            };
+            updatedTrips.push(trip);
+          }
+          }
       });
 
       setWaitingTrips(updatedTrips);

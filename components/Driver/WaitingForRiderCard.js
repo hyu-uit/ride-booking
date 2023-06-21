@@ -42,7 +42,7 @@ function WaitingForRiderCard(props) {
   const [state, setState] = useState(0);
   const { navigation, phoneNumber } = props;
   // const [modalVisible, setModalVisible] = useState(false);
-  const { setIsModalVisible } = props;
+  const { setIsModalVisible, setIsRiderReceived } = props;
 
   // useEffect(() => {
   //   if (!isModalVisible) {
@@ -71,6 +71,7 @@ function WaitingForRiderCard(props) {
     });
     const data = { idTrip: "" + idTrip , state:1};
     navigation.navigate("TripDetail", data);
+    setIsRiderReceived(true)
   };
 
 

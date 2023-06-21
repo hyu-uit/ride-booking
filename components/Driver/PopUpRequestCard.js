@@ -42,7 +42,7 @@ function PopUpRequestCard(props) {
 
   const [name, setName] = useState("");
   const [state, setState] = useState(0);
-  const { navigation, phoneNumber } = props;
+  const { navigation, phoneNumber , setIsRiderReceived } = props;
   const [isModalVisible, setModalVisible] = useState(false);
   // const { randomTrips, setNewCurrentTrips, setCount } = props;
   const { t } = useTranslation();
@@ -74,6 +74,7 @@ function PopUpRequestCard(props) {
     const data = { idTrip: "" + idTrip, state: 1 };
     navigation.navigate("TripDetail", data);
     saveToAsyncStorage("riderTripId", idTrip);
+    setIsRiderReceived(true)
   };
 
   const { handleStatusReject } = props;

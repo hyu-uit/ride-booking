@@ -38,7 +38,7 @@ const TripDetailScreen = ({ navigation, route }) => {
         gestureEnabled: true,
       });
     };
-  }, [navigation]);
+  }, [navigation, tripData.status]);
 
   useEffect(() => {
     if (isStarted) {
@@ -106,6 +106,7 @@ const TripDetailScreen = ({ navigation, route }) => {
     });
   };
   console.log(state);
+  console.log("AAA"+tripData.status);
   return (
     <VStack
       h={Platform.OS === "ios" ? contentHeight : "100%"}
@@ -121,7 +122,7 @@ const TripDetailScreen = ({ navigation, route }) => {
             display: state === 1 ? "none" : "flex",
           }}
         >
-          {tripData.status !== "accepted" || tripData.status !== "waiting" ? (
+          {tripData.status !== "accepted"  ? (
             <>
               <ButtonBack
                 onPress={() => {
