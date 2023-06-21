@@ -1,6 +1,6 @@
 function ceilingFunction(number) {
   // Get the length of the number
-  const intNumber = parseInt(number);
+  const intNumber = Math.ceil(number);
   const length = intNumber.toString().length;
 
   // Get the power of 10 based on the length
