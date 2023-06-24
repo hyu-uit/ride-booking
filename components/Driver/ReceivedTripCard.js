@@ -19,6 +19,7 @@ import { db } from "../../config/config";
 import { Ionicons } from "@expo/vector-icons";
 import { getRoutingFromCoordinates } from "../../api/locationAPI";
 import { getFromAsyncStorage, removeValue } from "../../helper/asyncStorage";
+import ButtonBack from "../Global/ButtonBack/ButtonBack";
 
 function ReceivedTripCard(props) {
   //const {trip} = props

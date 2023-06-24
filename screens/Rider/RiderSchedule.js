@@ -86,11 +86,14 @@ const RiderSchedule = ({ navigation }) => {
           parseInt(hoursDB, 10) * 60 + parseInt(minutesDB, 10);
 
         const totalMin = totalMinutesDB - totalMinutesCur;
-        if (
-          moment(doc.data().datePickUp, "D/M/YYYY") > currentDate ||
-          doc.data().datePickUp == date
-        ) {
-          if (parseInt(totalMin) > 60) {
+        if (moment(doc.data().datePickUp, "D/M/YYYY") > currentDate) {
+          const trip = {
+            idTrip: doc.id,
+            ...doc.data(),
+          };
+          updatedTrips.push(trip);
+        } else if (doc.data().datePickUp === date) {
+          if (parseInt(totalMin) >= 60) {
             const trip = {
               idTrip: doc.id,
               ...doc.data(),

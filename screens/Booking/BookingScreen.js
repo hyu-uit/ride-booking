@@ -418,7 +418,22 @@ export default function BookingScreen({ navigation }) {
         setStep(6);
       });
     } else {
-      navigation.replace("Home");
+      createOrder().then((docRef) => {
+        console.log(
+          "🚀 ~ file: BookingScreen.js:388 ~ createOrder ~ docRef:",
+          docRef
+        );
+        dispatch({ type: SET_BOOKING_DETAILS, payload: { idTrip: docRef.id } });
+      });
+      Alert.alert("Successfully booked", "", [
+        {
+          text: "OK",
+          onPress: () => {
+            navigation.replace("Home");
+            // props.onPressDelete(phoneNumber);
+          },
+        },
+      ]);
     }
     // setIDTrip(id)
   };

@@ -16,7 +16,13 @@ import {
 import DefaultAvt from "../assets/image6.png";
 import { SafeAreaView } from "react-native-safe-area-context";
 import MenuIcon from "../assets/icons/icons8-menu-48.png";
-import { TouchableOpacity, BackHandler, ToastAndroid } from "react-native";
+import {
+  TouchableOpacity,
+  BackHandler,
+  ToastAndroid,
+  Platform,
+  Dimensions,
+} from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import SelectedButton from "../components/Button/SelectedButton";
 import HistoryCard from "../components/HistoryCard";
@@ -63,6 +69,10 @@ export default function Home({ navigation, route }) {
   );
 
   let backButtonPressedOnce = false;
+
+  const { height } = Dimensions.get("window");
+  const bottomBarHeight = Platform.OS === "ios" ? 90 : 60;
+  const adjustedHeight = height - bottomBarHeight;
 
   useFocusEffect(
     React.useCallback(() => {
@@ -158,7 +168,7 @@ export default function Home({ navigation, route }) {
           destAddress: doc.data().destAddress,
           totalPrice: doc.data().totalPrice,
           distance: doc.data().distance,
-          idRider:doc.data().idRider
+          idRider: doc.data().idRider,
         });
       });
       setHistoryTrips(historyTrips);
@@ -197,7 +207,10 @@ export default function Home({ navigation, route }) {
           </MenuButton>
         </HStack>
         <HStack>
-          <ScrollView showsVerticalScrollIndicator={false}>
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={{ minHeight: adjustedHeight }}
+          >
             <HStack
               w={"100%"}
               borderRadius={10}
@@ -324,7 +337,7 @@ export default function Home({ navigation, route }) {
                     onPress={() => {
                       const data = {
                         idTrip: "" + item.idTrip,
-                        idRider:""+item.idRider,
+                        idRider: "" + item.idRider,
                       };
                       navigation.navigate("ActivityDetail", data);
                     }}

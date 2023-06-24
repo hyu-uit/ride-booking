@@ -26,15 +26,27 @@ export default function Navigation() {
   }, []);
   return (
     <NavigationContainer>
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Navigator
+        screenOptions={{ headerShown: false }}
+        options={{ gestureEnabled: false }}
+      >
         {isFirstUse ? (
-          <Stack.Screen name="OnBoarding" component={OnBoardingScreen} />
+          <Stack.Screen
+            name="OnBoarding"
+            component={OnBoardingScreen}
+            options={{ gestureEnabled: false }}
+          />
         ) : null}
         <Stack.Screen
           name="AuthenticationStack"
           component={AuthenticationStackScreen}
+          options={{ gestureEnabled: false }}
         />
-        <Stack.Screen name="MainNavigator" component={MainNavigator} />
+        <Stack.Screen
+          name="MainNavigator"
+          component={MainNavigator}
+          options={{ gestureEnabled: false }}
+        />
         <Stack.Screen
           name="MainRiderNavigator"
           component={MainRiderNavigator}

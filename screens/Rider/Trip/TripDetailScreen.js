@@ -116,7 +116,7 @@ const TripDetailScreen = ({ navigation, route }) => {
             display: state === 1 ? "none" : "flex",
           }}
         >
-          {tripData.status !== "accepted" ? (
+          {tripData.status !== "accepted" || tripData.isScheduled === "true" ? (
             <>
               <ButtonBack
                 onPress={() => {
