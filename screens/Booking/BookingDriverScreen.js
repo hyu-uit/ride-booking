@@ -12,10 +12,7 @@ import { COLORS } from "../../constants";
 import { BookingContext } from "../../context/BookingContext";
 import { LocationAccuracy, watchPositionAsync } from "expo-location";
 import { useRef } from "react";
-import {
-  animateToCoordinate,
-  requestLocationPermissions,
-} from "../../helper/location";
+import { requestLocationPermissions } from "../../helper/location";
 import {
   collection,
   doc,
@@ -70,7 +67,6 @@ const BookingDriverScreen = ({ navigation, route }) => {
             latitude,
             longitude
           );
-          animateToCoordinate(mapRef, latitude, longitude);
           setMarker({ latitude, longitude });
         }
       );

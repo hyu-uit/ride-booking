@@ -17,7 +17,7 @@ import ClockIcon from "../../assets/clock_96px.png";
 import BackIcon from "../../assets/back_icon.png";
 import { COLORS, SIZES, FONTS } from "../../constants/theme";
 import { useState } from "react";
-import { TouchableOpacity } from "react-native";
+import { Alert, TouchableOpacity } from "react-native";
 import {
   convertToDate,
   convertToFullDateTime,
@@ -32,6 +32,50 @@ import {
 import { isNullOrEmpty } from "../../helper/helper";
 import { useContext } from "react";
 import { useEffect } from "react";
+
+function isSelectedTimeLater(dateSelected, dateNow) {
+  // Extract the time components
+  const hours1 = dateSelected.getHours();
+  console.log(
+    "🚀 ~ file: LocationCard.Time.js:279 ~ isSelectedtTimeLater ~ hours1:",
+    hours1
+  );
+  const minutes1 = dateSelected.getMinutes();
+  const hours2 = dateNow.getHours();
+  console.log(
+    "🚀 ~ file: LocationCard.Time.js:282 ~ isSelectedtTimeLater ~ hours2:",
+    hours2
+  );
+  const minutes2 = dateNow.getMinutes();
+
+  // Compare the time value
+  // can only schedule after two hours than now
+  if (hours1 - ONE_HOUR_LATER > hours2) {
+    return true;
+  } else if (hours1 - ONE_HOUR_LATER < hours2) {
+    return false;
+  } else {
+    // If the hours are equal, compare the minutes
+    if (minutes1 > minutes2) {
+      return true;
+    } else if (minutes1 < minutes2) {
+      return false;
+    } else {
+      return false;
+    }
+  }
+}
+
+function addHours(date, hours) {
+  const dateCopy = new Date(date);
+
+  dateCopy.setTime(dateCopy.getTime() + hours * 60 * 60 * 1000);
+
+  return dateCopy;
+}
+
+const SET = "set";
+const ONE_HOUR_LATER = 1;
 
 const LocationCardTime = ({
   onClickContinue,
@@ -62,10 +106,22 @@ const LocationCardTime = ({
       "🚀 ~ file: LocationCard.Time.js:53 ~ handleDateChange ~ date:",
       date >= new Date()
     );
-    setShowDatePicker(false);
-
-    setSelectedDate(date);
-    setShowTimePicker(true);
+    if (_event.type === SET) {
+      setShowDatePicker(false);
+      setSelectedDate(date);
+      setShowTimePicker(true);
+    } else {
+      setShowDatePicker(false);
+      setSelectedDate(new Date());
+      console.log(addHours(new Date(), ONE_HOUR_LATER));
+      setSelectedTime(addHours(new Date(), ONE_HOUR_LATER));
+      setFinalDate(
+        converDateToFullDateFormat(
+          selectedDate,
+          addHours(new Date(), ONE_HOUR_LATER)
+        )
+      );
+    }
   };
 
   function converDateToFullDateFormat(selectedDate, date) {
@@ -82,9 +138,46 @@ const LocationCardTime = ({
       date > new Date(),
       date
     );
-    setShowTimePicker(false);
-    setSelectedTime(date);
-    setFinalDate(converDateToFullDateFormat(selectedDate, date));
+    if (_event.type === SET) {
+      //if selected date greater than current date selected so time can select any time
+      if (selectedDate.getDate() > date.getDate()) {
+        setShowTimePicker(false);
+        setSelectedTime(date);
+        setFinalDate(converDateToFullDateFormat(selectedDate, date));
+        return;
+      }
+      console.log(isSelectedTimeLater(date, new Date()));
+      if (isSelectedTimeLater(date, new Date())) {
+        setShowTimePicker(false);
+        setSelectedTime(date);
+        setFinalDate(converDateToFullDateFormat(selectedDate, date));
+      } else {
+        Alert.alert("Please time 2 hour later than current time.", "", [
+          {
+            text: "OK",
+            onPress: () => {
+              setShowTimePicker(false);
+              setSelectedTime(addHours(new Date(), ONE_HOUR_LATER));
+              setFinalDate(
+                converDateToFullDateFormat(
+                  selectedDate,
+                  addHours(new Date(), ONE_HOUR_LATER)
+                )
+              );
+            },
+          },
+        ]);
+      }
+    } else {
+      setShowTimePicker(false);
+      setSelectedTime(addHours(new Date(), ONE_HOUR_LATER));
+      setFinalDate(
+        converDateToFullDateFormat(
+          selectedDate,
+          addHours(new Date(), ONE_HOUR_LATER)
+        )
+      );
+    }
   };
 
   return (
@@ -239,6 +332,7 @@ const LocationCardTime = ({
         <DateTimePicker
           value={selectedDate}
           mode="date"
+          minimumDate={new Date()}
           is24Hour={true}
           onChange={handleDateChange}
         />
