@@ -137,16 +137,23 @@ const ConfirmLocationScreen = ({ navigation, route }) => {
             <Text style={{ ...FONTS.body4, color: COLORS.white }} mt={1}>
               {route.params.address}
             </Text>
-            <Button
+            <HStack
               position={"absolute"}
               bottom={0}
               w={"100%"}
-              borderRadius={20}
-              bgColor={COLORS.primary}
-              onPress={ConfirmLocation}
+              justifyContent={"center"}
             >
-              <Text style={{ ...FONTS.h2, color: COLORS.white }}>Confirm</Text>
-            </Button>
+              <Button
+                w={"90%"}
+                borderRadius={20}
+                bgColor={COLORS.primary}
+                onPress={ConfirmLocation}
+              >
+                <Text style={{ ...FONTS.h2, color: COLORS.white }}>
+                  Confirm
+                </Text>
+              </Button>
+            </HStack>
           </VStack>
         </TouchableWithoutFeedback>
       </SafeAreaView>

@@ -12,6 +12,7 @@ import {
 } from "../../../api/locationAPI";
 import { fetchCurrentUserLocation } from "../../../helper/location";
 import { getFromAsyncStorage } from "../../../helper/asyncStorage";
+import { useTranslation } from "react-i18next";
 
 const AddLocationScreen = ({ navigation }) => {
   const [searchText, setSearchText] = useState("");
@@ -22,6 +23,8 @@ const AddLocationScreen = ({ navigation }) => {
     latitude: 10.8700089,
     longitude: 106.8030541,
   });
+
+  const { t } = useTranslation();
 
   const [suggestionsList, setSuggestionsList] = useState([]);
   // save result to find long lat on click select item auto complete
@@ -226,24 +229,31 @@ const AddLocationScreen = ({ navigation }) => {
                   isPreselected={true}
                 />
               </MapView>
-              <Button
-                w={"100%"}
+              <HStack
                 position={"absolute"}
                 bottom={"1/5"}
-                borderRadius={20}
-                bgColor={COLORS.primary}
-                onPress={() => {
-                  console.log(
-                    "🚀 ~ file: AddLocationScreen.js:24 ~ AddLocationScreen ~ markerPosition:",
-                    markerPosition
-                  );
-                  navigation.navigate("ConfirmLocation", { ...markerPosition });
-                }}
+                w={"100%"}
+                justifyContent={"center"}
               >
-                <Text style={{ ...FONTS.h2 }} color={COLORS.white}>
-                  Continue
-                </Text>
-              </Button>
+                <Button
+                  w={"90%"}
+                  borderRadius={20}
+                  bgColor={COLORS.primary}
+                  onPress={() => {
+                    console.log(
+                      "🚀 ~ file: AddLocationScreen.js:24 ~ AddLocationScreen ~ markerPosition:",
+                      markerPosition
+                    );
+                    navigation.navigate("ConfirmLocation", {
+                      ...markerPosition,
+                    });
+                  }}
+                >
+                  <Text style={{ ...FONTS.h2 }} color={COLORS.white}>
+                    {t("continue")}
+                  </Text>
+                </Button>
+              </HStack>
             </VStack>
           </VStack>
         </TouchableWithoutFeedback>

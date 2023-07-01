@@ -63,6 +63,12 @@ import { Dimensions } from "react-native";
 import { getFromAsyncStorage } from "../../helper/asyncStorage";
 import { Ionicons } from "@expo/vector-icons";
 import { convertToDate, convertToTime } from "../../helper/moment";
+import { VietQR } from "vietqr";
+
+const vietQR = new VietQR({
+  clientID: "de8a0804-a76d-41e5-8ad6-31503ce7d5f4",
+  apiKey: "17c29f09-4ea2-4417-b9c2-7f020d35de42",
+});
 
 export const PICK_UP_INPUT = "PICK_UP_INPUT";
 export const DESTINATION_INPUT = "DESTINATION_INPUT";
@@ -90,6 +96,31 @@ export default function BookingScreen({ navigation }) {
   const [idTrip, setIDTrip] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isModalRequestLocation, setIsModalRequestLocation] = useState(false);
+  const [qrUrl, setQrUrl] = useState(null);
+
+  useEffect(() => {
+    // vietQR
+    //   .getBanks()
+    //   .then((banks) => {
+    //     console.log(banks);
+    //   })
+    //   .catch((err) => {});
+
+    vietQR
+      .genQRCodeBase64({
+        bank: "970436",
+        accountName: "HUYNH THE VI",
+        accountNumber: "0091000682102",
+        amount: "10000",
+        memo: "Ride booking",
+        template: "compact",
+      })
+      .then((data) => {
+        console.log(data.data.data.qrDataURL);
+        setQrUrl(data.data.data.qrDataURL);
+      })
+      .catch((err) => {});
+  });
 
   useEffect(() => {
     setIsLoading(true);
@@ -223,7 +254,6 @@ export default function BookingScreen({ navigation }) {
 
   const chooseFromMapHandler = () => {
     //setCurrentUserLocation();
-    console.log(booking.pickUpLocation);
     setStep(2);
   };
 
@@ -294,8 +324,6 @@ export default function BookingScreen({ navigation }) {
                   payload: coordinatesRoutingFormatted,
                 });
 
-                console.log(ceilingMinute(time));
-
                 dispatch({
                   type: SET_BOOKING_DETAILS,
                   payload: {
@@ -335,7 +363,6 @@ export default function BookingScreen({ navigation }) {
             type: SET_PICK_UP_LOCATION,
             payload: { ...markerPosition },
           });
-          console.log("337", markerPosition);
           setFocusInput(DESTINATION_INPUT);
         }
         setStep(1);
@@ -550,6 +577,13 @@ export default function BookingScreen({ navigation }) {
               style={{ display: "flex" }}
             >
               <VStack flex={1}>
+                {/* <Image
+                  source={{ uri: qrUrl }}
+                  alt="qr"
+                  height={100}
+                  w={100}
+                  bgColor={COLORS.red}
+                ></Image> */}
                 <LocationCardWithChange
                   setFocusInput={setFocusInput}
                   setPickUpInput={setPickUpInput}
