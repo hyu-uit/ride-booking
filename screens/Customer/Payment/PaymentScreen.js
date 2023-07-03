@@ -21,8 +21,22 @@ import LogoShopeePay from "../../../assets/images/Logos/shopeepay.png";
 import LogoSmartPay from "../../../assets/images/Logos/smartpay.png";
 import LogoViettel from "../../../assets/images/Logos/viettel.png";
 import LogoVisa from "../../../assets/images/Logos/visa.png";
+import { Linking } from "react-native";
 
 const PaymentScreen = ({ navigation }) => {
+  const handlePress = () => {
+    const url = 'https://me.momo.vn/X5IzT8sRu4U5FVCDTPfZIB/pmbk2DvR2EkrazJ';
+    Linking.canOpenURL(url).then((supported)=>{
+      if(supported){
+        return Linking.openURL(url);
+      }else{
+        console.log("Khoong mo duoc")
+      }
+    }).catch((err)=>{
+      console.log(err)
+    })
+
+  };
   return (
     <VStack h={"100%"} paddingY={"20px"} bgColor={COLORS.background}>
       <SafeAreaView>
@@ -34,7 +48,7 @@ const PaymentScreen = ({ navigation }) => {
           ></ButtonBack>
           <HStack mt={10}></HStack>
           <PaymentMethodCard logo={LogoZalo} name={"Zalo"} />
-          <PaymentMethodCard logo={LogoMomo} name={"Momo"} />
+          <PaymentMethodCard logo={LogoMomo} name={"Momo"} onPress={handlePress}/>
           <Text style={{ ...FONTS.h4, color: COLORS.white }}>
             Add new payment methods
           </Text>

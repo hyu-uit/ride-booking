@@ -3,6 +3,7 @@ import { Button, HStack, Image, Input, Text, VStack, View } from "native-base";
 import { COLORS, FONTS } from "../../constants/theme";
 
 const PaymentMethodCard = (props) => {
+   
   return (
     <VStack
       width={"100%"}
@@ -12,6 +13,7 @@ const PaymentMethodCard = (props) => {
       justifyContent={"center"}
       paddingX={"11px"}
       mb={5}
+      onTouchEnd={props.onPress}
     >
       <HStack w={"100%"} alignItems={"center"}>
         <Image source={props.logo} alt={"zalo"}></Image>
