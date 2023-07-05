@@ -12,6 +12,7 @@ import {
   ScrollView,
   Text,
   VStack,
+  View,
 } from "native-base";
 import DefaultAvt from "../assets/image6.png";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -53,6 +54,8 @@ import {
   bookingDefaultValue,
 } from "../context/BookingContext";
 import { getLocation } from "../helper/location";
+import VNUHCM from "../assets/images/banner.png";
+import { useRef } from "react";
 
 export default function Home({ navigation, route }) {
   const { dispatch } = useContext(BookingContext);
@@ -73,6 +76,8 @@ export default function Home({ navigation, route }) {
   const { height } = Dimensions.get("window");
   const bottomBarHeight = Platform.OS === "ios" ? 90 : 60;
   const adjustedHeight = height - bottomBarHeight;
+
+  const animation = useRef(null);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -208,6 +213,7 @@ export default function Home({ navigation, route }) {
         </HStack>
         <HStack>
           <ScrollView
+            nestedScrollEnabled={false}
             showsVerticalScrollIndicator={false}
             contentContainerStyle={{ minHeight: adjustedHeight }}
           >
@@ -217,7 +223,7 @@ export default function Home({ navigation, route }) {
               bgColor={COLORS.tertiary}
               borderWidth={0}
               h={"50px"}
-              mb={10}
+              mb={3}
               mt={8}
               alignItems={"center"}
               onTouchEnd={() => {
@@ -236,6 +242,16 @@ export default function Home({ navigation, route }) {
                 {t("enterDes")}
               </Text>
             </HStack>
+            <Image
+              bgColor={COLORS.red}
+              source={VNUHCM}
+              h={120}
+              w={"100%"}
+              alt="vnuhcm"
+              resizeMode="cover"
+              borderRadius={10}
+              mb={2}
+            ></Image>
             {/* <HStack
               marginTop={5}
               marginBottom={5}
@@ -246,40 +262,124 @@ export default function Home({ navigation, route }) {
               <SelectedButton text={"School"} />
               <SelectedButton text={"Hotel"} />
             </HStack> */}
-            <HStack w={"100%"} justifyContent={"space-evenly"} marginBottom={5}>
+            <HStack
+              w={"100%"}
+              justifyContent={"space-between"}
+              marginBottom={5}
+            >
               <TouchableOpacity
+                style={{
+                  width: "30%",
+                  aspectRatio: 1,
+                  backgroundColor: COLORS.white,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  borderRadius: 22,
+                }}
+                onPress={() => {
+                  navigation.navigate("Booking");
+                }}
+              >
+                <VStack
+                  w={"100%"}
+                  h={"100%"}
+                  alignItems={"center"}
+                  justifyContent={"center"}
+                >
+                  <Ionicons
+                    name="location"
+                    size={40}
+                    color={COLORS.red}
+                  ></Ionicons>
+                  <Text mt={1} style={{ ...FONTS.h3 }}>
+                    New Trip
+                  </Text>
+                </VStack>
+              </TouchableOpacity>
+              <View w={"65%"} bgColor={"#f7c846"} style={{ borderRadius: 22 }}>
+                <VStack>
+                  <Text
+                    style={{
+                      ...FONTS.h3,
+                      marginTop: 15,
+                      marginLeft: 10,
+                      color: COLORS.black,
+                    }}
+                  >
+                    Safety
+                  </Text>
+                  <Text
+                    style={{
+                      ...FONTS.body6,
+                      fontSize: 10,
+                      marginTop: 3,
+                      marginLeft: 10,
+                      color: COLORS.grey,
+                    }}
+                  >
+                    VNU's Censored riders
+                  </Text>
+                </VStack>
+                <LottieView
+                  autoPlay
+                  ref={animation}
+                  style={{
+                    position: "absolute",
+                    right: 0,
+                    bottom: 0,
+                    aspectRatio: 1,
+                    height: "100%",
+                    backgroundColor: "transparent",
+                  }}
+                  // Find more Lottie files at https://lottiefiles.com/featured
+                  source={require("../assets/lottie/riding_bear.json")}
+                />
+              </View>
+              {/* <TouchableOpacity
                 onPress={() => {
                   const data = { phoneNumber: "0393751403" };
                   navigation.navigate("Booking", data);
                 }}
+                style={{ width: "100%" }}
               >
                 <VStack
                   borderColor={"white"}
                   borderWidth={1}
                   borderRadius={SIZES.radius10}
+                  w={"100%"}
                 >
                   <Center
-                    w={"150px"}
+                    w={"100%"}
                     h={"120px"}
                     bgColor={COLORS.fourthary}
                     borderTopRadius={SIZES.radius10}
                   >
-                    <Image
-                      source={{ uri: bikeUri }}
+                    <HStack
+                      h={"100%"}
                       w={"100%"}
-                      h={"80%"}
-                      resizeMode="contain"
-                      alt="bike"
-                    />
+                      justifyContent={"center"}
+                      alignItems={"center"}
+                    >
+                      <Image
+                        source={{ uri: bikeUri }}
+                        style={{ aspectRatio: 1 }}
+                        h={"80%"}
+                        resizeMode="contain"
+                        alt="bike"
+                      />
+                      <Text style={{ ...FONTS.h1, color: COLORS.white }}>
+                        LET'S GO
+                      </Text>
+                    </HStack>
                   </Center>
                   <Center h={50}>
                     <Text fontSize={SIZES.h4} bold color={"white"}>
-                      BIKE
+                      UniGo: Your Reliable Ride Companion!
                     </Text>
                   </Center>
                 </VStack>
-              </TouchableOpacity>
-              <TouchableOpacity
+              </TouchableOpacity> */}
+              {/* <TouchableOpacity
                 onPress={() => {
                   navigation.navigate("Booking");
                 }}
@@ -309,7 +409,7 @@ export default function Home({ navigation, route }) {
                     </Text>
                   </Center>
                 </VStack>
-              </TouchableOpacity>
+              </TouchableOpacity> */}
             </HStack>
             <Text
               fontSize={SIZES.h4}
@@ -329,6 +429,7 @@ export default function Home({ navigation, route }) {
               <FlatList
                 // padding={"10px"}
                 mt={2}
+                // mb={10}
                 horizontal={false}
                 data={historyTrips}
                 keyExtractor={(item) => item.idTrip}

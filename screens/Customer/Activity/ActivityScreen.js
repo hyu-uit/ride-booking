@@ -239,7 +239,7 @@ const ActivityScreen = ({ navigation }) => {
 
   return (
     <NativeBaseProvider>
-      <VStack h={"100%"} paddingY={"20px"} bgColor={COLORS.background}>
+      <VStack h={"100%"} bgColor={COLORS.background}>
         <SafeAreaView>
           <VStack h={"100%"} mt={"17px"}>
             <TabView

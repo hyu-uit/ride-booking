@@ -55,7 +55,7 @@ function StudentListCard(props, navigation) {
         let doneCount = 0;
         let cancelCount = 0;
         snapshot.forEach((doc) => {
-            doneCount++;
+          doneCount++;
         });
         setDoneTripCount(doneCount);
       }
@@ -64,7 +64,7 @@ function StudentListCard(props, navigation) {
       doc(db, role, phoneNumber),
       (snapshot) => {
         const docData = snapshot.data();
-        setTripCount(doneTripCount+docData.cancel)
+        setTripCount(doneTripCount + docData.cancel);
       }
     );
     return () => {
@@ -108,7 +108,7 @@ function StudentListCard(props, navigation) {
               {t("trip")}
             </Text>
             <Text bold fontSize={10} color={"white"}>
-              {tripCount}
+              {!tripCount ? 0 : tripCount}
             </Text>
           </VStack>
 

@@ -21,7 +21,7 @@ export default function Navigation() {
         "🚀 ~ file: index.js:19 ~ getFromAsyncStorage ~ value:",
         value
       );
-      if (value != null) setIsFirstUse(value);
+      // if (value != null) setIsFirstUse(value);
     });
   }, []);
   return (
