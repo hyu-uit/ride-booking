@@ -443,6 +443,7 @@ export default function Home({ navigation, route }) {
                       navigation.navigate("ActivityDetail", data);
                     }}
                     trip={item}
+                    navigation={navigation}
                     key={item.idTrip}
                   ></HistoryCard>
                 )}

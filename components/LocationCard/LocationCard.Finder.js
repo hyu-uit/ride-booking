@@ -30,9 +30,12 @@ const LocationCardFinder = ({ onPressCancel, phoneNumber, navigation }) => {
   const [tripDetail, setTripDetail] = useState([]);
   const [timer, setTimer] = useState(null);
   const [isScheduled, setIsScheduled] = useState(null);
+  const [isNavigated, setIsNavigated] = useState(false);
 
   console.log(isScheduled)
   useEffect(() => {
+    if (!isNavigated) {
+
     // Start the timer when the component mounts
     const timerId = setTimeout(() => {
       if (isScheduled  === "false"&& (tripDetail!=[])) {
@@ -54,9 +57,11 @@ const LocationCardFinder = ({ onPressCancel, phoneNumber, navigation }) => {
     }, 60000); // 3 minutes
     // Clear the timer when the component unmounts
     return () => {
+      setTimer(timerId)
       clearTimeout(timerId);
+    }
     };
-  }, [isScheduled]);
+  }, [isScheduled, isNavigated, tripDetail]);
 
   useEffect(() => {
     // Clear the timer if updatedTrip.length > 0
@@ -105,6 +110,7 @@ const LocationCardFinder = ({ onPressCancel, phoneNumber, navigation }) => {
                 idRider: updatedTrip[0].idRider,
                 idTrip: updatedTrip[0].idTrip,
               };
+              setIsNavigated(true);
               navigation.navigate("BookingDriver", data);
             }
           }
@@ -128,10 +134,14 @@ const LocationCardFinder = ({ onPressCancel, phoneNumber, navigation }) => {
       bottom={0}
       padding={"30px 25px 0 25px"}
     >
+      <Text  bold fontSize={SIZES.h5} color={"grey"} mb={2}>
+          {booking.bookingDetails.idTrip}
+        </Text>
       <VStack space={3}>
         <Text fontSize={SIZES.h3} bold color={"white"}>
           {t("findingRider")}
         </Text>
+     
         <HStack w={"100%"}>
           <VStack space={2} width={"90%"}>
             <VStack space={1}>

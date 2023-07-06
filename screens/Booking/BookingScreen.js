@@ -74,7 +74,7 @@ export const PICK_UP_INPUT = "PICK_UP_INPUT";
 export const DESTINATION_INPUT = "DESTINATION_INPUT";
 const contentHeight = Dimensions.get("window").height;
 
-export default function BookingScreen({ navigation }) {
+export default function BookingScreen({ navigation , route}) {
   const { booking, dispatch, calculatePrice } = useContext(BookingContext);
   const [focusInput, setFocusInput] = useState(DESTINATION_INPUT);
   const mapRef = useRef(null);
@@ -85,6 +85,7 @@ export default function BookingScreen({ navigation }) {
     latitude: 10.8700089,
     longitude: 106.8030541,
   });
+  // const {pickUpLat,pickUpLong, destLat, destLong, pickUpAddress, destAddress} = route.params;
   const [step, setStep] = useState(1);
   const [pickUpInput, setPickUpInput] = useState("Your location");
   const [destinationInput, setDestinationInput] = useState("");

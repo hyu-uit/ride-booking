@@ -7,14 +7,36 @@ import {
   Text,
   VStack,
 } from "native-base";
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { COLORS, SIZES } from "../../constants";
 import LineImg from "../../assets/Line4.png";
 import LocationIcon from "../../assets/icons/icons8-location-48.png";
 import ArrowDownIcon from "../../assets/icons/icons8-down-arrow-48.png";
 import QRCode from "react-native-qrcode-svg";
+import { BookingContext } from "../../context/BookingContext";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "../../config/config";
 
 const DriverInformationModal = ({ isShow, onClose }) => {
+  const { booking } = useContext(BookingContext);
+  const [ phoneRider, setPhoneRider] = useState("");
+  const [ nameRider, setNameRider] = useState("");
+  useEffect(() => {
+    getRider();
+  }, [booking.bookingDetails.idTrip, phoneRider, nameRider]);
+  const getRider = () => {
+    getDoc(doc(db, "ListTrip", booking.bookingDetails.idTrip)).then((docData) => {
+      if (docData.exists()) {
+        setPhoneRider(docData.data().idRider);
+        getDoc(doc(db,"Rider",phoneRider)).then((doc)=>{
+          if(doc.exists()){
+            setNameRider(doc.data().displayName);
+          }
+        })
+      }
+    });
+  };
+  console.log(booking.bookingDetails.idTrip)
   return (
     <Modal
       isOpen={isShow}
@@ -31,19 +53,19 @@ const DriverInformationModal = ({ isShow, onClose }) => {
         <Modal.Body>
           <VStack space={1}>
             <Text fontSize={SIZES.h4} textAlign={"center"} color={"white"} bold>
-              Nguyen Tri Duck
+             {nameRider}
             </Text>
             <Text fontSize={SIZES.h4} textAlign={"center"} color={"white"} bold>
-              0123456789
+              {phoneRider}
             </Text>
             <HStack w={"100%"}>
               <VStack space={2}>
                 <VStack space={1}>
-                  <Text bold fontSize={SIZES.h6} color={"#8CC3FF"}>
+                  <Text bold fontSize={SIZES.h6} color={"#8CC3FF"} >
                     Pick-up
                   </Text>
                   <Text bold fontSize={SIZES.h6} color={"white"}>
-                    Long An
+                    {booking.pickUpLocation.address}
                   </Text>
                 </VStack>
                 <Divider />
@@ -52,7 +74,7 @@ const DriverInformationModal = ({ isShow, onClose }) => {
                     Destination
                   </Text>
                   <Text bold fontSize={SIZES.h6} color={"white"}>
-                    University of Information Technology
+                  {booking.destinationLocation.address}
                   </Text>
                 </VStack>
               </VStack>

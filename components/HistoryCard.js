@@ -37,7 +37,7 @@ function HistoryCard(props) {
     totalPrice,
     distance,
   } = props.trip;
-  const { onPress } = props;
+  const { onPress, navigation } = props;
   const [name, setName] = useState("");
   const [licensePlates, setLicensePlates] = useState("");
   const [avt, setAvatar] = useState(null);
@@ -56,7 +56,17 @@ function HistoryCard(props) {
       }
     });
   }
-
+  const pressReBooking =()=>{
+    const data = {
+      destLat: destLat,
+      destLong: destLong,
+      pickUpLat: pickUpLat,
+      pickUpLong: pickUpLong,
+      pickUpAddress: pickUpAddress,
+      destAddress: destAddress
+    };
+    navigation.navigate("Booking", data)
+  }
   return (
     <View
       bgColor={"#101744"}
@@ -83,6 +93,8 @@ function HistoryCard(props) {
             borderBottomLeftRadius={20}
             borderTopRightRadius={20}
             bgColor={COLORS.white}
+            onPress={()=>{pressReBooking()}
+              }
           >
             <Text color={COLORS.fourthary}>{t("reBooking")}</Text>
           </Button>

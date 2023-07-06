@@ -60,6 +60,7 @@ const OnTheWayCard = ({ onPressCancel, onPressInfo, idRider }) => {
       paddingRight={26}
     >
       <VStack space={5}>
+    
         <HStack style={{ marginTop: 24, alignItems: "center" }}>
           <Text
             style={{
