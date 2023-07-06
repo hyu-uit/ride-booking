@@ -56,6 +56,13 @@
       }
     },
     "permissions": ["camera"]
-  }
+  },
+  "CFBundleURLTypes": [
+    {
+      "CFBundleURLSchemes": [
+        "momo"
+      ]
+    }
+  ]  
   
 }
