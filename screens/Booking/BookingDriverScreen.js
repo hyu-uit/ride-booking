@@ -164,12 +164,12 @@ const BookingDriverScreen = ({ navigation, route }) => {
               provider="google"
               region={booking.region}
             >
-              <Marker
+              {/* <Marker
                 key={"current-location"}
                 coordinate={customerMarker}
                 title={"Current location"}
                 image={require("../../assets/icons/pickupMarker.png")}
-              ></Marker>
+              ></Marker> */}
               <Marker
                 key={"destination"}
                 coordinate={booking.destinationLocation}
