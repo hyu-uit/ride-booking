@@ -16,6 +16,7 @@ import { requestLocationPermissions } from "../../helper/location";
 import {
   collection,
   doc,
+  getDoc,
   increment,
   onSnapshot,
   query,
@@ -30,7 +31,11 @@ const BookingDriverScreen = ({ navigation, route }) => {
   const [isModalCancelShow, setIsModalCancelShow] = useState(false);
   const [isModalInfoShow, setIsModalInfoShow] = useState(false);
   const { booking } = useContext(BookingContext);
-  const [marker, setMarker] = useState({ longitude: 0, latitude: 0 });
+  const [customerMarker, setCustomerMarker] = useState({
+    longitude: 0,
+    latitude: 0,
+  });
+  const [driverMarker, setDriverMarker] = useState(null);
   const mapRef = useRef(null);
   const { idRider, idTrip } = route.params;
   const [phoneNumber, setPhoneNumber] = useState([]);
@@ -46,7 +51,30 @@ const BookingDriverScreen = ({ navigation, route }) => {
     }
     onFinishTrip();
   }, [phoneNumber]);
-  console.log(idTrip);
+
+  useEffect(() => {
+    const getLocationDriver = onSnapshot(
+      doc(db, "Rider", idRider),
+      (snapshot) => {
+        const docData = snapshot.data();
+        if (docData) {
+          console.log("vi tri cua driver: ", {
+            latitude: docData.lat,
+            longitude: docData.long,
+          });
+          setDriverMarker({
+            latitude: docData.lat,
+            longitude: docData.long,
+          });
+        }
+      }
+    );
+
+    return () => {
+      getLocationDriver();
+    };
+  }, [idRider]);
+
   useEffect(() => {
     // Request permission to access the device's location
     (async () => {
@@ -62,12 +90,7 @@ const BookingDriverScreen = ({ navigation, route }) => {
           distanceInterval: 10, // Update every 10 meters
         },
         ({ coords: { latitude, longitude } }) => {
-          console.log(
-            "🚀 ~ file: BookingDriverScreen.js:49 ~ newLocation:",
-            latitude,
-            longitude
-          );
-          setMarker({ latitude, longitude });
+          setCustomerMarker({ latitude, longitude });
         }
       );
 
@@ -88,8 +111,6 @@ const BookingDriverScreen = ({ navigation, route }) => {
       cancel: increment(1),
     });
     navigation.navigate("Home");
-    // Do any necessary form validation or error checking here
-    // setStep(2);
   };
 
   const onFinishTrip = () => {
@@ -145,7 +166,7 @@ const BookingDriverScreen = ({ navigation, route }) => {
             >
               <Marker
                 key={"current-location"}
-                coordinate={marker}
+                coordinate={customerMarker}
                 title={"Current location"}
               ></Marker>
               <Marker
@@ -158,6 +179,15 @@ const BookingDriverScreen = ({ navigation, route }) => {
                     : null
                 }
               />
+              {driverMarker ? (
+                <Marker
+                  key={"driver-marker"}
+                  coordinate={driverMarker}
+                  title={"Driver"}
+                  description={"Current driver location"}
+                  image={require("../../assets/scooter.png")}
+                />
+              ) : null}
               {booking.routing ? (
                 <Polyline
                   coordinates={booking.routing}
