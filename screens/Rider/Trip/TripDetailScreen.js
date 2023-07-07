@@ -3,13 +3,12 @@ import React, { useEffect, useRef, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { COLORS, FONTS, SIZES } from "../../../constants/theme";
 import ButtonBack from "../../../components/Global/ButtonBack/ButtonBack";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../../../config/config";
 import { Dimensions, Platform } from "react-native";
 import ReceivedTripCard from "../../../components/Driver/ReceivedTripCard";
 import MapView, { Marker, Polyline } from "react-native-maps";
 import { requestLocationPermissions } from "../../../helper/location";
-import { Text } from "react-native";
 import { LocationAccuracy, watchPositionAsync } from "expo-location";
 
 const TripDetailScreen = ({ navigation, route }) => {
@@ -48,8 +47,8 @@ const TripDetailScreen = ({ navigation, route }) => {
         let locationSubscriber = await watchPositionAsync(
           {
             accuracy: LocationAccuracy.BestForNavigation,
-            timeInterval: 1000, // Update every 1 seconds
-            distanceInterval: 10, // Update every 10 meters
+            timeInterval: 10000, // Update every 10 seconds
+            distanceInterval: 30, // Update every 30 meters
           },
           ({ coords: { latitude, longitude } }) => {
             console.log(
@@ -57,6 +56,11 @@ const TripDetailScreen = ({ navigation, route }) => {
               latitude,
               longitude
             );
+            tripData.idRider &&
+              updateDoc(doc(db, "Rider", tripData.idRider), {
+                lat: latitude,
+                long: longitude,
+              });
             setCustomerLocation({ latitude, longitude });
           }
         );
