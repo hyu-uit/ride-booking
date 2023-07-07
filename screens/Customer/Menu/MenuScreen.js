@@ -130,7 +130,7 @@ const MenuScreen = ({ navigation }) => {
               </Select>
             </HStack>
           </VStack>
-          <HStack
+          {/* <HStack
             mt={10}
             alignItems={"center"}
             w={"100%"}
@@ -147,7 +147,7 @@ const MenuScreen = ({ navigation }) => {
             <Text style={{ ...FONTS.h5, color: COLORS.fifthary }} ml={5}>
               {t("dark")}
             </Text>
-          </HStack>
+          </HStack> */}
         </VStack>
       </SafeAreaView>
     </VStack>

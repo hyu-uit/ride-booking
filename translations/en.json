@@ -16,6 +16,7 @@
   "customer": "Passenger",
   "rider": "Rider",
   "office": "Office of Student",
+  "enterPasswordOffice": "Enter your password",
 
   "dontHaveAccount": "You don't have account?",
   "enterPhone": "Enter your phone number",
@@ -73,7 +74,7 @@
   "role": "Role",
   "fullName": "Full name",
   "id": "Student ID",
-  "school": "Shool;",
+  "school": "Shool",
   "phone": "Phone number",
   "email": "Email adress",
   "studentInfo": "Student Information",

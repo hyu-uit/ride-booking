@@ -34,16 +34,22 @@ import { db } from "../../config/config";
 import ConfirmedScheduledTrip from "../../components/Driver/ConfirmedScheduledTrip";
 import { getFromAsyncStorage } from "../../helper/asyncStorage";
 import { useTranslation } from "react-i18next";
+import { convertToTime, convertToDate } from "../../helper/moment";
+import HistoryPickUpCard from "../../components/Driver/HistoryPickUpCard";
 
 const RiderSchedule = ({ navigation }) => {
   const [service, setService] = useState(0);
   const [waitingTrips, setWaitingTrips] = useState({});
   const [confirmedTrips, setConfirmedTrips] = useState({});
+  const [finishedTrips, setFinishedTrips] = useState({});
   const [phoneNumber, setPhoneNumber] = useState([]);
+  const [currentTime, setCurrentTime] = useState(convertToTime(Date.now()));
+  const [date, setCurrentDate] = useState(convertToDate(Date.now()));
 
   useEffect(() => {
     fetchDataAndPhoneNumber();
-  }, [phoneNumber, navigation]);
+    // console.log("AAA"+currentTime)
+  }, [phoneNumber, navigation, currentTime, date]);
 
   const fetchDataAndPhoneNumber = async () => {
     try {
@@ -53,6 +59,7 @@ const RiderSchedule = ({ navigation }) => {
       if (phoneNumberValue) {
         getWaitingTrips();
         getConfirmedTrips();
+        getFinishedTrips();
       }
     } catch (err) {
       console.log(err);
@@ -67,16 +74,32 @@ const RiderSchedule = ({ navigation }) => {
       where("status", "==", "waiting"),
       where("isScheduled", "==", "true")
     );
+    const [hoursCur, minutesCur] = currentTime.split(":");
+    const totalMinutesCur =
+      parseInt(hoursCur, 10) * 60 + parseInt(minutesCur, 10);
 
     const unsubscribeTrip = onSnapshot(waitingTripsQuery, (querySnapshot) => {
       const updatedTrips = [];
       querySnapshot.forEach((doc) => {
+        const [hoursDB, minutesDB] = doc.data().timePickUp.split(":");
+        const totalMinutesDB =
+          parseInt(hoursDB, 10) * 60 + parseInt(minutesDB, 10);
+
+        const totalMin = totalMinutesDB - totalMinutesCur;
         if (moment(doc.data().datePickUp, "D/M/YYYY") > currentDate) {
           const trip = {
             idTrip: doc.id,
             ...doc.data(),
           };
           updatedTrips.push(trip);
+        } else if (doc.data().datePickUp === date) {
+          if (parseInt(totalMin) >= 60) {
+            const trip = {
+              idTrip: doc.id,
+              ...doc.data(),
+            };
+            updatedTrips.push(trip);
+          }
         }
       });
 
@@ -92,7 +115,7 @@ const RiderSchedule = ({ navigation }) => {
     const waitingTripsQuery = query(
       collection(db, "ListTrip"),
       where("idRider", "==", phoneNumber),
-      where("status", "==", "confirmed"),
+      where("status", "==", "accepted"),
       where("isScheduled", "==", "true")
     );
 
@@ -112,67 +135,104 @@ const RiderSchedule = ({ navigation }) => {
       unsubscribeTrip();
     };
   };
+
+  const getFinishedTrips = () => {
+    const finishedTripsQuery = query(
+      collection(db, "ListTrip"),
+      where("idRider", "==", phoneNumber),
+      where("status", "==", "done"),
+      where("isScheduled", "==", "true")
+    );
+
+    const unsubscribeTrip = onSnapshot(finishedTripsQuery, (querySnapshot) => {
+      const updatedTrips = [];
+      querySnapshot.forEach((doc) => {
+        const trip = {
+          idTrip: doc.id,
+          ...doc.data(),
+        };
+        updatedTrips.push(trip);
+      });
+      setFinishedTrips(updatedTrips);
+    });
+
+    return () => {
+      unsubscribeTrip();
+    };
+  };
   const FirstRoute = () => (
-    <ScrollView>
-      <FlatList
-        padding={"10px"}
-        mt={2}
-        horizontal={false}
-        data={waitingTrips}
-        keyExtractor={(item) => item.idTrip}
-        renderItem={({ item }) => (
-          <RequestCard
-            onPress={() => {
-              const data = {
-                idTrip: "" + item.idTrip,
-              };
-              navigation.navigate("TripDetail", data);
-            }}
-            trip={item}
-            key={item.idTrip}
-          ></RequestCard>
-        )}
-      ></FlatList>
-    </ScrollView>
+    <FlatList
+      padding={"10px"}
+      mt={2}
+      horizontal={false}
+      data={waitingTrips}
+      keyExtractor={(item) => item.idTrip}
+      renderItem={({ item }) => (
+        <RequestCard
+          onPress={() => {
+            const data = {
+              idTrip: "" + item.idTrip,
+            };
+            navigation.navigate("TripDetail", data);
+          }}
+          trip={item}
+          key={item.idTrip}
+        ></RequestCard>
+      )}
+    ></FlatList>
   );
 
   const SecondRoute = () => (
-    <ScrollView>
-      <FlatList
-        padding={"10px"}
-        mt={2}
-        horizontal={false}
-        data={confirmedTrips}
-        keyExtractor={(item) => item.idTrip}
-        renderItem={({ item }) => (
-          <ConfirmedScheduledTrip
-            onPress={() => {
-              const data = {
-                idTrip: "" + item.idTrip,
-                idRider: phoneNumber,
-                state: 0,
-              };
-              navigation.navigate("TripDetail", data);
-            }}
-            trip={item}
-            key={item.idTrip}
-          ></ConfirmedScheduledTrip>
-        )}
-      ></FlatList>
-    </ScrollView>
+    <FlatList
+      padding={"10px"}
+      mt={2}
+      horizontal={false}
+      data={confirmedTrips}
+      keyExtractor={(item) => item.idTrip}
+      renderItem={({ item }) => (
+        <ConfirmedScheduledTrip
+          onPress={() => {
+            const data = {
+              idTrip: "" + item.idTrip,
+              idRider: phoneNumber,
+              state: 0,
+            };
+            navigation.navigate("TripDetail", data);
+          }}
+          trip={item}
+          key={item.idTrip}
+        ></ConfirmedScheduledTrip>
+      )}
+    ></FlatList>
   );
 
   const ThirdRoute = () => (
-    <ScrollView>
-      <VStack mt={"17px"} justifyContent={"center"} alignItems={"center"}>
-        <HistoryCard />
-      </VStack>
-    </ScrollView>
+    <FlatList
+      padding={"10px"}
+      mt={2}
+      horizontal={false}
+      data={finishedTrips}
+      keyExtractor={(item) => item.idTrip}
+      renderItem={({ item }) => (
+        <HistoryPickUpCard
+          trip={item}
+          key={item.idTrip}
+          onPress={() => {
+            const data = {
+              idTrip: "" + item.idTrip,
+              isRead: true,
+            };
+            navigation.navigate("TripDetail", data);
+          }}
+        ></HistoryPickUpCard>
+      )}
+    ></FlatList>
   );
 
   const renderScene = SceneMap({
     first: FirstRoute,
     second: SecondRoute,
+    third: ThirdRoute,
   });
 
   const { t } = useTranslation();
@@ -181,13 +241,8 @@ const RiderSchedule = ({ navigation }) => {
   const [routes] = React.useState([
     { key: "first", title: t("available") },
     { key: "second", title: t("confirm") },
+    { key: "third", title: t("finished") },
   ]);
-  const [bikeUri, setBikeUri] = useState(
-    "https://res.cloudinary.com/dtutrxnyl/image/upload/v1686364990/bikeWhite_vqyjm3.png"
-  );
-  const [deliveryUri, setDeliveryUri] = useState(
-    "https://res.cloudinary.com/dtutrxnyl/image/upload/v1686364992/deliveryBlue_ztlpxb.png"
-  );
 
   return (
     <VStack h={"100%"} paddingY={"20px"} bgColor={COLORS.background}>
@@ -198,83 +253,6 @@ const RiderSchedule = ({ navigation }) => {
           justifyContent={"center"}
         >
           <View style={{ position: "absolute", left: 0 }}></View>
-        </HStack>
-        <HStack justifyContent={"center"} space={"10px"}>
-          <Button
-            w={"45%"}
-            h={"70px"}
-            borderRadius={20}
-            bgColor={service === 0 ? COLORS.primary : COLORS.tertiary}
-            onPress={() => {
-              setService(0);
-              setBikeUri(
-                "https://res.cloudinary.com/dtutrxnyl/image/upload/v1686364990/bikeWhite_vqyjm3.png"
-              );
-              setDeliveryUri(
-                "https://res.cloudinary.com/dtutrxnyl/image/upload/v1686364992/deliveryBlue_ztlpxb.png"
-              );
-            }}
-          >
-            {/* <Image
-                  src={require("../../../assets/images/Activity/ic_bike.png`")}
-                /> */}
-            <HStack justifyContent={"center"} alignItems={"center"}>
-              <Image
-                source={{ uri: bikeUri }}
-                w={"50%"}
-                h={"120%"}
-                resizeMode="contain"
-                alt="Icon bike"
-                // Other props here
-              />
-
-              <Text
-                style={{
-                  ...FONTS.h2,
-                  color: service === 0 ? COLORS.white : COLORS.fourthary,
-                }}
-              >
-                Bike
-              </Text>
-            </HStack>
-          </Button>
-          <Button
-            w={"45%"}
-            h={"70px"}
-            borderRadius={20}
-            bgColor={service === 1 ? COLORS.primary : COLORS.tertiary}
-            onPress={() => {
-              setService(1);
-              setBikeUri(
-                "https://res.cloudinary.com/dtutrxnyl/image/upload/v1686364990/bikeBlue_sqih2p.png"
-              );
-              setDeliveryUri(
-                "https://res.cloudinary.com/dtutrxnyl/image/upload/v1686364990/deliveryWhite_flxx91.png"
-              );
-            }}
-          >
-            {/* <Image
-                  src={require("../../../assets/images/Activity/ic_bike.png`")}
-                /> */}
-            <HStack justifyContent={"center"} alignItems={"center"}>
-              <Image
-                source={{ uri: deliveryUri }}
-                w={"50%"}
-                h={"150%"}
-                resizeMode="contain"
-                alt="Icon bike"
-                // Other props here
-              />
-              <Text
-                style={{
-                  ...FONTS.h2,
-                  color: service === 1 ? COLORS.white : COLORS.fourthary,
-                }}
-              >
-                Send
-              </Text>
-            </HStack>
-          </Button>
         </HStack>
 
         <VStack h={"100%"} mt={"17px"}>

@@ -23,12 +23,27 @@ import {
   where,
 } from "firebase/firestore";
 import { db } from "../config/config";
+import { Alert } from "react-native";
 
 const SavedLocationCard = ({ location, key }) => {
   const DeleteLocation = () => {
     // console.log(location.id);
     // const Ref = collection(db, "SavedLocation");
-    deleteDoc(doc(db, "SavedLocation", location.id));
+    Alert.alert("Are you want to delete this location?", "", [
+      {
+        text: "Cancel",
+        onPress: () => {
+          // props.onPressDelete(phoneNumber);
+        },
+      },
+      {
+        text: "OK",
+        onPress: () => {
+          deleteDoc(doc(db, "SavedLocation", location.id));
+          // props.onPressDelete(phoneNumber);
+        },
+      },
+    ]);
   };
 
   return (

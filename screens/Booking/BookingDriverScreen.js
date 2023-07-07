@@ -10,29 +10,47 @@ import DriverInformationModal from "../../components/Modal/DriverInformationModa
 import { VStack } from "native-base";
 import { COLORS } from "../../constants";
 import { BookingContext } from "../../context/BookingContext";
-import {
-  LocationAccuracy,
-  requestForegroundPermissionsAsync,
-  watchPositionAsync,
-} from "expo-location";
+import { LocationAccuracy, watchPositionAsync } from "expo-location";
 import { useRef } from "react";
+import { requestLocationPermissions } from "../../helper/location";
 import {
-  animateToCoordinate,
-  requestLocationPermissions,
-} from "../../helper/location";
+  collection,
+  doc,
+  increment,
+  onSnapshot,
+  query,
+  updateDoc,
+  where,
+} from "firebase/firestore";
+import { db } from "../../config/config";
+import { getFromAsyncStorage } from "../../helper/asyncStorage";
 
-const BookingDriverScreen = ({ navigation }) => {
+const BookingDriverScreen = ({ navigation, route }) => {
   const [step, setStep] = useState(1);
   const [isModalCancelShow, setIsModalCancelShow] = useState(false);
   const [isModalInfoShow, setIsModalInfoShow] = useState(false);
   const { booking } = useContext(BookingContext);
   const [marker, setMarker] = useState({ longitude: 0, latitude: 0 });
-  const mapRef = useRef();
+  const mapRef = useRef(null);
+  const { idRider, idTrip } = route.params;
+  const [phoneNumber, setPhoneNumber] = useState([]);
+  const [tripDetail, setTripDetailDone] = useState([]);
 
+  useEffect(() => {
+    try {
+      getFromAsyncStorage("phoneNumber").then((phoneNumberValue) => {
+        setPhoneNumber(phoneNumberValue);
+      });
+    } catch (err) {
+      console.log(err);
+    }
+    onFinishTrip();
+  }, [phoneNumber]);
+  console.log(idTrip);
   useEffect(() => {
     // Request permission to access the device's location
     (async () => {
-      let isAllowed = requestLocationPermissions();
+      let isAllowed = await requestLocationPermissions();
 
       if (!isAllowed) return;
 
@@ -40,7 +58,7 @@ const BookingDriverScreen = ({ navigation }) => {
       let locationSubscriber = await watchPositionAsync(
         {
           accuracy: LocationAccuracy.BestForNavigation,
-          timeInterval: 2000, // Update every 2 seconds
+          timeInterval: 1000, // Update every 2 seconds
           distanceInterval: 10, // Update every 10 meters
         },
         ({ coords: { latitude, longitude } }) => {
@@ -49,7 +67,6 @@ const BookingDriverScreen = ({ navigation }) => {
             latitude,
             longitude
           );
-          animateToCoordinate(mapRef, latitude, longitude);
           setMarker({ latitude, longitude });
         }
       );
@@ -61,11 +78,50 @@ const BookingDriverScreen = ({ navigation }) => {
         }
       };
     })();
-  }, []);
+  }, [idRider]);
 
   const handleStep1Button = () => {
+    updateDoc(doc(db, "ListTrip", idTrip), {
+      status: "canceled",
+    });
+    updateDoc(doc(db, "Customer", phoneNumber), {
+      cancel: increment(1),
+    });
+    navigation.navigate("Home");
     // Do any necessary form validation or error checking here
-    setStep(2);
+    // setStep(2);
+  };
+
+  const onFinishTrip = () => {
+    // const finishTripQuery = query(
+    //   collection(db, "ListTrip"),
+    //   where("isScheduled", "==", "false"),
+    //   where("status", "in", ["done","canceled"]),
+    //   where("idCustomer", "==", phoneNumber)
+    // );
+
+    const unsubscribeTrip = onSnapshot(
+      doc(db, "ListTrip", idTrip),
+      (querySnapshot) => {
+        const updatedTrip = [];
+        const docData = querySnapshot.data();
+        const trip = {
+          idTrip: docData.id,
+          ...docData,
+        };
+        updatedTrip.push(trip);
+        setTripDetailDone(updatedTrip);
+        if (
+          updatedTrip[0].status == "done" ||
+          updatedTrip[0].status == "canceled"
+        ) {
+          setStep(2);
+        }
+      }
+    );
+    return () => {
+      unsubscribeTrip();
+    };
   };
 
   const handleShowModalCancel = () => {
@@ -83,7 +139,7 @@ const BookingDriverScreen = ({ navigation }) => {
           <>
             <MapView
               ref={mapRef}
-              style={{ height: "45%", borderRadius: 10 }}
+              style={{ height: "50%", borderRadius: 10 }}
               provider="google"
               region={booking.region}
             >
@@ -111,6 +167,7 @@ const BookingDriverScreen = ({ navigation }) => {
               ) : null}
             </MapView>
             <OnTheWayCard
+              idRider={idRider}
               onPressCancel={handleStep1Button}
               onPressInfo={handleShowModalInfo}
             />
@@ -120,7 +177,8 @@ const BookingDriverScreen = ({ navigation }) => {
         return (
           <>
             <MapView
-              style={{ height: "45%", borderRadius: 10 }}
+              ref={mapRef}
+              style={{ height: "50%", borderRadius: 10 }}
               provider="google"
               region={booking.region}
             >
@@ -153,7 +211,11 @@ const BookingDriverScreen = ({ navigation }) => {
               ) : null}
             </MapView>
             <FinishedTripCard
-              onClickRate={() => navigation.navigate("BookingRating")}
+              idRider={idRider}
+              onClickRate={() => {
+                const data = { idRider: idRider };
+                navigation.navigate("BookingRating", data);
+              }}
               onPressInfo={handleShowModalInfo}
             />
           </>

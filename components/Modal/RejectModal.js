@@ -152,16 +152,6 @@ const RejectModal = ({
           borderTopColor={"transparent"}
         >
           <Button
-            bgColor={COLORS.primary}
-            onPress={onPressOK}
-            w={100}
-            borderRadius={20}
-          >
-            <Text fontSize={SIZES.body3} textAlign={"center"} color={"white"}>
-              OK
-            </Text>
-          </Button>
-          <Button
             bgColor={COLORS.lightGrey}
             onPress={onClose}
             w={100}
@@ -169,6 +159,16 @@ const RejectModal = ({
           >
             <Text fontSize={SIZES.body3} textAlign={"center"} color={"black"}>
               {t("cancel")}
+            </Text>
+          </Button>
+          <Button
+            bgColor={COLORS.primary}
+            onPress={onPressOK}
+            w={100}
+            borderRadius={20}
+          >
+            <Text fontSize={SIZES.body3} textAlign={"center"} color={"white"}>
+              OK
             </Text>
           </Button>
         </Modal.Footer>

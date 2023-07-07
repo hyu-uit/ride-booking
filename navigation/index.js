@@ -21,20 +21,32 @@ export default function Navigation() {
         "🚀 ~ file: index.js:19 ~ getFromAsyncStorage ~ value:",
         value
       );
-      if (value != null) setIsFirstUse(value);
+      // if (value != null) setIsFirstUse(value);
     });
   }, []);
   return (
     <NavigationContainer>
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Navigator
+        screenOptions={{ headerShown: false }}
+        options={{ gestureEnabled: false }}
+      >
         {isFirstUse ? (
-          <Stack.Screen name="OnBoarding" component={OnBoardingScreen} />
+          <Stack.Screen
+            name="OnBoarding"
+            component={OnBoardingScreen}
+            options={{ gestureEnabled: false }}
+          />
         ) : null}
         <Stack.Screen
           name="AuthenticationStack"
           component={AuthenticationStackScreen}
+          options={{ gestureEnabled: false }}
         />
-        <Stack.Screen name="MainNavigator" component={MainNavigator} />
+        <Stack.Screen
+          name="MainNavigator"
+          component={MainNavigator}
+          options={{ gestureEnabled: false }}
+        />
         <Stack.Screen
           name="MainRiderNavigator"
           component={MainRiderNavigator}
@@ -43,6 +55,7 @@ export default function Navigation() {
         <Stack.Screen
           name="StudentOfficeNavigator"
           component={StudentOfficeStackScreen}
+          tr
           options={{ gestureEnabled: false }}
         />
       </Stack.Navigator>

@@ -17,19 +17,28 @@ import {
   DESTINATION_INPUT,
   PICK_UP_INPUT,
 } from "../../screens/Booking/BookingScreen";
-import { AutocompleteDropdown } from "react-native-autocomplete-dropdown";
+import {
+  AutocompleteDropdown,
+  AutocompleteDropdownContextProvider,
+} from "react-native-autocomplete-dropdown";
 import { TouchableOpacity } from "react-native";
 import { Platform } from "react-native";
 import { useContext, useState } from "react";
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { getAutoCompleteResults } from "../../api/locationAPI";
+import {
+  getAutoCompleteResults,
+  getSingleAddressFromCoordinate,
+} from "../../api/locationAPI";
 import {
   BookingContext,
   SET_DESTINATION_LOCATION,
   SET_INITIAL_LOCATION,
+  SET_PICK_UP_LOCATION,
 } from "../../context/BookingContext";
+import { fetchCurrentUserLocation } from "../../helper/location";
 
+const defaultPickUpItem = { id: "your-location", title: "Your location" };
 const LocationCardWithChange = ({
   pickUpInput,
   setPickUpInput,
@@ -40,21 +49,28 @@ const LocationCardWithChange = ({
   setMarker,
 }) => {
   const { dispatch } = useContext(BookingContext);
-  const [suggestionsList, setSuggestionsList] = useState([]);
-  // save result to find long lat on click select item auto complete
-  const [originalResult, setOriginalResult] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [showDropdown, setShowDropdown] = useState(false);
+  const [destSuggestionsList, setDestSuggestionsList] = useState([]);
+  const [pickUpSuggestionsList, setPickUpSuggestionsList] = useState([
+    defaultPickUpItem,
+  ]);
+  // save result to find long, lat, name on click select item auto complete
+  const [destOriginalResult, setDestOriginalResult] = useState([]);
+  const [pickUpOriginalResult, setPickUpOriginalResult] = useState([
+    defaultPickUpItem,
+  ]);
+
+  const [destLoading, setDestLoading] = useState(false);
+  const [pickUpLoading, setPickUpLoading] = useState(false);
 
   useEffect(() => {
     const searchTimeout = setTimeout(() => {
       // empty input will lead to error
       if (desInput.length > 1) {
-        setLoading(true);
+        setDestLoading(true);
         getAutoCompleteResults(desInput)
           .then((results) => {
-            setOriginalResult(results);
-            setSuggestionsList(
+            setDestOriginalResult(results);
+            setDestSuggestionsList(
               results.map((result) => ({
                 id: result.place_id,
                 title: result.formatted,
@@ -68,7 +84,7 @@ const LocationCardWithChange = ({
             );
             return;
           })
-          .finally(() => setLoading(false));
+          .finally(() => setDestLoading(false));
       }
     }, 1000);
     return () => {
@@ -76,7 +92,152 @@ const LocationCardWithChange = ({
     };
   }, [desInput]);
 
+  useEffect(() => {
+    const searchTimeout = setTimeout(() => {
+      // empty input will lead to error
+      if (pickUpInput.length > 1) {
+        setPickUpLoading(true);
+        getAutoCompleteResults(pickUpInput)
+          .then((results) => {
+            setPickUpOriginalResult(results);
+            setPickUpSuggestionsList([
+              defaultPickUpItem,
+              ...results.map((result) => ({
+                id: result.place_id,
+                title: result.formatted,
+              })),
+            ]);
+          })
+          .catch((err) => {
+            console.log(
+              "🚀 ~ file: LocationCardWithChange.js:66 ~ searchTimeout ~ err:",
+              err
+            );
+            return;
+          })
+          .finally(() => setPickUpLoading(false));
+      }
+    }, 500);
+    return () => {
+      clearTimeout(searchTimeout);
+    };
+  }, [pickUpInput]);
+
   const { t } = useTranslation();
+
+  const onSelectPickUpItem = (item) => {
+    if (!item) return;
+
+    // set to current location
+    if (item.id === "your-location") {
+      fetchCurrentUserLocation()
+        .then(({ latitude, longitude }) => {
+          dispatch({
+            type: SET_INITIAL_LOCATION,
+            payload: {
+              latitude,
+              longitude,
+            },
+          });
+
+          getSingleAddressFromCoordinate(latitude, longitude)
+            .then((value) => {
+              dispatch({
+                type: SET_PICK_UP_LOCATION,
+                payload: {
+                  name: "Your location",
+                  address: value.formatted,
+                  latitude,
+                  longitude,
+                },
+              });
+              setMarker({
+                name: "Your location",
+                address: value.formatted,
+                latitude,
+                longitude,
+              });
+
+              item && setPickUpInput(item.title);
+              setStep(2);
+            })
+            .catch((err) => {
+              console.log(
+                "🚀 ~ file: LocationCardWithChange.js:174 ~ .then ~ err:",
+                err
+              );
+            });
+        })
+        .catch((err) => {
+          console.log("🚀 ~ file: LocationCardWithChange.js:178 ~ err:", err);
+        });
+      // save in case user click back button
+    } else
+      pickUpOriginalResult.map((result) => {
+        if (result.place_id == item.id) {
+          dispatch({
+            type: SET_INITIAL_LOCATION,
+            payload: {
+              latitude: result.lat,
+              longitude: result.lon,
+            },
+          });
+
+          dispatch({
+            type: SET_PICK_UP_LOCATION,
+            payload: {
+              address: result.formatted,
+              name: result.name,
+              latitude: result.lat,
+              longitude: result.lon,
+            },
+          });
+
+          setMarker({
+            address: result.formatted,
+            name: result.name,
+            latitude: result.lat,
+            longitude: result.lon,
+          });
+
+          // save in case user click back button
+          item && setPickUpInput(item.title);
+          setStep(2);
+        }
+      });
+  };
+
+  const onSelectDestItem = (item) => {
+    destOriginalResult.map((result) => {
+      if (result.place_id == item.id) {
+        dispatch({
+          type: SET_INITIAL_LOCATION,
+          payload: {
+            latitude: result.lat,
+            longitude: result.lon,
+          },
+        });
+        dispatch({
+          type: SET_DESTINATION_LOCATION,
+          payload: {
+            address: result.formatted,
+            name: result.name,
+            latitude: result.lat,
+            longitude: result.lon,
+          },
+        });
+        setMarker({
+          address: result.formatted,
+          name: result.name,
+          latitude: result.lat,
+          longitude: result.lon,
+        });
+        // save in case user click back button
+        item && setDestinationInput(item.title);
+        setStep(2);
+      }
+    });
+  };
 
   return (
     <Flex marginTop={3} marginLeft={3} marginRight={3}>
@@ -94,16 +255,56 @@ const LocationCardWithChange = ({
             <Text bold fontSize={SIZES.h6} color={"#8CC3FF"}>
               {t("pickUp")}
             </Text>
-            <TouchableOpacity
-              onPress={(e) => {
+            <AutocompleteDropdown
+              onFocus={() => {
                 setFocusInput(PICK_UP_INPUT);
-                setShowDropdown(false);
               }}
-            >
-              <Text color={"white"} padding={1} style={{ ...FONTS.body5 }} bold>
-                {t("enterPickUp")}
-              </Text>
-            </TouchableOpacity>
+              showClear
+              onClear={() => setPickUpInput("")}
+              closeOnBlur
+              direction={Platform.select({ ios: "down" })}
+              dataSet={pickUpSuggestionsList}
+              onSelectItem={onSelectPickUpItem}
+              textInputProps={{
+                value: pickUpInput,
+                placeholder: t("enterPickUp"),
+                style: {
+                  color: "white",
+                  paddingLeft: 0,
+                  ...FONTS.body5,
+                },
+                onChangeText: (text) => setPickUpInput(text),
+              }}
+              loading={pickUpLoading}
+              inputContainerStyle={{
+                backgroundColor: "transparent",
+                borderRadius: 25,
+                borderColor: "red",
+                marginLeft: 0,
+              }}
+              suggestionsListContainerStyle={{
+                display: "flex",
+                backgroundColor: COLORS.tertiary,
+                paddingHorizontal: 5,
+                width: "105%",
+                borderColor: "white",
+                borderWidth: 1,
+                borderTopWidth: 0,
+                borderTopLeftRadius: 0,
+                borderTopRightRadius: 0,
+                marginTop: 0,
+                color: "white",
+              }}
+              renderItem={(item, text) => (
+                <Text
+                  color={"white"}
+                  style={{ ...FONTS.body5, marginVertical: 5 }}
+                >
+                  {item.title}
+                </Text>
+              )}
+              useFilter={false} // set false to prevent rerender twice
+            />
           </VStack>
           <Divider />
           <VStack>
@@ -111,42 +312,14 @@ const LocationCardWithChange = ({
               {t("des")}
             </Text>
             <AutocompleteDropdown
+              onClear={() => setDestinationInput("")}
+              showClear
               onFocus={() => {
                 setFocusInput(DESTINATION_INPUT);
               }}
               direction={Platform.select({ ios: "down" })}
-              dataSet={suggestionsList}
-              onSelectItem={(item) => {
-                originalResult.map((result) => {
-                  if (result.place_id == item.id) {
-                    dispatch({
-                      type: SET_INITIAL_LOCATION,
-                      payload: {
-                        latitude: result.lat,
-                        longitude: result.lon,
-                      },
-                    });
-                    dispatch({
-                      type: SET_DESTINATION_LOCATION,
-                      payload: {
-                        address: result.formatted,
-                        name: result.name,
-                        latitude: result.lat,
-                        longitude: result.lon,
-                      },
-                    });
-                    setMarker({
-                      address: result.formatted,
-                      name: result.name,
-                      latitude: result.lat,
-                      longitude: result.lon,
-                    });
-                    // save in case user click back button
-                    item && setDestinationInput(item.title);
-                    setStep(2);
-                  }
-                });
-              }}
+              dataSet={destSuggestionsList}
+              onSelectItem={onSelectDestItem}
               textInputProps={{
                 value: desInput,
                 placeholder: t("enterDestination"),
@@ -157,7 +330,7 @@ const LocationCardWithChange = ({
                 },
                 onChangeText: (text) => setDestinationInput(text),
               }}
-              loading={loading}
+              loading={destLoading}
               inputContainerStyle={{
                 backgroundColor: "transparent",
                 borderRadius: 25,
@@ -184,6 +357,7 @@ const LocationCardWithChange = ({
                   {item.title}
                 </Text>
               )}
+              useFilter={false} // set false to prevent rerender twice
             />
           </VStack>
         </VStack>

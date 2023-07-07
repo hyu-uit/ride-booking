@@ -3,15 +3,18 @@ import { Button, HStack, Image, Input, Text, VStack, View } from "native-base";
 import { COLORS, FONTS } from "../../../constants/theme";
 import { SafeAreaView } from "react-native-safe-area-context";
 import ButtonBack from "../../../components/Global/ButtonBack/ButtonBack";
-import { Keyboard } from "react-native";
+import { Alert, Keyboard } from "react-native";
 import { TouchableWithoutFeedback } from "react-native";
 import {
   addDoc,
   collection,
   doc,
   getDoc,
+  getDocs,
+  query,
   setDoc,
   updateDoc,
+  where,
 } from "firebase/firestore";
 import { db } from "../../../config/config";
 import { getFromAsyncStorage } from "../../../helper/asyncStorage";
@@ -19,15 +22,30 @@ import { getFromAsyncStorage } from "../../../helper/asyncStorage";
 const ConfirmLocationScreen = ({ navigation, route }) => {
   const [phoneNumber, setPhoneNumber] = useState();
   const [name, setName] = useState();
+  const [locations, setLocations] = useState([{}]);
   useEffect(() => {
-    getFromAsyncStorage("phoneNumber").then((value) => {
-      setPhoneNumber(value);
-    });
-
-    console.log(route);
+    const phoneNumberValue = getFromAsyncStorage("phoneNumber").then(
+      (value) => {
+        setPhoneNumber(value);
+        getDocs(
+          query(
+            collection(db, "SavedLocation"),
+            where("phoneNumber", "==", value)
+          )
+        ).then((docSnap) => {
+          docSnap.forEach((doc) => {
+            setLocations((prevArray) => [
+              ...prevArray,
+              { name: doc.data().name },
+            ]);
+          });
+        });
+      }
+    );
   }, []);
 
   const ConfirmLocation = () => {
+    console.log();
     // setDoc(doc(db, "SavedLocation", phoneNumber), {
     //   phoneNumber: phoneNumber,
     //   name: name,
@@ -42,16 +60,38 @@ const ConfirmLocationScreen = ({ navigation, route }) => {
     // addDoc(doc(db, "SavedLocation"), {
     //   address: route.params.address,
     // });
-    const collectionRef = collection(db, "SavedLocation");
-    addDoc(collectionRef, {
-      address: route.params.address,
-      name: name,
-      phoneNumber: phoneNumber,
-      lat: "" + route.params.latitude,
-      long: "" + route.params.longitude,
-    });
-    navigation.goBack();
-    navigation.goBack();
+    if (name) {
+      if (locations.some((obj) => obj.name === name)) {
+        Alert.alert("This name existed", "", [
+          {
+            text: "OK",
+            onPress: () => {
+              // props.onPressDelete(phoneNumber);
+            },
+          },
+        ]);
+      } else {
+        const collectionRef = collection(db, "SavedLocation");
+        addDoc(collectionRef, {
+          address: route.params.address,
+          name: name,
+          phoneNumber: phoneNumber,
+          lat: "" + route.params.latitude,
+          long: "" + route.params.longitude,
+        });
+        navigation.goBack();
+        navigation.goBack();
+      }
+    } else {
+      Alert.alert("Please enter name to save", "", [
+        {
+          text: "OK",
+          onPress: () => {
+            // props.onPressDelete(phoneNumber);
+          },
+        },
+      ]);
+    }
   };
 
   return (
@@ -97,16 +137,23 @@ const ConfirmLocationScreen = ({ navigation, route }) => {
             <Text style={{ ...FONTS.body4, color: COLORS.white }} mt={1}>
               {route.params.address}
             </Text>
-            <Button
+            <HStack
               position={"absolute"}
               bottom={0}
               w={"100%"}
-              borderRadius={20}
-              bgColor={COLORS.primary}
-              onPress={ConfirmLocation}
+              justifyContent={"center"}
             >
-              <Text style={{ ...FONTS.h2, color: COLORS.white }}>Confirm</Text>
-            </Button>
+              <Button
+                w={"90%"}
+                borderRadius={20}
+                bgColor={COLORS.primary}
+                onPress={ConfirmLocation}
+              >
+                <Text style={{ ...FONTS.h2, color: COLORS.white }}>
+                  Confirm
+                </Text>
+              </Button>
+            </HStack>
           </VStack>
         </TouchableWithoutFeedback>
       </SafeAreaView>

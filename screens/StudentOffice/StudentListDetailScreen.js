@@ -64,9 +64,9 @@ const StudentListDetailScreen = ({ route, navigation }) => {
       (snapshot) => {
         let doneCount = 0;
         snapshot.forEach((doc) => {
-            doneCount++;
+          doneCount++;
         });
-        console.log(doneCount)
+        console.log(doneCount);
         setDoneTripCount(doneCount);
       }
     );
@@ -81,7 +81,7 @@ const StudentListDetailScreen = ({ route, navigation }) => {
           badCount: docData.bad,
         };
         setCancelTripCount(docData.cancel);
-        setTotalTripCount(doneTripCount+docData.cancel)
+        setTotalTripCount(doneTripCount + docData.cancel);
         setRatingList(rating);
       }
     );
@@ -271,13 +271,13 @@ const StudentListDetailScreen = ({ route, navigation }) => {
                 {t("trip")}
               </Text>
               <Text style={{ ...FONTS.h3, color: COLORS.white }} mt={2}>
-                {totalTripCount}
+                {!totalTripCount ? 0 : totalTripCount}
               </Text>
               <Text style={{ ...FONTS.h4, color: COLORS.fifthary }} mt={10}>
                 {t("canceled")}
               </Text>
               <Text style={{ ...FONTS.h3, color: COLORS.red }} mt={2}>
-                {cancelTripCount}
+                {!cancelTripCount ? 0 : cancelTripCount}
               </Text>
 
               {role === "Rider" ? (
@@ -304,21 +304,6 @@ const StudentListDetailScreen = ({ route, navigation }) => {
                         {ratingList.badCount}
                       </Text>
                     </VStack>
-                  </HStack>
-
-                  <HStack justifyContent={"space-between"} space={2}>
-                    <SelectedButton
-                      text={"Friendly (5)"}
-                      isSelected={false}
-                    ></SelectedButton>
-                    <SelectedButton
-                      text={"Friendly (5)"}
-                      isSelected={false}
-                    ></SelectedButton>
-                    <SelectedButton
-                      text={"Friendly (5)"}
-                      isSelected={false}
-                    ></SelectedButton>
                   </HStack>
                 </>
               ) : (

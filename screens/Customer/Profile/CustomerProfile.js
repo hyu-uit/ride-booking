@@ -124,9 +124,9 @@ const CustomerProfile = ({ navigation, route }) => {
   };
 
   return (
-    <VStack h={"100%"} paddingTop={"20px"} bgColor={COLORS.background}>
+    <VStack h={"100%"} bgColor={COLORS.background}>
       <SafeAreaView>
-        <VStack paddingX={"10px"} h={"100%"}>
+        <VStack paddingX={"10px"}>
           <HStack justifyContent={"center"}>
             <View style={{ position: "absolute", left: 0 }}></View>
             <Text style={{ ...FONTS.h2, color: COLORS.white }}>
@@ -196,6 +196,7 @@ const CustomerProfile = ({ navigation, route }) => {
             <Button
               w={"100%"}
               paddingBottom={2}
+              mb={10}
               mt={20}
               borderRadius={20}
               bgColor={COLORS.primary}

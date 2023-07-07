@@ -19,7 +19,10 @@ function HistoryPickUpCard(props, navigation) {
     time,
     datePickUp,
     timePickUp,
+    pickUpAddress,
+    destAddress,
     status,
+    isScheduled,
     totalPrice,
     distance,
   } = props.trip;
@@ -48,15 +51,39 @@ function HistoryPickUpCard(props, navigation) {
     >
       <TouchableOpacity onPress={onPress}>
         <VStack space={1} paddingRight={26}>
-          <Text
-            mt={2}
-            mb={2}
-            paddingLeft={26}
-            style={{ color: COLORS.lightGrey, ...FONTS.body6 }}
-          >
-            {idTrip}
-          </Text>
           <HStack paddingLeft={26} space={12} f alignItems={"center"}>
+            <Text
+              mt={2}
+              mb={2}
+              style={{ color: COLORS.lightGrey, ...FONTS.body6 }}
+            >
+              {idTrip}
+            </Text>
+            <View
+              ml={12}
+              justifyItems={"flex-end"}
+              style={{
+                backgroundColor:
+                  isScheduled === "true" ? COLORS.red : COLORS.primary,
+                borderRadius: 20,
+              }}
+            >
+              <Text
+                ml={2}
+                mr={2}
+                style={{ color: COLORS.white, ...FONTS.body6 }}
+              >
+                {isScheduled === "false" ? "unscheduled" : "scheduled"}
+              </Text>
+            </View>
+          </HStack>
+          <HStack
+            paddingLeft={26}
+            space={12}
+            f
+            alignItems={"center"}
+            justifyContent={"space-between"}
+          >
             <Text
               color={COLORS.white}
               style={{
@@ -73,7 +100,7 @@ function HistoryPickUpCard(props, navigation) {
                 marginLeft: 5,
               }}
             >
-              {totalPrice}
+              {parseInt(totalPrice).toLocaleString()}đ
             </Text>
           </HStack>
           {/* <Text paddingLeft={26} style={styles.detailText}>
@@ -84,15 +111,15 @@ function HistoryPickUpCard(props, navigation) {
               <Image alt="location line" source={locationLineIcon}></Image>
               <VStack space={5} style={{ marginRight: 30 }}>
                 <VStack>
-                  <Text style={styles.detailText}>KTX Khu B</Text>
+                  <Text style={styles.detailText}>Pick up</Text>
                   <Text numberOfLines={1} style={styles.titleText}>
-                    KTX Khu B ĐHQG, Đông Hòa, Dĩ An, Bình Dương
+                    {pickUpAddress}
                   </Text>
                 </VStack>
                 <VStack>
-                  <Text style={styles.detailText}>UIT</Text>
+                  <Text style={styles.detailText}>Destination</Text>
                   <Text numberOfLines={1} style={styles.titleText}>
-                    Trường Đại học Công nghệ Thông tin - ĐHQG TPHCN...
+                    {destAddress}
                   </Text>
                 </VStack>
               </VStack>

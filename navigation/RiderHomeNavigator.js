@@ -9,6 +9,6 @@ export function RiderHomeStackScreen() {
     <RiderHomeStack.Navigator screenOptions={{ headerShown: false }}>
       <RiderHomeStack.Screen name="RiderHome" component={RiderHomeScreen} />
       <RiderHomeStack.Screen name="TripDetail" component={TripDetailScreen} />
-    </RiderHomeStack.Navigator>
+ </RiderHomeStack.Navigator>
   );
 }

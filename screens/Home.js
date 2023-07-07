@@ -12,11 +12,18 @@ import {
   ScrollView,
   Text,
   VStack,
+  View,
 } from "native-base";
 import DefaultAvt from "../assets/image6.png";
 import { SafeAreaView } from "react-native-safe-area-context";
 import MenuIcon from "../assets/icons/icons8-menu-48.png";
-import { TouchableOpacity, BackHandler, ToastAndroid } from "react-native";
+import {
+  TouchableOpacity,
+  BackHandler,
+  ToastAndroid,
+  Platform,
+  Dimensions,
+} from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import SelectedButton from "../components/Button/SelectedButton";
 import HistoryCard from "../components/HistoryCard";
@@ -25,23 +32,33 @@ import DeliveryImg from "../assets/images/delivery_1.png";
 import { TouchableWithoutFeedback } from "react-native";
 import { Keyboard } from "react-native";
 import LottieView from "lottie-react-native";
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
 import { getFromAsyncStorage } from "../helper/asyncStorage";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { useState } from "react";
 import {
   collection,
   doc,
   getDoc,
   getDocs,
+  onSnapshot,
   query,
   where,
 } from "firebase/firestore";
 import { db } from "../config/config";
 import { useFocusEffect } from "@react-navigation/native";
 import { useTranslation } from "react-i18next";
+import {
+  BookingContext,
+  SET_BOOKING_DETAILS,
+  SET_PICK_UP_LOCATION,
+  bookingDefaultValue,
+} from "../context/BookingContext";
+import { getLocation } from "../helper/location";
+import VNUHCM from "../assets/images/banner.png";
+import { useRef } from "react";
 
 export default function Home({ navigation, route }) {
+  const { dispatch } = useContext(BookingContext);
   const [phone, setPhone] = useState("");
   const [historyTrips, setHistoryTrips] = useState([]);
   const [name, SetName] = useState(null);
@@ -55,6 +72,12 @@ export default function Home({ navigation, route }) {
   );
 
   let backButtonPressedOnce = false;
+
+  const { height } = Dimensions.get("window");
+  const bottomBarHeight = Platform.OS === "ios" ? 90 : 60;
+  const adjustedHeight = height - bottomBarHeight;
+
+  const animation = useRef(null);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -80,7 +103,18 @@ export default function Home({ navigation, route }) {
 
   useEffect(() => {
     fetchDataAndPhoneNumber();
-  }, []);
+    getLocation().then(({ latitude, longitude }) => {
+      dispatch({
+        type: SET_PICK_UP_LOCATION,
+        payload: {
+          name: "Your location",
+          latitude,
+          longitude,
+        },
+      });
+    });
+    dispatch({ type: SET_BOOKING_DETAILS, payload: bookingDefaultValue });
+  }, [phone]);
 
   const fetchDataAndPhoneNumber = async () => {
     try {
@@ -95,43 +129,61 @@ export default function Home({ navigation, route }) {
       console.log(err);
     }
   };
+
   const fetchData = async (phoneNumber) => {
     try {
-      const docData = await getDoc(doc(db, "Customer", phoneNumber));
-      SetName(docData.data().displayName);
-      SetAvatar(docData.data().portrait);
+      const unsubscribe = onSnapshot(
+        doc(db, "Customer", phoneNumber),
+        (docSnapshot) => {
+          const docData = docSnapshot.data();
+          SetName(docData.displayName);
+          SetAvatar(docData.portrait);
+        }
+      );
+      return () => {
+        unsubscribe();
+      };
     } catch (error) {
       console.error(error);
     }
   };
   //const {phoneNumber, role} = route.params;
-  const getHistoryTrips = async (phoneNumber) => {
-    let historyTrips = [];
-    getDocs(
-      query(collection(db, "ListTrip"), where("idCustomer", "==", phoneNumber))
-    ).then((docSnap) => {
-      docSnap.forEach((doc) => {
-        if (doc.data().status === "done") {
-          historyTrips.push({
-            idCustomer: doc.data().idCustomer,
-            idTrip: doc.id,
-            pickUpLat: doc.data().pickUpLat,
-            pickUpLong: doc.data().pickUpLong,
-            destLat: doc.data().destLat,
-            destLong: doc.data().destLong,
-            date: doc.data().date,
-            time: doc.data().time,
-            datePickUp: doc.data().datePickUp,
-            timePickUp: doc.data().timePickUp,
-            totalPrice: doc.data().totalPrice,
-            distance: doc.data().distance,
-          });
-        }
+  const getHistoryTrips = () => {
+    const querySnapshot = query(
+      collection(db, "ListTrip"),
+      where("status", "==", "done"),
+      where("isScheduled", "==", "false"),
+      where("idCustomer", "==", phone)
+    );
+    const unsubscribe = onSnapshot(querySnapshot, (snapshot) => {
+      let historyTrips = [];
+      snapshot.forEach((doc) => {
+        historyTrips.push({
+          idCustomer: doc.data().idCustomer,
+          idTrip: doc.id,
+          pickUpLat: doc.data().pickUpLat,
+          pickUpLong: doc.data().pickUpLong,
+          destLat: doc.data().destLat,
+          destLong: doc.data().destLong,
+          date: doc.data().date,
+          time: doc.data().time,
+          datePickUp: doc.data().datePickUp,
+          timePickUp: doc.data().timePickUp,
+          pickUpAddress: doc.data().pickUpAddress,
+          destAddress: doc.data().destAddress,
+          totalPrice: doc.data().totalPrice,
+          distance: doc.data().distance,
+          idRider: doc.data().idRider,
+        });
       });
       setHistoryTrips(historyTrips);
     });
+    return () => {
+      unsubscribe();
+    };
   };
   console.log(historyTrips);
+
   return (
     <TouchableWithoutFeedback
       onPress={() => {
@@ -160,14 +212,18 @@ export default function Home({ navigation, route }) {
           </MenuButton>
         </HStack>
         <HStack>
-          <ScrollView showsVerticalScrollIndicator={false}>
+          <ScrollView
+            nestedScrollEnabled={false}
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={{ minHeight: adjustedHeight }}
+          >
             <HStack
               w={"100%"}
               borderRadius={10}
               bgColor={COLORS.tertiary}
               borderWidth={0}
               h={"50px"}
-              mb={10}
+              mb={3}
               mt={8}
               alignItems={"center"}
               onTouchEnd={() => {
@@ -186,6 +242,16 @@ export default function Home({ navigation, route }) {
                 {t("enterDes")}
               </Text>
             </HStack>
+            <Image
+              bgColor={COLORS.red}
+              source={VNUHCM}
+              h={120}
+              w={"100%"}
+              alt="vnuhcm"
+              resizeMode="cover"
+              borderRadius={10}
+              mb={2}
+            ></Image>
             {/* <HStack
               marginTop={5}
               marginBottom={5}
@@ -196,40 +262,124 @@ export default function Home({ navigation, route }) {
               <SelectedButton text={"School"} />
               <SelectedButton text={"Hotel"} />
             </HStack> */}
-            <HStack w={"100%"} justifyContent={"space-evenly"} marginBottom={5}>
+            <HStack
+              w={"100%"}
+              justifyContent={"space-between"}
+              marginBottom={5}
+            >
               <TouchableOpacity
+                style={{
+                  width: "30%",
+                  aspectRatio: 1,
+                  backgroundColor: COLORS.white,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  borderRadius: 22,
+                }}
+                onPress={() => {
+                  navigation.navigate("Booking");
+                }}
+              >
+                <VStack
+                  w={"100%"}
+                  h={"100%"}
+                  alignItems={"center"}
+                  justifyContent={"center"}
+                >
+                  <Ionicons
+                    name="location"
+                    size={40}
+                    color={COLORS.red}
+                  ></Ionicons>
+                  <Text mt={1} style={{ ...FONTS.h3 }}>
+                    New Trip
+                  </Text>
+                </VStack>
+              </TouchableOpacity>
+              <View w={"65%"} bgColor={"#f7c846"} style={{ borderRadius: 22 }}>
+                <VStack>
+                  <Text
+                    style={{
+                      ...FONTS.h3,
+                      marginTop: 15,
+                      marginLeft: 10,
+                      color: COLORS.black,
+                    }}
+                  >
+                    Safety
+                  </Text>
+                  <Text
+                    style={{
+                      ...FONTS.body6,
+                      fontSize: 10,
+                      marginTop: 3,
+                      marginLeft: 10,
+                      color: COLORS.grey,
+                    }}
+                  >
+                    VNU's Censored riders
+                  </Text>
+                </VStack>
+                <LottieView
+                  autoPlay
+                  ref={animation}
+                  style={{
+                    position: "absolute",
+                    right: 0,
+                    bottom: 0,
+                    aspectRatio: 1,
+                    height: "100%",
+                    backgroundColor: "transparent",
+                  }}
+                  // Find more Lottie files at https://lottiefiles.com/featured
+                  source={require("../assets/lottie/riding_bear.json")}
+                />
+              </View>
+              {/* <TouchableOpacity
                 onPress={() => {
                   const data = { phoneNumber: "0393751403" };
                   navigation.navigate("Booking", data);
                 }}
+                style={{ width: "100%" }}
               >
                 <VStack
                   borderColor={"white"}
                   borderWidth={1}
                   borderRadius={SIZES.radius10}
+                  w={"100%"}
                 >
                   <Center
-                    w={"150px"}
+                    w={"100%"}
                     h={"120px"}
                     bgColor={COLORS.fourthary}
                     borderTopRadius={SIZES.radius10}
                   >
-                    <Image
-                      source={{ uri: bikeUri }}
+                    <HStack
+                      h={"100%"}
                       w={"100%"}
-                      h={"80%"}
-                      resizeMode="contain"
-                      alt="bike"
-                    />
+                      justifyContent={"center"}
+                      alignItems={"center"}
+                    >
+                      <Image
+                        source={{ uri: bikeUri }}
+                        style={{ aspectRatio: 1 }}
+                        h={"80%"}
+                        resizeMode="contain"
+                        alt="bike"
+                      />
+                      <Text style={{ ...FONTS.h1, color: COLORS.white }}>
+                        LET'S GO
+                      </Text>
+                    </HStack>
                   </Center>
                   <Center h={50}>
                     <Text fontSize={SIZES.h4} bold color={"white"}>
-                      BIKE
+                      UniGo: Your Reliable Ride Companion!
                     </Text>
                   </Center>
                 </VStack>
-              </TouchableOpacity>
-              <TouchableOpacity
+              </TouchableOpacity> */}
+              {/* <TouchableOpacity
                 onPress={() => {
                   navigation.navigate("Booking");
                 }}
@@ -259,7 +409,7 @@ export default function Home({ navigation, route }) {
                     </Text>
                   </Center>
                 </VStack>
-              </TouchableOpacity>
+              </TouchableOpacity> */}
             </HStack>
             <Text
               fontSize={SIZES.h4}
@@ -279,6 +429,7 @@ export default function Home({ navigation, route }) {
               <FlatList
                 // padding={"10px"}
                 mt={2}
+                // mb={10}
                 horizontal={false}
                 data={historyTrips}
                 keyExtractor={(item) => item.idTrip}
@@ -287,6 +438,7 @@ export default function Home({ navigation, route }) {
                     onPress={() => {
                       const data = {
                         idTrip: "" + item.idTrip,
+                        idRider: "" + item.idRider,
                       };
                       navigation.navigate("ActivityDetail", data);
                     }}

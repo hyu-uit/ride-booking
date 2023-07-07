@@ -1,25 +1,45 @@
 import React, { useRef } from "react";
 import styled from "styled-components";
-import { COLORS, SIZES } from "../../constants/theme";
-import { Button, Center, HStack, Image, Text, VStack, View } from "native-base";
+import { COLORS, FONTS, SIZES } from "../../constants/theme";
+import {
+  Button,
+  Center,
+  FlatList,
+  HStack,
+  Image,
+  Skeleton,
+  Spinner,
+  Text,
+  VStack,
+  View,
+} from "native-base";
 import { SafeAreaView } from "react-native-safe-area-context";
 import MapView, { Marker, Polyline } from "react-native-maps";
-import { Keyboard, TouchableWithoutFeedback } from "react-native";
+import { Alert, Keyboard, TouchableWithoutFeedback } from "react-native";
 import LocationCardWithChange from "../../components/LocationCard/LocationCardWithChange";
 import SelectedButton from "../../components/Button/SelectedButton";
 import LocationCardTime from "../../components/LocationCard/LocationCard.Time";
 import LocationCardCost from "../../components/LocationCard/LocationCard.Cost";
-import LocationCardNote from "../../components/LocationCard/LocationCard.Note";
 import LocationCardPayment from "../../components/LocationCard/LocationCard.Payment";
 import LocationCardFinder from "../../components/LocationCard/LocationCard.Finder";
 import ConfirmModal from "../../components/Modal/ConfirmModal";
 import ButtonBack from "../../components/Global/ButtonBack/ButtonBack";
 import FlagIcon from "../../assets/icons/icons8-flag-filled-48.png";
-import { addDoc, collection } from "@firebase/firestore";
+import {
+  addDoc,
+  getDocs,
+  collection,
+  query,
+  deleteDoc,
+  doc,
+  where,
+  onSnapshot,
+} from "@firebase/firestore";
 import { db } from "../../config/config";
 import {
-  centerMapToCoordinates,
+  checkUserLocationEnable,
   fetchCurrentUserLocation,
+  getLocation,
 } from "../../helper/location";
 import {
   getRoutingFromCoordinates,
@@ -37,10 +57,18 @@ import {
 import { useContext } from "react";
 import { useState } from "react";
 import { useEffect } from "react";
-import { AutocompleteDropdownContextProvider } from "react-native-autocomplete-dropdown";
 import { ceilingKilometer, ceilingMinute } from "../../helper/converter";
 import { useTranslation } from "react-i18next";
 import { Dimensions } from "react-native";
+import { getFromAsyncStorage } from "../../helper/asyncStorage";
+import { Ionicons } from "@expo/vector-icons";
+import { convertToDate, convertToTime } from "../../helper/moment";
+import { VietQR } from "vietqr";
+
+const vietQR = new VietQR({
+  clientID: "de8a0804-a76d-41e5-8ad6-31503ce7d5f4",
+  apiKey: "17c29f09-4ea2-4417-b9c2-7f020d35de42",
+});
 
 export const PICK_UP_INPUT = "PICK_UP_INPUT";
 export const DESTINATION_INPUT = "DESTINATION_INPUT";
@@ -61,63 +89,111 @@ export default function BookingScreen({ navigation }) {
   const [pickUpInput, setPickUpInput] = useState("Your location");
   const [destinationInput, setDestinationInput] = useState("");
   const [routing, setRouting] = useState([]);
+  const [locations, setLocations] = useState([]);
+  const [selectedDate, setSelectedDate] = useState(convertToDate(Date.now()));
+  const [selectedTime, setSelectedTime] = useState(convertToTime(Date.now()));
+  const [phoneNumber, setPhoneNumber] = useState([]);
+  const [idTrip, setIDTrip] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isModalRequestLocation, setIsModalRequestLocation] = useState(false);
+  const [qrUrl, setQrUrl] = useState(null);
 
   useEffect(() => {
-    fetchCurrentUserLocation()
-      .then(({ latitude, longitude }) => {
-        console.log(
-          "🚀 ~ file: BookingScreen.js:60 ~ .then ~ latitude, longitude:",
-          latitude,
-          longitude
-        );
+    // vietQR
+    //   .getBanks()
+    //   .then((banks) => {
+    //     console.log(banks);
+    //   })
+    //   .catch((err) => {});
 
-        dispatch({
-          type: SET_INITIAL_LOCATION,
-          payload: { latitude, longitude },
-        });
+    vietQR
+      .genQRCodeBase64({
+        bank: "970436",
+        accountName: "HUYNH THE VI",
+        accountNumber: "0091000682102",
+        amount: "10000",
+        memo: "Ride booking",
+        template: "compact",
+      })
+      .then((data) => {
+        console.log(data.data.data.qrDataURL);
+        setQrUrl(data.data.data.qrDataURL);
+      })
+      .catch((err) => {});
+  });
 
-        getSingleAddressFromCoordinate(latitude, longitude)
-          .then((value) => {
-            console.log(
-              "🚀 ~ file: BookingScreen.js:68 ~ .then ~ value.formatted:",
-              value.formatted
-            );
-            dispatch({
-              type: SET_PICK_UP_LOCATION,
-              payload: {
-                name: "Your location",
-                address: value.formatted,
-                latitude,
-                longitude,
-              },
-            });
+  useEffect(() => {
+    setIsLoading(true);
+    checkUserLocationEnable()
+      .then((isEnabled) => {
+        if (isEnabled) {
+          setCurrentUserLocation().then(({ longitude, latitude }) =>
             setMarkerPosition({
               name: "Your location",
-              address: value.formatted,
               latitude,
               longitude,
-            });
-          })
-          .catch((err) => {
-            console.log("🚀 ~ file: BookingScreen.js:88 ~ .then ~ err:", err);
+            })
+          );
+          setMarkerPosition({
+            name: "Your location",
+            latitude,
+            longitude,
           });
+        } else setIsModalRequestLocation((prev) => !prev);
       })
-      .catch((err) => {
-        console.log("🚀 ~ file: BookingScreen.js:90 ~ useEffect ~ err:", err);
-      });
+      .finally(() => setIsLoading(false));
+    // to get current location every user choose ok on modal request location
   }, []);
 
   useEffect(() => {
+    fetchDataAndPhoneNumber();
+  });
+
+  const fetchDataAndPhoneNumber = async () => {
+    try {
+      const phoneNumberValue = await getFromAsyncStorage("phoneNumber");
+      setPhoneNumber(phoneNumberValue);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    const CollectionRef = collection(db, "SavedLocation");
+    const Query = query(CollectionRef, where("phoneNumber", "==", phoneNumber));
+    const unsubscribeSavedLocation = onSnapshot(Query, (QuerySnapshot) => {
+      const locationsTemp = [];
+      QuerySnapshot.forEach((doc) => {
+        locationsTemp.push(doc.data());
+      });
+      setLocations(locationsTemp);
+    });
+    return () => {
+      unsubscribeSavedLocation();
+    };
+  }, [phoneNumber]);
+
+  useEffect(() => {
+    // reload value when in first screen
+    if (step === 1)
+      dispatch({
+        type: SET_BOOKING_DETAILS,
+        payload: {
+          paymentMethod: "",
+          promotion: 0,
+          ratingType: "",
+          date: "",
+          promotionName: "",
+        },
+      });
     // in map step 2 zoom to the pick up or destination according to the input
-    if (booking.step === 2) {
+    if (step === 2) {
       if (focusInput === PICK_UP_INPUT)
         dispatch({
           type: SET_INITIAL_LOCATION,
           payload: {
             latitude: booking.pickUpLocation.latitude,
             longitude: booking.pickUpLocation.longitude,
-            latitudeDelta: 0.01, //zoom
-            longitudeDelta: 0.01, //zoom
           },
         });
       else
@@ -126,8 +202,6 @@ export default function BookingScreen({ navigation }) {
           payload: {
             latitude: booking.destinationLocation.latitude,
             longitude: booking.destinationLocation.longitude,
-            latitudeDelta: 0.01, //zoom
-            longitudeDelta: 0.01, //zoom
           },
         });
     }
@@ -145,99 +219,164 @@ export default function BookingScreen({ navigation }) {
     }
   }, [focusInput]);
 
+  const onCancel = () => {
+    Alert.alert("Are you want to cancel this trip?", "", [
+      {
+        text: "Cancel",
+        onPress: () => {
+          // props.onPressDelete(phoneNumber);
+        },
+      },
+      {
+        text: "OK",
+        onPress: () => {
+          const q = query(
+            collection(db, "ListTrip"),
+            where("idCustomer", "==", phoneNumber),
+            where("status", "==", "waiting"),
+            where("isScheduled", "==", "false")
+          );
+          const unsubscribe = onSnapshot(q, (querySnapshot) => {
+            if (!querySnapshot.empty) {
+              const tripId = querySnapshot.docs[0].id;
+              setIDTrip(tripId);
+            }
+          });
+          if (idTrip != "") {
+            deleteDoc(doc(db, "ListTrip", booking.bookingDetails.idTrip));
+            navigation.navigate("Home");
+          }
+          return () => unsubscribe();
+        },
+      },
+    ]);
+  };
+
   const chooseFromMapHandler = () => {
+    //setCurrentUserLocation();
     setStep(2);
   };
 
-  const hanldeConfirmFromMap = () => {
-    if (focusInput === DESTINATION_INPUT) {
-      //pick up is already set from useEffect on first render or base on default address of user
-      if (checkLocationIsSet(markerPosition)) {
-        setDestinationInput(
-          markerPosition.address ? markerPosition.address : markerPosition.name
-        );
-        dispatch({
-          type: SET_DESTINATION_LOCATION,
-          payload: { ...markerPosition },
-        });
-        console.log(
-          "🚀 ~ file: BookingScreen.js:170 ~ hanldeConfirmFromMap ~ booking.pickUpLocation:",
-          booking.pickUpLocation
-        );
-        console.log(
-          "🚀 ~ file: BookingScreen.js:174 ~ hanldeConfirmFromMap ~ markerPosition:",
-          markerPosition
-        );
-
-        getRoutingFromCoordinates(booking.pickUpLocation, markerPosition)
-          .then((routing) => {
-            const { coordinates: coordinatesRouting } = routing.geometry;
-            const coordinatesRoutingFormatted = coordinatesRouting[0].map(
-              ([longitude, latitude]) => ({
-                latitude,
-                longitude,
-              })
-            );
-            const { distance, time } = routing.properties;
-            console.log(
-              "🚀 ~ file: BookingScreen.js:183 ~ .then ~ distance, time:",
-              distance,
-              time
-            );
-
-            if (mapRef.current) {
-              centerMapToCoordinates(
-                mapRef,
-                booking.pickUpLocation,
-                markerPosition
-              );
-            }
-
-            // save routing to use in BookingDriver, BookingRating
-            dispatch({
-              type: SET_ROUTING,
-              payload: coordinatesRoutingFormatted,
-            });
-
-            dispatch({
-              type: SET_BOOKING_DETAILS,
-              payload: {
-                distance: ceilingKilometer(distance), // 1201m -> 1.3km
-                time: ceilingMinute(time),
-                price: calculatePrice(Math.ceil(distance / 1000)), // convert m to km then ceiling, 1201 -> 2km
-              },
-            });
-            console.log("🚀 ~ file: BookingScreen.js:192 ~ .then ~ distance:", {
-              distance: ceilingKilometer(distance),
-              time: ceilingMinute(time),
-              price: calculatePrice(Math.ceil(distance / 1000)),
-            });
-
-            setRouting(coordinatesRoutingFormatted);
-            setStep(3);
-          })
-          .catch((err) =>
-            console.log(
-              "🚀 ~ file: BookingScreen.js:156 ~ useEffect ~ err:",
-              err
-            )
-          );
+  const handleConfirmFromMap = () => {
+    if (focusInput === DESTINATION_INPUT)
+      if (
+        markerPosition.latitude === booking.pickUpLocation.latitude &&
+        markerPosition.longitude === booking.pickUpLocation.longitude
+      ) {
+        Alert.alert("Please choose destination location", "", [
+          {
+            text: "OK",
+            onPress: () => {},
+          },
+        ]);
         return;
       }
-    }
-    if (focusInput === PICK_UP_INPUT) {
-      setPickUpInput(
-        markerPosition.address ? markerPosition.address : markerPosition.name
-      );
-      dispatch({
-        type: SET_PICK_UP_LOCATION,
-        payload: { ...markerPosition },
-      });
-      setFocusInput(DESTINATION_INPUT);
-    }
-    setStep(1);
+    checkUserLocationEnable().then((isEnabled) => {
+      if (isEnabled) {
+        if (focusInput === DESTINATION_INPUT) {
+          //pick up is already set from useEffect on first render or base on default address of user
+          if (checkLocationIsSet(markerPosition)) {
+            setDestinationInput(
+              markerPosition.address
+                ? markerPosition.address
+                : markerPosition.name
+            );
+            dispatch({
+              type: SET_DESTINATION_LOCATION,
+              payload: { ...markerPosition },
+            });
+            console.log(
+              "🚀 ~ file: BookingScreen.js:170 ~ hanldeConfirmFromMap ~ booking.pickUpLocation:",
+              booking.pickUpLocation
+            );
+            console.log(
+              "🚀 ~ file: BookingScreen.js:174 ~ hanldeConfirmFromMap ~ markerPosition:",
+              markerPosition
+            );
+
+            getRoutingFromCoordinates(booking.pickUpLocation, markerPosition)
+              .then((routing) => {
+                const { coordinates: coordinatesRouting } = routing.geometry;
+                const coordinatesRoutingFormatted = coordinatesRouting[0].map(
+                  ([longitude, latitude]) => ({
+                    latitude,
+                    longitude,
+                  })
+                );
+                const { distance, time } = routing.properties;
+                console.log(
+                  "🚀 ~ file: BookingScreen.js:183 ~ .then ~ distance, time:",
+                  distance,
+                  time
+                );
+
+                dispatch({
+                  type: SET_INITIAL_LOCATION,
+                  payload: {
+                    latitude: booking.pickUpLocation.latitude,
+                    longitude: booking.pickUpLocation.longitude,
+                  },
+                });
+
+                // save routing to use in BookingDriver, BookingRating
+                dispatch({
+                  type: SET_ROUTING,
+                  payload: coordinatesRoutingFormatted,
+                });
+
+                dispatch({
+                  type: SET_BOOKING_DETAILS,
+                  payload: {
+                    distance: ceilingKilometer(distance), // 1201m -> 1.3km
+                    time: ceilingMinute(time),
+                    price: calculatePrice(Math.ceil(distance / 1000)), // convert m to km then ceiling, 1201 -> 2km
+                  },
+                });
+                console.log(
+                  "🚀 ~ file: BookingScreen.js:192 ~ .then ~ distance:",
+                  {
+                    distance: ceilingKilometer(distance),
+                    time: ceilingMinute(time),
+                    price: calculatePrice(Math.ceil(distance / 1000)),
+                  }
+                );
+
+                setRouting(coordinatesRoutingFormatted);
+                setStep(3);
+              })
+              .catch((err) =>
+                console.log(
+                  "🚀 ~ file: BookingScreen.js:156 ~ useEffect ~ err:",
+                  err
+                )
+              );
+            return;
+          }
+        }
+        if (focusInput === PICK_UP_INPUT) {
+          setPickUpInput(
+            markerPosition.address
+              ? markerPosition.address
+              : markerPosition.name
+          );
+          dispatch({
+            type: SET_PICK_UP_LOCATION,
+            payload: { ...markerPosition },
+          });
+          setFocusInput(DESTINATION_INPUT);
+        }
+        setStep(1);
+      } else setIsModalRequestLocation(true);
+    });
   };
 
+  const handleDateChange = (date) => {
+    setSelectedDate(date);
+  };
+
+  const handleTimeChange = (time) => {
+    setSelectedTime(time);
+  };
   const handleStep3Submit = (date) => {
     console.log(
       "🚀 ~ file: BookingScreen.js:240 ~ handleStep3Submit ~ date:",
@@ -261,46 +400,69 @@ export default function BookingScreen({ navigation }) {
     setStep(5);
   };
 
+  const createOrder = () => {
+    const currentDate = convertToDate(Date.now());
+    const currentTime = convertToTime(Date.now());
+    let scheduled = "false";
+    if (currentDate != selectedDate) {
+      scheduled = "true";
+    }
+
+    let price = booking.bookingDetails.price - booking.bookingDetails.promotion;
+    if (price <= 0) price = 0;
+    return addDoc(collection(db, "ListTrip"), {
+      idCustomer: phoneNumber,
+      idRider: "",
+      pickUpLat: booking.pickUpLocation.latitude,
+      pickUpLong: booking.pickUpLocation.longitude,
+      destLat: booking.destinationLocation.latitude,
+      destLong: booking.destinationLocation.longitude,
+      destAddress: booking.destinationLocation.address,
+      pickUpAddress: booking.pickUpLocation.address,
+      //nếu mà ngày đón không phải hôm nay thì isScheduled = true
+      isScheduled: scheduled,
+      est: booking.bookingDetails.time,
+      datePickUp: selectedDate,
+      timePickUp: selectedTime,
+      date: currentDate,
+      time: currentTime,
+      distance: booking.bookingDetails.distance + "km",
+      totalPrice: price,
+      discount: booking.bookingDetails.promotion,
+      status: "waiting",
+      idRiderCancel: "",
+    });
+  };
   const handleStep5Submit = () => {
     // Do any necessary form validation or error checking here
-    setStep(6);
-  };
-  const createOrder = async () => {
-    const currentDate = new Date();
-    const currentDay = currentDate.getDate();
-    const currentMonth = currentDate.getMonth() + 1;
-    const currentYear = currentDate.getFullYear();
-    const currentHour = currentDate.getHours();
-    const currentMinute = currentDate.getMinutes();
-
-    addDoc(collection(db, "ListTrip"), {
-      idCustomer: "0393751403",
-      pickUpLat: "",
-      pickUpLong: "",
-      destLat: "",
-      destLong: "",
-      //nếu mà ngày đón không phải hôm nay thì isScheduled = true
-      isScheduled: "false",
-      datePickUp: "" + currentDay + "/" + currentMonth + "/" + currentYear,
-      timePickUp: "" + currentHour + ":" + currentMinute,
-      date: "" + currentDay + "/" + currentMonth + "/" + currentYear,
-      time: "" + currentHour + ":" + currentMinute,
-      distance: "4km",
-      totalPrice: "55000",
-      status: "waiting",
-    });
-    //upload image to firebase storage
-  };
-  const handleStep6Submit = (note) => {
-    console.log(
-      "🚀 ~ file: BookingScreen.js:267 ~ handleStep6Submit ~ note:",
-      note
-    );
-    dispatch({ type: SET_BOOKING_DETAILS, payload: { note } });
-    // Do any necessary form validation or error checking here
-    //createOrder();
-
-    setStep(7);
+    if (booking.bookingDetails.isScheduled === false) {
+      createOrder().then((docRef) => {
+        console.log(
+          "🚀 ~ file: BookingScreen.js:388 ~ createOrder ~ docRef:",
+          docRef
+        );
+        dispatch({ type: SET_BOOKING_DETAILS, payload: { idTrip: docRef.id } });
+        setStep(6);
+      });
+    } else {
+      createOrder().then((docRef) => {
+        console.log(
+          "🚀 ~ file: BookingScreen.js:388 ~ createOrder ~ docRef:",
+          docRef
+        );
+        dispatch({ type: SET_BOOKING_DETAILS, payload: { idTrip: docRef.id } });
+      });
+      Alert.alert("Successfully booked", "", [
+        {
+          text: "OK",
+          onPress: () => {
+            navigation.replace("Home");
+            // props.onPressDelete(phoneNumber);
+          },
+        },
+      ]);
+    }
+    // setIDTrip(id)
   };
 
   const handleCloseModal = () => {
@@ -328,6 +490,81 @@ export default function BookingScreen({ navigation }) {
       });
   };
 
+  const renderItem = ({ item, index }) => {
+    function onPress() {
+      const { phoneNumber, ...resCoords } = item;
+      if (focusInput === PICK_UP_INPUT) {
+        setPickUpInput(item.add);
+        dispatch({
+          type: SET_PICK_UP_LOCATION,
+          payload: {
+            name: item.name,
+            address: item.address,
+            latitude: parseFloat(item.lat),
+            longitude: parseFloat(item.long),
+          },
+        });
+      } else {
+        setDestinationInput(item.address);
+        dispatch({
+          type: SET_DESTINATION_LOCATION,
+          payload: {
+            name: item.name,
+            address: item.address,
+            latitude: parseFloat(item.lat),
+            longitude: parseFloat(item.long),
+          },
+        });
+      }
+
+      dispatch({
+        type: SET_INITIAL_LOCATION,
+        payload: {
+          latitude: parseFloat(item.lat),
+          longitude: parseFloat(item.long),
+        },
+      });
+
+      setMarkerPosition({
+        address: item.address,
+        latitude: parseFloat(item.lat),
+        longitude: parseFloat(item.long),
+        name: item.name,
+      });
+      setStep(2);
+    }
+
+    if (index === locations.length - 1) {
+      // Last item in the list
+      return (
+        <HStack>
+          <SelectedButton location={item} onPress={onPress} />
+          <Button
+            style={{ backgroundColor: COLORS.primary }}
+            onPress={() => {
+              navigation.navigate("AddLocation");
+            }}
+          >
+            <HStack justifyContent={"center"} alignItems={"center"}>
+              <Ionicons
+                name="add-circle-outline"
+                size={20}
+                color={COLORS.white}
+                style={{ marginRight: 10 }}
+              />
+              <Text bold style={{ ...FONTS.h5, color: COLORS.white }}>
+                Add
+              </Text>
+            </HStack>
+          </Button>
+        </HStack>
+      );
+    }
+
+    // Regular items in the list
+    return <SelectedButton location={item} onPress={onPress} />;
+  };
+
   const renderStepContent = () => {
     switch (step) {
       case 1:
@@ -340,6 +577,13 @@ export default function BookingScreen({ navigation }) {
               style={{ display: "flex" }}
             >
               <VStack flex={1}>
+                {/* <Image
+                  source={{ uri: qrUrl }}
+                  alt="qr"
+                  height={100}
+                  w={100}
+                  bgColor={COLORS.red}
+                ></Image> */}
                 <LocationCardWithChange
                   setFocusInput={setFocusInput}
                   setPickUpInput={setPickUpInput}
@@ -360,10 +604,14 @@ export default function BookingScreen({ navigation }) {
                     {t("savedLocations")}
                   </Text>
                 </HStack>
-                <HStack space={2} marginTop={2} marginLeft={3} marginRight={3}>
-                  <SelectedButton text={"Home"} />
-                  <SelectedButton text={"School"} />
-                  <SelectedButton text={"Hotel"} />
+                <HStack mx={"10px"} mt={2} alignItems={"center"}>
+                  <FlatList
+                    horizontal={true}
+                    showsHorizontalScrollIndicator={false}
+                    data={locations}
+                    keyExtractor={(item) => item.name}
+                    renderItem={renderItem}
+                  ></FlatList>
                 </HStack>
                 <Center w={"100%"} marginTop={"auto"} marginBottom={3}>
                   <Button
@@ -418,7 +666,7 @@ export default function BookingScreen({ navigation }) {
                 w={"90%"}
                 borderRadius={10}
                 bgColor={COLORS.primary}
-                onPress={hanldeConfirmFromMap}
+                onPress={handleConfirmFromMap}
                 mb={8}
               >
                 <Text fontSize={SIZES.h5} bold color={"white"}>
@@ -435,7 +683,7 @@ export default function BookingScreen({ navigation }) {
           <>
             <MapView
               ref={mapRef}
-              style={{ height: "45%", borderRadius: 10 }}
+              style={{ height: "50%", borderRadius: 10 }}
               provider="google"
               region={booking.region}
             >
@@ -472,6 +720,12 @@ export default function BookingScreen({ navigation }) {
             <LocationCardTime
               onClickContinue={handleStep3Submit}
               onPressBack={handleBackStep}
+              selectedDate={selectedDate}
+              // setSelectedDate={setSelectedDate}
+              selectedTime={selectedTime}
+              // setSelectedTime={setSelectedTime}
+              onDateChange={handleDateChange}
+              onTimeChange={handleTimeChange}
             />
           </>
         );
@@ -480,7 +734,7 @@ export default function BookingScreen({ navigation }) {
           <>
             <MapView
               ref={mapRef}
-              style={{ height: "45%", borderRadius: 10 }}
+              style={{ height: "50%", borderRadius: 10 }}
               provider="google"
               region={booking.region}
             >
@@ -523,7 +777,7 @@ export default function BookingScreen({ navigation }) {
           <>
             <MapView
               ref={mapRef}
-              style={{ height: "45%", borderRadius: 10 }}
+              style={{ height: "50%", borderRadius: 10 }}
               provider="google"
               region={booking.region}
             >
@@ -566,51 +820,7 @@ export default function BookingScreen({ navigation }) {
           <>
             <MapView
               ref={mapRef}
-              style={{ height: "45%", borderRadius: 10 }}
-              provider="google"
-              region={booking.region}
-            >
-              <Marker
-                key={"pickUp"}
-                coordinate={booking.pickUpLocation}
-                title={"Pick up"}
-                description={
-                  booking.pickUpLocation.address
-                    ? booking.pickUpLocation.address
-                    : null
-                }
-              ></Marker>
-              <Marker
-                key={"destination"}
-                coordinate={booking.destinationLocation}
-                title={"Destination"}
-                description={
-                  booking.destinationLocation.address
-                    ? booking.destinationLocation.address
-                    : null
-                }
-              />
-              {routing ? (
-                <Polyline
-                  coordinates={routing}
-                  strokeWidth={5}
-                  strokeColor="blue"
-                />
-              ) : null}
-            </MapView>
-            <LocationCardNote
-              onClickContinue={handleStep6Submit}
-              onPressBack={handleBackStep}
-            />
-          </>
-        );
-
-      case 7:
-        return (
-          <>
-            <MapView
-              ref={mapRef}
-              style={{ height: "45%", borderRadius: 10 }}
+              style={{ height: "50%", borderRadius: 10 }}
               provider="google"
               region={booking.region}
             >
@@ -643,7 +853,9 @@ export default function BookingScreen({ navigation }) {
               ) : null}
             </MapView>
             <LocationCardFinder
-              onPressCancel={() => navigation.navigate("BookingDriver")}
+              phoneNumber={phoneNumber}
+              navigation={navigation}
+              onPressCancel={onCancel}
             />
           </>
         );
@@ -667,7 +879,39 @@ export default function BookingScreen({ navigation }) {
           <ButtonBack onPress={handleBackStep} />
         </View>
       ) : null}
-      {renderStepContent()}
+      {isLoading ? (
+        <VStack w="100%" h={"100%"} borderWidth="1" space={8} rounded="md">
+          <Skeleton h="40" rounded="md" />
+          <Skeleton.Text px="4" />
+          <Skeleton
+            position={"absolute"}
+            bottom={10}
+            px="4"
+            my="4"
+            rounded="md"
+            startColor="primary.100"
+          />
+          <Spinner
+            position={"absolute"}
+            top={"1/2"}
+            left={"1/2"}
+            color="emerald.500"
+            size={"lg"}
+          />
+        </VStack>
+      ) : (
+        renderStepContent()
+      )}
+      {/* modal request location */}
+      <ConfirmModal
+        isShow={isModalRequestLocation}
+        title={"Enable location"}
+        content={"Please enable location to use this feature."}
+        onClose={() => navigation.navigate("Home")}
+        onPressOK={() => {
+          setIsModalRequestLocation((prev) => !prev);
+        }}
+      />
       <ConfirmModal
         isShow={booking.isModalCancelShow}
         title={"Cancel booking"}
@@ -679,8 +923,39 @@ export default function BookingScreen({ navigation }) {
   );
 
   function handleBackStep() {
+    console.log("back step");
     if (step === 1) return navigation.navigate("Home");
     setStep((prev) => prev - 1);
+  }
+
+  function setCurrentUserLocation() {
+    return getLocation()
+      .then(({ latitude, longitude }) => {
+        dispatch({
+          type: SET_INITIAL_LOCATION,
+          payload: { latitude, longitude },
+        });
+
+        getSingleAddressFromCoordinate(latitude, longitude)
+          .then((value) => {
+            dispatch({
+              type: SET_PICK_UP_LOCATION,
+              payload: {
+                name: "Your location",
+                address: value.formatted,
+                latitude,
+                longitude,
+              },
+            });
+          })
+          .catch((err) => {
+            console.log("🚀 ~ file: BookingScreen.js:88 ~ .then ~ err:", err);
+          });
+        return { latitude, longitude };
+      })
+      .catch((err) => {
+        console.log("🚀 ~ file: BookingScreen.js:90 ~ useEffect ~ err:", err);
+      });
   }
 }
 

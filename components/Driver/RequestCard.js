@@ -5,6 +5,8 @@ import { COLORS, FONTS } from "../../constants/theme";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../../config/config";
 import { useTranslation } from "react-i18next";
+import { useEffect } from "react";
+import { getFromAsyncStorage } from "../../helper/asyncStorage";
 
 function RequestCard(props) {
   let {
@@ -18,6 +20,8 @@ function RequestCard(props) {
     time,
     datePickUp,
     timePickUp,
+    pickUpAddress,
+    destAddress,
     status,
     totalPrice,
     distance,
@@ -25,6 +29,21 @@ function RequestCard(props) {
   const [name, setName] = useState("");
   const { navigation } = props;
   const { t } = useTranslation();
+  const [phoneNumber, setPhoneNumber] = useState([]);
+  const { onPress } = props;
+
+  useEffect(() => {
+    fetchDataAndPhoneNumber();
+  }, [phoneNumber, navigation]);
+
+  const fetchDataAndPhoneNumber = async () => {
+    try {
+      const phoneNumberValue = await getFromAsyncStorage("phoneNumber");
+      setPhoneNumber(phoneNumberValue);
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   if (idTrip !== undefined) {
     getDoc(doc(db, "ListTrip", idTrip)).then((tripData) => {
@@ -41,7 +60,8 @@ function RequestCard(props) {
   }
   const onClickAccept = () => {
     updateDoc(doc(db, "ListTrip", idTrip), {
-      status: "confirmed",
+      idRider:phoneNumber,
+      status: "accepted",
     });
   };
   return (
@@ -56,7 +76,9 @@ function RequestCard(props) {
         borderRadius: 20,
       }}
     >
-      <VStack space={1} style={{ marginVertical: 10 }}>
+      <TouchableOpacity onPress={onPress}
+      >
+         <VStack space={1} style={{ marginVertical: 10 }}>
         <HStack alignItems={"center"}>
           <HStack flex={1}>
             <Text
@@ -84,11 +106,15 @@ function RequestCard(props) {
         <HStack space={10}>
           <VStack>
             <Text style={styles.titleText}>{t("pickUp")}</Text>
-            <Text style={styles.detailText}>KTX Khu B</Text>
+            <Text style={styles.detailText}>
+            {pickUpAddress.length > 10 ? pickUpAddress.substring(0, 10) + "..." : pickUpAddress}
+            </Text>
           </VStack>
           <VStack>
             <Text style={styles.titleText}>{t("des")}</Text>
-            <Text style={styles.detailText}>UIT</Text>
+            <Text style={styles.detailText}>  
+            {destAddress.length > 10 ? destAddress.substring(0, 10) + "..." : destAddress}
+            </Text>
           </VStack>
         </HStack>
         <HStack>
@@ -131,6 +157,8 @@ function RequestCard(props) {
           </Flex>
         </HStack>
       </VStack>
+      </TouchableOpacity>
+     
     </View>
   );
 }

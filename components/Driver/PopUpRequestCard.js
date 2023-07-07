@@ -18,6 +18,7 @@ import { doc, getDoc, increment, updateDoc } from "firebase/firestore";
 import { db } from "../../config/config";
 import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
+import { saveToAsyncStorage } from "../../helper/asyncStorage";
 
 function PopUpRequestCard(props) {
   //const {trip} = props
@@ -34,11 +35,14 @@ function PopUpRequestCard(props) {
     status,
     totalPrice,
     distance,
+    est,
+    destAddress,
+    pickUpAddress,
   } = props.trip;
 
   const [name, setName] = useState("");
   const [state, setState] = useState(0);
-  const { navigation, phoneNumber } = props;
+  const { navigation, phoneNumber , setIsRiderReceived } = props;
   const [isModalVisible, setModalVisible] = useState(false);
   // const { randomTrips, setNewCurrentTrips, setCount } = props;
   const { t } = useTranslation();
@@ -69,6 +73,8 @@ function PopUpRequestCard(props) {
     });
     const data = { idTrip: "" + idTrip, state: 1 };
     navigation.navigate("TripDetail", data);
+    saveToAsyncStorage("riderTripId", idTrip);
+    setIsRiderReceived(true)
   };
 
   const { handleStatusReject } = props;
@@ -81,7 +87,7 @@ function PopUpRequestCard(props) {
     <View
       bgColor={COLORS.fourthary}
       w={"100%"}
-      h={303}
+      h={"2/5"}
       borderRadius={20}
       shadow={3}
     >
@@ -106,7 +112,7 @@ function PopUpRequestCard(props) {
                 alignItems: "flex-end",
               }}
             >
-              {totalPrice}
+              {parseInt(totalPrice).toLocaleString()}đ
             </Text>
           </View>
         </HStack>
@@ -120,6 +126,8 @@ function PopUpRequestCard(props) {
         </Text>
         <HStack>
           <Text style={styles.detailText}>{distance}</Text>
+          <Text style={styles.detailText}> - {est}</Text>
+          <Text style={styles.detailTextNotBold}> minute(s)</Text>
         </HStack>
       </VStack>
       <View
@@ -139,19 +147,25 @@ function PopUpRequestCard(props) {
                   size={20}
                   color={COLORS.white}
                 />
-                <VStack w={"100%"} pl={3}>
-                  <Text style={styles.titleText} w={"80%"}>
-                    Pickup - KTX Khu B ĐHQG, Đông Hòa, Dĩ An, Bình Dương
-                  </Text>
-                </VStack>
+                <Text
+                  style={styles.titleText}
+                  w={"90%"}
+                  numberOfLines={2}
+                  ml={2}
+                >
+                  {pickUpAddress}
+                </Text>
               </HStack>
               <HStack alignItems={"center"}>
                 <Ionicons name={"pin-outline"} size={20} color={COLORS.white} />
-                <VStack>
-                  <Text style={styles.titleText} w={"80%"} pl={3}>
-                    Destination - Trường Đại học Công nghệ Thông tin - ĐHQG TP..
-                  </Text>
-                </VStack>
+                <Text
+                  style={styles.titleText}
+                  w={"90%"}
+                  numberOfLines={2}
+                  ml={2}
+                >
+                  {destAddress}
+                </Text>
               </HStack>
             </VStack>
           </HStack>

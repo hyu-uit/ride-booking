@@ -6,18 +6,34 @@ import { SIZES } from "../constants/theme";
 import SelectIconButton from "./Button/SelecteIconButton";
 import { useTranslation } from "react-i18next";
 import { useState } from "react";
+import { doc, increment, updateDoc } from "firebase/firestore";
+import { db } from "../config/config";
 
-const RatingPopup = ({ navigation }) => {
+const RatingPopup = ({ navigation, idRider }) => {
   const { t } = useTranslation();
   const [selectedButton, setSelectedButton] = useState(null);
 
   const handleCompleteBooking = () => {
     // handle complete booking logic here
     // use directly in line 13 to get rating type
-
+    updateRating();
     navigation.navigate("Home");
   };
-
+  const updateRating = () => {
+    if (selectedButton == "love") {
+      updateDoc(doc(db, "Rider", idRider), {
+        good: increment(1),
+      });
+    } else if (selectedButton == "smile") {
+      updateDoc(doc(db, "Rider", idRider), {
+        normal: increment(1),
+      });
+    } else {
+      updateDoc(doc(db, "Rider", idRider), {
+        bad: increment(1),
+      });
+    }
+  };
   return (
     <View
       bgColor={"#0B0F2F"}
@@ -38,7 +54,7 @@ const RatingPopup = ({ navigation }) => {
             {t("improve")}
           </Text>
         </VStack>
-        <HStack space={4}>
+        <HStack space={4} justifyContent={"space-between"}>
           <SelectIconButton
             icon={LoveIcon}
             selected={selectedButton === "love"}
@@ -63,7 +79,7 @@ const RatingPopup = ({ navigation }) => {
           onPress={handleCompleteBooking}
         >
           <Text bold fontSize={SIZES.h2} color={"white"}>
-            {selectedButton ? "Back" : "Skip"}
+            {selectedButton ? "Send" : "Skip"}
           </Text>
         </Button>
       </VStack>
