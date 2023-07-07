@@ -21,6 +21,8 @@ function ConfirmedScheduledTrip(props) {
     status,
     totalPrice,
     distance,
+    destAddress,
+    pickUpAddress,
   } = props.trip;
   const [name, setName] = useState("");
   const { navigation } = props;
@@ -86,13 +88,17 @@ function ConfirmedScheduledTrip(props) {
             </View>
           </HStack>
           <HStack space={10}>
-            <VStack>
+            <VStack w={"40%"}>
               <Text style={styles.titleText}>{t("pickUp")}</Text>
-              <Text style={styles.detailText}>KTX Khu B</Text>
+              <Text style={styles.detailText} numberOfLines={1}>
+                {pickUpAddress}
+              </Text>
             </VStack>
-            <VStack>
+            <VStack w={"40%"}>
               <Text style={styles.titleText}>{t("des")}</Text>
-              <Text style={styles.detailText}>UIT</Text>
+              <Text style={styles.detailText} numberOfLines={1}>
+                {destAddress}
+              </Text>
             </VStack>
           </HStack>
           <HStack>

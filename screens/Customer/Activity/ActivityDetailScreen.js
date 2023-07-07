@@ -1,4 +1,4 @@
-import { View, Text, Dimensions, Alert } from "react-native";
+import { View, Text, Dimensions, Alert, TouchableOpacity } from "react-native";
 import React from "react";
 import {
   Button,
@@ -159,20 +159,7 @@ const ActivityDetailScreen = ({ navigation, route }) => {
         },
       ]);
     } else {
-      Alert.alert("Are you want to cancel this trip?", "", [
-        {
-          text: "Cancel",
-          onPress: () => {
-            // props.onPressDelete(phoneNumber);
-          },
-        },
-        {
-          text: "OK",
-          onPress: () => {
-            navigation.navigate("Booking");
-          },
-        },
-      ]);
+      navigation.navigate("Booking");
     }
   };
   return (
@@ -468,20 +455,23 @@ const ActivityDetailScreen = ({ navigation, route }) => {
                 </VStack>
               </HStack>
             </VStack>
-            <Button
-              mb={20}
-              mt={10}
-              w={"100%"}
-              borderRadius={20}
-              bgColor={COLORS.primary}
-              onPress={onPressCancel}
-            >
-              <Text style={{ ...FONTS.h2, color: COLORS.white }}>
-                {tripData.status === "accepted" || tripData.status === "waiting"
-                  ? t("cancel")
-                  : t("reBooking")}
-              </Text>
-            </Button>
+            <TouchableOpacity>
+              <Button
+                mb={20}
+                mt={10}
+                w={"100%"}
+                borderRadius={20}
+                bgColor={COLORS.primary}
+                onPress={onPressCancel}
+              >
+                <Text style={{ ...FONTS.h2, color: COLORS.white }}>
+                  {tripData.status === "accepted" ||
+                  tripData.status === "waiting"
+                    ? t("cancel")
+                    : t("reBooking")}
+                </Text>
+              </Button>
+            </TouchableOpacity>
           </ScrollView>
         </VStack>
       </SafeAreaView>

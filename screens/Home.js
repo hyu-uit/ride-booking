@@ -430,6 +430,7 @@ export default function Home({ navigation, route }) {
               <FlatList
                 // padding={"10px"}
                 mt={2}
+                paddingBottom={100}
                 // mb={10}
                 horizontal={false}
                 data={historyTrips}

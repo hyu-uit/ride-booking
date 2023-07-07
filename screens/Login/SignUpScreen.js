@@ -66,6 +66,7 @@ const SignUpScreen = ({ navigation }) => {
           text: "OK",
         },
       ]);
+      setSelectedDate(new Date());
     } else {
       setShowDatePicker(false);
       setSelectedDate(date);
@@ -77,6 +78,7 @@ const SignUpScreen = ({ navigation }) => {
   };
 
   const signUp = () => {
+    console.log(finalDate);
     if (
       (role == "" || name == "" || id == "",
       school == "",
