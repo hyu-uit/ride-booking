@@ -18,7 +18,14 @@ import { SIZES } from "../../constants/theme";
 import { useTranslation } from "react-i18next";
 import { isNullOrEmpty } from "../../helper/helper";
 import { BookingContext } from "../../context/BookingContext";
-import { collection, deleteDoc, doc, onSnapshot, query, where } from "firebase/firestore";
+import {
+  collection,
+  deleteDoc,
+  doc,
+  onSnapshot,
+  query,
+  where,
+} from "firebase/firestore";
 import { useState } from "react";
 import { useEffect } from "react";
 import { db } from "../../config/config";
@@ -31,25 +38,25 @@ const LocationCardFinder = ({ onPressCancel, phoneNumber, navigation }) => {
   const [timer, setTimer] = useState(null);
   const [isScheduled, setIsScheduled] = useState(null);
 
-  console.log(isScheduled)
+  console.log(isScheduled);
   useEffect(() => {
     // Start the timer when the component mounts
     const timerId = setTimeout(() => {
-      if (isScheduled  === "false"&& (tripDetail!=[])) {
-      Alert.alert(
-        "Riders seem busy now",
-        "Please try again.",
-        [
-          {
-            text: "OK",
-            onPress: () => {
-              deleteDoc(doc(db, "ListTrip", booking.bookingDetails.idTrip));
-              navigation.navigate("Home");
+      if (isScheduled === "false" && tripDetail != []) {
+        Alert.alert(
+          "Riders seem busy now",
+          "Please try again.",
+          [
+            {
+              text: "OK",
+              onPress: () => {
+                deleteDoc(doc(db, "ListTrip", booking.bookingDetails.idTrip));
+                navigation.navigate("Home");
+              },
             },
-          },
-        ],
-        { cancelable: false }
-      );
+          ],
+          { cancelable: false }
+        );
       }
     }, 60000); // 3 minutes
     // Clear the timer when the component unmounts
@@ -66,7 +73,6 @@ const LocationCardFinder = ({ onPressCancel, phoneNumber, navigation }) => {
   }, [tripDetail]);
 
   useEffect(() => {
-    
     // to ensure that when user switch from choose date to now that now still get current date
     console.log("finder use effectcall: ", booking.bookingDetails.idTrip);
     if (
@@ -88,18 +94,18 @@ const LocationCardFinder = ({ onPressCancel, phoneNumber, navigation }) => {
       doc(db, "ListTrip", booking.bookingDetails.idTrip),
       (querySnapshot) => {
         const updatedTrip = [];
-        
+
         const docData = querySnapshot.data();
-        if(docData ){
-          setIsScheduled(docData.isScheduled)
-          if(docData.status=="accepted"){
+        if (docData) {
+          setIsScheduled(docData.isScheduled);
+          if (docData.status == "accepted") {
             const trip = {
               idTrip: booking.bookingDetails.idTrip,
               ...docData,
             };
             updatedTrip.push(trip);
             setTripDetail(updatedTrip);
-            console.log(updatedTrip[0].idTrip)
+            console.log(updatedTrip[0].idTrip);
             if (updatedTrip.length > 0) {
               const data = {
                 idRider: updatedTrip[0].idRider,
@@ -110,7 +116,7 @@ const LocationCardFinder = ({ onPressCancel, phoneNumber, navigation }) => {
           }
         }
       },
-      (error)=>{
+      (error) => {
         console.log("Error fetching trip data:", error);
       }
     );
@@ -194,6 +200,7 @@ const LocationCardFinder = ({ onPressCancel, phoneNumber, navigation }) => {
         </Center>
         <HStack>
           <Button
+            mb={10}
             bgColor={"#3D5AF8"}
             w={"100%"}
             borderRadius={"20px"}

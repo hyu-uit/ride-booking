@@ -213,6 +213,7 @@ export default function Home({ navigation, route }) {
         </HStack>
         <HStack>
           <ScrollView
+            mb={5}
             nestedScrollEnabled={false}
             showsVerticalScrollIndicator={false}
             contentContainerStyle={{ minHeight: adjustedHeight }}

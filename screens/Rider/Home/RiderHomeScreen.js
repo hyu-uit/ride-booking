@@ -580,6 +580,7 @@ const RiderHomeScreen = ({ navigation, route }) => {
                             ? newCurrentTrips[0].pickUpAddress
                             : ""
                         }
+                        image={require("../../../assets/icons/pickupMarker.png")}
                       />
                       <Marker
                         identifier="destination"
@@ -598,6 +599,7 @@ const RiderHomeScreen = ({ navigation, route }) => {
                             ? newCurrentTrips[0].destAddress
                             : 0
                         }
+                        image={require("../../../assets/icons/destinationMarker.png")}
                       />
                     </MapView>
                   </View>
@@ -662,6 +664,7 @@ const RiderHomeScreen = ({ navigation, route }) => {
                       description={
                         selectedTrip ? selectedTrip.pickUpAddress : ""
                       }
+                      image={require("../../../assets/icons/pickupMarker.png")}
                     />
                     <Marker
                       identifier="destination"
@@ -672,6 +675,7 @@ const RiderHomeScreen = ({ navigation, route }) => {
                       }}
                       title={"Destination"}
                       description={selectedTrip ? selectedTrip.destAddress : 0}
+                      image={require("../../../assets/icons/destinationMarker.png")}
                     />
                   </MapView>
                 </View>

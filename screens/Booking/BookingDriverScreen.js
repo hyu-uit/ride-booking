@@ -147,6 +147,7 @@ const BookingDriverScreen = ({ navigation, route }) => {
                 key={"current-location"}
                 coordinate={marker}
                 title={"Current location"}
+                image={require("../../assets/icons/pickupMarker.png")}
               ></Marker>
               <Marker
                 key={"destination"}
@@ -157,6 +158,7 @@ const BookingDriverScreen = ({ navigation, route }) => {
                     ? booking.destinationLocation.address
                     : null
                 }
+                image={require("../../assets/icons/destinationMarker.png")}
               />
               {booking.routing ? (
                 <Polyline
@@ -191,6 +193,7 @@ const BookingDriverScreen = ({ navigation, route }) => {
                     ? booking.pickUpLocation.address
                     : null
                 }
+                image={require("../../assets/icons/pickupMarker.png")}
               ></Marker>
               <Marker
                 key={"destination"}

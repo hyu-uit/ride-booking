@@ -34,6 +34,7 @@ const BookingRatingScreen = ({ navigation, route }) => {
                 ? booking.destinationLocation.address
                 : null
             }
+            image={require("../../assets/icons/destinationMarker.png")}
           />
         </MapView>
         <RatingPopup idRider={idRider} navigation={navigation} />

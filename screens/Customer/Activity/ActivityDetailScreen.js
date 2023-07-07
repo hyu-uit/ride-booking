@@ -220,6 +220,7 @@ const ActivityDetailScreen = ({ navigation, route }) => {
                   }}
                   title={"Pick up"}
                   description={tripData ? tripData.pickUpAddress : ""}
+                  image={require("../../../assets/icons/pickupMarker.png")}
                 ></Marker>
                 <Marker
                   identifier="destination-t"
@@ -230,6 +231,7 @@ const ActivityDetailScreen = ({ navigation, route }) => {
                   }}
                   title={"Destination"}
                   description={tripData ? tripData.destAddress : ""}
+                  image={require("../../../assets/icons/destinationMarker.png")}
                 ></Marker>
               </MapView>
             ) : (
@@ -276,9 +278,7 @@ const ActivityDetailScreen = ({ navigation, route }) => {
                     <Text style={{ ...FONTS.body5, color: COLORS.fifthary }}>
                       {t("des")}
                     </Text>
-                    <Text
-                      style={{ ...FONTS.h5, color: COLORS.white, width: "80%" }}
-                    >
+                    <Text style={{ ...FONTS.h5, color: COLORS.white }}>
                       {tripData.destAddress}
                     </Text>
                   </VStack>
@@ -286,6 +286,7 @@ const ActivityDetailScreen = ({ navigation, route }) => {
                 <VStack
                   style={{ position: "absolute", right: 0 }}
                   alignItems={"center"}
+                  mt={"5%"}
                 >
                   <View
                     style={{
@@ -307,7 +308,7 @@ const ActivityDetailScreen = ({ navigation, route }) => {
                     style={{
                       borderLeftWidth: 1,
                       borderLeftColor: COLORS.fourthary,
-                      height: "50%",
+                      height: "80%",
                     }}
                   ></View>
                   <View

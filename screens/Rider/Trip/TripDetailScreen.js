@@ -152,6 +152,7 @@ const TripDetailScreen = ({ navigation, route }) => {
               coordinate={customerLocation}
               title={"Pick up"}
               description={tripData ? tripData.pickUpAddress : ""}
+              image={require("../../../assets/icons/pickupMarker.png")}
             ></Marker>
             <Marker
               identifier="destination-t"
@@ -162,6 +163,7 @@ const TripDetailScreen = ({ navigation, route }) => {
               }}
               title={"Destination"}
               description={tripData ? tripData.destAddress : ""}
+              image={require("../../../assets/icons/destinationMarker.png")}
             ></Marker>
             {routing ? (
               <Polyline

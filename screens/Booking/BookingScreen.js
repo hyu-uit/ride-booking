@@ -654,6 +654,7 @@ export default function BookingScreen({ navigation }) {
                 onPress={(e) => e.stopPropagation()}
                 onDragEnd={handleMarkerDragEnd}
                 isPreselected={true}
+                image={require("../../assets/icons/pickupMarker.png")}
               />
             </MapView>
             <Center
@@ -697,6 +698,7 @@ export default function BookingScreen({ navigation }) {
                     ? booking.pickUpLocation.address
                     : null
                 }
+                image={require("../../assets/icons/pickupMarker.png")}
               ></Marker>
               <Marker
                 identifier="pickUp"
@@ -708,6 +710,7 @@ export default function BookingScreen({ navigation }) {
                     ? booking.destinationLocation.address
                     : null
                 }
+                image={require("../../assets/icons/destinationMarker.png")}
               />
               {routing ? (
                 <Polyline
@@ -747,6 +750,7 @@ export default function BookingScreen({ navigation }) {
                     ? booking.pickUpLocation.address
                     : null
                 }
+                image={require("../../assets/icons/pickupMarker.png")}
               ></Marker>
               <Marker
                 key={"destination"}
@@ -757,6 +761,7 @@ export default function BookingScreen({ navigation }) {
                     ? booking.destinationLocation.address
                     : null
                 }
+                image={require("../../assets/icons/destinationMarker.png")}
               />
               {routing ? (
                 <Polyline
@@ -790,6 +795,7 @@ export default function BookingScreen({ navigation }) {
                     ? booking.pickUpLocation.address
                     : null
                 }
+                image={require("../../assets/icons/pickupMarker.png")}
               ></Marker>
               <Marker
                 key={"destination"}
@@ -800,6 +806,7 @@ export default function BookingScreen({ navigation }) {
                     ? booking.destinationLocation.address
                     : null
                 }
+                image={require("../../assets/icons/destinationMarker.png")}
               />
               {routing ? (
                 <Polyline
@@ -833,6 +840,7 @@ export default function BookingScreen({ navigation }) {
                     ? booking.pickUpLocation.address
                     : null
                 }
+                image={require("../../assets/icons/pickupMarker.png")}
               ></Marker>
               <Marker
                 key={"destination"}
@@ -843,6 +851,7 @@ export default function BookingScreen({ navigation }) {
                     ? booking.destinationLocation.address
                     : null
                 }
+                image={require("../../assets/icons/destinationMarker.png")}
               />
               {routing ? (
                 <Polyline
