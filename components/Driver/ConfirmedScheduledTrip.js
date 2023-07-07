@@ -81,7 +81,7 @@ function ConfirmedScheduledTrip(props) {
                   alignItems: "flex-end",
                 }}
               >
-                {totalPrice}
+                {parseInt(totalPrice).toLocaleString()}đ
               </Text>
             </View>
           </HStack>

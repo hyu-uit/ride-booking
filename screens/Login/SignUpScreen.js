@@ -346,6 +346,7 @@ const SignUpScreen = ({ navigation }) => {
                   }}
                   style={{ ...FONTS.body3 }}
                   color={COLORS.white}
+                  keyboardType="email-address"
                 />
                 <VStack w={"100%"} mt={3}>
                   <HStack justifyContent={"center"} mb={5}>
