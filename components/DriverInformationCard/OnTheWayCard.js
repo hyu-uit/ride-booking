@@ -60,7 +60,6 @@ const OnTheWayCard = ({ onPressCancel, onPressInfo, idRider }) => {
       paddingRight={26}
     >
       <VStack space={5}>
-    
         <HStack style={{ marginTop: 24, alignItems: "center" }}>
           <Text
             style={{
@@ -244,16 +243,18 @@ const OnTheWayCard = ({ onPressCancel, onPressInfo, idRider }) => {
             ).toLocaleString()}
             đ
           </Text>
-          <Text
-            style={{
-              color: COLORS.grey,
-              ...FONTS.h5,
-              fontWeight: "bold",
-              textDecorationLine: "line-through",
-            }}
-          >
-            {parseInt(booking.bookingDetails.price)}đ
-          </Text>
+          {booking.bookingDetails.promotion ? (
+            <Text
+              style={{
+                color: COLORS.grey,
+                ...FONTS.h5,
+                fontWeight: "bold",
+                textDecorationLine: "line-through",
+              }}
+            >
+              {parseInt(booking.bookingDetails.price).toLocaleString()}đ
+            </Text>
+          ) : null}
         </VStack>
       </HStack>
       <HStack

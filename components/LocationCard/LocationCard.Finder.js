@@ -209,6 +209,7 @@ const LocationCardFinder = ({ onPressCancel, phoneNumber, navigation }) => {
         </Center>
         <HStack>
           <Button
+            mb={10}
             bgColor={"#3D5AF8"}
             w={"100%"}
             borderRadius={"20px"}

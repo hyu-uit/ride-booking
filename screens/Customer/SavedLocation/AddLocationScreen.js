@@ -227,6 +227,7 @@ const AddLocationScreen = ({ navigation }) => {
                   onPress={(e) => e.stopPropagation()}
                   onDragEnd={handleMarkerDragEnd}
                   isPreselected={true}
+                  image={require("../../../assets/icons/pickupMarker.png")}
                 />
               </MapView>
               <HStack
