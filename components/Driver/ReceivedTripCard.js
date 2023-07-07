@@ -170,7 +170,7 @@ function ReceivedTripCard(props) {
     <View
       bgColor={COLORS.fourthary}
       w={"100%"}
-      h={isRead ? 260 : 363}
+      h={isRead ? 330 : 383}
       borderTopRadius={20}
       shadow={3}
       position={"absolute"}
@@ -221,7 +221,7 @@ function ReceivedTripCard(props) {
       <View
         bgColor={COLORS.tertiary}
         w={"100%"}
-        h={isRead ? 180 : 280}
+        h={isRead ? 230 : 270}
         borderTopRadius={20}
         position={"absolute"}
         bottom={0}
@@ -235,13 +235,24 @@ function ReceivedTripCard(props) {
                   size={20}
                   color={COLORS.white}
                 />
-                <Text style={styles.titleText} w={"90%"} ml={2}>
+                <Text
+                  style={styles.titleText}
+                  w={"90%"}
+                  ml={2}
+                  numberOfLines={3}
+                >
                   {pickUpAddress}
                 </Text>
               </HStack>
+              <Divider backgroundColor={COLORS.secondary} w={"90%"} />
               <HStack alignItems={"center"}>
                 <Ionicons name={"pin-outline"} size={20} color={COLORS.white} />
-                <Text style={styles.titleText} w={"90%"} ml={2}>
+                <Text
+                  style={styles.titleText}
+                  w={"90%"}
+                  ml={2}
+                  numberOfLines={3}
+                >
                   {destAddress}
                 </Text>
               </HStack>

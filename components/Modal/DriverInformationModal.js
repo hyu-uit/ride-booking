@@ -19,24 +19,26 @@ import { db } from "../../config/config";
 
 const DriverInformationModal = ({ isShow, onClose }) => {
   const { booking } = useContext(BookingContext);
-  const [ phoneRider, setPhoneRider] = useState("");
-  const [ nameRider, setNameRider] = useState("");
+  const [phoneRider, setPhoneRider] = useState("");
+  const [nameRider, setNameRider] = useState("");
   useEffect(() => {
     getRider();
   }, [booking.bookingDetails.idTrip, phoneRider, nameRider]);
   const getRider = () => {
-    getDoc(doc(db, "ListTrip", booking.bookingDetails.idTrip)).then((docData) => {
-      if (docData.exists()) {
-        setPhoneRider(docData.data().idRider);
-        getDoc(doc(db,"Rider",phoneRider)).then((doc)=>{
-          if(doc.exists()){
-            setNameRider(doc.data().displayName);
-          }
-        })
+    getDoc(doc(db, "ListTrip", booking.bookingDetails.idTrip)).then(
+      (docData) => {
+        if (docData.exists()) {
+          setPhoneRider(docData.data().idRider);
+          getDoc(doc(db, "Rider", phoneRider)).then((doc) => {
+            if (doc.exists()) {
+              setNameRider(doc.data().displayName);
+            }
+          });
+        }
       }
-    });
+    );
   };
-  console.log(booking.bookingDetails.idTrip)
+  console.log(booking.bookingDetails.idTrip);
   return (
     <Modal
       isOpen={isShow}
@@ -53,7 +55,7 @@ const DriverInformationModal = ({ isShow, onClose }) => {
         <Modal.Body>
           <VStack space={1}>
             <Text fontSize={SIZES.h4} textAlign={"center"} color={"white"} bold>
-             {nameRider}
+              {nameRider}
             </Text>
             <Text fontSize={SIZES.h4} textAlign={"center"} color={"white"} bold>
               {phoneRider}
@@ -61,7 +63,7 @@ const DriverInformationModal = ({ isShow, onClose }) => {
             <HStack w={"100%"}>
               <VStack space={2}>
                 <VStack space={1}>
-                  <Text bold fontSize={SIZES.h6} color={"#8CC3FF"} >
+                  <Text bold fontSize={SIZES.h6} color={"#8CC3FF"}>
                     Pick-up
                   </Text>
                   <Text bold fontSize={SIZES.h6} color={"white"}>
@@ -74,11 +76,11 @@ const DriverInformationModal = ({ isShow, onClose }) => {
                     Destination
                   </Text>
                   <Text bold fontSize={SIZES.h6} color={"white"}>
-                  {booking.destinationLocation.address}
+                    {booking.destinationLocation.address}
                   </Text>
                 </VStack>
               </VStack>
-              <Center marginLeft={"auto"}>
+              {/* <Center marginLeft={"auto"}>
                 <Center
                   borderRadius={50}
                   width={"25px"}
@@ -100,7 +102,7 @@ const DriverInformationModal = ({ isShow, onClose }) => {
                   source={LocationIcon}
                   alt=""
                 />
-              </Center>
+              </Center> */}
             </HStack>
             <Center w={"100%"} marginTop={5}>
               <QRCode value="hehehehehe" size={200} />

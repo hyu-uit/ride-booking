@@ -18,7 +18,14 @@ import { SIZES } from "../../constants/theme";
 import { useTranslation } from "react-i18next";
 import { isNullOrEmpty } from "../../helper/helper";
 import { BookingContext } from "../../context/BookingContext";
-import { collection, deleteDoc, doc, onSnapshot, query, where } from "firebase/firestore";
+import {
+  collection,
+  deleteDoc,
+  doc,
+  onSnapshot,
+  query,
+  where,
+} from "firebase/firestore";
 import { useState } from "react";
 import { useEffect } from "react";
 import { db } from "../../config/config";
@@ -32,35 +39,34 @@ const LocationCardFinder = ({ onPressCancel, phoneNumber, navigation }) => {
   const [isScheduled, setIsScheduled] = useState(null);
   const [isNavigated, setIsNavigated] = useState(false);
 
-  console.log(isScheduled)
+  console.log(isScheduled);
   useEffect(() => {
     if (!isNavigated) {
-
-    // Start the timer when the component mounts
-    const timerId = setTimeout(() => {
-      if (isScheduled  === "false"&& (tripDetail!=[])) {
-      Alert.alert(
-        "Riders seem busy now",
-        "Please try again.",
-        [
-          {
-            text: "OK",
-            onPress: () => {
-              deleteDoc(doc(db, "ListTrip", booking.bookingDetails.idTrip));
-              navigation.navigate("Home");
-            },
-          },
-        ],
-        { cancelable: false }
-      );
-      }
-    }, 60000); // 3 minutes
-    // Clear the timer when the component unmounts
-    return () => {
-      setTimer(timerId)
-      clearTimeout(timerId);
+      // Start the timer when the component mounts
+      const timerId = setTimeout(() => {
+        if (isScheduled === "false" && tripDetail != []) {
+          Alert.alert(
+            "Riders seem busy now",
+            "Please try again.",
+            [
+              {
+                text: "OK",
+                onPress: () => {
+                  deleteDoc(doc(db, "ListTrip", booking.bookingDetails.idTrip));
+                  navigation.navigate("Home");
+                },
+              },
+            ],
+            { cancelable: false }
+          );
+        }
+      }, 60000); // 3 minutes
+      // Clear the timer when the component unmounts
+      return () => {
+        setTimer(timerId);
+        clearTimeout(timerId);
+      };
     }
-    };
   }, [isScheduled, isNavigated, tripDetail]);
 
   useEffect(() => {
@@ -71,7 +77,6 @@ const LocationCardFinder = ({ onPressCancel, phoneNumber, navigation }) => {
   }, [tripDetail]);
 
   useEffect(() => {
-    
     // to ensure that when user switch from choose date to now that now still get current date
     console.log("finder use effectcall: ", booking.bookingDetails.idTrip);
     if (
@@ -93,18 +98,18 @@ const LocationCardFinder = ({ onPressCancel, phoneNumber, navigation }) => {
       doc(db, "ListTrip", booking.bookingDetails.idTrip),
       (querySnapshot) => {
         const updatedTrip = [];
-        
+
         const docData = querySnapshot.data();
-        if(docData ){
-          setIsScheduled(docData.isScheduled)
-          if(docData.status=="accepted"){
+        if (docData) {
+          setIsScheduled(docData.isScheduled);
+          if (docData.status == "accepted") {
             const trip = {
               idTrip: booking.bookingDetails.idTrip,
               ...docData,
             };
             updatedTrip.push(trip);
             setTripDetail(updatedTrip);
-            console.log(updatedTrip[0].idTrip)
+            console.log(updatedTrip[0].idTrip);
             if (updatedTrip.length > 0) {
               const data = {
                 idRider: updatedTrip[0].idRider,
@@ -116,7 +121,7 @@ const LocationCardFinder = ({ onPressCancel, phoneNumber, navigation }) => {
           }
         }
       },
-      (error)=>{
+      (error) => {
         console.log("Error fetching trip data:", error);
       }
     );
@@ -134,14 +139,14 @@ const LocationCardFinder = ({ onPressCancel, phoneNumber, navigation }) => {
       bottom={0}
       padding={"30px 25px 0 25px"}
     >
-      <Text  bold fontSize={SIZES.h5} color={"grey"} mb={2}>
-          {booking.bookingDetails.idTrip}
-        </Text>
+      <Text bold fontSize={SIZES.h5} color={"grey"} mb={2}>
+        {booking.bookingDetails.idTrip}
+      </Text>
       <VStack space={3}>
         <Text fontSize={SIZES.h3} bold color={"white"}>
           {t("findingRider")}
         </Text>
-     
+
         <HStack w={"100%"}>
           <VStack space={2} width={"90%"}>
             <VStack space={1}>
