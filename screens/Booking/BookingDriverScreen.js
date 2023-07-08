@@ -181,7 +181,9 @@ const BookingDriverScreen = ({ navigation, route }) => {
                 }
                 image={require("../../assets/icons/destinationMarker.png")}
               />
-              {driverMarker ? (
+              {driverMarker &&
+              driverMarker.longitude &&
+              driverMarker.latitude ? (
                 <Marker
                   key={"driver-marker"}
                   coordinate={driverMarker}
